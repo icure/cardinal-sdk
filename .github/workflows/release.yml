@@ -1,0 +1,185 @@
+name: Release
+
+# Performs the release declared by a merged release PR, see RELEASING.md:
+#   1. validates the release tags on the merge commit (release-plan.mjs tag),
+#   2. tags the merge commit and creates the GitHub release(s),
+#   3. creates support/X.Y.Z for a final full release,
+#   4. pins the-forge's cardinal-sdk submodule to the merge commit and pushes one cardinal-sdk-<tag> forge tag per
+#      release, which starts publishing on the self-hosted runners.
+# Every step skips what already exists, so a failed run can be re-run.
+#
+# `workflow_dispatch` is a dry run: it validates a would-be release PR, shows the plan, and runs the forge
+# orchestrator without publishing. Nothing is tagged, created or pushed.
+
+on:
+    pull_request:
+        types:
+            - closed
+        branches:
+            - main
+            - 'support/**'
+    workflow_dispatch:
+        inputs:
+            title:
+                description: 'Release PR title, e.g. "Release ts-2.14.11"'
+                required: true
+                type: string
+            base:
+                description: 'Branch the release PR would target: main or support/X.Y.Z'
+                required: true
+                type: string
+            head:
+                description: 'Branch the release PR would come from'
+                required: true
+                type: string
+
+permissions:
+    contents: read
+
+concurrency:
+    group: release
+    cancel-in-progress: false
+
+jobs:
+    release:
+        if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged
+        runs-on: ubuntu-latest
+        name: Release
+        env:
+            DRY_RUN: ${{ github.event_name == 'workflow_dispatch' }}
+            # Tag pushes need the tag ruleset bypass, which only the role of this token's owner has.
+            GH_TOKEN: ${{ secrets.CARDINAL_SDK_CI_PAT }}
+            FORGE_TOKEN: ${{ secrets.CARDINAL_SDK_CI_PAT }}
+        steps:
+            -   name: Check out code
+                uses: actions/checkout@v4
+                with:
+                    ref: ${{ github.event_name == 'workflow_dispatch' && inputs.head || github.event.pull_request.merge_commit_sha }}
+                    fetch-depth: 0
+                    fetch-tags: true
+                    token: ${{ secrets.CARDINAL_SDK_CI_PAT }}
+
+            -   name: Set up Node
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '24'
+
+            -   name: Configure Git
+                run: |
+                    git config --global user.name "github-actions[bot]"
+                    git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+            -   name: List accepted releases
+                run: .github/scripts/list-accepted-releases.sh > "$RUNNER_TEMP/accepted.txt"
+
+            -   name: Plan the release
+                id: plan
+                env:
+                    TITLE: ${{ github.event_name == 'workflow_dispatch' && inputs.title || github.event.pull_request.title }}
+                    BASE: ${{ inputs.base }}
+                    HEAD: ${{ inputs.head }}
+                run: |
+                    SHA=$(git rev-parse HEAD)
+                    echo "sha=$SHA" >> "$GITHUB_OUTPUT"
+                    if [ "$DRY_RUN" = true ]; then
+                        node .github/scripts/release-plan.mjs pr --title "$TITLE" --base-ref "$BASE" --head-ref "$HEAD" \
+                            --head-sha "$SHA" --accepted-file "$RUNNER_TEMP/accepted.txt" \
+                            --summary-file "$GITHUB_STEP_SUMMARY" > "$RUNNER_TEMP/plan.json"
+                    else
+                        node .github/scripts/release-plan.mjs tag --title "$TITLE" --commit "$SHA" \
+                            --accepted-file "$RUNNER_TEMP/accepted.txt" \
+                            --summary-file "$GITHUB_STEP_SUMMARY" > "$RUNNER_TEMP/plan.json"
+                    fi
+                    TAGS=$(node -p "require(process.env.RUNNER_TEMP + '/plan.json').releases.map((r) => r.tag).join(' ')")
+                    echo "tags=$TAGS" >> "$GITHUB_OUTPUT"
+                    echo "Releases: $TAGS"
+
+            -   name: Tag the merge commit
+                if: env.DRY_RUN != 'true'
+                env:
+                    SHA: ${{ steps.plan.outputs.sha }}
+                    TAGS: ${{ steps.plan.outputs.tags }}
+                run: |
+                    for TAG in $TAGS; do
+                        EXISTING=$(git rev-parse -q --verify "refs/tags/$TAG^{commit}" || true)
+                        if [ -n "$EXISTING" ]; then
+                            if [ "$EXISTING" != "$SHA" ]; then
+                                echo "::error::$TAG already exists on $EXISTING, not on $SHA"
+                                exit 1
+                            fi
+                            echo "$TAG already on $SHA"
+                            continue
+                        fi
+                        git tag -a "$TAG" -m "Release $TAG" "$SHA"
+                        git push origin "refs/tags/$TAG"
+                    done
+
+            -   name: Create the GitHub releases
+                if: env.DRY_RUN != 'true'
+                run: |
+                    node -e '
+                        const { releases } = require(process.env.RUNNER_TEMP + "/plan.json");
+                        for (const r of releases) {
+                            console.log([r.tag, r.releaseTitle, r.prerelease, r.latest, r.notesStartTag ?? ""].join("\t"));
+                        }
+                    ' | while IFS=$'\t' read -r TAG TITLE PRERELEASE LATEST START; do
+                        if gh release view "$TAG" > /dev/null 2>&1; then
+                            echo "Release $TAG already exists"
+                            continue
+                        fi
+                        ARGS=(--verify-tag --title "$TITLE" --generate-notes "--latest=$LATEST")
+                        if [ "$PRERELEASE" = true ]; then ARGS+=(--prerelease); fi
+                        if [ -n "$START" ]; then ARGS+=(--notes-start-tag "$START"); fi
+                        gh release create "$TAG" "${ARGS[@]}"
+                    done
+
+            -   name: Create the support branch
+                if: env.DRY_RUN != 'true'
+                env:
+                    SHA: ${{ steps.plan.outputs.sha }}
+                run: |
+                    BRANCHES=$(node -p "require(process.env.RUNNER_TEMP + '/plan.json').releases.map((r) => r.supportBranch).filter(Boolean).join(' ')")
+                    for BRANCH in $BRANCHES; do
+                        if [ -n "$(git ls-remote --heads origin "refs/heads/$BRANCH")" ]; then
+                            echo "$BRANCH already exists"
+                            continue
+                        fi
+                        git push origin "$SHA:refs/heads/$BRANCH"
+                    done
+
+            -   name: Hand over to the-forge
+                env:
+                    SHA: ${{ steps.plan.outputs.sha }}
+                    TAGS: ${{ steps.plan.outputs.tags }}
+                run: |
+                    if [ "$DRY_RUN" = true ]; then
+                        for TAG in $TAGS; do
+                            echo "Dry run: running the forge orchestrator for $TAG on $SHA"
+                            gh workflow run release-cardinal-sdk.yml -R icure/the-forge -f tag="$TAG" -f sha="$SHA" -f dry_run=true
+                        done
+                        exit 0
+                    fi
+                    FORGE="$RUNNER_TEMP/the-forge"
+                    git clone --quiet "https://x-access-token:${FORGE_TOKEN}@github.com/icure/the-forge.git" "$FORGE"
+                    cd "$FORGE"
+                    NEW=()
+                    for TAG in $TAGS; do
+                        if git rev-parse -q --verify "refs/tags/cardinal-sdk-$TAG" > /dev/null; then
+                            echo "cardinal-sdk-$TAG already pushed"
+                        else
+                            NEW+=("cardinal-sdk-$TAG")
+                        fi
+                    done
+                    if [ ${#NEW[@]} -eq 0 ]; then
+                        echo "Every forge tag already exists."
+                        exit 0
+                    fi
+                    # Point the gitlink at the merge commit directly: no need to clone the submodule.
+                    git update-index --cacheinfo "160000,$SHA,cardinal-sdk"
+                    if ! git diff --cached --quiet; then
+                        git commit --quiet -m "chore: Update submodule on release $TAGS"
+                    fi
+                    for FORGE_TAG in "${NEW[@]}"; do
+                        git tag -a "$FORGE_TAG" -m "cardinal-sdk ${FORGE_TAG#cardinal-sdk-} at $SHA"
+                    done
+                    git push --atomic origin main "${NEW[@]/#/refs/tags/}"
