@@ -90,7 +90,17 @@ jobs:
             id-token: write # claude-code-action OIDC
         steps:
             -   name: Check the SDK version is known
+                env:
+                    EVENT_NAME: ${{ github.event_name }}
+                    INPUT_REF: ${{ inputs.ref }}
+                    INPUT_VERSION: ${{ inputs.version }}
                 run: |
+                    # The open release PR towards main gives the version of develop only: a dispatch that syncs another
+                    # branch (a unit patch) must name its version.
+                    if [ "$EVENT_NAME" = workflow_dispatch ] && [ "$INPUT_REF" != develop ] && [ -z "$INPUT_VERSION" ]; then
+                        echo "::error::A dispatch with ref=$INPUT_REF needs the version input: the open release PR towards main only gives the version of develop."
+                        exit 1
+                    fi
                     if [ -z "$SDK_VERSION" ]; then
                         echo "::error::No SDK version: the open release PR towards main is not titled \"Release X.Y.Z\" and no version input was given."
                         exit 1
