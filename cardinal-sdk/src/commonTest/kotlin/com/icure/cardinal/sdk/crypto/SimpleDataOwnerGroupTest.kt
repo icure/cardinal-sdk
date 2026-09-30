@@ -30,13 +30,17 @@ import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.test.uuid
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.cardinal.sdk.utils.HEAVY_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.maps.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -493,6 +497,140 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 				groupSecretIds + memberOnlySecretId
 			memberApi.createContactFor(patient.id).secretForeignKeys shouldBe groupSecretIds
 			memberApi.createContactFor(patient.id, SecretIdUseOption.UseAllSharedWithHierarchy).secretForeignKeys shouldBe groupSecretIds
+		}
+	}
+
+	"The piece of the delegator of simple group exchange data should be signed, and should be reused by the delegator".config(enabled = DEFAULT_ENABLED) {
+		suspend fun doTest(delegator: DataOwnerDetails, group: DataOwnerDetails) {
+			val delegatorApi = delegator.api(specJob)
+			suspend fun createPatientSharedWithGroup() = delegatorApi.patient.createPatient(
+				delegatorApi.patient.withEncryptionMetadata(
+					DecryptedPatient(
+						uuid(),
+						firstName = "John",
+						lastName = "Doe",
+						note = "Secret"
+					),
+					delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+				)
+			)
+			fun Patient.exchangeDataToGroupId() =
+				securityMetadata.shouldNotBeNull().secureDelegations.values.single {
+					it.delegate == group.dataOwnerId
+				}.exchangeDataId.shouldNotBeNull()
+			val patient1 = createPatientSharedWithGroup()
+			val rawExchangeDataApi = RawExchangeDataApiImpl(
+				baseUrl,
+				delegator.authService(),
+				DefaultRawApiConfig
+			)
+			val delegatorPiece = rawExchangeDataApi.getExchangeDataByDelegatorDelegateForRecipients(
+				delegator.dataOwnerId,
+				group.dataOwnerId,
+				JsonArray(listOf(JsonPrimitive(delegator.dataOwnerId))).toString()
+			).successBody().rows.shouldHaveSize(1).single()
+			assertSoftly {
+				delegatorPiece.recipient shouldBe delegator.dataOwnerId
+				delegatorPiece.exchangeDataGroupId shouldBe patient1.exchangeDataToGroupId()
+				withClue("Delegator piece should have a shared signature") {
+					delegatorPiece.sharedSignature shouldNotBe null
+				}
+				withClue("Delegator piece should have a delegator signature") {
+					delegatorPiece.delegatorSignature.shouldNotBeEmpty()
+				}
+				// Unverified exchange data is not used by the delegator for sharing: if the delegator piece can't be verified new
+				// exchange data is created after the cache is cleared
+				delegatorApi.crypto.forceReload()
+				val patient2 = createPatientSharedWithGroup()
+				withClue("Delegator should reuse the existing exchange data after reload") {
+					patient2.exchangeDataToGroupId() shouldBe patient1.exchangeDataToGroupId()
+				}
+			}
+		}
+
+		"when the delegator is not a member of the group".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			doTest(createHcpUser(), group)
+		}
+
+		"when the delegator is a direct member of the group".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val delegator = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			doTest(delegator, group)
+		}
+
+		"when the delegator is a transitive member of the group".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val subgroup = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.Simple)
+			val delegator = createHcpUser(parent = subgroup, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			doTest(delegator, group)
+		}
+	}
+
+	// Reproducer for https://github.com/icure/cardinal-sdk/issues/736
+	"A member of a simple group with 100+ members should be able to share with the group even if its own piece is not in the first chunk".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+		val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
+		// Use shared key for fillers, otherwise takes too long
+		val keySpki = defaultCryptoService.rsa.exportSpkiHex(
+			defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256).public
+		)
+		// Ids start with "0000" so that they sort before the uuid of the delegator: the delegator is the last member, and its
+		// member piece ends up in the second chunk of 100 pieces
+		val fillers = List(110) { i ->
+			val hcpId = "0000" + Random.nextBytes(16).toHexString(HexFormat.UpperCase)
+			HealthcareParty(
+				hcpId,
+				firstName = "Filler-$i-$hcpId",
+				lastName = "Filler-$i-$hcpId",
+				publicKeysForOaepWithSha256 = setOf(keySpki),
+				dataOwnerGroups = listOf(DataOwnerGroupLink(group.dataOwnerId)),
+				groupLinkType = DataOwnerGroupLinkType.NotAllowed,
+			)
+		}
+		hcpRawApi.createHealthcarePartiesInGroup(testGroupId, fillers).successBody()
+		val delegator = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val delegatorApi = delegator.api(specJob)
+		delegatorApi.dataOwner.getSimpleGroupDelegateMembersIds(
+			delegatorApi.dataOwner.getCryptoActorStub(group.dataOwnerId),
+			null
+		) shouldBe (fillers.map { it.id } + delegator.dataOwnerId).toSet()
+		suspend fun createPatientSharedWithGroup() = delegatorApi.patient.createPatient(
+			delegatorApi.patient.withEncryptionMetadata(
+				DecryptedPatient(
+					uuid(),
+					firstName = "John",
+					lastName = "Doe",
+					note = "Secret"
+				),
+				delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+			)
+		)
+		val firstAttempt = runCatching { createPatientSharedWithGroup() }
+		val patient = firstAttempt.getOrElse {
+			// On failure, keep going with a retry to verify the exchange data is complete (the retry reuses the partially created
+			// exchange data)
+			println("First share failed: $it")
+			createPatientSharedWithGroup()
+		}
+		val rawExchangeDataApi = RawExchangeDataApiImpl(
+			baseUrl,
+			delegator.authService(),
+			DefaultRawApiConfig
+		)
+		val exchangeDataGroupId = patient.securityMetadata.shouldNotBeNull().secureDelegations.values.single {
+			it.delegate == group.dataOwnerId
+		}.exchangeDataId.shouldNotBeNull()
+		val allPiecesOfGroup = rawExchangeDataApi.getExchangeDataGroupById(exchangeDataGroupId, limit = 1000).successBody().rows
+		withClue("Exchange data should have a piece for each member of the group") {
+			allPiecesOfGroup.map { it.recipient }.toSet() shouldBe (fillers.map { it.id } + delegator.dataOwnerId).toSet()
+		}
+		withClue("First share should succeed") {
+			firstAttempt.exceptionOrNull() shouldBe null
 		}
 	}
 

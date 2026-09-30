@@ -322,8 +322,8 @@ abstract class AbstractExchangeDataManagerInGroup(
 		log.d {
 			"Loaded ${publicKeysByDelegate.values.sumOf { it.size }} public keys for ${publicKeysByDelegate.size} delegates."
 		}
-		val loadedPublicKeysByDelegate = publicKeysByDelegate.map { (plainDelegateId, keys) ->
-			Pair(
+		val loadedPublicKeysByDelegate = publicKeysByDelegate.mapNotNull { (plainDelegateId, keys) ->
+			if (plainDelegateId == delegatorReference.entityId) null else Pair(
 				EntityReferenceInGroup(entityId = plainDelegateId, groupId = simpleGroupReference.groupId),
 				VerifiedRsaEncryptionKeysSet(
 					keys.map { k ->
@@ -336,7 +336,11 @@ abstract class AbstractExchangeDataManagerInGroup(
 			)
 		}.toMap()
 		groupMembers.forEach { currMember ->
-			check (loadedPublicKeysByDelegate[EntityReferenceInGroup(entityId = currMember, groupId = simpleGroupReference.groupId)].let { it != null && it.isNotEmpty() }) {
+			check (
+				delegatorReference.entityId == currMember || loadedPublicKeysByDelegate[
+					EntityReferenceInGroup(entityId = currMember, groupId = simpleGroupReference.groupId)
+				].let { it != null && it.isNotEmpty() }
+			) {
 				// Probably approach is too conservative, might be good to ignore empty, but for now keeping it safe
 				"Could not find a valid public key for delegate $currMember of simple-type data owner group ${simpleGroupReference.groupId}"
 			}

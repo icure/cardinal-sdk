@@ -503,19 +503,21 @@ class BaseExchangeDataManagerImpl(
 			yield(delegatorPiece) // delegator piece must be first
 			yieldAll(otherPieces)
 		}.chunked(100).forEach { chunk ->
-			sdkBoundGroup.resolve(inGroup)?.let {
-				raw.createExchangeDataGroupPieces(
+			(
+				sdkBoundGroup.resolve(inGroup)?.let {
+					raw.createExchangeDataGroupPieces(
+						exchangeDataGroupId = exchangeDataGroupId,
+						delegator = delegatorReferenceString,
+						delegate = delegateReferenceString,
+						piecesByRecipient = chunk.toMap(),
+						groupId = it
+					)
+				} ?: raw.createExchangeDataGroupPieces(
 					exchangeDataGroupId = exchangeDataGroupId,
 					delegator = delegatorReferenceString,
 					delegate = delegateReferenceString,
 					piecesByRecipient = chunk.toMap(),
-					groupId = it
 				)
-			} ?: raw.createExchangeDataGroupPieces(
-				exchangeDataGroupId = exchangeDataGroupId,
-				delegator = delegatorReferenceString,
-				delegate = delegateReferenceString,
-				piecesByRecipient = chunk.toMap(),
 			).successBody()
 		}
 		return ExchangeDataWithUnencryptedContent(
