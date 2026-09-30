@@ -46,7 +46,7 @@ Every PR into a `support/*` branch is a release PR.
 - **`release-check` is red:** its summary lists every broken rule (R1–R10) with the offending tag or file. Fix
   the title or the changes. Editing the title re-runs the check.
 - **`release.yml` failed:** re-run it. Each step skips what already exists (tags, releases, the support branch,
-  forge tags).
+  forge tags). A cancelled `Release` run (for example by a manual cancel) must be re-run the same way.
 - **Publishing failed in the-forge:** re-run the failed jobs of the `Release cardinal-sdk` run for that tag.
 
 ## Dry run

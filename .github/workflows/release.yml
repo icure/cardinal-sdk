@@ -36,12 +36,17 @@ on:
 permissions:
     contents: read
 
-concurrency:
-    group: release
-    cancel-in-progress: false
+defaults:
+    run:
+        # Explicit bash makes GitHub run `bash -eo pipefail`, so a failing producer in a pipe fails the step.
+        shell: bash
 
 jobs:
     release:
+        # Dry runs get their own group so they never cancel a pending real release.
+        concurrency:
+            group: ${{ github.event_name == 'workflow_dispatch' && format('release-dry-{0}', github.run_id) || 'release' }}
+            cancel-in-progress: false
         if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged
         runs-on: ubuntu-latest
         name: Release
@@ -100,13 +105,16 @@ jobs:
                     SHA: ${{ steps.plan.outputs.sha }}
                     TAGS: ${{ steps.plan.outputs.tags }}
                 run: |
+                    # Check every tag before the first write.
                     for TAG in $TAGS; do
                         EXISTING=$(git rev-parse -q --verify "refs/tags/$TAG^{commit}" || true)
-                        if [ -n "$EXISTING" ]; then
-                            if [ "$EXISTING" != "$SHA" ]; then
-                                echo "::error::$TAG already exists on $EXISTING, not on $SHA"
-                                exit 1
-                            fi
+                        if [ -n "$EXISTING" ] && [ "$EXISTING" != "$SHA" ]; then
+                            echo "::error::$TAG already exists on $EXISTING, not on $SHA"
+                            exit 1
+                        fi
+                    done
+                    for TAG in $TAGS; do
+                        if git rev-parse -q --verify "refs/tags/$TAG^{commit}" > /dev/null; then
                             echo "$TAG already on $SHA"
                             continue
                         fi
@@ -140,12 +148,44 @@ jobs:
                 run: |
                     BRANCHES=$(node -p "require(process.env.RUNNER_TEMP + '/plan.json').releases.map((r) => r.supportBranch).filter(Boolean).join(' ')")
                     for BRANCH in $BRANCHES; do
-                        if [ -n "$(git ls-remote --heads origin "refs/heads/$BRANCH")" ]; then
+                        REMOTE_SHA=$(git ls-remote --heads origin "refs/heads/$BRANCH" | cut -f1)
+                        if [ -n "$REMOTE_SHA" ]; then
+                            # Unit releases move the branch forward, so accept any descendant of the merge commit.
+                            git fetch -q origin "refs/heads/$BRANCH"
+                            if ! git merge-base --is-ancestor "$SHA" "$REMOTE_SHA"; then
+                                echo "::error::$BRANCH already exists on $REMOTE_SHA, which does not contain $SHA"
+                                exit 1
+                            fi
                             echo "$BRANCH already exists"
                             continue
                         fi
                         git push origin "$SHA:refs/heads/$BRANCH"
                     done
+
+            -   name: Show the dry run
+                if: env.DRY_RUN == 'true'
+                env:
+                    SHA: ${{ steps.plan.outputs.sha }}
+                run: |
+                    node -e '
+                        const { releases } = require(process.env.RUNNER_TEMP + "/plan.json");
+                        const sha = process.env.SHA;
+                        const lines = [];
+                        for (const r of releases) {
+                            lines.push("git tag -a " + r.tag + " -m \"Release " + r.tag + "\" " + sha);
+                            let gh = "gh release create " + r.tag + " --verify-tag --title \"" + r.releaseTitle + "\" --generate-notes --latest=" + r.latest;
+                            if (r.prerelease) gh += " --prerelease";
+                            if (r.notesStartTag) gh += " --notes-start-tag " + r.notesStartTag;
+                            lines.push(gh);
+                            if (r.supportBranch) lines.push("git push origin " + sha + ":refs/heads/" + r.supportBranch);
+                            lines.push("the-forge: tag cardinal-sdk-" + r.tag + " on a commit pinning cardinal-sdk at " + sha);
+                        }
+                        console.log("Dry run, these actions would be taken:\n" + lines.join("\n"));
+                        if (process.env.GITHUB_STEP_SUMMARY) {
+                            require("fs").appendFileSync(process.env.GITHUB_STEP_SUMMARY,
+                                "\n### Dry run: actions that would be taken\n\n\u0060\u0060\u0060\n" + lines.join("\n") + "\n\u0060\u0060\u0060\n");
+                        }
+                    '
 
             -   name: Hand over to the-forge
                 env:
@@ -160,11 +200,16 @@ jobs:
                         exit 0
                     fi
                     FORGE="$RUNNER_TEMP/the-forge"
-                    git clone --quiet "https://x-access-token:${FORGE_TOKEN}@github.com/icure/the-forge.git" "$FORGE"
+                    git clone --quiet --branch main "https://x-access-token:${FORGE_TOKEN}@github.com/icure/the-forge.git" "$FORGE"
                     cd "$FORGE"
                     NEW=()
                     for TAG in $TAGS; do
                         if git rev-parse -q --verify "refs/tags/cardinal-sdk-$TAG" > /dev/null; then
+                            PINNED=$(git rev-parse "refs/tags/cardinal-sdk-$TAG^{commit}:cardinal-sdk")
+                            if [ "$PINNED" != "$SHA" ]; then
+                                echo "::error::cardinal-sdk-$TAG pins cardinal-sdk at $PINNED, not at $SHA"
+                                exit 1
+                            fi
                             echo "cardinal-sdk-$TAG already pushed"
                         else
                             NEW+=("cardinal-sdk-$TAG")
