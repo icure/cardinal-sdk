@@ -24,7 +24,8 @@ sealed interface SecretIdUseOption {
 	 * SDK's delegator actor; assumes that each member of the hierarchy has access to the data delegated to its linked
 	 * groups, regardless of the data owner group type (parent / simple).
 	 *
-	 * If the api is initialized in non-hierarchical mode, this means "use all available secret id".
+	 * If the api is initialized in non-hierarchical mode, ancestors that can only be reached by going through at least
+	 * one parent-type link are ignored: the leaf ancestors are determined considering only simple-type links.
 	 *
 	 * Guarantees that a secret id is used: if no secret id is found, the initialization method will fail.
 	 */
