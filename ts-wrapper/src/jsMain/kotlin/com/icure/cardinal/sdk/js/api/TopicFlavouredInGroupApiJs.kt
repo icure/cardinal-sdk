@@ -25,25 +25,19 @@ public external interface TopicFlavouredInGroupApiJs<E : TopicJs> {
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(topic: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(topic: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterTopicsBy(groupId: String, filter: FilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterTopicsBy(groupId: String, filter: FilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterTopicsBySorted(groupId: String, filter: SortableFilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterTopicsBySorted(groupId: String, filter: SortableFilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createTopic(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createTopics(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteTopicById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteTopicsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteTopic(topic: GroupScopedJs<TopicJs>): Promise<GroupScopedJs<E>>
 

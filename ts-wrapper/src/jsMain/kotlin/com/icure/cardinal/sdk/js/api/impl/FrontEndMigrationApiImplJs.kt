@@ -23,8 +23,7 @@ import kotlinx.coroutines.promise
 internal class FrontEndMigrationApiImplJs(
 	private val frontEndMigrationApi: FrontEndMigrationApi,
 ) : FrontEndMigrationApiJs {
-	override fun getFrontEndMigration(frontEndMigrationId: String): Promise<FrontEndMigrationJs?> =
-			GlobalScope.promise {
+	override fun getFrontEndMigration(frontEndMigrationId: String): Promise<FrontEndMigrationJs?> = GlobalScope.promise {
 		val frontEndMigrationIdConverted: String = frontEndMigrationId
 		val result = frontEndMigrationApi.getFrontEndMigration(
 			frontEndMigrationIdConverted,
@@ -36,8 +35,7 @@ internal class FrontEndMigrationApiImplJs(
 		)
 	}
 
-	override fun createFrontEndMigration(frontEndMigration: FrontEndMigrationJs):
-			Promise<FrontEndMigrationJs> = GlobalScope.promise {
+	override fun createFrontEndMigration(frontEndMigration: FrontEndMigrationJs): Promise<FrontEndMigrationJs> = GlobalScope.promise {
 		val frontEndMigrationConverted: FrontEndMigration = frontEndMigration_fromJs(frontEndMigration)
 		val result = frontEndMigrationApi.createFrontEndMigration(
 			frontEndMigrationConverted,
@@ -56,8 +54,7 @@ internal class FrontEndMigrationApiImplJs(
 		)
 	}
 
-	override fun deleteFrontEndMigration(frontEndMigrationId: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteFrontEndMigration(frontEndMigrationId: String): Promise<DocIdentifierJs> = GlobalScope.promise {
 		val frontEndMigrationIdConverted: String = frontEndMigrationId
 		val result = frontEndMigrationApi.deleteFrontEndMigration(
 			frontEndMigrationIdConverted,
@@ -65,8 +62,7 @@ internal class FrontEndMigrationApiImplJs(
 		docIdentifier_toJs(result)
 	}
 
-	override fun getFrontEndMigrationByName(frontEndMigrationName: String):
-			Promise<Array<FrontEndMigrationJs>> = GlobalScope.promise {
+	override fun getFrontEndMigrationByName(frontEndMigrationName: String): Promise<Array<FrontEndMigrationJs>> = GlobalScope.promise {
 		val frontEndMigrationNameConverted: String = frontEndMigrationName
 		val result = frontEndMigrationApi.getFrontEndMigrationByName(
 			frontEndMigrationNameConverted,
@@ -79,8 +75,7 @@ internal class FrontEndMigrationApiImplJs(
 		)
 	}
 
-	override fun modifyFrontEndMigration(frontEndMigration: FrontEndMigrationJs):
-			Promise<FrontEndMigrationJs> = GlobalScope.promise {
+	override fun modifyFrontEndMigration(frontEndMigration: FrontEndMigrationJs): Promise<FrontEndMigrationJs> = GlobalScope.promise {
 		val frontEndMigrationConverted: FrontEndMigration = frontEndMigration_fromJs(frontEndMigration)
 		val result = frontEndMigrationApi.modifyFrontEndMigration(
 			frontEndMigrationConverted,

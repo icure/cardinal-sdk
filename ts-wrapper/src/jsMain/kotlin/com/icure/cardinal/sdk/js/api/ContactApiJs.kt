@@ -42,11 +42,9 @@ public external interface ContactApiJs {
 
 	public fun matchServicesBy(filter: FilterOptionsJs<ServiceJs>): Promise<Array<String>>
 
-	public fun matchContactsBySorted(filter: SortableFilterOptionsJs<ContactJs>):
-			Promise<Array<String>>
+	public fun matchContactsBySorted(filter: SortableFilterOptionsJs<ContactJs>): Promise<Array<String>>
 
-	public fun matchServicesBySorted(filter: SortableFilterOptionsJs<ServiceJs>):
-			Promise<Array<String>>
+	public fun matchServicesBySorted(filter: SortableFilterOptionsJs<ServiceJs>): Promise<Array<String>>
 
 	public fun withEncryptionMetadata(
 		base: DecryptedContactJs?,
@@ -69,8 +67,7 @@ public external interface ContactApiJs {
 
 	public fun decryptPatientIdOfService(service: ServiceJs): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: ContactJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: ContactJs, delegates: Array<String>): Promise<Unit>
 
 	public fun decrypt(contact: EncryptedContactJs): Promise<DecryptedContactJs>
 
@@ -80,21 +77,17 @@ public external interface ContactApiJs {
 
 	public fun tryDecryptService(service: EncryptedServiceJs): Promise<ServiceJs>
 
-	public fun subscribeToServiceCreateOrUpdateEvents(filter: FilterOptionsJs<ServiceJs>,
-			options: dynamic): Promise<EntitySubscriptionJs<EncryptedServiceJs>>
+	public fun subscribeToServiceCreateOrUpdateEvents(filter: FilterOptionsJs<ServiceJs>, options: dynamic): Promise<EntitySubscriptionJs<EncryptedServiceJs>>
 
-	public fun shareContactsByIds(contactIds: Array<String>,
-			delegates: Record<String, ContactShareOptionsJs>): Promise<BulkShareByIdsResultJs>
+	public fun shareContactsByIds(contactIds: Array<String>, delegates: Record<String, ContactShareOptionsJs>): Promise<BulkShareByIdsResultJs>
 
 	public fun deleteContactById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeContactById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteContact(contact: ContactJs): Promise<StoredDocumentIdentifierJs>
 
@@ -104,8 +97,7 @@ public external interface ContactApiJs {
 
 	public fun purgeContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double):
-			Promise<Array<LabelledOccurenceJs>>
+	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double): Promise<Array<LabelledOccurenceJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -113,20 +105,15 @@ public external interface ContactApiJs {
 		options: dynamic,
 	): Promise<DecryptedContactJs>
 
-	public fun shareWithMany(contact: DecryptedContactJs,
-			delegates: Record<String, ContactShareOptionsJs>): Promise<DecryptedContactJs>
+	public fun shareWithMany(contact: DecryptedContactJs, delegates: Record<String, ContactShareOptionsJs>): Promise<DecryptedContactJs>
 
-	public fun filterContactsBy(filter: FilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<DecryptedContactJs>>
+	public fun filterContactsBy(filter: FilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<DecryptedContactJs>>
 
-	public fun filterServicesBy(filter: FilterOptionsJs<ServiceJs>):
-			Promise<PaginatedListIteratorJs<DecryptedServiceJs>>
+	public fun filterServicesBy(filter: FilterOptionsJs<ServiceJs>): Promise<PaginatedListIteratorJs<DecryptedServiceJs>>
 
-	public fun filterContactsBySorted(filter: SortableFilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<DecryptedContactJs>>
+	public fun filterContactsBySorted(filter: SortableFilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<DecryptedContactJs>>
 
-	public fun filterServicesBySorted(filter: SortableFilterOptionsJs<ServiceJs>):
-			Promise<PaginatedListIteratorJs<DecryptedServiceJs>>
+	public fun filterServicesBySorted(filter: SortableFilterOptionsJs<ServiceJs>): Promise<PaginatedListIteratorJs<DecryptedServiceJs>>
 
 	public fun createContact(entity: DecryptedContactJs): Promise<DecryptedContactJs>
 
@@ -134,8 +121,7 @@ public external interface ContactApiJs {
 
 	public fun undeleteContactById(id: String, rev: String): Promise<DecryptedContactJs>
 
-	public fun undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedContactJs>>
+	public fun undeleteContactsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedContactJs>>
 
 	public fun undeleteContact(contact: ContactJs): Promise<DecryptedContactJs>
 

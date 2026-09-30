@@ -6,8 +6,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun calendarItemDelegateOptions_toJs(obj: CalendarItemDelegateOptions):
-		CalendarItemDelegateOptionsJs {
+public fun calendarItemDelegateOptions_toJs(obj: CalendarItemDelegateOptions): CalendarItemDelegateOptionsJs {
 	val accessLevel = obj.accessLevel.name
 	val shareEncryptionKey = obj.shareEncryptionKey
 	val shareSecretId = obj.shareSecretId
@@ -20,8 +19,7 @@ public fun calendarItemDelegateOptions_toJs(obj: CalendarItemDelegateOptions):
 	"}"))
 }
 
-public fun calendarItemDelegateOptions_fromJs(obj: CalendarItemDelegateOptionsJs):
-		CalendarItemDelegateOptions {
+public fun calendarItemDelegateOptions_fromJs(obj: CalendarItemDelegateOptionsJs): CalendarItemDelegateOptions {
 	val accessLevel = AccessLevel.valueOf(obj.accessLevel)
 	val shareEncryptionKey = obj.shareEncryptionKey
 	val shareSecretId = obj.shareSecretId

@@ -52,8 +52,7 @@ public external interface MessageApiJs {
 
 	public fun decryptPatientIdOf(message: MessageJs): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: MessageJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: MessageJs, delegates: Array<String>): Promise<Unit>
 
 	public fun decrypt(message: EncryptedMessageJs): Promise<DecryptedMessageJs>
 
@@ -61,23 +60,19 @@ public external interface MessageApiJs {
 
 	public fun encryptOrValidate(messages: Array<MessageJs>): Promise<Array<EncryptedMessageJs>>
 
-	public fun getSecretIdsOf(message: MessageJs):
-			Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+	public fun getSecretIdsOf(message: MessageJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun matchMessagesBy(filter: FilterOptionsJs<MessageJs>): Promise<Array<String>>
 
-	public fun matchMessagesBySorted(filter: SortableFilterOptionsJs<MessageJs>):
-			Promise<Array<String>>
+	public fun matchMessagesBySorted(filter: SortableFilterOptionsJs<MessageJs>): Promise<Array<String>>
 
 	public fun deleteMessageById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeMessageById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteMessage(message: MessageJs): Promise<StoredDocumentIdentifierJs>
 
@@ -93,14 +88,11 @@ public external interface MessageApiJs {
 		options: dynamic,
 	): Promise<DecryptedMessageJs>
 
-	public fun shareWithMany(message: DecryptedMessageJs,
-			delegates: Record<String, MessageShareOptionsJs>): Promise<DecryptedMessageJs>
+	public fun shareWithMany(message: DecryptedMessageJs, delegates: Record<String, MessageShareOptionsJs>): Promise<DecryptedMessageJs>
 
-	public fun filterMessagesBy(filter: FilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<DecryptedMessageJs>>
+	public fun filterMessagesBy(filter: FilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<DecryptedMessageJs>>
 
-	public fun filterMessagesBySorted(filter: SortableFilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<DecryptedMessageJs>>
+	public fun filterMessagesBySorted(filter: SortableFilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<DecryptedMessageJs>>
 
 	public fun createMessage(entity: DecryptedMessageJs): Promise<DecryptedMessageJs>
 
@@ -110,8 +102,7 @@ public external interface MessageApiJs {
 
 	public fun undeleteMessageById(id: String, rev: String): Promise<DecryptedMessageJs>
 
-	public fun undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedMessageJs>>
+	public fun undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedMessageJs>>
 
 	public fun undeleteMessage(message: MessageJs): Promise<DecryptedMessageJs>
 

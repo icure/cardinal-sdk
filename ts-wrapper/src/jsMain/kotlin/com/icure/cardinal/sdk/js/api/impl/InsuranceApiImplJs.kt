@@ -42,8 +42,7 @@ internal class InsuranceApiImplJs(
 	private val insuranceApi: InsuranceApi,
 ) : InsuranceApiJs {
 	override val inGroup: InsuranceInGroupApiJs = object : InsuranceInGroupApiJs {
-		override fun createInsurance(insurance: GroupScopedJs<InsuranceJs>):
-				Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
+		override fun createInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
 			val insuranceConverted: GroupScoped<Insurance> = groupScoped_fromJs(
 				insurance,
 				{ x1: InsuranceJs ->
@@ -61,8 +60,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun createInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-				Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+		override fun createInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
 			val insurancesConverted: List<GroupScoped<Insurance>> = arrayToList(
 				insurances,
 				"insurances",
@@ -91,8 +89,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun getInsurance(groupId: String, insuranceId: String):
-				Promise<GroupScopedJs<InsuranceJs>?> = GlobalScope.promise {
+		override fun getInsurance(groupId: String, insuranceId: String): Promise<GroupScopedJs<InsuranceJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val insuranceIdConverted: String = insuranceId
 			val result = insuranceApi.inGroup.getInsurance(
@@ -111,8 +108,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun getInsurances(groupId: String, insurancesIds: Array<String>):
-				Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+		override fun getInsurances(groupId: String, insurancesIds: Array<String>): Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val insurancesIdsConverted: List<String> = arrayToList(
 				insurancesIds,
@@ -138,8 +134,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun modifyInsurance(insurance: GroupScopedJs<InsuranceJs>):
-				Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
+		override fun modifyInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
 			val insuranceConverted: GroupScoped<Insurance> = groupScoped_fromJs(
 				insurance,
 				{ x1: InsuranceJs ->
@@ -157,8 +152,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun modifyInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-				Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+		override fun modifyInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
 			val insurancesConverted: List<GroupScoped<Insurance>> = arrayToList(
 				insurances,
 				"insurances",
@@ -187,8 +181,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun deleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -206,8 +199,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun deleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -236,8 +228,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun deleteInsurance(insurance: GroupScopedJs<InsuranceJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val insuranceConverted: GroupScoped<Insurance> = groupScoped_fromJs(
 				insurance,
 				{ x1: InsuranceJs ->
@@ -255,8 +246,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun deleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val insurancesConverted: List<GroupScoped<Insurance>> = arrayToList(
 				insurances,
 				"insurances",
@@ -285,8 +275,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun undeleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
+		override fun undeleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -304,8 +293,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun undeleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+		override fun undeleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -334,8 +322,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun undeleteInsurance(insurance: GroupScopedJs<InsuranceJs>):
-				Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
+		override fun undeleteInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<InsuranceJs>> = GlobalScope.promise {
 			val insuranceConverted: GroupScoped<Insurance> = groupScoped_fromJs(
 				insurance,
 				{ x1: InsuranceJs ->
@@ -353,8 +340,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun undeleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-				Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+		override fun undeleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
 			val insurancesConverted: List<GroupScoped<Insurance>> = arrayToList(
 				insurances,
 				"insurances",
@@ -383,8 +369,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun purgeInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<Unit> = GlobalScope.promise {
+		override fun purgeInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -397,8 +382,7 @@ internal class InsuranceApiImplJs(
 
 		}
 
-		override fun purgeInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -427,8 +411,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun purgeInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<Unit> = GlobalScope.promise {
 			val insuranceConverted: GroupScoped<Insurance> = groupScoped_fromJs(
 				insurance,
 				{ x1: InsuranceJs ->
@@ -441,8 +424,7 @@ internal class InsuranceApiImplJs(
 
 		}
 
-		override fun purgeInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val insurancesConverted: List<GroupScoped<Insurance>> = arrayToList(
 				insurances,
 				"insurances",
@@ -471,8 +453,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun matchInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
 			val result = insuranceApi.inGroup.matchInsurancesBy(
@@ -487,12 +468,9 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun matchInsurancesBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>> =
-				GlobalScope.promise {
+		override fun matchInsurancesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<Insurance> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<Insurance> = baseSortableFilterOptions_fromJs(filter)
 			val result = insuranceApi.inGroup.matchInsurancesBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -505,8 +483,7 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun filterInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+		override fun filterInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
 			val result = insuranceApi.inGroup.filterInsurancesBy(
@@ -526,12 +503,9 @@ internal class InsuranceApiImplJs(
 			)
 		}
 
-		override fun filterInsurancesBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<InsuranceJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
+		override fun filterInsurancesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<Insurance> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<Insurance> = baseSortableFilterOptions_fromJs(filter)
 			val result = insuranceApi.inGroup.filterInsurancesBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -558,8 +532,7 @@ internal class InsuranceApiImplJs(
 		insurance_toJs(result)
 	}
 
-	override fun createInsurances(insurances: Array<InsuranceJs>): Promise<Array<InsuranceJs>> =
-			GlobalScope.promise {
+	override fun createInsurances(insurances: Array<InsuranceJs>): Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val insurancesConverted: List<Insurance> = arrayToList(
 			insurances,
 			"insurances",
@@ -590,8 +563,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun getInsurances(insurancesIds: Array<String>): Promise<Array<InsuranceJs>> =
-			GlobalScope.promise {
+	override fun getInsurances(insurancesIds: Array<String>): Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val insurancesIdsConverted: List<String> = arrayToList(
 			insurancesIds,
 			"insurancesIds",
@@ -618,8 +590,7 @@ internal class InsuranceApiImplJs(
 		insurance_toJs(result)
 	}
 
-	override fun modifyInsurances(insurances: Array<InsuranceJs>): Promise<Array<InsuranceJs>> =
-			GlobalScope.promise {
+	override fun modifyInsurances(insurances: Array<InsuranceJs>): Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val insurancesConverted: List<Insurance> = arrayToList(
 			insurances,
 			"insurances",
@@ -638,8 +609,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun deleteInsuranceById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteInsuranceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = insuranceApi.deleteInsuranceById(
@@ -649,8 +619,7 @@ internal class InsuranceApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -669,8 +638,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun deleteInsurance(insurance: InsuranceJs): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteInsurance(insurance: InsuranceJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val insuranceConverted: Insurance = insurance_fromJs(insurance)
 		val result = insuranceApi.deleteInsurance(
 			insuranceConverted,
@@ -678,8 +646,7 @@ internal class InsuranceApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteInsurances(insurances: Array<InsuranceJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteInsurances(insurances: Array<InsuranceJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val insurancesConverted: List<Insurance> = arrayToList(
 			insurances,
 			"insurances",
@@ -698,8 +665,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun undeleteInsuranceById(entityId: String, rev: String): Promise<InsuranceJs> =
-			GlobalScope.promise {
+	override fun undeleteInsuranceById(entityId: String, rev: String): Promise<InsuranceJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = insuranceApi.undeleteInsuranceById(
@@ -709,8 +675,7 @@ internal class InsuranceApiImplJs(
 		insurance_toJs(result)
 	}
 
-	override fun undeleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<InsuranceJs>> = GlobalScope.promise {
+	override fun undeleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -729,8 +694,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun undeleteInsurance(insurance: InsuranceJs): Promise<InsuranceJs> =
-			GlobalScope.promise {
+	override fun undeleteInsurance(insurance: InsuranceJs): Promise<InsuranceJs> = GlobalScope.promise {
 		val insuranceConverted: Insurance = insurance_fromJs(insurance)
 		val result = insuranceApi.undeleteInsurance(
 			insuranceConverted,
@@ -738,8 +702,7 @@ internal class InsuranceApiImplJs(
 		insurance_toJs(result)
 	}
 
-	override fun undeleteInsurances(insurances: Array<InsuranceJs>): Promise<Array<InsuranceJs>> =
-			GlobalScope.promise {
+	override fun undeleteInsurances(insurances: Array<InsuranceJs>): Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val insurancesConverted: List<Insurance> = arrayToList(
 			insurances,
 			"insurances",
@@ -758,8 +721,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun purgeInsuranceById(entityId: String, rev: String): Promise<Unit> =
-			GlobalScope.promise {
+	override fun purgeInsuranceById(entityId: String, rev: String): Promise<Unit> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		insuranceApi.purgeInsuranceById(
@@ -769,8 +731,7 @@ internal class InsuranceApiImplJs(
 
 	}
 
-	override fun purgeInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -797,8 +758,7 @@ internal class InsuranceApiImplJs(
 
 	}
 
-	override fun purgeInsurances(insurances: Array<InsuranceJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeInsurances(insurances: Array<InsuranceJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val insurancesConverted: List<Insurance> = arrayToList(
 			insurances,
 			"insurances",
@@ -817,8 +777,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun listInsurancesByCode(insuranceCode: String): Promise<Array<InsuranceJs>> =
-			GlobalScope.promise {
+	override fun listInsurancesByCode(insuranceCode: String): Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val insuranceCodeConverted: String = insuranceCode
 		val result = insuranceApi.listInsurancesByCode(
 			insuranceCodeConverted,
@@ -831,8 +790,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun listInsurancesByName(insuranceName: String): Promise<Array<InsuranceJs>> =
-			GlobalScope.promise {
+	override fun listInsurancesByName(insuranceName: String): Promise<Array<InsuranceJs>> = GlobalScope.promise {
 		val insuranceNameConverted: String = insuranceName
 		val result = insuranceApi.listInsurancesByName(
 			insuranceNameConverted,
@@ -845,8 +803,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun matchInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
 		val result = insuranceApi.matchInsurancesBy(
 			filterConverted,
@@ -859,8 +816,7 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun filterInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>):
-			Promise<PaginatedListIteratorJs<InsuranceJs>> = GlobalScope.promise {
+	override fun filterInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<InsuranceJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Insurance> = baseFilterOptions_fromJs(filter)
 		val result = insuranceApi.filterInsurancesBy(
 			filterConverted,
@@ -873,10 +829,8 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun matchInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
-			Promise<Array<String>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<Insurance> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun matchInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Insurance> = baseSortableFilterOptions_fromJs(filter)
 		val result = insuranceApi.matchInsurancesBySorted(
 			filterConverted,
 		)
@@ -888,10 +842,8 @@ internal class InsuranceApiImplJs(
 		)
 	}
 
-	override fun filterInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
-			Promise<PaginatedListIteratorJs<InsuranceJs>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<Insurance> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun filterInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<InsuranceJs>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Insurance> = baseSortableFilterOptions_fromJs(filter)
 		val result = insuranceApi.filterInsurancesBySorted(
 			filterConverted,
 		)

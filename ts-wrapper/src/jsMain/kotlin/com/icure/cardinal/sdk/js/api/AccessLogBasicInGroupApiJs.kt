@@ -19,68 +19,47 @@ import kotlin.js.Promise
 
 @JsName("AccessLogBasicInGroupApi")
 public external interface AccessLogBasicInGroupApiJs {
-	public fun matchAccessLogsBy(groupId: String, filter: BaseFilterOptionsJs<AccessLogJs>):
-			Promise<Array<String>>
+	public fun matchAccessLogsBy(groupId: String, filter: BaseFilterOptionsJs<AccessLogJs>): Promise<Array<String>>
 
-	public fun matchAccessLogsBySorted(groupId: String,
-			filter: BaseSortableFilterOptionsJs<AccessLogJs>): Promise<Array<String>>
+	public fun matchAccessLogsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AccessLogJs>): Promise<Array<String>>
 
-	public fun filterAccessLogsBy(groupId: String, filter: BaseFilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>>
+	public fun filterAccessLogsBy(groupId: String, filter: BaseFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>>
 
-	public fun filterAccessLogsBySorted(groupId: String,
-			filter: BaseSortableFilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>>
+	public fun filterAccessLogsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>>
 
-	public fun deleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<Unit>
 
-	public fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun createAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>):
-			Promise<GroupScopedJs<EncryptedAccessLogJs>>
+	public fun createAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>>
 
-	public fun createAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>):
-			Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
+	public fun createAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
 
-	public fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<EncryptedAccessLogJs>>
+	public fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>>
 
-	public fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
+	public fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
 
-	public fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
-			Promise<GroupScopedJs<EncryptedAccessLogJs>>
+	public fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>>
 
-	public fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-			Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
+	public fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
 
-	public fun modifyAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>):
-			Promise<GroupScopedJs<EncryptedAccessLogJs>>
+	public fun modifyAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>>
 
-	public fun modifyAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>):
-			Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
+	public fun modifyAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
 
-	public fun getAccessLog(groupId: String, entityId: String):
-			Promise<GroupScopedJs<EncryptedAccessLogJs>?>
+	public fun getAccessLog(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedAccessLogJs>?>
 
-	public fun getAccessLogs(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
+	public fun getAccessLogs(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>>
 }

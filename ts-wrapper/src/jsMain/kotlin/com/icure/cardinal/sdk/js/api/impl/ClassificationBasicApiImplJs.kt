@@ -36,8 +36,7 @@ import kotlinx.coroutines.promise
 internal class ClassificationBasicApiImplJs(
 	private val classificationBasicApi: ClassificationBasicApi,
 ) : ClassificationBasicApiJs {
-	override fun matchClassificationsBy(filter: BaseFilterOptionsJs<ClassificationJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchClassificationsBy(filter: BaseFilterOptionsJs<ClassificationJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Classification> = baseFilterOptions_fromJs(filter)
 		val result = classificationBasicApi.matchClassificationsBy(
 			filterConverted,
@@ -50,10 +49,8 @@ internal class ClassificationBasicApiImplJs(
 		)
 	}
 
-	override fun matchClassificationsBySorted(filter: BaseSortableFilterOptionsJs<ClassificationJs>):
-			Promise<Array<String>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<Classification> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun matchClassificationsBySorted(filter: BaseSortableFilterOptionsJs<ClassificationJs>): Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Classification> = baseSortableFilterOptions_fromJs(filter)
 		val result = classificationBasicApi.matchClassificationsBySorted(
 			filterConverted,
 		)
@@ -65,8 +62,7 @@ internal class ClassificationBasicApiImplJs(
 		)
 	}
 
-	override fun filterClassificationsBy(filter: BaseFilterOptionsJs<ClassificationJs>):
-			Promise<PaginatedListIteratorJs<EncryptedClassificationJs>> = GlobalScope.promise {
+	override fun filterClassificationsBy(filter: BaseFilterOptionsJs<ClassificationJs>): Promise<PaginatedListIteratorJs<EncryptedClassificationJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Classification> = baseFilterOptions_fromJs(filter)
 		val result = classificationBasicApi.filterClassificationsBy(
 			filterConverted,
@@ -79,10 +75,8 @@ internal class ClassificationBasicApiImplJs(
 		)
 	}
 
-	override fun filterClassificationsBySorted(filter: BaseSortableFilterOptionsJs<ClassificationJs>):
-			Promise<PaginatedListIteratorJs<EncryptedClassificationJs>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<Classification> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun filterClassificationsBySorted(filter: BaseSortableFilterOptionsJs<ClassificationJs>): Promise<PaginatedListIteratorJs<EncryptedClassificationJs>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Classification> = baseSortableFilterOptions_fromJs(filter)
 		val result = classificationBasicApi.filterClassificationsBySorted(
 			filterConverted,
 		)
@@ -94,8 +88,7 @@ internal class ClassificationBasicApiImplJs(
 		)
 	}
 
-	override fun deleteClassification(entityId: String): Promise<DocIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteClassification(entityId: String): Promise<DocIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val result = classificationBasicApi.deleteClassification(
 			entityIdConverted,
@@ -103,8 +96,7 @@ internal class ClassificationBasicApiImplJs(
 		docIdentifier_toJs(result)
 	}
 
-	override fun deleteClassifications(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deleteClassifications(entityIds: Array<String>): Promise<Array<DocIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -123,8 +115,7 @@ internal class ClassificationBasicApiImplJs(
 		)
 	}
 
-	override fun createClassification(entity: EncryptedClassificationJs):
-			Promise<EncryptedClassificationJs> = GlobalScope.promise {
+	override fun createClassification(entity: EncryptedClassificationJs): Promise<EncryptedClassificationJs> = GlobalScope.promise {
 		val entityConverted: EncryptedClassification = classification_fromJs(entity)
 		val result = classificationBasicApi.createClassification(
 			entityConverted,
@@ -132,8 +123,7 @@ internal class ClassificationBasicApiImplJs(
 		classification_toJs(result)
 	}
 
-	override fun modifyClassification(entity: EncryptedClassificationJs):
-			Promise<EncryptedClassificationJs> = GlobalScope.promise {
+	override fun modifyClassification(entity: EncryptedClassificationJs): Promise<EncryptedClassificationJs> = GlobalScope.promise {
 		val entityConverted: EncryptedClassification = classification_fromJs(entity)
 		val result = classificationBasicApi.modifyClassification(
 			entityConverted,
@@ -141,8 +131,7 @@ internal class ClassificationBasicApiImplJs(
 		classification_toJs(result)
 	}
 
-	override fun getClassification(entityId: String): Promise<EncryptedClassificationJs?> =
-			GlobalScope.promise {
+	override fun getClassification(entityId: String): Promise<EncryptedClassificationJs?> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val result = classificationBasicApi.getClassification(
 			entityIdConverted,
@@ -154,8 +143,7 @@ internal class ClassificationBasicApiImplJs(
 		)
 	}
 
-	override fun getClassifications(entityIds: Array<String>):
-			Promise<Array<EncryptedClassificationJs>> = GlobalScope.promise {
+	override fun getClassifications(entityIds: Array<String>): Promise<Array<EncryptedClassificationJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",

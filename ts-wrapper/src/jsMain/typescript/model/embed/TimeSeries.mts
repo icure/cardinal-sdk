@@ -5,8 +5,7 @@ import {expectArray, expectNumber, expectString, extractEntry} from '../../inter
 /**
  *
  *
- *   Represents a high-frequency time series with named fields, sample data, and statistical
- *  summaries.
+ *   Represents a high-frequency time series with named fields, sample data, and statistical summaries.
  */
 export class TimeSeries {
 

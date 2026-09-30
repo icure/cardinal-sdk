@@ -9,8 +9,7 @@ import {Encryptable} from './Encryptable.mjs';
 
 /**
  *
- *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
- *  a specific concern.
+ *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to a specific concern.
  *  /
  */
 export interface Episode extends Encryptable, Identifiable<string>, Named {
@@ -41,8 +40,7 @@ export interface Episode extends Encryptable, Identifiable<string>, Named {
 
 /**
  *
- *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
- *  a specific concern.
+ *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to a specific concern.
  *  /
  */
 export class DecryptedEpisode {
@@ -130,8 +128,7 @@ export class DecryptedEpisode {
 
 /**
  *
- *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to
- *  a specific concern.
+ *  Represents a medical episode, which is a time-bounded grouping of healthcare elements related to a specific concern.
  *  /
  */
 export class EncryptedEpisode {

@@ -614,8 +614,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 	}
 	val dateOfBirth = numberToInt(obj.dateOfBirth, "obj.dateOfBirth")
 	val dateOfDeath = numberToInt(obj.dateOfDeath, "obj.dateOfDeath")
-	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading,
-			"obj.timestampOfLatestEidReading")
+	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading, "obj.timestampOfLatestEidReading")
 	val placeOfBirth = undefinedToNull(obj.placeOfBirth)
 	val placeOfDeath = undefinedToNull(obj.placeOfDeath)
 	val deceased = undefinedToNull(obj.deceased)
@@ -1437,8 +1436,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 	}
 	val dateOfBirth = numberToInt(obj.dateOfBirth, "obj.dateOfBirth")
 	val dateOfDeath = numberToInt(obj.dateOfDeath, "obj.dateOfDeath")
-	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading,
-			"obj.timestampOfLatestEidReading")
+	val timestampOfLatestEidReading = numberToLong(obj.timestampOfLatestEidReading, "obj.timestampOfLatestEidReading")
 	val placeOfBirth = undefinedToNull(obj.placeOfBirth)
 	val placeOfDeath = undefinedToNull(obj.placeOfDeath)
 	val deceased = undefinedToNull(obj.deceased)

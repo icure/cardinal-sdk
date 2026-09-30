@@ -42,8 +42,7 @@ public external interface GroupApiJs {
 		options: dynamic,
 	): Promise<GroupJs>
 
-	public fun registerNewGroupAdministrator(registrationInformation: RegistrationInformationJs,
-			options: dynamic): Promise<RegistrationSuccessJs>
+	public fun registerNewGroupAdministrator(registrationInformation: RegistrationInformationJs, options: dynamic): Promise<RegistrationSuccessJs>
 
 	public fun listApps(): Promise<Array<GroupJs>>
 

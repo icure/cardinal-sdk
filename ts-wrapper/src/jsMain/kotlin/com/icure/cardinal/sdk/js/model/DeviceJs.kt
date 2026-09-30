@@ -22,8 +22,12 @@ import kotlin.js.JsQualifier
 @JsName("Device")
 public external class DeviceJs(
 	partial: dynamic,
-) : StoredDocumentJs, ICureDocumentJs<String>, HasMedicalLocationJs, NamedJs, CryptoActorJs,
-		DataOwnerJs {
+) : StoredDocumentJs,
+    ICureDocumentJs<String>,
+    HasMedicalLocationJs,
+    NamedJs,
+    CryptoActorJs,
+    DataOwnerJs {
 	override val id: String
 
 	override val rev: String?

@@ -26,8 +26,7 @@ public external interface CalendarItemFlavouredApiJs<E : CalendarItemJs> {
 		options: dynamic,
 	): Promise<E>
 
-	public fun shareWithMany(calendarItem: E, delegates: Record<String, CalendarItemShareOptionsJs>):
-			Promise<E>
+	public fun shareWithMany(calendarItem: E, delegates: Record<String, CalendarItemShareOptionsJs>): Promise<E>
 
 	public fun linkToPatient(
 		calendarItem: E,
@@ -36,11 +35,9 @@ public external interface CalendarItemFlavouredApiJs<E : CalendarItemJs> {
 		secretIdUseOption: SecretIdUseOptionJs,
 	): Promise<E>
 
-	public fun filterCalendarItemsBy(filter: FilterOptionsJs<CalendarItemJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterCalendarItemsBy(filter: FilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterCalendarItemsBySorted(filter: SortableFilterOptionsJs<CalendarItemJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterCalendarItemsBySorted(filter: SortableFilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createCalendarItem(entity: E): Promise<E>
 
@@ -50,8 +47,7 @@ public external interface CalendarItemFlavouredApiJs<E : CalendarItemJs> {
 
 	public fun undeleteCalendarItemById(id: String, rev: String): Promise<E>
 
-	public fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<E>>
+	public fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<E>>
 
 	public fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<E>
 

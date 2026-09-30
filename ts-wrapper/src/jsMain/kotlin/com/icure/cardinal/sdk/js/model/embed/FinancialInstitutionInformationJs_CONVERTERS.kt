@@ -14,8 +14,7 @@ import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun financialInstitutionInformation_toJs(obj: DecryptedFinancialInstitutionInformation):
-		DecryptedFinancialInstitutionInformationJs {
+public fun financialInstitutionInformation_toJs(obj: DecryptedFinancialInstitutionInformation): DecryptedFinancialInstitutionInformationJs {
 	val name = nullToUndefined(
 		obj.name
 	)
@@ -57,8 +56,7 @@ public fun financialInstitutionInformation_toJs(obj: DecryptedFinancialInstituti
 	"}"))
 }
 
-public fun financialInstitutionInformation_fromJs(obj: DecryptedFinancialInstitutionInformationJs):
-		DecryptedFinancialInstitutionInformation {
+public fun financialInstitutionInformation_fromJs(obj: DecryptedFinancialInstitutionInformationJs): DecryptedFinancialInstitutionInformation {
 	val name = undefinedToNull(obj.name)
 	val key = undefinedToNull(obj.key)
 	val bankAccount = undefinedToNull(obj.bankAccount)
@@ -88,8 +86,7 @@ public fun financialInstitutionInformation_fromJs(obj: DecryptedFinancialInstitu
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun financialInstitutionInformation_toJs(obj: EncryptedFinancialInstitutionInformation):
-		EncryptedFinancialInstitutionInformationJs {
+public fun financialInstitutionInformation_toJs(obj: EncryptedFinancialInstitutionInformation): EncryptedFinancialInstitutionInformationJs {
 	val name = nullToUndefined(
 		obj.name
 	)
@@ -131,8 +128,7 @@ public fun financialInstitutionInformation_toJs(obj: EncryptedFinancialInstituti
 	"}"))
 }
 
-public fun financialInstitutionInformation_fromJs(obj: EncryptedFinancialInstitutionInformationJs):
-		EncryptedFinancialInstitutionInformation {
+public fun financialInstitutionInformation_fromJs(obj: EncryptedFinancialInstitutionInformationJs): EncryptedFinancialInstitutionInformation {
 	val name = undefinedToNull(obj.name)
 	val key = undefinedToNull(obj.key)
 	val bankAccount = undefinedToNull(obj.bankAccount)
@@ -162,14 +158,12 @@ public fun financialInstitutionInformation_fromJs(obj: EncryptedFinancialInstitu
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun financialInstitutionInformation_toJs(obj: FinancialInstitutionInformation):
-		FinancialInstitutionInformationJs = when (obj) {
+public fun financialInstitutionInformation_toJs(obj: FinancialInstitutionInformation): FinancialInstitutionInformationJs = when (obj) {
 	is EncryptedFinancialInstitutionInformation -> financialInstitutionInformation_toJs(obj)
 	is DecryptedFinancialInstitutionInformation -> financialInstitutionInformation_toJs(obj)
 }
 
-public fun financialInstitutionInformation_fromJs(obj: FinancialInstitutionInformationJs):
-		FinancialInstitutionInformation = if (obj.isEncrypted) {
+public fun financialInstitutionInformation_fromJs(obj: FinancialInstitutionInformationJs): FinancialInstitutionInformation = if (obj.isEncrypted) {
 	financialInstitutionInformation_fromJs(obj as EncryptedFinancialInstitutionInformationJs)
 } else {
 	financialInstitutionInformation_fromJs(obj as DecryptedFinancialInstitutionInformationJs)

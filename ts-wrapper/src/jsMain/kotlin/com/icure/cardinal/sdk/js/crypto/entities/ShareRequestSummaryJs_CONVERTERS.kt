@@ -34,11 +34,9 @@ public fun shareRequestSummary_fromJs(obj: ShareRequestSummaryJs): ShareRequestS
 	val secretIdsSource = SharedSecretIdsSource.valueOf(obj.secretIdsSource)
 	val sharedSecretIdsCount = numberToInt(obj.sharedSecretIdsCount, "obj.sharedSecretIdsCount")
 	val encryptionKeysBehaviour = ShareMetadataBehaviour.valueOf(obj.encryptionKeysBehaviour)
-	val sharedEncryptionKeysCount = numberToInt(obj.sharedEncryptionKeysCount,
-			"obj.sharedEncryptionKeysCount")
+	val sharedEncryptionKeysCount = numberToInt(obj.sharedEncryptionKeysCount, "obj.sharedEncryptionKeysCount")
 	val owningEntityIdsBehaviour = ShareMetadataBehaviour.valueOf(obj.owningEntityIdsBehaviour)
-	val sharedOwningEntityIdsCount = numberToInt(obj.sharedOwningEntityIdsCount,
-			"obj.sharedOwningEntityIdsCount")
+	val sharedOwningEntityIdsCount = numberToInt(obj.sharedOwningEntityIdsCount, "obj.sharedOwningEntityIdsCount")
 	return ShareRequestSummary(
 		requestedPermissions = requestedPermissions,
 		secretIdsSource = secretIdsSource,

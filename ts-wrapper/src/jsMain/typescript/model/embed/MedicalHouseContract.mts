@@ -9,8 +9,7 @@ import {SuspensionReason} from './SuspensionReason.mjs';
 
 /**
  *
- *  Represents a medical house contract (inscription period) for a patient, including coverage
- *  details,
+ *  Represents a medical house contract (inscription period) for a patient, including coverage details,
  *  suspension periods, and signature information.
  *  /
  */
@@ -216,8 +215,7 @@ export interface MedicalHouseContract extends Encryptable {
 
 /**
  *
- *  Represents a medical house contract (inscription period) for a patient, including coverage
- *  details,
+ *  Represents a medical house contract (inscription period) for a patient, including coverage details,
  *  suspension periods, and signature information.
  *  /
  */
@@ -561,8 +559,7 @@ export class DecryptedMedicalHouseContract {
 
 /**
  *
- *  Represents a medical house contract (inscription period) for a patient, including coverage
- *  details,
+ *  Represents a medical house contract (inscription period) for a patient, including coverage details,
  *  suspension periods, and signature information.
  *  /
  */

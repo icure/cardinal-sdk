@@ -28,8 +28,14 @@ import kotlin.js.JsQualifier
 @JsName("HealthcareParty")
 public external class HealthcarePartyJs(
 	partial: dynamic,
-) : StoredDocumentJs, NamedJs, PersonJs, CryptoActorJs, DataOwnerJs, HasCodesJs, HasTagsJs,
-		HasIdentifierJs {
+) : StoredDocumentJs,
+    NamedJs,
+    PersonJs,
+    CryptoActorJs,
+    DataOwnerJs,
+    HasCodesJs,
+    HasTagsJs,
+    HasIdentifierJs {
 	override val id: String
 
 	override val rev: String?

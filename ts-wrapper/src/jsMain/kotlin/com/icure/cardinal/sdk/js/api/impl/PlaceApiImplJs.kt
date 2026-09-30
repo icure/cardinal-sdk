@@ -34,8 +34,7 @@ internal class PlaceApiImplJs(
 	private val placeApi: PlaceApi,
 ) : PlaceApiJs {
 	override val inGroup: PlaceInGroupApiJs = object : PlaceInGroupApiJs {
-		override fun createPlace(place: GroupScopedJs<PlaceJs>): Promise<GroupScopedJs<PlaceJs>> =
-				GlobalScope.promise {
+		override fun createPlace(place: GroupScopedJs<PlaceJs>): Promise<GroupScopedJs<PlaceJs>> = GlobalScope.promise {
 			val placeConverted: GroupScoped<Place> = groupScoped_fromJs(
 				place,
 				{ x1: PlaceJs ->
@@ -53,8 +52,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun createPlaces(places: Array<GroupScopedJs<PlaceJs>>):
-				Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
+		override fun createPlaces(places: Array<GroupScopedJs<PlaceJs>>): Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
 			val placesConverted: List<GroupScoped<Place>> = arrayToList(
 				places,
 				"places",
@@ -83,8 +81,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun getPlace(groupId: String, placeId: String): Promise<GroupScopedJs<PlaceJs>?> =
-				GlobalScope.promise {
+		override fun getPlace(groupId: String, placeId: String): Promise<GroupScopedJs<PlaceJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val placeIdConverted: String = placeId
 			val result = placeApi.inGroup.getPlace(
@@ -103,8 +100,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun getPlaces(groupId: String, placesIds: Array<String>):
-				Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
+		override fun getPlaces(groupId: String, placesIds: Array<String>): Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val placesIdsConverted: List<String> = arrayToList(
 				placesIds,
@@ -130,8 +126,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun modifyPlace(place: GroupScopedJs<PlaceJs>): Promise<GroupScopedJs<PlaceJs>> =
-				GlobalScope.promise {
+		override fun modifyPlace(place: GroupScopedJs<PlaceJs>): Promise<GroupScopedJs<PlaceJs>> = GlobalScope.promise {
 			val placeConverted: GroupScoped<Place> = groupScoped_fromJs(
 				place,
 				{ x1: PlaceJs ->
@@ -149,8 +144,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun modifyPlaces(places: Array<GroupScopedJs<PlaceJs>>):
-				Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
+		override fun modifyPlaces(places: Array<GroupScopedJs<PlaceJs>>): Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
 			val placesConverted: List<GroupScoped<Place>> = arrayToList(
 				places,
 				"places",
@@ -179,8 +173,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun deletePlaceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deletePlaceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -198,8 +191,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun deletePlaceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deletePlaceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -228,8 +220,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun deletePlace(place: GroupScopedJs<PlaceJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deletePlace(place: GroupScopedJs<PlaceJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val placeConverted: GroupScoped<Place> = groupScoped_fromJs(
 				place,
 				{ x1: PlaceJs ->
@@ -247,8 +238,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun deletePlaces(places: Array<GroupScopedJs<PlaceJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deletePlaces(places: Array<GroupScopedJs<PlaceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val placesConverted: List<GroupScoped<Place>> = arrayToList(
 				places,
 				"places",
@@ -277,8 +267,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun undeletePlaceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<PlaceJs>> = GlobalScope.promise {
+		override fun undeletePlaceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<PlaceJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -296,8 +285,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun undeletePlaceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
+		override fun undeletePlaceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -326,8 +314,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun undeletePlace(place: GroupScopedJs<PlaceJs>): Promise<GroupScopedJs<PlaceJs>> =
-				GlobalScope.promise {
+		override fun undeletePlace(place: GroupScopedJs<PlaceJs>): Promise<GroupScopedJs<PlaceJs>> = GlobalScope.promise {
 			val placeConverted: GroupScoped<Place> = groupScoped_fromJs(
 				place,
 				{ x1: PlaceJs ->
@@ -345,8 +332,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun undeletePlaces(places: Array<GroupScopedJs<PlaceJs>>):
-				Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
+		override fun undeletePlaces(places: Array<GroupScopedJs<PlaceJs>>): Promise<Array<GroupScopedJs<PlaceJs>>> = GlobalScope.promise {
 			val placesConverted: List<GroupScoped<Place>> = arrayToList(
 				places,
 				"places",
@@ -375,8 +361,7 @@ internal class PlaceApiImplJs(
 			)
 		}
 
-		override fun purgePlaceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgePlaceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -389,8 +374,7 @@ internal class PlaceApiImplJs(
 
 		}
 
-		override fun purgePlaceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgePlaceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -432,8 +416,7 @@ internal class PlaceApiImplJs(
 
 		}
 
-		override fun purgePlaces(places: Array<GroupScopedJs<PlaceJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgePlaces(places: Array<GroupScopedJs<PlaceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val placesConverted: List<GroupScoped<Place>> = arrayToList(
 				places,
 				"places",
@@ -548,8 +531,7 @@ internal class PlaceApiImplJs(
 		)
 	}
 
-	override fun deletePlaceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deletePlaceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = placeApi.deletePlaceById(
@@ -559,8 +541,7 @@ internal class PlaceApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -579,8 +560,7 @@ internal class PlaceApiImplJs(
 		)
 	}
 
-	override fun deletePlace(place: PlaceJs): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deletePlace(place: PlaceJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val placeConverted: Place = place_fromJs(place)
 		val result = placeApi.deletePlace(
 			placeConverted,
@@ -588,8 +568,7 @@ internal class PlaceApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deletePlaces(places: Array<PlaceJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deletePlaces(places: Array<PlaceJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val placesConverted: List<Place> = arrayToList(
 			places,
 			"places",
@@ -608,8 +587,7 @@ internal class PlaceApiImplJs(
 		)
 	}
 
-	override fun undeletePlaceById(entityId: String, rev: String): Promise<PlaceJs> =
-			GlobalScope.promise {
+	override fun undeletePlaceById(entityId: String, rev: String): Promise<PlaceJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = placeApi.undeletePlaceById(
@@ -619,8 +597,7 @@ internal class PlaceApiImplJs(
 		place_toJs(result)
 	}
 
-	override fun undeletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<PlaceJs>> = GlobalScope.promise {
+	override fun undeletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<PlaceJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -647,8 +624,7 @@ internal class PlaceApiImplJs(
 		place_toJs(result)
 	}
 
-	override fun undeletePlaces(places: Array<PlaceJs>): Promise<Array<PlaceJs>> =
-			GlobalScope.promise {
+	override fun undeletePlaces(places: Array<PlaceJs>): Promise<Array<PlaceJs>> = GlobalScope.promise {
 		val placesConverted: List<Place> = arrayToList(
 			places,
 			"places",
@@ -677,8 +653,7 @@ internal class PlaceApiImplJs(
 
 	}
 
-	override fun purgePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -705,8 +680,7 @@ internal class PlaceApiImplJs(
 
 	}
 
-	override fun purgePlaces(places: Array<PlaceJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun purgePlaces(places: Array<PlaceJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val placesConverted: List<Place> = arrayToList(
 			places,
 			"places",

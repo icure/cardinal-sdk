@@ -24,10 +24,8 @@ import {Base64String} from './specializations/Base64String.mjs';
 /**
  *
  *
- *   Represents a healthcare element. A healthcare element is a patient-centric representation of a
- *  healthcare problem
- *   that evolves over time in its name/label and characteristics. It is a central element in the
- *  organisation of the
+ *   Represents a healthcare element. A healthcare element is a patient-centric representation of a healthcare problem
+ *   that evolves over time in its name/label and characteristics. It is a central element in the organisation of the
  *   electronic health record, used to filter and link medical data in a meaningful way.
  */
 export interface HealthElement extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasEndOfLife {
@@ -40,15 +38,13 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 
 	/**
 	 *
-	 *  The logical id of the healthcare element, used to link together different versions of the same
-	 *  healthcare element.
+	 *  The logical id of the healthcare element, used to link together different versions of the same healthcare element.
 	 */
 	healthElementId: string | undefined;
 
 	/**
 	 *
-	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
-	 *  on the same date.
+	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date.
 	 */
 	valueDate: number | undefined;
 
@@ -132,15 +128,13 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 
 	/**
 	 *
-	 *  Directed links towards related healthcare elements. Links should be created in a single
-	 *  direction: the reverse link can be found through a view. This field is not encrypted.
+	 *  Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted.
 	 */
 	qualifiedLinks: Array<HealthElementQualifiedLink>;
 
 	/**
 	 *
-	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the
-	 *  healthcare element is held to be true. This field is encrypted.
+	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted.
 	 */
 	asserters: Array<HealthElementAsserter>;
 
@@ -153,10 +147,8 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 /**
  *
  *
- *   Represents a healthcare element. A healthcare element is a patient-centric representation of a
- *  healthcare problem
- *   that evolves over time in its name/label and characteristics. It is a central element in the
- *  organisation of the
+ *   Represents a healthcare element. A healthcare element is a patient-centric representation of a healthcare problem
+ *   that evolves over time in its name/label and characteristics. It is a central element in the organisation of the
  *   electronic health record, used to filter and link medical data in a meaningful way.
  */
 export class DecryptedHealthElement {
@@ -175,8 +167,7 @@ export class DecryptedHealthElement {
 
 	/**
 	 *
-	 *  The revision of the healthcare element in the database, used for conflict management /
-	 *  optimistic locking.
+	 *  The revision of the healthcare element in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -230,15 +221,13 @@ export class DecryptedHealthElement {
 
 	/**
 	 *
-	 *  The logical id of the healthcare element, used to link together different versions of the same
-	 *  healthcare element.
+	 *  The logical id of the healthcare element, used to link together different versions of the same healthcare element.
 	 */
 	healthElementId: string | undefined = undefined;
 
 	/**
 	 *
-	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
-	 *  on the same date.
+	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date.
 	 */
 	valueDate: number | undefined = undefined;
 
@@ -322,15 +311,13 @@ export class DecryptedHealthElement {
 
 	/**
 	 *
-	 *  Directed links towards related healthcare elements. Links should be created in a single
-	 *  direction: the reverse link can be found through a view. This field is not encrypted.
+	 *  Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted.
 	 */
 	qualifiedLinks: Array<HealthElementQualifiedLink> = [];
 
 	/**
 	 *
-	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the
-	 *  healthcare element is held to be true. This field is encrypted.
+	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted.
 	 */
 	asserters: Array<HealthElementAsserter> = [];
 
@@ -520,10 +507,8 @@ export class DecryptedHealthElement {
 /**
  *
  *
- *   Represents a healthcare element. A healthcare element is a patient-centric representation of a
- *  healthcare problem
- *   that evolves over time in its name/label and characteristics. It is a central element in the
- *  organisation of the
+ *   Represents a healthcare element. A healthcare element is a patient-centric representation of a healthcare problem
+ *   that evolves over time in its name/label and characteristics. It is a central element in the organisation of the
  *   electronic health record, used to filter and link medical data in a meaningful way.
  */
 export class EncryptedHealthElement {
@@ -542,8 +527,7 @@ export class EncryptedHealthElement {
 
 	/**
 	 *
-	 *  The revision of the healthcare element in the database, used for conflict management /
-	 *  optimistic locking.
+	 *  The revision of the healthcare element in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -597,15 +581,13 @@ export class EncryptedHealthElement {
 
 	/**
 	 *
-	 *  The logical id of the healthcare element, used to link together different versions of the same
-	 *  healthcare element.
+	 *  The logical id of the healthcare element, used to link together different versions of the same healthcare element.
 	 */
 	healthElementId: string | undefined = undefined;
 
 	/**
 	 *
-	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
-	 *  on the same date.
+	 *  The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date.
 	 */
 	valueDate: number | undefined = undefined;
 
@@ -689,15 +671,13 @@ export class EncryptedHealthElement {
 
 	/**
 	 *
-	 *  Directed links towards related healthcare elements. Links should be created in a single
-	 *  direction: the reverse link can be found through a view. This field is not encrypted.
+	 *  Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted.
 	 */
 	qualifiedLinks: Array<HealthElementQualifiedLink> = [];
 
 	/**
 	 *
-	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the
-	 *  healthcare element is held to be true. This field is encrypted.
+	 *  The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted.
 	 */
 	asserters: Array<HealthElementAsserter> = [];
 

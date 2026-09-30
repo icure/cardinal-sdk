@@ -25,34 +25,27 @@ public external interface HealthcarePartyApiJs {
 
 	public fun getHealthcareParty(healthcarePartyId: String): Promise<HealthcarePartyJs?>
 
-	public fun getHealthcareParties(healthcarePartyIds: Array<String>):
-			Promise<Array<HealthcarePartyJs>>
+	public fun getHealthcareParties(healthcarePartyIds: Array<String>): Promise<Array<HealthcarePartyJs>>
 
 	public fun createHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs>
 
-	public fun createHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<HealthcarePartyJs>>
+	public fun createHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<HealthcarePartyJs>>
 
 	public fun modifyHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs>
 
-	public fun modifyHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<HealthcarePartyJs>>
+	public fun modifyHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<HealthcarePartyJs>>
 
 	public fun getCurrentHealthcareParty(): Promise<HealthcarePartyJs>
 
 	public fun getPublicKey(healthcarePartyId: String): Promise<PublicKeyJs>
 
-	public fun matchHealthcarePartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>):
-			Promise<Array<String>>
+	public fun matchHealthcarePartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>>
 
-	public fun filterHealthPartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>):
-			Promise<PaginatedListIteratorJs<HealthcarePartyJs>>
+	public fun filterHealthPartiesBy(filter: BaseFilterOptionsJs<HealthcarePartyJs>): Promise<PaginatedListIteratorJs<HealthcarePartyJs>>
 
-	public fun matchHealthcarePartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>):
-			Promise<Array<String>>
+	public fun matchHealthcarePartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>): Promise<Array<String>>
 
-	public fun filterHealthPartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>):
-			Promise<PaginatedListIteratorJs<HealthcarePartyJs>>
+	public fun filterHealthPartiesBySorted(filter: BaseSortableFilterOptionsJs<HealthcarePartyJs>): Promise<PaginatedListIteratorJs<HealthcarePartyJs>>
 
 	public fun registerHealthcareParty(
 		groupId: String,
@@ -60,43 +53,33 @@ public external interface HealthcarePartyApiJs {
 		options: dynamic,
 	): Promise<DataOwnerRegistrationSuccessJs>
 
-	public fun deleteHealthcarePartyById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs>
+	public fun deleteHealthcarePartyById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeHealthcarePartyById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun undeleteHealthcarePartyById(id: String, rev: String): Promise<HealthcarePartyJs>
 
-	public fun undeleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<HealthcarePartyJs>>
+	public fun undeleteHealthcarePartiesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<HealthcarePartyJs>>
 
-	public fun deleteHealthcareParty(healthcareParty: HealthcarePartyJs):
-			Promise<StoredDocumentIdentifierJs>
+	public fun deleteHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<Unit>
 
-	public fun purgeHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun undeleteHealthcareParty(healthcareParty: HealthcarePartyJs): Promise<HealthcarePartyJs>
 
-	public fun undeleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>):
-			Promise<Array<HealthcarePartyJs>>
+	public fun undeleteHealthcareParties(healthcareParties: Array<HealthcarePartyJs>): Promise<Array<HealthcarePartyJs>>
 
-	public fun addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcarePartyJs,
-			healthcarePartiesToAdd: Array<HealthcarePartyJs>): Promise<Array<String>>
+	public fun addHealthcarePartiesToGroup(healthcarePartyGroup: HealthcarePartyJs, healthcarePartiesToAdd: Array<HealthcarePartyJs>): Promise<Array<String>>
 
-	public fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcarePartyJs,
-			healthcarePartiesToRemove: Array<HealthcarePartyJs>): Promise<Array<String>>
+	public fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcarePartyJs, healthcarePartiesToRemove: Array<HealthcarePartyJs>): Promise<Array<String>>
 
 	public fun subscribeToEvents(
 		events: Array<String>,

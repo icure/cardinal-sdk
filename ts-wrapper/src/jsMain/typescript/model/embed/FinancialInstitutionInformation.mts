@@ -6,8 +6,7 @@ import {Encryptable} from './Encryptable.mjs';
 
 /**
  *
- *  Represents information about a financial institution, including bank account details and proxy
- *  account configuration.
+ *  Represents information about a financial institution, including bank account details and proxy account configuration.
  *  /
  */
 export interface FinancialInstitutionInformation extends Encryptable {
@@ -62,8 +61,7 @@ export interface FinancialInstitutionInformation extends Encryptable {
 
 /**
  *
- *  Represents information about a financial institution, including bank account details and proxy
- *  account configuration.
+ *  Represents information about a financial institution, including bank account details and proxy account configuration.
  *  /
  */
 export class DecryptedFinancialInstitutionInformation {
@@ -169,8 +167,7 @@ export class DecryptedFinancialInstitutionInformation {
 
 /**
  *
- *  Represents information about a financial institution, including bank account details and proxy
- *  account configuration.
+ *  Represents information about a financial institution, including bank account details and proxy account configuration.
  *  /
  */
 export class EncryptedFinancialInstitutionInformation {

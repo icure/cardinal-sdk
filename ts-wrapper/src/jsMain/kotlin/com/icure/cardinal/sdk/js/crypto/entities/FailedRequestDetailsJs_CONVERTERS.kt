@@ -12,26 +12,19 @@ import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_toJs
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun failedRequestDetails_toJs(obj: FailedRequestDetails): FailedRequestDetailsJs = when (obj)
-		{
+public fun failedRequestDetails_toJs(obj: FailedRequestDetails): FailedRequestDetailsJs = when (obj) {
 	is FailedRequestDetails.ResolutionFailed -> failedRequestDetails_ResolutionFailed_toJs(obj)
 	is FailedRequestDetails.RequestRejected -> failedRequestDetails_RequestRejected_toJs(obj)
 }
 
 public fun failedRequestDetails_fromJs(obj: FailedRequestDetailsJs): FailedRequestDetails = when {
-	obj is FailedRequestDetailsJs_ResolutionFailedJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails.ResolutionFailed" ->failedRequestDetails_ResolutionFailed_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.FailedRequestDetailsJs_ResolutionFailedJs)
-	obj is FailedRequestDetailsJs_RequestRejectedJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails.RequestRejected" ->failedRequestDetails_RequestRejected_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.FailedRequestDetailsJs_RequestRejectedJs)
-	else -> throw
-			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails: $obj""")
+	obj is FailedRequestDetailsJs_ResolutionFailedJs || obj.ktClass == "com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails.ResolutionFailed" ->failedRequestDetails_ResolutionFailed_fromJs(obj as com.icure.cardinal.sdk.js.crypto.entities.FailedRequestDetailsJs_ResolutionFailedJs)
+	obj is FailedRequestDetailsJs_RequestRejectedJs || obj.ktClass == "com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails.RequestRejected" ->failedRequestDetails_RequestRejected_fromJs(obj as com.icure.cardinal.sdk.js.crypto.entities.FailedRequestDetailsJs_RequestRejectedJs)
+	else -> throw IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails: $obj""")
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun failedRequestDetails_ResolutionFailed_toJs(obj: FailedRequestDetails.ResolutionFailed):
-		FailedRequestDetailsJs_ResolutionFailedJs {
+public fun failedRequestDetails_ResolutionFailed_toJs(obj: FailedRequestDetails.ResolutionFailed): FailedRequestDetailsJs_ResolutionFailedJs {
 	val entityId = obj.entityId
 	val delegateReference = entityReferenceInGroup_toJs(obj.delegateReference)
 	val reason = nullToUndefined(
@@ -44,9 +37,7 @@ public fun failedRequestDetails_ResolutionFailed_toJs(obj: FailedRequestDetails.
 	"}"))
 }
 
-public
-		fun failedRequestDetails_ResolutionFailed_fromJs(obj: FailedRequestDetailsJs_ResolutionFailedJs):
-		FailedRequestDetails.ResolutionFailed {
+public fun failedRequestDetails_ResolutionFailed_fromJs(obj: FailedRequestDetailsJs_ResolutionFailedJs): FailedRequestDetails.ResolutionFailed {
 	val entityId = obj.entityId
 	val delegateReference = entityReferenceInGroup_fromJs(obj.delegateReference)
 	val reason = undefinedToNull(obj.reason)
@@ -58,8 +49,7 @@ public
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun failedRequestDetails_RequestRejected_toJs(obj: FailedRequestDetails.RequestRejected):
-		FailedRequestDetailsJs_RequestRejectedJs {
+public fun failedRequestDetails_RequestRejected_toJs(obj: FailedRequestDetails.RequestRejected): FailedRequestDetailsJs_RequestRejectedJs {
 	val entityId = obj.entityId
 	val delegateReference = entityReferenceInGroup_toJs(obj.delegateReference)
 	val reason = nullToUndefined(
@@ -84,9 +74,7 @@ public fun failedRequestDetails_RequestRejected_toJs(obj: FailedRequestDetails.R
 	"}"))
 }
 
-public
-		fun failedRequestDetails_RequestRejected_fromJs(obj: FailedRequestDetailsJs_RequestRejectedJs):
-		FailedRequestDetails.RequestRejected {
+public fun failedRequestDetails_RequestRejected_fromJs(obj: FailedRequestDetailsJs_RequestRejectedJs): FailedRequestDetails.RequestRejected {
 	val entityId = obj.entityId
 	val delegateReference = entityReferenceInGroup_fromJs(obj.delegateReference)
 	val reason = undefinedToNull(obj.reason)

@@ -5,10 +5,8 @@ import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 /**
  *
  *
- *   A link from a crypto actor to a data owner that represents a group it belongs to. The type of
- *  the link is not
- *   declared here: it is intrinsic to the linked data owner itself, see
- *  [CryptoActorDto.groupLinkType].
+ *   A link from a crypto actor to a data owner that represents a group it belongs to. The type of the link is not
+ *   declared here: it is intrinsic to the linked data owner itself, see [CryptoActorDto.groupLinkType].
  */
 export class DataOwnerGroupLink {
 

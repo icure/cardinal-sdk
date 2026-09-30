@@ -22,19 +22,15 @@ public external interface ReceiptFlavouredInGroupApiJs<E : ReceiptJs> {
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(receipt: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToReceiptShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(receipt: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToReceiptShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
 	public fun createReceipt(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createReceipts(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<GroupScopedJs<E>>
 
@@ -48,6 +44,5 @@ public external interface ReceiptFlavouredInGroupApiJs<E : ReceiptJs> {
 
 	public fun getReceipts(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun listReceiptsBetweenDates(groupId: String, options: dynamic):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun listReceiptsBetweenDates(groupId: String, options: dynamic): Promise<Array<GroupScopedJs<E>>>
 }

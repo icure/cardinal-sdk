@@ -8,8 +8,7 @@ import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_toJs
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun successfulRequestDetails_toJs(obj: SuccessfulRequestDetails):
-		SuccessfulRequestDetailsJs {
+public fun successfulRequestDetails_toJs(obj: SuccessfulRequestDetails): SuccessfulRequestDetailsJs {
 	val delegateReference = entityReferenceInGroup_toJs(obj.delegateReference)
 	val purpose = obj.purpose.name
 	return SuccessfulRequestDetailsJs(js("{" +
@@ -18,8 +17,7 @@ public fun successfulRequestDetails_toJs(obj: SuccessfulRequestDetails):
 	"}"))
 }
 
-public fun successfulRequestDetails_fromJs(obj: SuccessfulRequestDetailsJs):
-		SuccessfulRequestDetails {
+public fun successfulRequestDetails_fromJs(obj: SuccessfulRequestDetailsJs): SuccessfulRequestDetails {
 	val delegateReference = entityReferenceInGroup_fromJs(obj.delegateReference)
 	val purpose = ShareRequestPurpose.valueOf(obj.purpose)
 	return SuccessfulRequestDetails(

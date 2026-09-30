@@ -49,8 +49,7 @@ public external interface UserApiJs {
 
 	public fun assignHealthcareParty(healthcarePartyId: String): Promise<UserJs>
 
-	public fun modifyProperties(userId: String, properties: Array<EncryptedPropertyStubJs>?):
-			Promise<UserJs>
+	public fun modifyProperties(userId: String, properties: Array<EncryptedPropertyStubJs>?): Promise<UserJs>
 
 	public fun getToken(
 		userId: String,
@@ -58,13 +57,11 @@ public external interface UserApiJs {
 		options: dynamic,
 	): Promise<String>
 
-	public fun filterUsersBy(filter: BaseFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<UserJs>>
+	public fun filterUsersBy(filter: BaseFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<UserJs>>
 
 	public fun matchUsersBy(filter: BaseFilterOptionsJs<UserJs>): Promise<Array<String>>
 
-	public fun filterUsersBySorted(filter: BaseSortableFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<UserJs>>
+	public fun filterUsersBySorted(filter: BaseSortableFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<UserJs>>
 
 	public fun matchUsersBySorted(filter: BaseSortableFilterOptionsJs<UserJs>): Promise<Array<String>>
 
@@ -98,13 +95,11 @@ public external interface UserApiJs {
 
 	public fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeUserById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun undeleteUserById(id: String, rev: String): Promise<UserJs>
 
@@ -122,8 +117,7 @@ public external interface UserApiJs {
 
 	public fun undeleteUsers(users: Array<UserJs>): Promise<Array<UserJs>>
 
-	public fun setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: String,
-			externalAuthenticationToken: String): Promise<Boolean>
+	public fun setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: String, externalAuthenticationToken: String): Promise<Boolean>
 
 	public fun subscribeToEvents(
 		events: Array<String>,

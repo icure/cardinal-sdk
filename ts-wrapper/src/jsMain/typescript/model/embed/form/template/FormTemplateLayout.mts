@@ -6,8 +6,7 @@ import {Section} from './Section.mjs';
 
 /**
  *
- *  Represents the layout of a form template, defining the form name, its actions, sections, and
- *  metadata.
+ *  Represents the layout of a form template, defining the form name, its actions, sections, and metadata.
  *  /
  */
 export class FormTemplateLayout {
