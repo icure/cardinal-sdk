@@ -23,10 +23,8 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
- * and responses
- * from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
- * be linked
+ * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements and responses
+ * from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can be linked
  * to invoices or other documents.
  * /
  */
@@ -152,10 +150,8 @@ sealed interface Receipt :
 }
 
 /**
- * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
- * and responses
- * from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
- * be linked
+ * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements and responses
+ * from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can be linked
  * to invoices or other documents.
  * /
  */
@@ -267,10 +263,8 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements
- * and responses
- * from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can
- * be linked
+ * Represents a receipt for a healthcare transaction. Receipts are used to store acknowledgements and responses
+ * from external systems such as eFact, eAttest, or other healthcare messaging platforms. They can be linked
  * to invoices or other documents.
  * /
  */

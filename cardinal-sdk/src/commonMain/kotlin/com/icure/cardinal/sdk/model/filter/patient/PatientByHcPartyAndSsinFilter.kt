@@ -9,8 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Filter that matches patients by healthcare party and social security identification number
- * (SSIN).
+ * Filter that matches patients by healthcare party and social security identification number (SSIN).
  * /
  */
 @SerialName("PatientByHcPartyAndSsinFilter")

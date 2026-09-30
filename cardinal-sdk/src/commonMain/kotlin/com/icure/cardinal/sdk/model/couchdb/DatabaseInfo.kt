@@ -8,8 +8,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Data transfer object containing information about a CouchDB database, including size metrics and
- * cluster configuration.
+ * Data transfer object containing information about a CouchDB database, including size metrics and cluster configuration.
  * /
  */
 @Serializable

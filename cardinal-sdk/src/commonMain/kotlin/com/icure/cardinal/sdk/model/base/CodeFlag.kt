@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumeration of flags that can be applied to medical codes, indicating gender restrictions or
- * department-specific applicability.
+ *  Enumeration of flags that can be applied to medical codes, indicating gender restrictions or department-specific applicability.
  */
 @Serializable
 enum class CodeFlag(

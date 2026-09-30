@@ -90,7 +90,7 @@ public interface RawHealthElementApi {
 
 	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<EncryptedHealthElement>>
 
-	public suspend fun declareConflictWinner(
+	suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedHealthElement>,
 	): HttpResponse<ConflictResolutionResult<EncryptedHealthElement>>
 

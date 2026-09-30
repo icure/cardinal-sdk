@@ -10,8 +10,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Filter that matches healthcare elements having a qualified link towards one of the provided
- * healthcare element ids.
+ * Filter that matches healthcare elements having a qualified link towards one of the provided healthcare element ids.
  * /
  */
 @SerialName("HealthElementByQualifiedLinkFilter")

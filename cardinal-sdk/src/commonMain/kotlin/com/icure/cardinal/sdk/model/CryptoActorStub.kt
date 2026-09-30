@@ -19,8 +19,7 @@ import kotlin.collections.Set
 
 /**
  *
- *  Holds only data specific for crypto actors without any additional information (from patient,
- * hcparty, device).
+ *  Holds only data specific for crypto actors without any additional information (from patient, hcparty, device).
  */
 @Serializable
 data class CryptoActorStub(
@@ -29,11 +28,11 @@ data class CryptoActorStub(
 	@param:DefaultValue("emptyMap()")
 	override val hcPartyKeys: Map<String, List<HexString>> = emptyMap(),
 	@param:DefaultValue("emptyMap()")
-	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
-		emptyMap(),
+	override val aesExchangeKeys:
+		Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> = emptyMap(),
 	@param:DefaultValue("emptyMap()")
-	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
-		emptyMap(),
+	override val transferKeys:
+		Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> = emptyMap(),
 	@param:DefaultValue("emptyMap()")
 	override val privateKeyShamirPartitions: Map<String, HexString> = emptyMap(),
 	override val publicKey: SpkiHexString? = null,
@@ -43,7 +42,8 @@ data class CryptoActorStub(
 	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
 	override val groupLinkType: DataOwnerGroupLinkType? = null,
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
-) : Versionable<String>, CryptoActor {
+) : Versionable<String>,
+	CryptoActor {
 	// region CryptoActorStub-CryptoActorStub
 
 	// endregion

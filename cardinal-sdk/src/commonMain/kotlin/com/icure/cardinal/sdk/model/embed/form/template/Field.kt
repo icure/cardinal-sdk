@@ -10,10 +10,8 @@ import kotlin.collections.List
 import kotlin.collections.Map
 
 /**
- * Sealed interface representing a form field within a form template. Concrete implementations
- * define
- * specific field types (text, number, date picker, etc.). Each field has a name, display
- * configuration,
+ * Sealed interface representing a form field within a form template. Concrete implementations define
+ * specific field types (text, number, date picker, etc.). Each field has a name, display configuration,
  * validation rules, and optional codification and tagging.
  * /
  */

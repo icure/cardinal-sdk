@@ -13,8 +13,7 @@ import kotlin.collections.List
 import kotlin.collections.Set
 
 /**
- * Represents a reusable template for creating entities. Entity templates store a JSON-based entity
- * definition
+ * Represents a reusable template for creating entities. Entity templates store a JSON-based entity definition
  * that can be used as a starting point for creating new entities of a given type.
  * /
  */
@@ -25,8 +24,7 @@ data class EntityTemplate(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the entity template in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the entity template in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

@@ -53,12 +53,10 @@ class RawInvoiceApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawInvoiceApi {
+) : BaseRawApi(rawApiConfig),
+	RawInvoiceApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.Invoice,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Invoice)
 
 	// region common endpoints
 
@@ -356,9 +354,9 @@ class RawInvoiceApiImpl(
 					"byHcParty",
 					hcPartyId,
 					"mediumType",
-					"$sentMediumType",
+					sentMediumType.dtoSerialName,
 					"invoiceType",
-					"$invoiceType",
+					invoiceType.dtoSerialName,
 					"sent",
 					"$sent",
 				)

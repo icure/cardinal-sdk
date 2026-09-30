@@ -37,7 +37,8 @@ class RawInsuranceApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawInsuranceApi {
+) : BaseRawApi(rawApiConfig),
+	RawInsuranceApi {
 	// region common endpoints
 
 	override suspend fun getAllInsurances(

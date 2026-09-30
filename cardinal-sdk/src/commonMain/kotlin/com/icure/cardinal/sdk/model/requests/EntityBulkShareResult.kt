@@ -27,16 +27,13 @@ data class EntityBulkShareResult<T>(
 	public val entityId: String,
 	/**
 	 *
-	 *  Last known revision of the entity before any update, non-null only if an entity matching the
-	 * requests could be
-	 *  found. This can help to understand if an error is caused by an outdated version of the entity
-	 * on the client-side.
+	 *  Last known revision of the entity before any update, non-null only if an entity matching the requests could be
+	 *  found. This can help to understand if an error is caused by an outdated version of the entity on the client-side.
 	 */
 	public val entityRev: String? = null,
 	/**
 	 *
-	 *  If a `bulkShare` method fails to apply any of the share requests for an entity this map
-	 * associates the id of the
+	 *  If a `bulkShare` method fails to apply any of the share requests for an entity this map associates the id of the
 	 *  original failed request to the reason of failure.
 	 */
 	@param:DefaultValue("emptyMap()")
@@ -55,12 +52,9 @@ data class EntityBulkShareResult<T>(
 		public val code: Int,
 		/**
 		 *
-		 *  If true a new share request with the same content may succeed so the user is encouraged to
-		 * retry. This could
-		 *  happen if the entity to share changed while verifying the validity of the request
-		 * (correctness, permissions,
-		 *  ...), and if the entity did not change in ways incompatible with the request re-performing the
-		 * request in
+		 *  If true a new share request with the same content may succeed so the user is encouraged to retry. This could
+		 *  happen if the entity to share changed while verifying the validity of the request (correctness, permissions,
+		 *  ...), and if the entity did not change in ways incompatible with the request re-performing the request in
 		 *  the same way may succeed.
 		 */
 		@param:DefaultValue("false")

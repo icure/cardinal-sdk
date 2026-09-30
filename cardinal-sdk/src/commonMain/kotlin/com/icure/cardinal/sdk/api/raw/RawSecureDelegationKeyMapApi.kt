@@ -14,7 +14,7 @@ import kotlin.collections.List
 public interface RawSecureDelegationKeyMapApi {
 	// region common endpoints
 
-	public suspend fun createSecureDelegationKeyMap(
+	suspend fun createSecureDelegationKeyMap(
 		secureDelegationKeyMap: EncryptedSecureDelegationKeyMap,
 		accessControlKeysHeaderValues: List<String>,
 	): HttpResponse<EncryptedSecureDelegationKeyMap>

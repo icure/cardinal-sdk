@@ -28,7 +28,8 @@ class RawRecoveryDataApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawRecoveryDataApi {
+) : BaseRawApi(rawApiConfig),
+	RawRecoveryDataApi {
 	// region common endpoints
 
 	override suspend fun createRecoveryData(recoveryData: RecoveryData): HttpResponse<RecoveryData> =
@@ -77,7 +78,7 @@ class RawRecoveryDataApiImpl(
 		delete(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "recoverydata", "forRecipient", recipientId, "ofType", "$type")
+				appendPathSegments("rest", "v2", "recoverydata", "forRecipient", recipientId, "ofType", type.dtoSerialName)
 			}
 			accept(Application.Json)
 		}.wrap()

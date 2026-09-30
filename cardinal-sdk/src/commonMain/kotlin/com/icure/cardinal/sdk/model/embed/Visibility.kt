@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumerates the visibility levels for medical data elements, controlling how they appear in
- * summaries and exports.
+ *  Enumerates the visibility levels for medical data elements, controlling how they appear in summaries and exports.
  */
 @Serializable
 enum class Visibility(

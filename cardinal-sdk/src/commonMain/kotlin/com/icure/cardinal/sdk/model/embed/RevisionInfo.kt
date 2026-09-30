@@ -6,8 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Represents revision information for a CouchDB document, including the revision identifier and its
- * status.
+ * Represents revision information for a CouchDB document, including the revision identifier and its status.
  * /
  */
 @Serializable

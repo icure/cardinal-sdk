@@ -8,8 +8,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Represents the layout of a form template, defining the form name, its actions, sections, and
- * metadata.
+ * Represents the layout of a form template, defining the form name, its actions, sections, and metadata.
  * /
  */
 @Serializable

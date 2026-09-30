@@ -23,8 +23,7 @@ sealed interface StoredObjectInformation {
 	/**
 	 *
 	 *  The object is currently getting stored.
-	 *  @param nextByte the next expected byte of the object content (all bytes up until the previous
-	 * have already been stored).
+	 *  @param nextByte the next expected byte of the object content (all bytes up until the previous have already been stored).
 	 *  @param md5HashHexString md5 hash of the expected hash of the full content as an hex string.
 	 */
 	@Serializable

@@ -49,7 +49,8 @@ class RawUserApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawUserApi {
+) : BaseRawApi(rawApiConfig),
+	RawUserApi {
 	// region common endpoints
 
 	override suspend fun getCurrentUser(includeMetadataFromGlobalUser: Boolean): HttpResponse<User> =

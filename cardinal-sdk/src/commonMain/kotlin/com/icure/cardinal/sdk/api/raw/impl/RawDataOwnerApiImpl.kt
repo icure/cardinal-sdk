@@ -34,7 +34,8 @@ class RawDataOwnerApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawDataOwnerApi {
+) : BaseRawApi(rawApiConfig),
+	RawDataOwnerApi {
 	// region common endpoints
 
 	override suspend fun getDataOwner(dataOwnerId: String): HttpResponse<DataOwnerWithType> =

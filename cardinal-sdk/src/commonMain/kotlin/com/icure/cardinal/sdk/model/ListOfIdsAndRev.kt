@@ -7,8 +7,7 @@ import kotlin.collections.List
 
 /**
  *
- *  DTO wrapping a list of identifier-revision pairs, used for bulk operations on versioned
- * entities.
+ *  DTO wrapping a list of identifier-revision pairs, used for bulk operations on versioned entities.
  */
 @Serializable
 data class ListOfIdsAndRev(

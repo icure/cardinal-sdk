@@ -40,10 +40,8 @@ import kotlin.Int
 
 /**
  *
- *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
- * healthcare problem
- *  that evolves over time in its name/label and characteristics. It is a central element in the
- * organisation of the
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a healthcare problem
+ *  that evolves over time in its name/label and characteristics. It is a central element in the organisation of the
  *  electronic health record, used to filter and link medical data in a meaningful way.
  */
 
@@ -65,8 +63,7 @@ sealed interface HealthElement :
 	public val identifiers: List<Identifier>
 
 	/**
-	 * The revision of the healthcare element in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the healthcare element in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String?
 
@@ -111,14 +108,12 @@ sealed interface HealthElement :
 	override val deletionDate: Long?
 
 	/**
-	 * The logical id of the healthcare element, used to link together different versions of the same
-	 * healthcare element.
+	 * The logical id of the healthcare element, used to link together different versions of the same healthcare element.
 	 */
 	public val healthElementId: String?
 
 	/**
-	 * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
-	 * on the same date.
+	 * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date.
 	 */
 	public val valueDate: Long?
 
@@ -188,14 +183,12 @@ sealed interface HealthElement :
 	public val careTeam: List<CareTeamMember>
 
 	/**
-	 * Directed links towards related healthcare elements. Links should be created in a single
-	 * direction: the reverse link can be found through a view. This field is not encrypted.
+	 * Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted.
 	 */
 	public val qualifiedLinks: List<HealthElementQualifiedLink>
 
 	/**
-	 * The parties asserting that the patient has this healthcare element, i.e. on whose word the
-	 * healthcare element is held to be true. This field is encrypted.
+	 * The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted.
 	 */
 	public val asserters: List<HealthElementAsserter>
 
@@ -238,10 +231,8 @@ sealed interface HealthElement :
 
 /**
  *
- *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
- * healthcare problem
- *  that evolves over time in its name/label and characteristics. It is a central element in the
- * organisation of the
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a healthcare problem
+ *  that evolves over time in its name/label and characteristics. It is a central element in the organisation of the
  *  electronic health record, used to filter and link medical data in a meaningful way.
  */
 @Serializable
@@ -256,8 +247,7 @@ data class DecryptedHealthElement(
 	@param:DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
 	/**
-	 * The revision of the healthcare element in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the healthcare element in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -295,13 +285,11 @@ data class DecryptedHealthElement(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * The logical id of the healthcare element, used to link together different versions of the same
-	 * healthcare element.
+	 * The logical id of the healthcare element, used to link together different versions of the same healthcare element.
 	 */
 	override val healthElementId: String? = null,
 	/**
-	 * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
-	 * on the same date.
+	 * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date.
 	 */
 	override val valueDate: Long? = null,
 	/**
@@ -362,14 +350,12 @@ data class DecryptedHealthElement(
 	@param:DefaultValue("emptyList()")
 	override val careTeam: List<DecryptedCareTeamMember> = emptyList(),
 	/**
-	 * Directed links towards related healthcare elements. Links should be created in a single
-	 * direction: the reverse link can be found through a view. This field is not encrypted.
+	 * Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val qualifiedLinks: List<HealthElementQualifiedLink> = emptyList(),
 	/**
-	 * The parties asserting that the patient has this healthcare element, i.e. on whose word the
-	 * healthcare element is held to be true. This field is encrypted.
+	 * The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val asserters: List<HealthElementAsserter> = emptyList(),
@@ -410,10 +396,8 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 
 /**
  *
- *  Represents a healthcare element. A healthcare element is a patient-centric representation of a
- * healthcare problem
- *  that evolves over time in its name/label and characteristics. It is a central element in the
- * organisation of the
+ *  Represents a healthcare element. A healthcare element is a patient-centric representation of a healthcare problem
+ *  that evolves over time in its name/label and characteristics. It is a central element in the organisation of the
  *  electronic health record, used to filter and link medical data in a meaningful way.
  */
 @Serializable
@@ -428,8 +412,7 @@ data class EncryptedHealthElement(
 	@param:DefaultValue("emptyList()")
 	override val identifiers: List<Identifier> = emptyList(),
 	/**
-	 * The revision of the healthcare element in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the healthcare element in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -467,13 +450,11 @@ data class EncryptedHealthElement(
 	 */
 	override val deletionDate: Long? = null,
 	/**
-	 * The logical id of the healthcare element, used to link together different versions of the same
-	 * healthcare element.
+	 * The logical id of the healthcare element, used to link together different versions of the same healthcare element.
 	 */
 	override val healthElementId: String? = null,
 	/**
-	 * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes
-	 * on the same date.
+	 * The date (unix epoch in ms) when the healthcare element is noted to have started and also closes on the same date.
 	 */
 	override val valueDate: Long? = null,
 	/**
@@ -534,14 +515,12 @@ data class EncryptedHealthElement(
 	@param:DefaultValue("emptyList()")
 	override val careTeam: List<EncryptedCareTeamMember> = emptyList(),
 	/**
-	 * Directed links towards related healthcare elements. Links should be created in a single
-	 * direction: the reverse link can be found through a view. This field is not encrypted.
+	 * Directed links towards related healthcare elements. Links should be created in a single direction: the reverse link can be found through a view. This field is not encrypted.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val qualifiedLinks: List<HealthElementQualifiedLink> = emptyList(),
 	/**
-	 * The parties asserting that the patient has this healthcare element, i.e. on whose word the
-	 * healthcare element is held to be true. This field is encrypted.
+	 * The parties asserting that the patient has this healthcare element, i.e. on whose word the healthcare element is held to be true. This field is encrypted.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val asserters: List<HealthElementAsserter> = emptyList(),

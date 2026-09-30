@@ -76,7 +76,10 @@ data class Keyword(
 	 * The id of the user who owns this keyword.
 	 */
 	public val userId: String? = null,
-) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
+) : StoredDocument,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	HasEndOfLife {
 	// region Keyword-Keyword
 
 	// endregion
