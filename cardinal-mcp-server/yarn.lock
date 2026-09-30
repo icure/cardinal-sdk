@@ -228,7 +228,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@icure/cardinal-mcp-server@workspace:."
   dependencies:
-    "@icure/cardinal-sdk": "npm:^2.13.3"
+    "@icure/cardinal-sdk": "npm:^2.13.5"
     "@modelcontextprotocol/sdk": "npm:^1.26.0"
     "@types/node": "npm:^22.0.0"
     tsx: "npm:^4.0.0"
@@ -240,13 +240,13 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@icure/cardinal-sdk@npm:^2.13.3":
-  version: 2.13.3
-  resolution: "@icure/cardinal-sdk@npm:2.13.3"
+"@icure/cardinal-sdk@npm:^2.13.5":
+  version: 2.13.5
+  resolution: "@icure/cardinal-sdk@npm:2.13.5"
   dependencies:
     "@js-joda/core": "npm:3.2.0"
     ws: "npm:8.18.0"
-  checksum: 10c0/b47f3d3fe2d9a6462fc5cf8231dea778a471959e7bc420ad4d75e902428690a028be5cb34c74907a8d7be02ad76938deec6ef8ab20b7faa014f62318a13c2e92
+  checksum: 10c0/9f31fe719f27fae6eba178e7b65b81f945175b43ed32a8f7208fd76f91f445fc1dc655ec33dd7eb326b8a91ceba7b1c50d87e49058f5ad9a18de3fc851382b52
   languageName: node
   linkType: hard
 
