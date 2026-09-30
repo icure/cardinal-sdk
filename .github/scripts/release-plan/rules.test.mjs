@@ -142,6 +142,44 @@ test('R10: a unit release only touches its units', () => {
 	assert.deepEqual(rules(fullPr('Release 2.14.20', { changedFiles: ['cardinal-sdk/src/commonMain/A.kt'] })), []);
 });
 
+test('R10: a change for every unit needs a full release, whatever units are declared', () => {
+	const allUnits = 'Release kotlin-2.14.11 ts-2.14.11 python-2.14.11';
+	const shared = pr({ title: allUnits, changedFiles: [TS_FILE, 'cardinal-sdk/src/commonMain/A.kt'] });
+	assert.deepEqual(rules(shared), ['R10']);
+	assert.match(shared.violations[0].message, /commonMain\/A\.kt/);
+	assert.match(shared.violations[0].message, /full release/);
+	assert.doesNotMatch(shared.violations[0].message, /a\.mts/);
+	// A path that matches no row of the mapping belongs to every unit too.
+	assert.deepEqual(rules(pr({ title: allUnits, changedFiles: ['gradle/libs.versions.toml'] })), ['R10']);
+	// The same holds in tag mode.
+	assert.deepEqual(
+		rules(tagCheck({ tags: allUnits.split(' ').slice(1), changedFiles: ['cardinal-sdk/src/commonMain/A.kt'] })),
+		['R10'],
+	);
+	// Each unit's own paths, and a path shared by some units only, are fine when those units are declared.
+	const perUnit = [TS_FILE, 'python-wrapper/src/python/a.py', 'cardinal-sdk/src/jvmMain/kotlin/A.kt', 'cardinal-sdk/src/appleMain/A.kt'];
+	assert.deepEqual(pr({ title: allUnits, changedFiles: perUnit }).violations, []);
+	assert.deepEqual(rules(pr({ title: 'Release kotlin-2.14.11 python-2.14.11', changedFiles: ['cardinal-sdk/src/appleMain/A.kt'] })), []);
+});
+
+test('R10: both kinds of violation name their files', () => {
+	const res = pr({ changedFiles: ['cardinal-sdk/src/commonMain/A.kt', 'cardinal-sdk/src/appleMain/B.kt'] });
+	assert.ok(res.violations.length > 0 && res.violations.every((v) => v.rule === 'R10'));
+	const message = res.violations.map((v) => v.message).join('\n');
+	assert.match(message, /commonMain\/A\.kt/);
+	assert.match(message, /appleMain\/B\.kt/);
+	assert.match(message, /kotlin, python/);
+});
+
+test('R10: the listed files are capped', () => {
+	const files = Array.from({ length: 25 }, (_, i) => `cardinal-sdk/src/commonMain/F${i}.kt`);
+	const { message } = pr({ changedFiles: files }).violations[0];
+	assert.match(message, /F19\.kt/);
+	assert.doesNotMatch(message, /F20\.kt/);
+	assert.match(message, /and 5 more/);
+	assert.doesNotMatch(pr({ changedFiles: files.slice(0, 20) }).violations[0].message, /more/);
+});
+
 test('release notes start from the previous peer', () => {
 	const unit = pr({ title: 'Release ts-2.14.12', accepted: accepted('2.14.10', 'ts-2.14.11', 'python-2.14.11') });
 	assert.equal(unit.releases[0].notesStartTag, 'ts-2.14.11');

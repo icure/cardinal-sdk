@@ -2,7 +2,7 @@
 // repository facts (tags, branches, changed files) and passes them in.
 import { affectedUnits, unitsForPath } from './paths.mjs';
 import {
-	compareVersions, decadeBase, isFull, isGrandfathered, parseTag, UNIT_NAMES, unitsOf,
+	compareVersions, decadeBase, isFull, isGrandfathered, parseTag, UNIT_NAMES, UNITS, unitsOf,
 } from './version.mjs';
 
 const violation = (rule, message) => ({ rule, message });
@@ -106,16 +106,33 @@ function checkReachability(p, isOnBranch) {
 	return [violation(isFull(p) ? 'R6' : 'R5', `${p.tag}: the commit is not on ${branch}.`)];
 }
 
-// R10: the changes of a unit release only affect the declared units.
+const MAX_LISTED_FILES = 20;
+
+const listFiles = (files) => (files.length > MAX_LISTED_FILES
+	? `${files.slice(0, MAX_LISTED_FILES).join(', ')} and ${files.length - MAX_LISTED_FILES} more`
+	: files.join(', '));
+
+// R10: the changes of a unit release only affect the declared units. A change for every unit (the "all" row of the
+// mapping, including unknown paths) needs a full release (+10), even when the title declares every unit.
 function checkDiff(parsed, changedFiles) {
 	const unitTags = parsed.filter((p) => !isFull(p) && !isGrandfathered(p));
 	if (unitTags.length === 0) return [];
 	const declared = new Set(unitTags.map((p) => p.unit));
-	const extra = affectedUnits(changedFiles).filter((u) => !declared.has(u));
-	if (extra.length === 0) return [];
-	const files = changedFiles.filter((f) => unitsForPath(f).some((u) => extra.includes(u)));
-	return [violation('R10', `The changes also affect ${extra.join(', ')}, which this release does not declare; `
-		+ `a change for every unit needs a full release (+10). Files: ${files.join(', ')}`)];
+	const forEveryUnit = (f) => UNITS.every((u) => unitsForPath(f).includes(u));
+	const shared = changedFiles.filter(forEveryUnit);
+	const partial = changedFiles.filter((f) => !forEveryUnit(f));
+	const extra = affectedUnits(partial).filter((u) => !declared.has(u));
+	const out = [];
+	if (shared.length > 0) {
+		out.push(violation('R10', 'These changes affect every unit, which needs a full release (+10) whatever units this '
+			+ `release declares. Files: ${listFiles(shared)}`));
+	}
+	if (extra.length > 0) {
+		const files = partial.filter((f) => unitsForPath(f).some((u) => extra.includes(u)));
+		out.push(violation('R10', `The changes also affect ${extra.join(', ')}, which this release does not declare. `
+			+ `Files: ${listFiles(files)}`));
+	}
+	return out;
 }
 
 function buildRelease(p, accepted) {
