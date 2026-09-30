@@ -43,10 +43,13 @@ defaults:
 
 jobs:
     release:
-        # Dry runs get their own group so they never cancel a pending real release.
+        # Real releases queue one after the other: without `queue: max`, a new run cancels the pending one.
+        # Dry runs get their own group so they never wait for, or displace, a real release.
+        # actionlint does not know `queue` yet, see .github/actionlint.yaml.
         concurrency:
             group: ${{ github.event_name == 'workflow_dispatch' && format('release-dry-{0}', github.run_id) || 'release' }}
             cancel-in-progress: false
+            queue: max
         if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged
         runs-on: ubuntu-latest
         name: Release

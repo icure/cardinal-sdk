@@ -1,0 +1,5 @@
+paths:
+    # `queue: max` is valid in GitHub Actions, but this actionlint version does not know the key yet.
+    .github/workflows/release.yml:
+        ignore:
+            - 'unexpected key "queue" for "concurrency" section'
