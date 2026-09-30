@@ -193,7 +193,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findAccessLogsByUserAfterDate(
 		userId: String,
@@ -218,7 +218,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listAccessLogIdsByDataOwnerPatientDate(
 		dataOwnerId: String,
@@ -250,7 +250,7 @@ class RawAccessLogApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(accessLogIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findAccessLogsDelegationsStubsByIds(accessLogIds: ListOfIds): HttpResponse<List<IcureStub>> =
 		post(authProvider) {
@@ -337,7 +337,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedAccessLog>,
@@ -391,7 +391,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchAccessLogsInGroupBy(
 		filter: AbstractFilter<AccessLog>,
@@ -488,7 +488,7 @@ class RawAccessLogApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(accessLogIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteAccessLogsInGroup(
 		groupId: String,
@@ -614,7 +614,7 @@ class RawAccessLogApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

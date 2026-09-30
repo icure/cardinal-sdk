@@ -103,7 +103,7 @@ class RawContactApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(contactIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getServiceCodesOccurrences(
 		codeType: String,
@@ -131,7 +131,7 @@ class RawContactApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listContactsByExternalId(externalId: String): HttpResponse<List<EncryptedContact>> =
 		post(authProvider) {
@@ -142,7 +142,7 @@ class RawContactApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listContactsByHCPartyAndFormId(
 		hcPartyId: String,
@@ -157,7 +157,7 @@ class RawContactApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listContactsByHCPartyAndFormIds(
 		hcPartyId: String,
@@ -172,7 +172,7 @@ class RawContactApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(formIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listContactIdsByDataOwnerPatientOpeningDate(
 		dataOwnerId: String,
@@ -338,7 +338,7 @@ class RawContactApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(ContactAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchContactsBy(filter: AbstractFilter<Contact>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -461,7 +461,7 @@ class RawContactApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedContact>>> =
 		put(authProvider) {
@@ -504,7 +504,7 @@ class RawContactApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedContact>,
@@ -619,7 +619,7 @@ class RawContactApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(contactIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteContactInGroup(
 		groupId: String,
@@ -797,7 +797,7 @@ class RawContactApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

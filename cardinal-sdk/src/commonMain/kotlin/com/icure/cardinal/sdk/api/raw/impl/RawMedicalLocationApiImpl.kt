@@ -80,7 +80,7 @@ class RawMedicalLocationApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun modifyMedicalLocation(medicalLocationDto: MedicalLocation): HttpResponse<MedicalLocation> =
 		put(authProvider) {
@@ -102,7 +102,7 @@ class RawMedicalLocationApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(accessLogIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun matchMedicalLocationsBy(filter: AbstractFilter<MedicalLocation>): HttpResponse<List<String>> =
 		post(authProvider) {

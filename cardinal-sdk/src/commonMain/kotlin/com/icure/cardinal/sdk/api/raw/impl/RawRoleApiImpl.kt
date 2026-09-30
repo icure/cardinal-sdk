@@ -42,7 +42,7 @@ class RawRoleApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getRolesInGroup(groupId: String): HttpResponse<List<Role>> =
 		get(authProvider) {
@@ -52,7 +52,7 @@ class RawRoleApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getRole(roleId: String): HttpResponse<Role> =
 		get(authProvider) {
@@ -73,7 +73,7 @@ class RawRoleApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(roleIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createRoleWithDescription(
 		name: String,

@@ -75,7 +75,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findHealthcarePartiesByName(
 		name: String?,
@@ -96,7 +96,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findHealthcarePartiesBySsinOrNihii(
 		searchValue: String,
@@ -116,7 +116,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listHealthcarePartiesByName(name: String): HttpResponse<List<HealthcareParty>> =
 		get(authProvider) {
@@ -126,7 +126,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findHealthcarePartiesBySpecialityAndPostCode(
 		type: String,
@@ -147,7 +147,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun createHealthcareParty(h: HealthcareParty): HttpResponse<HealthcareParty> =
 		post(authProvider) {
@@ -202,7 +202,7 @@ class RawHealthcarePartyApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(healthcarePartyIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listHealthcarePartiesByParentId(parentId: String): HttpResponse<List<HealthcareParty>> =
 		get(authProvider) {
@@ -212,7 +212,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getPublicKey(healthcarePartyId: String): HttpResponse<PublicKey> =
 		get(authProvider) {
@@ -359,7 +359,7 @@ class RawHealthcarePartyApiImpl(
 				FilterChainSerializer(HealthcarePartyAbstractFilterSerializer),
 				filterChain,
 			)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getConflictingEntitiesIds(): HttpResponse<List<String>> =
 		get(authProvider) {
@@ -380,7 +380,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<HealthcareParty>,
@@ -439,7 +439,7 @@ class RawHealthcarePartyApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(healthcarePartyIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteHealthcarePartiesInGroup(
 		groupId: String,
@@ -680,7 +680,7 @@ class RawHealthcarePartyApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

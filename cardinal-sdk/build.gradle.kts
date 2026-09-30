@@ -135,6 +135,7 @@ kotlin {
 				implementation(libs.kotestAssertions)
 				implementation(libs.kotestEngine)
 				implementation(libs.kotp)
+				implementation(libs.ktorClientMock)
 				implementation(kotlin("test-common"))
 				implementation(kotlin("test-annotations-common"))
 			}

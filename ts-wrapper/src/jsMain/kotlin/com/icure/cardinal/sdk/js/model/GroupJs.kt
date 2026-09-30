@@ -61,4 +61,6 @@ public external class GroupJs(
 	public val designDocSchemaVersions: Array<Double>
 
 	public val defaultChildrenSchemaVersion: Double?
+
+	public val status: String?
 }

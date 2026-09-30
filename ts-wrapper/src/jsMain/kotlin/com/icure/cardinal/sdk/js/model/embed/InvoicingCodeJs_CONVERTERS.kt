@@ -175,6 +175,9 @@ public fun invoicingCode_toJs(obj: DecryptedInvoicingCode): DecryptedInvoicingCo
 	val insuranceJustification = nullToUndefined(
 		intToNumber(obj.insuranceJustification)
 	)
+	val agreementNumber = nullToUndefined(
+		obj.agreementNumber
+	)
 	val cancelPatientInterventionReason = nullToUndefined(
 		intToNumber(obj.cancelPatientInterventionReason)
 	)
@@ -250,6 +253,7 @@ public fun invoicingCode_toJs(obj: DecryptedInvoicingCode): DecryptedInvoicingCo
 		"archived:archived," +
 		"lost:lost," +
 		"insuranceJustification:insuranceJustification," +
+		"agreementNumber:agreementNumber," +
 		"cancelPatientInterventionReason:cancelPatientInterventionReason," +
 		"status:status," +
 		"codeLabel:codeLabel," +
@@ -312,6 +316,7 @@ public fun invoicingCode_fromJs(obj: DecryptedInvoicingCodeJs): DecryptedInvoici
 	val archived = undefinedToNull(obj.archived)
 	val lost = undefinedToNull(obj.lost)
 	val insuranceJustification = numberToInt(obj.insuranceJustification, "obj.insuranceJustification")
+	val agreementNumber = undefinedToNull(obj.agreementNumber)
 	val cancelPatientInterventionReason = numberToInt(obj.cancelPatientInterventionReason,
 			"obj.cancelPatientInterventionReason")
 	val status = numberToLong(obj.status, "obj.status")
@@ -381,6 +386,7 @@ public fun invoicingCode_fromJs(obj: DecryptedInvoicingCodeJs): DecryptedInvoici
 		archived = archived,
 		lost = lost,
 		insuranceJustification = insuranceJustification,
+		agreementNumber = agreementNumber,
 		cancelPatientInterventionReason = cancelPatientInterventionReason,
 		status = status,
 		codeLabel = codeLabel,
@@ -546,6 +552,9 @@ public fun invoicingCode_toJs(obj: EncryptedInvoicingCode): EncryptedInvoicingCo
 	val insuranceJustification = nullToUndefined(
 		intToNumber(obj.insuranceJustification)
 	)
+	val agreementNumber = nullToUndefined(
+		obj.agreementNumber
+	)
 	val cancelPatientInterventionReason = nullToUndefined(
 		intToNumber(obj.cancelPatientInterventionReason)
 	)
@@ -621,6 +630,7 @@ public fun invoicingCode_toJs(obj: EncryptedInvoicingCode): EncryptedInvoicingCo
 		"archived:archived," +
 		"lost:lost," +
 		"insuranceJustification:insuranceJustification," +
+		"agreementNumber:agreementNumber," +
 		"cancelPatientInterventionReason:cancelPatientInterventionReason," +
 		"status:status," +
 		"codeLabel:codeLabel," +
@@ -683,6 +693,7 @@ public fun invoicingCode_fromJs(obj: EncryptedInvoicingCodeJs): EncryptedInvoici
 	val archived = undefinedToNull(obj.archived)
 	val lost = undefinedToNull(obj.lost)
 	val insuranceJustification = numberToInt(obj.insuranceJustification, "obj.insuranceJustification")
+	val agreementNumber = undefinedToNull(obj.agreementNumber)
 	val cancelPatientInterventionReason = numberToInt(obj.cancelPatientInterventionReason,
 			"obj.cancelPatientInterventionReason")
 	val status = numberToLong(obj.status, "obj.status")
@@ -752,6 +763,7 @@ public fun invoicingCode_fromJs(obj: EncryptedInvoicingCodeJs): EncryptedInvoici
 		archived = archived,
 		lost = lost,
 		insuranceJustification = insuranceJustification,
+		agreementNumber = agreementNumber,
 		cancelPatientInterventionReason = cancelPatientInterventionReason,
 		status = status,
 		codeLabel = codeLabel,

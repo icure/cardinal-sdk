@@ -40,7 +40,7 @@ class RawApplicationSettingsApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createApplicationSettings(
 		applicationSettingsDto: EncryptedApplicationSettings,

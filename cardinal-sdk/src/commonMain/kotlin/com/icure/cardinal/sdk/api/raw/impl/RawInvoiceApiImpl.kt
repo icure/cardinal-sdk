@@ -176,7 +176,7 @@ class RawInvoiceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(invoiceIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyInvoice(invoiceDto: EncryptedInvoice): HttpResponse<EncryptedInvoice> =
 		put(authProvider) {
@@ -291,7 +291,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun listInvoiceIdsByDataOwnerPatientInvoiceDate(
 		dataOwnerId: String,
@@ -336,7 +336,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listInvoicesByHcPartySentMediumTypeInvoiceTypeSentDate(
 		hcPartyId: String,
@@ -367,7 +367,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listInvoicesByContactIds(contactIds: ListOfIds): HttpResponse<List<EncryptedInvoice>> =
 		post(authProvider) {
@@ -378,7 +378,7 @@ class RawInvoiceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(contactIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listInvoicesByRecipientsIds(recipientIds: String): HttpResponse<List<EncryptedInvoice>> =
 		get(authProvider) {
@@ -388,7 +388,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listToInsurances(userIds: String?): HttpResponse<List<EncryptedInvoice>> =
 		get(authProvider) {
@@ -399,7 +399,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listToInsurancesUnsent(userIds: String?): HttpResponse<List<EncryptedInvoice>> =
 		get(authProvider) {
@@ -410,7 +410,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listToPatients(hcPartyId: String?): HttpResponse<List<EncryptedInvoice>> =
 		get(authProvider) {
@@ -421,7 +421,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listToPatientsUnsent(hcPartyId: String?): HttpResponse<List<EncryptedInvoice>> =
 		get(authProvider) {
@@ -432,7 +432,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listInvoicesByIds(invoiceIds: String): HttpResponse<List<EncryptedInvoice>> =
 		get(authProvider) {
@@ -442,7 +442,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listInvoicesByHcpartySendingModeStatusDate(
 		hcPartyId: String,
@@ -462,7 +462,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listInvoiceIdsByDecisionReference(
 		dataOwnerId: String,
@@ -487,7 +487,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listAllHcpsByStatus(
 		status: String,
@@ -505,7 +505,7 @@ class RawInvoiceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(hcpIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getTarificationsCodesOccurrences(minOccurrences: Long): HttpResponse<List<LabelledOccurence>> =
 		get(authProvider) {
@@ -526,7 +526,7 @@ class RawInvoiceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(InvoiceAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun matchInvoicesBy(filter: AbstractFilter<Invoice>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -602,7 +602,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedInvoice>,
@@ -717,7 +717,7 @@ class RawInvoiceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(invoiceIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteInvoicesInGroup(
 		groupId: String,
@@ -854,7 +854,7 @@ class RawInvoiceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

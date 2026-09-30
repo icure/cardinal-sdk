@@ -6,7 +6,10 @@ import com.icure.cardinal.sdk.js.options.external.AnonymousSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.EncryptedFieldsConfigurationJs
+import com.icure.cardinal.sdk.js.options.external.EntityListDecodingStrategyDiscardMalformedJs
+import com.icure.cardinal.sdk.js.options.external.EntityListDecodingStrategyJs
 import com.icure.cardinal.sdk.js.options.external.JsonPatcherJs
+import com.icure.cardinal.sdk.js.options.external.MalformedEntityJs
 import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
 import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
  import com.icure.cardinal.sdk.js.utils.cardinalInternalGlobals
@@ -14,7 +17,9 @@ import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.EncryptedFieldsConfiguration
+import com.icure.cardinal.sdk.options.EntityListDecodingStrategy
 import com.icure.cardinal.sdk.options.JsonPatcher
+import com.icure.cardinal.sdk.options.MalformedEntity
 import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.external.XCryptoService
@@ -48,6 +53,8 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 		jsonPatcher = this.jsonPatcher?.let { JsonPatcherBridge(it) } ?: defaultSdkOptions.jsonPatcher,
 		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultSdkOptions.ignoreUnknownFields,
 		dataOwnerScope = this.dataOwnerScope ?: defaultSdkOptions.dataOwnerScope,
+		entityListDecodingStrategy = this.entityListDecodingStrategy?.toKt()
+			?: defaultSdkOptions.entityListDecodingStrategy,
 	)
 }
 
@@ -63,6 +70,8 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 		} ?: defaultApiOptions.groupSelector,
 		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultApiOptions.ignoreUnknownFields,
 		dataOwnerScope = this.dataOwnerScope ?: defaultApiOptions.dataOwnerScope,
+		entityListDecodingStrategy = this.entityListDecodingStrategy?.toKt()
+			?: defaultApiOptions.entityListDecodingStrategy,
 	)
 }
 
@@ -84,6 +93,8 @@ fun AnonymousSdkOptionsJs.toKt(): AnonymousSdkOptions {
 	val defaultApiOptions = AnonymousSdkOptions()
 	return AnonymousSdkOptions(
 		ignoreUnknownFields = this.ignoreUnknownFields ?: defaultApiOptions.ignoreUnknownFields,
+		entityListDecodingStrategy = this.entityListDecodingStrategy?.toKt()
+			?: defaultApiOptions.entityListDecodingStrategy,
 	)
 }
 
@@ -205,4 +216,25 @@ private fun XCryptoService?.checkRequiredAdaptAndPolyfillRandom(): CryptoService
 		cardinalInternalGlobals.randomUuid = adapted.strongRandom::randomUUID
 	}
 	return adapted
+}
+
+private fun EntityListDecodingStrategyJs.toKt(): EntityListDecodingStrategy = when (ktClass) {
+	"com.icure.cardinal.sdk.options.EntityListDecodingStrategy.Strict" -> EntityListDecodingStrategy.Strict
+	"com.icure.cardinal.sdk.options.EntityListDecodingStrategy.DiscardMalformed" -> {
+		val handlerJs = unsafeCast<EntityListDecodingStrategyDiscardMalformedJs>().handler
+		EntityListDecodingStrategy.DiscardMalformed { entity -> handlerJs(entity.toJs()) }
+	}
+	else -> throw IllegalArgumentException("Unknown concrete implementation for EntityListDecodingStrategy: $ktClass")
+}
+
+private fun MalformedEntity.toJs(): MalformedEntityJs {
+	val malformedEntityJs: dynamic = js("{}")
+	malformedEntityJs.entityType = entityType
+	malformedEntityJs.entityId = entityId ?: undefined
+	// Json.encodeToDynamic fails on a top level null and on integers outside the js safe range
+	malformedEntityJs.json = JSON.parse<dynamic>(json.toString())
+	malformedEntityJs.error = error.message ?: error.toString()
+	malformedEntityJs.requestUrl = requestUrl
+	// A dynamic value is assignable to any type; calling a method on it would be a dynamic js call instead
+	return malformedEntityJs
 }

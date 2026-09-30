@@ -161,7 +161,7 @@ class RawGroupApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listApps(): HttpResponse<List<Group>> =
 		get(authProvider) {
@@ -171,7 +171,7 @@ class RawGroupApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findGroups(
 		id: String,
@@ -187,7 +187,7 @@ class RawGroupApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findGroupsWithContent(
 		id: String,
@@ -207,7 +207,7 @@ class RawGroupApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getGroup(id: String): HttpResponse<Group> =
 		get(authProvider) {
@@ -228,7 +228,7 @@ class RawGroupApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(groupIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getNameOfGroupParent(id: String): HttpResponse<String> =
 		get(authProvider) {

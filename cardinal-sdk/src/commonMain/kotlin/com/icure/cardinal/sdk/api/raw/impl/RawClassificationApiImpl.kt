@@ -80,7 +80,7 @@ class RawClassificationApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(classificationIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listClassificationIdsByDataOwnerPatientCreated(
 		dataOwnerId: String,

@@ -252,7 +252,7 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getDocuments(documentIds: ListOfIds): HttpResponse<List<EncryptedDocument>> =
 		post(authProvider) {
@@ -263,7 +263,7 @@ class RawDocumentApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(documentIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findDocumentsDelegationsStubsByIds(documentIds: ListOfIds): HttpResponse<List<IcureStub>> =
 		post(authProvider) {
@@ -328,7 +328,7 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun setSecondaryAttachment(
 		documentId: String,
@@ -441,7 +441,7 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedDocument>,
@@ -559,7 +559,7 @@ class RawDocumentApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(documentIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteDocumentInGroup(
 		groupId: String,
@@ -696,7 +696,7 @@ class RawDocumentApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

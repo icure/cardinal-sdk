@@ -70,7 +70,7 @@ class RawCalendarItemApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun createCalendarItem(calendarItemDto: EncryptedCalendarItem): HttpResponse<EncryptedCalendarItem> =
 		post(authProvider) {
@@ -225,7 +225,7 @@ class RawCalendarItemApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getCalendarsByPeriodAndAgendaId(
 		startDate: Long,
@@ -242,7 +242,7 @@ class RawCalendarItemApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyId(
 		startDate: Long,
@@ -291,7 +291,7 @@ class RawCalendarItemApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(calendarItemIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listCalendarItemsByHCPartyPatientForeignKeys(
 		hcPartyId: String,
@@ -306,7 +306,7 @@ class RawCalendarItemApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listCalendarItemsByHCPartyPatientForeignKeys(
 		hcPartyId: String,
@@ -321,7 +321,7 @@ class RawCalendarItemApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(secretPatientKeys)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findCalendarItemsByHCPartyPatientForeignKeys(
 		hcPartyId: String,
@@ -341,7 +341,7 @@ class RawCalendarItemApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findCalendarItemsByHCPartyPatientForeignKeys(
 		hcPartyId: String,
@@ -361,7 +361,7 @@ class RawCalendarItemApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(secretPatientKeys)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun findCalendarItemIdsByDataOwnerPatientStartTime(
 		dataOwnerId: String,
@@ -427,7 +427,7 @@ class RawCalendarItemApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchCalendarItemsBy(filter: AbstractFilter<CalendarItem>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -483,7 +483,7 @@ class RawCalendarItemApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedCalendarItem>,
@@ -604,7 +604,7 @@ class RawCalendarItemApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(calendarItemIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getCalendarItemsOccupancyByPeriodAndHcPartyIdInGroup(
 		groupId: String,
@@ -812,7 +812,7 @@ class RawCalendarItemApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,
