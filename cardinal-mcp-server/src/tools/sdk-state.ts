@@ -16,3 +16,8 @@ export function setSdk(sdk: CardinalSdk): void {
 export function isSdkInitialized(): boolean {
 	return sdkInstance !== null;
 }
+
+/** Forgets the current instance, so that the next operational call fails until cardinal_init runs again. */
+export function resetSdk(): void {
+	sdkInstance = null;
+}
