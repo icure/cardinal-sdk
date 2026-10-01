@@ -120,4 +120,115 @@ class HealthcarePartySubscriptionTest : StringSpec({
 		val child = createHcpUser(parent = parent, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 		subscription.shouldReceiveEventFor(child.dataOwnerId)
 	}
+
+	"Simple group hcp should receive update events of its direct member (filter by ids)".config(
+		enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY
+	) {
+		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+		val member = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val subscription = subscribe(
+			group,
+			setOf(SubscriptionEventType.Update),
+			HealthcarePartyFilters.byIds(listOf(member.dataOwnerId))
+		)
+		member.modifySelf()
+		subscription.shouldReceiveEventFor(member.dataOwnerId)
+	}
+
+	"Simple group hcp should receive create events of its new direct members (filter all)".config(
+		enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY
+	) {
+		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+		val subscription = subscribe(
+			group,
+			setOf(SubscriptionEventType.Create),
+			HealthcarePartyFilters.all()
+		)
+		val member = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		subscription.shouldReceiveEventFor(member.dataOwnerId)
+	}
+
+	"Each of multiple parent hcps should receive update events of their common child (filter by ids)".config(
+		enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY
+	) {
+		val parentA = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Parent)
+		val parentB = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Parent)
+		val child = createHcpUser(parents = listOf(parentA, parentB), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val subscriptionA = subscribe(
+			parentA,
+			setOf(SubscriptionEventType.Update),
+			HealthcarePartyFilters.byIds(listOf(child.dataOwnerId))
+		)
+		val subscriptionB = subscribe(
+			parentB,
+			setOf(SubscriptionEventType.Update),
+			HealthcarePartyFilters.byIds(listOf(child.dataOwnerId))
+		)
+		child.modifySelf()
+		subscriptionA.shouldReceiveEventFor(child.dataOwnerId)
+		subscriptionB.shouldReceiveEventFor(child.dataOwnerId)
+	}
+
+	"Each of multiple parent hcps should receive create events of their new common child (filter all)".config(
+		enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY
+	) {
+		val parentA = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Parent)
+		val parentB = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Parent)
+		val subscriptionA = subscribe(parentA, setOf(SubscriptionEventType.Create), HealthcarePartyFilters.all())
+		val subscriptionB = subscribe(parentB, setOf(SubscriptionEventType.Create), HealthcarePartyFilters.all())
+		val child = createHcpUser(parents = listOf(parentA, parentB), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		subscriptionA.shouldReceiveEventFor(child.dataOwnerId)
+		subscriptionB.shouldReceiveEventFor(child.dataOwnerId)
+	}
+
+	"Each directly linked hcp should receive update events of a child with links of different types (filter by ids)".config(
+		enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY
+	) {
+		val parent = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Parent)
+		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+		val child = createHcpUser(parents = listOf(parent, group), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val parentSubscription = subscribe(
+			parent,
+			setOf(SubscriptionEventType.Update),
+			HealthcarePartyFilters.byIds(listOf(child.dataOwnerId))
+		)
+		val groupSubscription = subscribe(
+			group,
+			setOf(SubscriptionEventType.Update),
+			HealthcarePartyFilters.byIds(listOf(child.dataOwnerId))
+		)
+		child.modifySelf()
+		parentSubscription.shouldReceiveEventFor(child.dataOwnerId)
+		groupSubscription.shouldReceiveEventFor(child.dataOwnerId)
+	}
+
+	"Transitive parent hcp should receive update events of its descendant (filter by ids)".config(
+		enabled = false // future development: transitive links are not handled yet
+	) {
+		val topParent = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Parent)
+		val middleParent = createHcpUser(parent = topParent, groupLinkType = DataOwnerGroupLinkType.Parent)
+		val child = createHcpUser(parent = middleParent, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val subscription = subscribe(
+			topParent,
+			setOf(SubscriptionEventType.Update),
+			HealthcarePartyFilters.byIds(listOf(child.dataOwnerId))
+		)
+		child.modifySelf()
+		subscription.shouldReceiveEventFor(child.dataOwnerId)
+	}
+
+	"Transitive simple group hcp should receive update events of its transitive member (filter by ids)".config(
+		enabled = false // future development: transitive links are not handled yet
+	) {
+		val topGroup = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+		val subgroup = createHcpUser(parent = topGroup, groupLinkType = DataOwnerGroupLinkType.Simple)
+		val member = createHcpUser(parent = subgroup, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val subscription = subscribe(
+			topGroup,
+			setOf(SubscriptionEventType.Update),
+			HealthcarePartyFilters.byIds(listOf(member.dataOwnerId))
+		)
+		member.modifySelf()
+		subscription.shouldReceiveEventFor(member.dataOwnerId)
+	}
 })
