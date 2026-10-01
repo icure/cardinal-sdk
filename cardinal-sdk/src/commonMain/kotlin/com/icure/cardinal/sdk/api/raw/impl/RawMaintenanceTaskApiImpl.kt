@@ -144,7 +144,7 @@ class RawMaintenanceTaskApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findMaintenanceTasksDelegationsStubsByIds(maintenanceTaskIds: ListOfIds): HttpResponse<List<IcureStub>> =
 		post(authProvider) {
@@ -183,7 +183,7 @@ class RawMaintenanceTaskApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(MaintenanceTaskAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchMaintenanceTasksBy(filter: AbstractFilter<MaintenanceTask>): HttpResponse<List<String>> =
 		post(authProvider) {

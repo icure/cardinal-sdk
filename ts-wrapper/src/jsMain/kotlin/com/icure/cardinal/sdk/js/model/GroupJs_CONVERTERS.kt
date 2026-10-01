@@ -26,6 +26,7 @@ import com.icure.cardinal.sdk.model.DecryptedPropertyStub
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
+import com.icure.cardinal.sdk.model.embed.GroupStatus
 import com.icure.cardinal.sdk.model.embed.UserType
 import com.icure.cardinal.sdk.model.security.ExternalJwtConfig
 import com.icure.cardinal.sdk.model.security.OperationToken
@@ -148,6 +149,11 @@ public fun group_toJs(obj: Group): GroupJs {
 	val defaultChildrenSchemaVersion = nullToUndefined(
 		intToNumber(obj.defaultChildrenSchemaVersion)
 	)
+	val status = nullToUndefined(
+		obj.status?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
 	return GroupJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -170,7 +176,8 @@ public fun group_toJs(obj: Group): GroupJs {
 		"projectId:projectId," +
 		"templates:templates," +
 		"designDocSchemaVersions:designDocSchemaVersions," +
-		"defaultChildrenSchemaVersion:defaultChildrenSchemaVersion" +
+		"defaultChildrenSchemaVersion:defaultChildrenSchemaVersion," +
+		"status:status" +
 	"}"))
 }
 
@@ -273,6 +280,9 @@ public fun group_fromJs(obj: GroupJs): Group {
 		},
 	)
 	val defaultChildrenSchemaVersion = numberToInt(obj.defaultChildrenSchemaVersion, "obj.defaultChildrenSchemaVersion")
+	val status = obj.status?.let { nonNull1 ->
+		GroupStatus.valueOf(nonNull1)
+	}
 	return Group(
 		id = id,
 		rev = rev,
@@ -296,6 +306,7 @@ public fun group_fromJs(obj: GroupJs): Group {
 		templates = templates,
 		designDocSchemaVersions = designDocSchemaVersions,
 		defaultChildrenSchemaVersion = defaultChildrenSchemaVersion,
+		status = status,
 	)
 }
 

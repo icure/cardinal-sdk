@@ -86,7 +86,7 @@ class RawCustomEntityApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyCustomEntity(
 		entityType: String,

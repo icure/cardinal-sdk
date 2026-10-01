@@ -370,6 +370,12 @@ private class InvoicingCodeDecryptor(
 						encryptedEntity.insuranceJustification,
 						entityCustomisedModelVersion,
 					),
+				agreementNumber =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["agreementNumber"]?.also { usedEncryptedContent += "agreementNumber" },
+						encryptedEntity.agreementNumber,
+						entityCustomisedModelVersion,
+					),
 				cancelPatientInterventionReason =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["cancelPatientInterventionReason"]?.also { usedEncryptedContent += "cancelPatientInterventionReason" },

@@ -81,6 +81,7 @@ internal object InvoicingCodeEncryptorFactory : EntityEncryptorFactory<Encrypted
 					archived = clearEntity.archived,
 					lost = clearEntity.lost,
 					insuranceJustification = clearEntity.insuranceJustification,
+					agreementNumber = clearEntity.agreementNumber,
 					cancelPatientInterventionReason = clearEntity.cancelPatientInterventionReason,
 					status = clearEntity.status,
 					codeLabel = clearEntity.codeLabel,
@@ -151,6 +152,7 @@ internal object InvoicingCodeEncryptorFactory : EntityEncryptorFactory<Encrypted
 			archived_e = "archived" in manifest.fieldsToEncrypt,
 			lost_e = "lost" in manifest.fieldsToEncrypt,
 			insuranceJustification_e = "insuranceJustification" in manifest.fieldsToEncrypt,
+			agreementNumber_e = "agreementNumber" in manifest.fieldsToEncrypt,
 			cancelPatientInterventionReason_e = "cancelPatientInterventionReason" in manifest.fieldsToEncrypt,
 			status_e = "status" in manifest.fieldsToEncrypt,
 			codeLabel_e = "codeLabel" in manifest.fieldsToEncrypt,
@@ -214,6 +216,7 @@ private class InvoicingCodeEncryptor(
 	private val archived_e: Boolean,
 	private val lost_e: Boolean,
 	private val insuranceJustification_e: Boolean,
+	private val agreementNumber_e: Boolean,
 	private val cancelPatientInterventionReason_e: Boolean,
 	private val status_e: Boolean,
 	private val codeLabel_e: Boolean,
@@ -426,6 +429,12 @@ private class InvoicingCodeEncryptor(
 					clearEntity.insuranceJustification,
 				)
 		}
+		if (agreementNumber_e && clearEntity.agreementNumber != null) {
+			dataToEncrypt["agreementNumber"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.agreementNumber,
+				)
+		}
 		if (cancelPatientInterventionReason_e && clearEntity.cancelPatientInterventionReason != null) {
 			dataToEncrypt["cancelPatientInterventionReason"] =
 				encodingJson.encodeToJsonElement(
@@ -487,6 +496,7 @@ private class InvoicingCodeEncryptor(
 			archived = if (archived_e) null else clearEntity.archived,
 			lost = if (lost_e) null else clearEntity.lost,
 			insuranceJustification = if (insuranceJustification_e) null else clearEntity.insuranceJustification,
+			agreementNumber = if (agreementNumber_e) null else clearEntity.agreementNumber,
 			cancelPatientInterventionReason = if (cancelPatientInterventionReason_e) null else clearEntity.cancelPatientInterventionReason,
 			status = if (status_e) null else clearEntity.status,
 			codeLabel = if (codeLabel_e) null else clearEntity.codeLabel,
