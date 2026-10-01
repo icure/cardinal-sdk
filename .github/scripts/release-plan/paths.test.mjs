@@ -25,7 +25,6 @@ test('classifies every row of the spec mapping', () => {
 		'ts-wrapper/src/jsMain/typescript/a.mts': ['ts'],
 		'ts-wrapper/build.gradle.kts': ['ts'],
 		'cardinal-mcp-server/SDK.md': ['ts'],
-		'cardinal-sdk/src/jsMain/kotlin/A.kt': ['ts'],
 		'python-wrapper/src/python/cardinal_sdk/a.py': ['python'],
 		'cardinal-sdk/src/linuxX64Main/kotlin/A.kt': ['python'],
 		'cardinal-sdk/src/mingwMain/kotlin/A.kt': ['python'],
@@ -34,6 +33,8 @@ test('classifies every row of the spec mapping', () => {
 		'cardinal-sdk/src/androidMain/kotlin/A.kt': ['kotlin'],
 		'cardinal-sdk/src/jvmAndAndroidMain/kotlin/A.kt': ['kotlin'],
 		'cardinal-sdk/src/iosSimulatorArm64Main/kotlin/A.kt': ['kotlin'],
+		// The JS target of the KMP SDK is also published on Maven, for Kotlin/JS consumers.
+		'cardinal-sdk/src/jsMain/kotlin/A.kt': ['kotlin', 'ts'],
 		'cardinal-sdk/src/appleMain/kotlin/A.kt': ['kotlin', 'python'],
 		// nativeMain is the parent of appleMain, hence of iosMain (Kotlin), and of the Linux, Windows and macOS targets.
 		'cardinal-sdk/src/nativeMain/kotlin/A.kt': ['kotlin', 'python'],
