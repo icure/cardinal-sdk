@@ -18,8 +18,20 @@ val mavenReleasesRepository: String by project
 
 group = "com.icure"
 
-val version = "2.13.5"
+// Releases set -PsdkVersion (the-forge passes it from the release tag), other builds get a snapshot version derived
+// from the git tags. See RELEASING.md.
+val sdkVersionProperty: String? = providers.gradleProperty("sdkVersion").orNull
+val version: String = sdkVersionProperty?.also {
+	require(SdkVersion.isReleaseVersion(it)) { "sdkVersion=$it is not a release version (X.Y.Z or X.Y.Z-PREVIEW.N)" }
+} ?: SdkVersion.devVersion(gitTags())
 project.version = version
+
+fun gitTags(): List<String> = runCatching {
+	project.providers.exec {
+		commandLine("git", "tag", "--list")
+		isIgnoreExitValue = true
+	}.standardOutput.asText.get().lines()
+}.getOrDefault(emptyList())
 
 val generateSdkVersion by tasks.registering {
 	val outputDir = layout.buildDirectory.dir("generated/sdkVersion/kotlin")
@@ -296,6 +308,16 @@ if (!projectHasSignatureProperties()) {
 	tasks.withType<PublishToMavenRepository> {
 		doFirst {
 			throw IllegalStateException("Cannot publish to Maven Central without signing properties")
+		}
+	}
+}
+
+// A remote publication must carry the release version, never a snapshot derived from the tags.
+// `publishToMavenLocal` tasks are `PublishToMavenLocal`, a separate type, so they stay allowed.
+gradle.taskGraph.whenReady {
+	if (sdkVersionProperty == null) {
+		allTasks.firstOrNull { it is PublishToMavenRepository && it.path.startsWith("${project.path}:") }?.let {
+			throw GradleException("${it.path} publishes to a remote repository and needs -PsdkVersion=<release version>.")
 		}
 	}
 }

@@ -1,0 +1,53 @@
+name: Release check
+
+# Every PR into main or into a support/* branch is a release PR: its title declares the release, see RELEASING.md.
+# This check validates it (rules R1–R10) and is required by the rulesets on main and support/**, so a PR that fails
+# here cannot be merged. `edited` re-runs it when the title changes.
+
+on:
+    pull_request:
+        types:
+            - opened
+            - edited
+            - synchronize
+            - reopened
+        branches:
+            - main
+            - 'support/**'
+
+permissions:
+    contents: read
+
+jobs:
+    release-check:
+        runs-on: ubuntu-latest
+        name: release-check  # Required status check: do not rename without updating the rulesets
+        steps:
+            -   name: Check out code
+                uses: actions/checkout@v4
+                with:
+                    # All branches and tags: the base branch for the merge base, the tags for R9.
+                    fetch-depth: 0
+                    fetch-tags: true
+
+            -   name: Set up Node
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '24'
+
+            -   name: List accepted releases
+                env:
+                    FORGE_TOKEN: ${{ secrets.CARDINAL_SDK_CI_PAT }}
+                run: .github/scripts/list-accepted-releases.sh > "$RUNNER_TEMP/accepted.txt"
+
+            -   name: Validate the release
+                env:
+                    # Through the environment, never interpolated in the script: the title is user input.
+                    TITLE: ${{ github.event.pull_request.title }}
+                    BASE_REF: ${{ github.event.pull_request.base.ref }}
+                    HEAD_REF: ${{ github.event.pull_request.head.ref }}
+                    HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+                run: |
+                    node .github/scripts/release-plan.mjs pr \
+                        --title "$TITLE" --base-ref "$BASE_REF" --head-ref "$HEAD_REF" --head-sha "$HEAD_SHA" \
+                        --accepted-file "$RUNNER_TEMP/accepted.txt" --summary-file "$GITHUB_STEP_SUMMARY"

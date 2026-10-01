@@ -63,9 +63,11 @@ Do not manually edit. Regenerate with `yarn run generate`.
   over `node_modules/@icure/cardinal-sdk`, bumps `package.json` to the SDK version, runs generate/build/test, and lets
   Claude reconcile the rest through `.claude/skills/mcp-sync/SKILL.md`. Opens a PR to `develop` on branch
   `mcp-server/sync-<version>`.
-- Publishing happens in `icure/the-forge`: the `publish-mcp-server` job of `publish-cardinal-sdk.yml` runs on the
-  `cardinal-sdk-<version>` tag, right after the job that publishes `@icure/cardinal-sdk`, and publishes this package
-  with npm trusted publishing (OIDC). It skips when the package version is already on npm.
+- Publishing happens in `icure/the-forge`: `release-cardinal-sdk.yml` runs on the `cardinal-sdk-<release tag>` forge
+  tag and, for a release that includes TypeScript, calls `publish-cardinal-sdk-ts.yml`. Its `publish-mcp-server` job
+  runs right after the job that publishes `@icure/cardinal-sdk`, stamps `package.json` with the version of the
+  release tag, and publishes this package with npm trusted publishing (OIDC). It skips when that version is already
+  on npm.
 - `SDK.md` is a snapshot of the `sdk/` pages of `icure/medtech-docs` (June 2026), split by `<!-- Source: sdk/... -->`
   markers, plus sections the sync agent adds or extends to document features released since. Those additions live
   only here; the PR body of each sync lists them so they can be ported to `medtech-docs`.

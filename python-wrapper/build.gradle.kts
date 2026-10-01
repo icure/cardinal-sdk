@@ -169,7 +169,7 @@ fun prepareDistributionArchive(
 
 	val tomlFile = projectDir.resolve("src/commonMain/resources/pyproject.toml")
 	val content = tomlFile.readText()
-	val version = project(":cardinal-sdk").version.toString()
+	val version = SdkVersion.toPep440(project(":cardinal-sdk").version.toString())
 
 	tomlFile.writeText(
 		Regex("version = \"([^\"]+)\"").replace(content) {
