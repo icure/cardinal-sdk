@@ -83,18 +83,10 @@ export interface SdkOptions {
    */
   readonly dataOwnerScope?: string
   /**
-   * If provided, when the backend returns a list of stored entities (get by ids, filter, find, list, ...) the entities
-   * that can't be deserialized are dropped from the result instead of failing the whole request, and this function is
-   * called once for each dropped entity. Methods returning lists may then return fewer entities than requested.
-   *
-   * Single entity reads, write operations and the entities used internally by the crypto layer are never affected.
-   * If the function throws, the request fails with that error.
-   *
-   * The `json` of the entity contains all its non-encrypted data, including personal data: avoid logging it as is.
-   *
-   * If not provided (default) a malformed entity fails the whole request.
+   * How the lists of entities returned by the read endpoints of the backend are decoded.
+   * Refer to {@link EntityListDecodingStrategy}. Defaults to {@link EntityListDecodingStrategy.Strict}.
    */
-  readonly onMalformedEntity?: (entity: MalformedEntity) => void
+  readonly entityListDecodingStrategy?: EntityListDecodingStrategy
 }
 
 export interface BasicSdkOptions {
@@ -130,18 +122,9 @@ export interface BasicSdkOptions {
    */
   readonly dataOwnerScope?: string
   /**
-   * If provided, when the backend returns a list of stored entities (get by ids, filter, find, list, ...) the entities
-   * that can't be deserialized are dropped from the result instead of failing the whole request, and this function is
-   * called once for each dropped entity. Methods returning lists may then return fewer entities than requested.
-   *
-   * Single entity reads, write operations and the entities used internally by the crypto layer are never affected.
-   * If the function throws, the request fails with that error.
-   *
-   * The `json` of the entity contains all its non-encrypted data, including personal data: avoid logging it as is.
-   *
-   * If not provided (default) a malformed entity fails the whole request.
+   * Refer to {@link SdkOptions.entityListDecodingStrategy }
    */
-  readonly onMalformedEntity?: (entity: MalformedEntity) => void
+  readonly entityListDecodingStrategy?: EntityListDecodingStrategy
 }
 
 /**
@@ -186,18 +169,44 @@ export interface AnonymousSdkOptions {
    */
   readonly ignoreUnknownFields?: boolean
   /**
-   * If provided, when the backend returns a list of stored entities (get by ids, filter, find, list, ...) the entities
-   * that can't be deserialized are dropped from the result instead of failing the whole request, and this function is
-   * called once for each dropped entity. Methods returning lists may then return fewer entities than requested.
+   * Refer to {@link SdkOptions.entityListDecodingStrategy }
+   */
+  readonly entityListDecodingStrategy?: EntityListDecodingStrategy
+}
+
+/**
+ * Strategy used to decode the lists of entities returned by the read endpoints of the backend (get by ids, filter,
+ * find, list, ...).
+ */
+export type EntityListDecodingStrategy = typeof EntityListDecodingStrategy.Strict | EntityListDecodingStrategy.DiscardMalformed
+
+export namespace EntityListDecodingStrategy {
+  /**
+   * If an entity of the list can't be deserialized the whole request fails. This is the default behaviour.
+   */
+  export const Strict: {
+    readonly $ktClass: 'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.Strict'
+  } = {
+    $ktClass: 'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.Strict'
+  }
+
+  /**
+   * The entities of the list that can't be deserialized are dropped from the result instead of failing the whole
+   * request, and {@link handler} is called once for each dropped entity. Methods returning lists may then return fewer
+   * entities than requested, and pages may contain fewer rows than their limit.
    *
    * Single entity reads, write operations and the entities used internally by the crypto layer are never affected.
-   * If the function throws, the request fails with that error.
+   * Only type mismatches inside a valid json are recoverable: a response that is not valid json still fails.
+   * If {@link handler} throws, the request fails with that error.
    *
    * The `json` of the entity contains all its non-encrypted data, including personal data: avoid logging it as is.
-   *
-   * If not provided (default) a malformed entity fails the whole request.
    */
-  readonly onMalformedEntity?: (entity: MalformedEntity) => void
+  export class DiscardMalformed {
+    readonly $ktClass: 'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.DiscardMalformed' =
+      'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.DiscardMalformed'
+
+    constructor(readonly handler: (entity: MalformedEntity) => void) {}
+  }
 }
 
 /**

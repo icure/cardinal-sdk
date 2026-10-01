@@ -356,9 +356,9 @@ class RawInvoiceApiImpl(
 					"byHcParty",
 					hcPartyId,
 					"mediumType",
-					"$sentMediumType",
+					sentMediumType.dtoSerialName,
 					"invoiceType",
-					"$invoiceType",
+					invoiceType.dtoSerialName,
 					"sent",
 					"$sent",
 				)
