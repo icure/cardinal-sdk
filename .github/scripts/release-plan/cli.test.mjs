@@ -140,3 +140,13 @@ test('usage errors exit with 2', () => {
 	assert.equal(run(dir, ['pr', '--title', 'Release 2.14.20', '--base-ref', 'nope', '--head-ref', 'develop',
 		'--head-sha', 'HEAD'], []).code, 2);
 });
+
+test('version mode prints the version a release title ships for a unit', () => {
+	const version = (...args) => spawnSync(process.execPath, [CLI, 'version', ...args], { encoding: 'utf8' });
+	assert.equal(version('--title', 'Release 2.13.6', '--unit', 'kotlin').stdout, '2.13.6\n');
+	const unreleased = version('--title', 'Release ts-2.14.11', '--unit', 'kotlin');
+	assert.equal(unreleased.status, 0);
+	assert.equal(unreleased.stdout, '');
+	assert.equal(version('--title', '', '--unit', 'python').stdout, '');
+	assert.equal(version('--title', 'Release 2.13.6', '--unit', 'java').status, 2);
+});

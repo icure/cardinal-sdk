@@ -15,6 +15,13 @@ export function parseTitle(title) {
 	return m ? m[1].trim().split(/\s+/) : null;
 }
 
+// The version a release title ships for `unit`: its unit tag, else its full tag. Null when the title is not a
+// release title or does not release that unit. Nothing is validated here, release-check does that.
+export function releaseVersionFor(title, unit) {
+	const tags = (parseTitle(title) ?? []).map(parseTag).filter(Boolean);
+	return (tags.find((p) => p.unit === unit) ?? tags.find(isFull))?.version ?? null;
+}
+
 // Accepted releases, from the-forge's `cardinal-sdk-<tag>` tags (one per line, possibly noisy). Tags outside the
 // grammar (older conventions, other projects) are ignored. `exclude` removes the releases being planned, so a
 // re-run of an accepted release does not collide with itself.
