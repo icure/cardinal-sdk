@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { parseAccepted, parseTitle, renderSummary, validatePr, validateTag } from './rules.mjs';
+import { parseAccepted, parseTitle, releaseVersionFor, renderSummary, validatePr, validateTag } from './rules.mjs';
 
 const accepted = (...names) => parseAccepted(names);
 const rules = (res) => res.violations.map((v) => v.rule);
@@ -127,6 +127,16 @@ test('title whitespace is tolerated', () => {
 	assert.deepEqual(parseTitle('  Release   ts-2.14.11   python-2.14.11 '), ['ts-2.14.11', 'python-2.14.11']);
 	assert.equal(pr({ title: '  Release   ts-2.14.11 ' }).ok, true);
 	assert.equal(parseTitle('Releases 2.14.20'), null);
+});
+
+test('the version a release title ships for a unit', () => {
+	assert.equal(releaseVersionFor('Release 2.13.6', 'kotlin'), '2.13.6');
+	assert.equal(releaseVersionFor('Release 2.15.0-PREVIEW.2', 'python'), '2.15.0-PREVIEW.2');
+	assert.equal(releaseVersionFor('Release ts-2.14.12 python-2.14.11', 'python'), '2.14.11');
+	assert.equal(releaseVersionFor('Release ts-2.14.12 python-2.14.11', 'kotlin'), null);
+	assert.equal(releaseVersionFor('Release 2.13.6-rc1', 'kotlin'), null);
+	assert.equal(releaseVersionFor('Bump ktor', 'ts'), null);
+	assert.equal(releaseVersionFor('', 'ts'), null);
 });
 
 test('R10: a unit release only touches its units', () => {

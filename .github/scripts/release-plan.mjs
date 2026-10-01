@@ -1,16 +1,21 @@
 #!/usr/bin/env node
 // Validates a release PR (`pr`) or the release tags of a merged commit (`tag`) and prints the release plan as JSON.
 // Used by release-check.yml, release.yml and the-forge's release-cardinal-sdk.yml, see RELEASING.md.
+// `version` prints the version a release title ships for one unit, or nothing: the test workflows build with it.
 import { appendFileSync, readFileSync } from 'node:fs';
 import { parseArgs } from 'node:util';
 import * as repoFacts from './release-plan/git.mjs';
-import { parseAccepted, parseTitle, renderSummary, validatePr, validateTag } from './release-plan/rules.mjs';
+import {
+	parseAccepted, parseTitle, releaseVersionFor, renderSummary, validatePr, validateTag,
+} from './release-plan/rules.mjs';
+import { UNITS } from './release-plan/version.mjs';
 
 const USAGE = `usage:
   release-plan.mjs pr  --title <title> --base-ref <branch> --head-ref <branch> --head-sha <sha>
                        --accepted-file <file> [--repo <dir>] [--summary-file <file>]
   release-plan.mjs tag (--title <title> | --tag <tag> [--tag <tag>…]) --commit <sha>
-                       --accepted-file <file> [--dry-run] [--repo <dir>] [--summary-file <file>]`;
+                       --accepted-file <file> [--dry-run] [--repo <dir>] [--summary-file <file>]
+  release-plan.mjs version --title <title> --unit <kotlin|ts|python>`;
 
 const OPTIONS = {
 	title: { type: 'string' },
@@ -23,6 +28,7 @@ const OPTIONS = {
 	'accepted-file': { type: 'string' },
 	repo: { type: 'string', default: '.' },
 	'summary-file': { type: 'string' },
+	unit: { type: 'string' },
 };
 
 function usage(message) {
@@ -64,6 +70,12 @@ function main(argv) {
 		({ values } = parseArgs({ args, options: OPTIONS }));
 	} catch (e) {
 		return usage(e.message);
+	}
+	if (mode === 'version') {
+		if (values.title === undefined || !UNITS.includes(values.unit)) return usage();
+		const version = releaseVersionFor(values.title, values.unit);
+		if (version) process.stdout.write(`${version}\n`);
+		return 0;
 	}
 	if (!values['accepted-file']) return usage('--accepted-file is required');
 	const acceptedNames = readFileSync(values['accepted-file'], 'utf8').split('\n');
