@@ -4,7 +4,7 @@
  * Releases pass it as the `sdkVersion` Gradle property (the-forge sets `ORG_GRADLE_PROJECT_sdkVersion` from the
  * release tag, without its unit prefix). Other builds derive a snapshot version from the git tags.
  */
-object SdkVersion {
+object ReleaseVersion {
 	private val releaseVersion = Regex("""^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(-PREVIEW\.[1-9]\d*)?$""")
 	private val bareFinalTag = Regex("""^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$""")
 

@@ -38,7 +38,7 @@ test('classifies every row of the spec mapping', () => {
 		// nativeMain is the parent of appleMain, hence of iosMain (Kotlin), and of the Linux, Windows and macOS targets.
 		'cardinal-sdk/src/nativeMain/kotlin/A.kt': ['kotlin', 'python'],
 		'cardinal-sdk/src/commonMain/kotlin/A.kt': ['kotlin', 'ts', 'python'],
-		'buildSrc/src/main/kotlin/SdkVersion.kt': ['kotlin', 'ts', 'python'],
+		'buildSrc/src/main/kotlin/ReleaseVersion.kt': ['kotlin', 'ts', 'python'],
 		'cardinal-sdk/build.gradle.kts': ['kotlin', 'ts', 'python'],
 		'gradle/libs.versions.toml': ['kotlin', 'ts', 'python'],
 		'ksp-json-processor': ['kotlin', 'ts', 'python'],
