@@ -128,7 +128,7 @@ class RawTimeTableApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(timeTableIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTimeTable(timeTableDto: TimeTable): HttpResponse<TimeTable> =
 		put(authProvider) {
@@ -156,7 +156,7 @@ class RawTimeTableApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getTimeTablesByAgendaId(agendaId: String): HttpResponse<List<TimeTable>> =
 		post(authProvider) {
@@ -167,7 +167,7 @@ class RawTimeTableApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun matchTimeTablesBy(filter: AbstractFilter<TimeTable>): HttpResponse<List<String>> =
 		post(authProvider) {

@@ -71,7 +71,7 @@ class RawTopicApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(topicIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getTopicInGroup(
 		groupId: String,
@@ -98,7 +98,7 @@ class RawTopicApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(topicIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createTopic(ft: EncryptedTopic): HttpResponse<EncryptedTopic> =
 		post(authProvider) {
@@ -409,7 +409,7 @@ class RawTopicApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(TopicAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun matchTopicsBy(filter: AbstractFilter<Topic>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -483,7 +483,7 @@ class RawTopicApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedTopic>,
@@ -535,7 +535,7 @@ class RawTopicApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.DatabaseInitialisation
+import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.GroupDeletionReport
 import com.icure.cardinal.sdk.model.IdWithRev
@@ -14,6 +15,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.couchdb.DesignDocument
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
+import com.icure.cardinal.sdk.model.embed.EncryptedTypedValue
 import com.icure.cardinal.sdk.model.embed.GroupType
 import com.icure.cardinal.sdk.model.embed.RoleConfiguration
 import com.icure.cardinal.sdk.model.embed.UserType
@@ -147,6 +149,14 @@ public interface RawGroupApi {
 	suspend fun deleteGroup(id: String): HttpResponse<Group>
 
 	suspend fun hardDeleteGroup(id: String): HttpResponse<List<GroupDeletionReport>>
+
+	suspend fun getInternalPropertiesOfGroup(id: String): HttpResponse<List<EncryptedPropertyStub>>
+
+	suspend fun setInternalPropertyInGroup(
+		id: String,
+		propertyIdentifier: String,
+		`value`: EncryptedTypedValue?,
+	): HttpResponse<Group>
 
 	suspend fun modifyGroupProperties(
 		id: String,

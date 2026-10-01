@@ -94,6 +94,22 @@ data class DataOwnerHierarchyInfo(
 	}
 
 	/**
+	 * Re-roots this hierarchy tree at [from], keeping links of every type. [from] can be [id] itself (returns this
+	 * hierarchy unchanged) or the id of any group reachable through this hierarchy tree, regardless of link type.
+	 * @throws IllegalArgumentException if [from] is not part of this hierarchy.
+	 */
+	internal fun subHierarchy(from: String): DataOwnerHierarchyInfo =
+		if (from == id) {
+			this
+		} else {
+			val node = traverseNodes().firstOrNull { it.linkedGroupId == from }
+			require(node != null) {
+				"Data owner $from is not part of the hierarchy of $id."
+			}
+			DataOwnerHierarchyInfo(id = from, dataOwnerType = dataOwnerType, links = node.transitiveLinks)
+		}
+
+	/**
 	 * The ids of all data owners in this hierarchy tree (excluding [id] itself, unless it has no [links]) that
 	 * have no further transitive links, deduplicated. As with [flattened], a group reachable through several
 	 * paths has its own links traversed only once, the first time it is reached.

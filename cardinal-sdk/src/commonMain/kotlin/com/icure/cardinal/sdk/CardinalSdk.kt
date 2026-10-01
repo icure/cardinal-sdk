@@ -146,6 +146,7 @@ import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
+import com.icure.cardinal.sdk.options.EntityListDecodingStrategy
 import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.options.SdkOptions
@@ -318,7 +319,8 @@ interface CardinalSdk : CardinalApis {
 					additionalHeaders = emptyMap(),
 					requestTimeout = options.requestTimeout,
 					json = json,
-					retryConfiguration = options.requestRetryConfiguration
+					retryConfiguration = options.requestRetryConfiguration,
+					entityListDecodingStrategy = options.entityListDecodingStrategy,
 				)
 			)
 			val initializedSdkOptions = buildInitializedOptions(baseStorage, options, customisedSdkOptions)
@@ -431,7 +433,8 @@ private class AuthenticationWithProcessStepImpl(
 				json = options.configuredJsonOrDefault(),
 				additionalHeaders = emptyMap(),
 				requestTimeout = options.requestTimeout,
-				retryConfiguration = options.requestRetryConfiguration
+				retryConfiguration = options.requestRetryConfiguration,
+				entityListDecodingStrategy = options.entityListDecodingStrategy,
 			)
 		)
 		val loginResult = retryWithDelays(
@@ -474,7 +477,8 @@ private fun buildInitializedOptions(
 		unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictnessOrDefault(
 			sdkOptions.unversionedEntitiesDecryptedJsonStrictness,
 			sdkOptions.ignoreUnknownFieldsOrDefault()
-		)
+		),
+		entityListDecodingStrategy = sdkOptions.entityListDecodingStrategy,
 	)
 }
 
@@ -488,6 +492,7 @@ internal data class InitializedSdkOptions(
 	val requestRetryConfiguration: RequestRetryConfiguration,
 	val keyStorage: KeyStorageFacade?,
 	val baseStorage: StorageFacade,
+	val entityListDecodingStrategy: EntityListDecodingStrategy,
 	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness
 )
 
@@ -520,7 +525,8 @@ internal suspend fun initializeApiCrypto(
 		json = json,
 		additionalHeaders = mutableAdditionalHeaders,
 		requestTimeout = options.requestTimeout,
-		retryConfiguration = options.requestRetryConfiguration
+		retryConfiguration = options.requestRetryConfiguration,
+		entityListDecodingStrategy = options.entityListDecodingStrategy,
 	)
 	// Constructed before dataOwnerApi/self is known so that DataOwnerApiImpl can bulk-fetch hierarchy members using
 	// the type-specific raw APIs (all data owners of a hierarchy share the same type). Safe to construct this early:

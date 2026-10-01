@@ -70,7 +70,7 @@ class RawDocumentTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listDocumentTemplatesByDocumentType(
 		documentTypeCode: String,
@@ -84,7 +84,7 @@ class RawDocumentTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listDocumentTemplatesByDocumentTypeForCurrentUser(
 		documentTypeCode: String,
@@ -98,7 +98,7 @@ class RawDocumentTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listDocumentTemplates(loadAttachment: Boolean?): HttpResponse<List<DocumentTemplate>> =
 		get(authProvider) {
@@ -109,7 +109,7 @@ class RawDocumentTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findAllDocumentTemplates(
 		startKey: String?,
@@ -126,7 +126,7 @@ class RawDocumentTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun createDocumentTemplate(ft: DocumentTemplate): HttpResponse<DocumentTemplate> =
 		post(authProvider) {

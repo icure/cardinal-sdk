@@ -119,7 +119,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpPatients(patientDtos: List<EncryptedPatient>): HttpResponse<List<EncryptedPatient>> =
 		put(authProvider) {
@@ -156,7 +156,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpHealthElement(id: String): HttpResponse<EncryptedHealthElement> =
 		get(authProvider) {
@@ -199,7 +199,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpHealthElements(healthElementDtos: List<EncryptedHealthElement>): HttpResponse<List<EncryptedHealthElement>> =
 		put(authProvider) {
@@ -236,7 +236,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpForm(id: String): HttpResponse<EncryptedForm> =
 		get(authProvider) {
@@ -279,7 +279,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpForms(formDtos: List<EncryptedForm>): HttpResponse<List<EncryptedForm>> =
 		put(authProvider) {
@@ -316,7 +316,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpContact(id: String): HttpResponse<EncryptedContact> =
 		get(authProvider) {
@@ -359,7 +359,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpContacts(contactDtos: List<EncryptedContact>): HttpResponse<List<EncryptedContact>> =
 		put(authProvider) {
@@ -396,7 +396,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpMessage(id: String): HttpResponse<EncryptedMessage> =
 		get(authProvider) {
@@ -439,7 +439,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpMessages(messageDtos: List<EncryptedMessage>): HttpResponse<List<EncryptedMessage>> =
 		put(authProvider) {
@@ -476,7 +476,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpInvoice(id: String): HttpResponse<EncryptedInvoice> =
 		get(authProvider) {
@@ -519,7 +519,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpInvoices(invoiceDtos: List<EncryptedInvoice>): HttpResponse<List<EncryptedInvoice>> =
 		put(authProvider) {
@@ -556,7 +556,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpDocument(id: String): HttpResponse<EncryptedDocument> =
 		get(authProvider) {
@@ -640,7 +640,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpDocuments(documentDtos: List<EncryptedDocument>): HttpResponse<List<EncryptedDocument>> =
 		put(authProvider) {
@@ -677,7 +677,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpClassification(id: String): HttpResponse<EncryptedClassification> =
 		get(authProvider) {
@@ -720,7 +720,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpClassifications(
 		classificationDtos: List<EncryptedClassification>,
@@ -761,7 +761,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getTmpEntityTemplate(id: String): HttpResponse<EntityTemplate> =
 		get(authProvider) {
@@ -804,7 +804,7 @@ class RawTmpApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(ids)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyTmpEntityTemplates(entityTemplateDtos: List<EntityTemplate>): HttpResponse<List<EntityTemplate>> =
 		put(authProvider) {
@@ -841,7 +841,7 @@ class RawTmpApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun deleteTmpItems(ids: List<String>): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {

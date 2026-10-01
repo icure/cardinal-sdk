@@ -140,7 +140,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			listOf(entity),
 			entityType,
-			dataOwnersForDecryption(dataOwnerId).flattened(),
+			dataOwnersForMetadataDecryption(dataOwnerId),
 			securityMetadataType
 		).values.single().mapTo(mutableSetOf()) {
 			it.value
@@ -156,7 +156,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entities,
 			entitiesType,
-			dataOwnersForDecryption(dataOwnerId).flattened(),
+			dataOwnersForMetadataDecryption(dataOwnerId),
 			SecurityMetadataType.SecretId
 		).mapValues { (_, v) -> v.mapTo(mutableSetOf()) { it.value } }
 
@@ -169,7 +169,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entities,
 			entitiesType,
-			dataOwnersForDecryption(null).flattened(),
+			dataOwnersForMetadataDecryption(null),
 			SecurityMetadataType.SecretId
 		).mapValues { (_, v) ->
 			v.groupedByValueToAllDataOwnersWithAccess()
@@ -184,7 +184,7 @@ class EntityEncryptionServiceImpl(
 			entityGroupId,
 			entity,
 			entityType,
-			dataOwnersForDecryption(null).flattened()
+			dataOwnersForMetadataDecryption(null)
 		) == AccessLevel.Write
 
 	override fun hasEmptyEncryptionMetadata(
@@ -607,7 +607,7 @@ class EntityEncryptionServiceImpl(
 		require(entities.distinctBy { it.id }.size == entities.size) { "Duplicate entities in the input" }
 
 		val normalizedDelegates = delegates.mapKeys { it.key.normalized(boundGroup) }
-		val hierarchySet = dataOwnersForDecryption(null).flattened()
+		val hierarchySet = dataOwnersForMetadataDecryption(null)
 
 		// One decryptAll call per metadata type across the whole batch, instead of decryptSecurityMetadataDetails
 		// (3 calls) once per entity: this is the actual efficiency win of this method over calling
@@ -713,7 +713,7 @@ class EntityEncryptionServiceImpl(
 		doRequestBulkShareOrUpdate: suspend (request: BulkShareOrUpdateMetadataParams) -> List<EntityBulkShareResult<out T>>
 	): SimpleShareResult<T> {
 		val normalizedDelegates = delegates.mapKeys { it.key.normalized(boundGroup) }
-		val decryptedMetadata = decryptSecurityMetadataDetails(entityGroupId, entity, entityType, dataOwnersForDecryption(null).flattened())
+		val decryptedMetadata = decryptSecurityMetadataDetails(entityGroupId, entity, entityType, dataOwnersForMetadataDecryption(null))
 		val extendedDelegateOptions = resolveSimpleDelegateShareOptions(entity, entityType, decryptedMetadata, normalizedDelegates)
 			.mapValues { (_, result) -> result.getOrThrow() }
 		val shareResult = doBulkShareOrUpdateEncryptedEntityMetadata(
@@ -810,8 +810,10 @@ class EntityEncryptionServiceImpl(
 		require (entitiesUpdates.all { it.first.rev != null }) {
 			"Only existing entities can be shared"
 		}
-		val hierarchySet = dataOwnersForDecryption(null).flattened()
+		val hierarchySet = dataOwnersForMetadataDecryption(null)
 		val hierarchyReferenceSet = hierarchySet.map { EntityReferenceInGroup(it, null) }.toSet()
+		// Legacy delegations predate data owner groups: only the parent hierarchy can have legacy data to migrate.
+		val parentHierarchySet = dataOwnersForDecryption(null).flattened()
 		val requestsByEntityId = mutableMapOf<String, EntityShareRequestDetails>()
 		val unmodifiedEntityIds = mutableSetOf<String>()
 		entitiesUpdates.forEach { (entity, optionsForDelegates) ->
@@ -820,7 +822,7 @@ class EntityEncryptionServiceImpl(
 				entity,
 				entitiesType,
 				optionsForDelegates,
-				hierarchySet
+				parentHierarchySet
 			)
 			val nonMigratedOptionsForDelegates = optionsForDelegates.filterKeys { it !in migrationRequests }
 			val reducedOptionsForDelegates = if (nonMigratedOptionsForDelegates.isNotEmpty()) {
@@ -1281,22 +1283,23 @@ class EntityEncryptionServiceImpl(
 		return SecretIdCreationResult(updatedEntity = updatedEntity, newSecretId = newSecretId)
 	}
 
-	private suspend fun getSecretIdsSharedWithParentsOf(
+	private suspend fun getSecretIdsSharedWithHierarchyOf(
 		entityGroupId: String?,
 		entity: HasEncryptionMetadata,
 		entityType: EntityWithEncryptionMetadataTypeName,
 	): Set<String> {
-		val topmostParentsReferences = userEncryptionKeysManager.delegatorActorParentHierarchy().leaves().map {
+		val fullHierarchy = userEncryptionKeysManager.delegatorActorFullHierarchy()
+		val topmostHierarchyMembersAccessReferences = fullHierarchy.leaves().map {
 			EntityReferenceInGroup(it, null)
 		}
 		return baseSecurityMetadataDecryptor.decryptAll(
 			entityGroupId,
 			listOf(entity),
 			entityType,
-			dataOwnersForDecryption(null).flattened(),
+			dataOwnersForMetadataDecryption(null),
 			SecurityMetadataType.SecretId,
 		).values.single().groupedByValueToAllDataOwnersWithAccess().mapNotNullTo(mutableSetOf()) { (value, allDataOwnersWithAccess) ->
-			if (topmostParentsReferences.all { it in allDataOwnersWithAccess }) {
+			if (topmostHierarchyMembersAccessReferences.all { it in allDataOwnersWithAccess }) {
 				value
 			} else {
 				null
@@ -1314,7 +1317,7 @@ class EntityEncryptionServiceImpl(
 		when (secretIdUseOption) {
 			is SecretIdUseOption.Use -> secretIdUseOption.secretIds
 			SecretIdUseOption.UseAnySharedWithHierarchy, SecretIdUseOption.UseAllSharedWithHierarchy ->
-				getSecretIdsSharedWithParentsOf(
+				getSecretIdsSharedWithHierarchyOf(
 					entityGroupId = entityGroupId,
 					entityType = entityType,
 					entity = entity
@@ -1358,4 +1361,15 @@ class EntityEncryptionServiceImpl(
 
 	private fun dataOwnersForDecryption(startingFrom: String?) =
 		userEncryptionKeysManager.delegatorActorParentHierarchy(startingFrom)
+
+	/**
+	 * All data owners whose delegations can be used to extract security metadata (secret ids, encryption keys, owning
+	 * entity ids) starting from [startingFrom] (or the delegator actor if null): the data owner itself and all
+	 * groups it reaches through links of any type, including simple-type data owner groups, consistently with
+	 * [IncrementalSecurityMetadataDecryptor] which is used for entity decryption.
+	 */
+	private fun dataOwnersForMetadataDecryption(startingFrom: String?): Set<String> =
+		userEncryptionKeysManager.delegatorActorFullHierarchy().let  {
+			if (startingFrom != null) it.subHierarchy(startingFrom) else it
+		}.flattened()
 }

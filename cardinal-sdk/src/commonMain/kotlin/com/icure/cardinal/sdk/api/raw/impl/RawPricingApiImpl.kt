@@ -57,7 +57,7 @@ class RawPricingApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(pricingIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyPricingInGroup(
 		groupId: String,

@@ -52,7 +52,7 @@ class RawCalendarItemTypeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun getCalendarItemTypesByIds(calendarItemTypeIds: ListOfIds): HttpResponse<List<CalendarItemType>> =
 		post(authProvider) {
@@ -63,7 +63,7 @@ class RawCalendarItemTypeApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(calendarItemTypeIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listCalendarItemTypesByAgendaId(agendaId: String): HttpResponse<List<CalendarItemType>> =
 		get(authProvider) {
@@ -73,7 +73,7 @@ class RawCalendarItemTypeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getCalendarItemTypesIncludingDeleted(
 		startKey: String?,
@@ -90,7 +90,7 @@ class RawCalendarItemTypeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun createCalendarItemType(calendarItemTypeDto: CalendarItemType): HttpResponse<CalendarItemType> =
 		post(authProvider) {
@@ -249,7 +249,7 @@ class RawCalendarItemTypeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<CalendarItemType>,
@@ -364,7 +364,7 @@ class RawCalendarItemTypeApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(calendarItemTypeIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteCalendarItemTypesInGroup(
 		groupId: String,
@@ -473,7 +473,7 @@ class RawCalendarItemTypeApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

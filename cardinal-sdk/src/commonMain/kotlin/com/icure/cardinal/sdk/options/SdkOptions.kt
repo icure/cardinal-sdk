@@ -61,6 +61,12 @@ interface SerializationOptions {
 	 * by default).
 	 */
 	val ignoreUnknownFields: Boolean?
+
+	/**
+	 * How the lists of entities returned by the read endpoints of the backend are decoded.
+	 * Refer to [EntityListDecodingStrategy]. Defaults to [EntityListDecodingStrategy.Strict].
+	 */
+	val entityListDecodingStrategy: EntityListDecodingStrategy
 }
 
 interface CommonSdkOptions : HttpSdkOptions, SerializationOptions {
@@ -99,6 +105,7 @@ data class AnonymousSdkOptions(
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val ignoreUnknownFields: Boolean? = null,
+	override val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
 ): HttpSdkOptions, SerializationOptions {
 	init {
 		validateHttpAndSerializationOptions()
@@ -192,6 +199,7 @@ data class SdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
+	override val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
 	/**
 	 * Specifies how strict json decoding should be when decoding the encrypted content of an entity that is not using
 	 * the versioned data model (created before cardinal 3.0). For all entities that are already using the versioned
@@ -227,6 +235,7 @@ data class BasicSdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
+	override val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
 ): BoundSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()
@@ -250,6 +259,7 @@ data class UnboundBasicSdkOptions(
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val ignoreUnknownFields: Boolean? = null,
+	override val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
 ): CommonSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()

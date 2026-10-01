@@ -54,7 +54,7 @@ class RawInsuranceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun createInsurance(insuranceDto: Insurance): HttpResponse<Insurance> =
 		post(authProvider) {
@@ -170,7 +170,7 @@ class RawInsuranceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(insuranceIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun matchInsurancesBy(filter: AbstractFilter<Insurance>): HttpResponse<List<String>> =
 		post(authProvider) {
@@ -191,7 +191,7 @@ class RawInsuranceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listInsurancesByName(insuranceName: String): HttpResponse<List<Insurance>> =
 		get(authProvider) {
@@ -201,7 +201,7 @@ class RawInsuranceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyInsurance(insuranceDto: Insurance): HttpResponse<Insurance> =
 		put(authProvider) {
@@ -244,7 +244,7 @@ class RawInsuranceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<Insurance>,
@@ -331,7 +331,7 @@ class RawInsuranceApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(insuranceIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyInsuranceInGroup(
 		groupId: String,
@@ -482,7 +482,7 @@ class RawInsuranceApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

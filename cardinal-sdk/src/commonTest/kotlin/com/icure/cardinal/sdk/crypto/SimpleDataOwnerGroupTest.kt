@@ -1,10 +1,16 @@
 package com.icure.cardinal.sdk.crypto
 
+import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
+import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
+import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
+import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
+import com.icure.cardinal.sdk.filters.ContactFilters
 import com.icure.cardinal.sdk.model.DataOwnerType
+import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.HealthcareParty
@@ -12,6 +18,7 @@ import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.embed.AccessLevel
+import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.baseUrl
@@ -21,13 +28,19 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.superadminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.HEAVY_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.kryptom.crypto.RsaAlgorithm
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.utils.InternalIcureApi
+import io.kotest.assertions.assertSoftly
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.withClue
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.spec.style.FreeSpec
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.maps.shouldNotBeEmpty
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -46,7 +59,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		initializeTestEnvironment()
 	}
 
-	"Anonymous data owner -> simple data owner group data sharing is currently unsupported" {
+	"Anonymous data owner -> simple data owner group data sharing is currently unsupported".config(enabled = DEFAULT_ENABLED) {
 		val patient = createPatientUser()
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
@@ -67,7 +80,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		}
 	}
 
-	"A data owner should be able to share data with a simple data owner group" - {
+	"A data owner should be able to share data with a simple data owner group".config(enabled = DEFAULT_ENABLED) - {
 		val hcp = createHcpUser()
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(
@@ -98,6 +111,42 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 			memberBApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
 		}
 
+		"and direct members of that group should be able to use the secret ids shared with the group" {
+			val secretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			secretIds shouldHaveSize 1
+			val contact = hcpApi.contact.createContact(
+				hcpApi.contact.withEncryptionMetadata(
+					DecryptedContact(uuid()),
+					patient,
+					delegates = mapOf(group.dataOwnerId to AccessLevel.Read)
+				)
+			)
+			val patientForMember = memberAApi.patient.getPatient(patient.id).shouldNotBeNull()
+			memberAApi.patient.getSecretIdsOf(patientForMember).keys shouldBe secretIds
+			memberAApi.contact.matchContactsBy(
+				ContactFilters.byPatientsForDataOwner(group.dataOwnerId, listOf(patientForMember))
+			) shouldBe listOf(contact.id)
+			// The default secret id option (UseAnySharedWithHierarchy) must accept a secret id shared with the group
+			val memberContact = memberAApi.contact.createContact(
+				memberAApi.contact.withEncryptionMetadata(
+					DecryptedContact(uuid()),
+					patientForMember,
+					delegates = mapOf(hcp.dataOwnerId to AccessLevel.Read)
+				)
+			)
+			memberAApi.contact.decryptPatientIdOf(memberContact).map { it.entityId }.toSet() shouldBe setOf(patient.id)
+			hcpApi.contact.decryptPatientIdOf(hcpApi.contact.getContact(memberContact.id).shouldNotBeNull())
+				.map { it.entityId }.toSet() shouldBe setOf(patient.id)
+			// Members can reshare data they received through the group, including its secret ids
+			val other = createHcpUser()
+			val otherApi = other.api(specJob)
+			memberAApi.contact.shareWith(other.dataOwnerId, memberAApi.contact.getContact(contact.id).shouldNotBeNull())
+			memberAApi.patient.shareWith(other.dataOwnerId, patientForMember)
+			val patientForOther = otherApi.patient.getPatient(patient.id).shouldNotBeNull()
+			otherApi.patient.getSecretIdsOf(patientForOther).keys shouldBe secretIds
+			otherApi.contact.matchContactsBy(ContactFilters.byPatientsForSelf(listOf(patientForOther))) shouldBe listOf(contact.id)
+		}
+
 		"and members added in a second moment should be able to read it after they have been giving access to existing exchange data" {
 			val memberC = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 			memberAApi.dataOwner.addDataOwnersToGroup(DataOwnerType.Hcp, group.dataOwnerId, setOf(memberC.dataOwnerId))
@@ -126,7 +175,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		}
 	}
 
-	"A data owner member of a simple group should be able to share data with their group" {
+	"A data owner member of a simple group should be able to share data with their group".config(enabled = DEFAULT_ENABLED) {
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 		val memberB = createHcpUser(parent = group)
@@ -148,7 +197,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		memberBApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
 	}
 
-	"When a data owner is removed from a group existing exchange data should be invalidated if already shared with the data owner" - {
+	"When a data owner is removed from a group existing exchange data should be invalidated if already shared with the data owner".config(enabled = DEFAULT_ENABLED) - {
 		val hcp = createHcpUser()
 		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(
@@ -226,7 +275,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		}
 	}
 
-	"Data should be shared transitively with members at all layers of the group" {
+	"Data should be shared transitively with members at all layers of the group".config(enabled = DEFAULT_ENABLED) {
 		val topSimple = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val memberA = createHcpUser(parent = topSimple, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
 		val middleSimple = createHcpUser(parent = topSimple, groupLinkType = DataOwnerGroupLinkType.Simple)
@@ -287,7 +336,7 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		)
 	}
 
-	"In a group where the same recipient can be reached through multiple paths there is only one piece created per recipient" {
+	"In a group where the same recipient can be reached through multiple paths there is only one piece created per recipient".config(enabled = DEFAULT_ENABLED) {
 		val hcp = createHcpUser()
 		val hcpApi = hcp .api(specJob)
 		val topGroup = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
@@ -339,7 +388,253 @@ class SimpleDataOwnerGroupTest : FreeSpec({
 		)
 	}
 
-	"Should work for very large groups" {
+	"When linking to a patient with the default SecretIdUseOption a secret id must be directly shared with every leaf ancestor, including simple groups".config(enabled = DEFAULT_ENABLED) - {
+		val hcp = createHcpUser()
+		val hcpApi = hcp.api(specJob)
+		suspend fun createPatientSharedWith(vararg delegates: DataOwnerDetails): DecryptedPatient =
+			hcpApi.patient.createPatient(
+				hcpApi.patient.withEncryptionMetadata(
+					DecryptedPatient(
+						uuid(),
+						firstName = "John",
+						lastName = "Doe",
+						note = "Secret"
+					),
+					delegates = delegates.associate { it.dataOwnerId to AccessLevel.Write }
+				)
+			)
+		suspend fun DecryptedPatient.shareSecretIdWith(delegate: DataOwnerDetails): DecryptedPatient =
+			hcpApi.patient.shareWith(
+				delegate.dataOwnerId,
+				this,
+				PatientShareOptions(shareSecretIds = SecretIdShareOptions.UseExactly(hcpApi.patient.getSecretIdsOf(this).keys, false))
+			)
+		suspend fun CardinalSdk.createContactFor(
+			patientId: String,
+			secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
+		): DecryptedContact =
+			contact.createContact(
+				contact.withEncryptionMetadata(
+					DecryptedContact(uuid()),
+					patient.getPatient(patientId).shouldNotBeNull(),
+					secretId = secretId,
+				)
+			)
+
+		"a secret id shared with a member but not with its group can't be used" {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val memberApi = member.api(specJob)
+			val patient = createPatientSharedWith(member)
+			val secretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			memberApi.patient.getSecretIdsOf(memberApi.patient.getPatient(patient.id).shouldNotBeNull()).keys shouldBe secretIds
+			shouldThrow<IllegalArgumentException> { memberApi.createContactFor(patient.id) }
+			shouldThrow<IllegalArgumentException> { memberApi.createContactFor(patient.id, SecretIdUseOption.UseAllSharedWithHierarchy) }
+			memberApi.createContactFor(patient.id, SecretIdUseOption.Use(secretIds)).secretForeignKeys shouldBe secretIds
+			patient.shareSecretIdWith(group)
+			memberApi.createContactFor(patient.id).secretForeignKeys shouldBe secretIds
+		}
+
+		"a member of multiple simple groups needs the secret id to be shared with all of them" {
+			val groupA = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val groupB = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parents = listOf(groupA, groupB), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val memberApi = member.api(specJob)
+			val patient = createPatientSharedWith(groupA)
+			memberApi.patient.getPatient(patient.id).shouldNotBeNull().note shouldBe "Secret"
+			shouldThrow<IllegalArgumentException> { memberApi.createContactFor(patient.id) }
+			patient.shareSecretIdWith(groupB)
+			memberApi.createContactFor(patient.id).secretForeignKeys shouldBe hcpApi.patient.getSecretIdsOf(patient).keys
+		}
+
+		"in non-hierarchical mode ancestors reachable only through parent-type links are ignored" {
+			val parent = createHcpUser()
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parents = listOf(parent, group), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val hierarchicalMemberApi = member.api(specJob)
+			val nonHierarchicalMemberApi = member.api(specJob, useHierarchicalDataOwners = false)
+			val patient = createPatientSharedWith(group)
+			val secretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			// In hierarchical mode the parent is also a leaf ancestor
+			shouldThrow<IllegalArgumentException> { hierarchicalMemberApi.createContactFor(patient.id) }
+			nonHierarchicalMemberApi.createContactFor(patient.id).secretForeignKeys shouldBe secretIds
+			patient.shareSecretIdWith(parent)
+			hierarchicalMemberApi.createContactFor(patient.id).secretForeignKeys shouldBe secretIds
+		}
+
+		"in non-hierarchical mode secret ids shared only with a parent-type ancestor can't be used" {
+			val parent = createHcpUser()
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parents = listOf(parent, group), groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val hierarchicalMemberApi = member.api(specJob)
+			val nonHierarchicalMemberApi = member.api(specJob, useHierarchicalDataOwners = false)
+			val patient = createPatientSharedWith(parent)
+			// The parent is ignored in non-hierarchical mode: its keys are not loaded and the member can't access its data
+			val encryptedPatient = nonHierarchicalMemberApi.patient.tryAndRecover.getPatient(patient.id)
+				.shouldNotBeNull()
+				.shouldBeInstanceOf<EncryptedPatient>()
+			nonHierarchicalMemberApi.patient.getSecretIdsOf(encryptedPatient).keys shouldBe emptySet()
+			shouldThrow<IllegalArgumentException> {
+				nonHierarchicalMemberApi.contact.withEncryptionMetadata(DecryptedContact(uuid()), encryptedPatient)
+			}
+			// In hierarchical mode the group is also a leaf ancestor
+			shouldThrow<IllegalArgumentException> { hierarchicalMemberApi.createContactFor(patient.id) }
+		}
+
+		"only secret ids shared with every leaf ancestor are used, even if other secret ids are available" {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val member = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			val memberApi = member.api(specJob)
+			val patient = createPatientSharedWith(group)
+			val groupSecretIds = hcpApi.patient.getSecretIdsOf(patient).keys
+			val (patientWithNewSecretId, memberOnlySecretId) = hcpApi.patient.createNewSecretId(patient)
+			hcpApi.patient.shareWith(
+				member.dataOwnerId,
+				patientWithNewSecretId,
+				PatientShareOptions(shareSecretIds = SecretIdShareOptions.UseExactly(setOf(memberOnlySecretId), false))
+			)
+			memberApi.patient.getSecretIdsOf(memberApi.patient.getPatient(patient.id).shouldNotBeNull()).keys shouldBe
+				groupSecretIds + memberOnlySecretId
+			memberApi.createContactFor(patient.id).secretForeignKeys shouldBe groupSecretIds
+			memberApi.createContactFor(patient.id, SecretIdUseOption.UseAllSharedWithHierarchy).secretForeignKeys shouldBe groupSecretIds
+		}
+	}
+
+	"The piece of the delegator of simple group exchange data should be signed, and should be reused by the delegator".config(enabled = DEFAULT_ENABLED) {
+		suspend fun doTest(delegator: DataOwnerDetails, group: DataOwnerDetails) {
+			val delegatorApi = delegator.api(specJob)
+			suspend fun createPatientSharedWithGroup() = delegatorApi.patient.createPatient(
+				delegatorApi.patient.withEncryptionMetadata(
+					DecryptedPatient(
+						uuid(),
+						firstName = "John",
+						lastName = "Doe",
+						note = "Secret"
+					),
+					delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+				)
+			)
+			fun Patient.exchangeDataToGroupId() =
+				securityMetadata.shouldNotBeNull().secureDelegations.values.single {
+					it.delegate == group.dataOwnerId
+				}.exchangeDataId.shouldNotBeNull()
+			val patient1 = createPatientSharedWithGroup()
+			val rawExchangeDataApi = RawExchangeDataApiImpl(
+				baseUrl,
+				delegator.authService(),
+				DefaultRawApiConfig
+			)
+			val delegatorPiece = rawExchangeDataApi.getExchangeDataByDelegatorDelegateForRecipients(
+				delegator.dataOwnerId,
+				group.dataOwnerId,
+				JsonArray(listOf(JsonPrimitive(delegator.dataOwnerId))).toString()
+			).successBody().rows.shouldHaveSize(1).single()
+			assertSoftly {
+				delegatorPiece.recipient shouldBe delegator.dataOwnerId
+				delegatorPiece.exchangeDataGroupId shouldBe patient1.exchangeDataToGroupId()
+				withClue("Delegator piece should have a shared signature") {
+					delegatorPiece.sharedSignature shouldNotBe null
+				}
+				withClue("Delegator piece should have a delegator signature") {
+					delegatorPiece.delegatorSignature.shouldNotBeEmpty()
+				}
+				// Unverified exchange data is not used by the delegator for sharing: if the delegator piece can't be verified new
+				// exchange data is created after the cache is cleared
+				delegatorApi.crypto.forceReload()
+				val patient2 = createPatientSharedWithGroup()
+				withClue("Delegator should reuse the existing exchange data after reload") {
+					patient2.exchangeDataToGroupId() shouldBe patient1.exchangeDataToGroupId()
+				}
+			}
+		}
+
+		"when the delegator is not a member of the group".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			doTest(createHcpUser(), group)
+		}
+
+		"when the delegator is a direct member of the group".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val delegator = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			doTest(delegator, group)
+		}
+
+		"when the delegator is a transitive member of the group".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+			val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+			val subgroup = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.Simple)
+			val delegator = createHcpUser(parent = subgroup, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+			doTest(delegator, group)
+		}
+	}
+
+	// Reproducer for https://github.com/icure/cardinal-sdk/issues/736
+	"A member of a simple group with 100+ members should be able to share with the group even if its own piece is not in the first chunk".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val group = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
+		val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)
+		// Use shared key for fillers, otherwise takes too long
+		val keySpki = defaultCryptoService.rsa.exportSpkiHex(
+			defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256).public
+		)
+		// Ids start with "0000" so that they sort before the uuid of the delegator: the delegator is the last member, and its
+		// member piece ends up in the second chunk of 100 pieces
+		val fillers = List(110) { i ->
+			val hcpId = "0000" + Random.nextBytes(16).toHexString(HexFormat.UpperCase)
+			HealthcareParty(
+				hcpId,
+				firstName = "Filler-$i-$hcpId",
+				lastName = "Filler-$i-$hcpId",
+				publicKeysForOaepWithSha256 = setOf(keySpki),
+				dataOwnerGroups = listOf(DataOwnerGroupLink(group.dataOwnerId)),
+				groupLinkType = DataOwnerGroupLinkType.NotAllowed,
+			)
+		}
+		hcpRawApi.createHealthcarePartiesInGroup(testGroupId, fillers).successBody()
+		val delegator = createHcpUser(parent = group, groupLinkType = DataOwnerGroupLinkType.NotAllowed)
+		val delegatorApi = delegator.api(specJob)
+		delegatorApi.dataOwner.getSimpleGroupDelegateMembersIds(
+			delegatorApi.dataOwner.getCryptoActorStub(group.dataOwnerId),
+			null
+		) shouldBe (fillers.map { it.id } + delegator.dataOwnerId).toSet()
+		suspend fun createPatientSharedWithGroup() = delegatorApi.patient.createPatient(
+			delegatorApi.patient.withEncryptionMetadata(
+				DecryptedPatient(
+					uuid(),
+					firstName = "John",
+					lastName = "Doe",
+					note = "Secret"
+				),
+				delegates = mapOf(group.dataOwnerId to AccessLevel.Write)
+			)
+		)
+		val firstAttempt = runCatching { createPatientSharedWithGroup() }
+		val patient = firstAttempt.getOrElse {
+			// On failure, keep going with a retry to verify the exchange data is complete (the retry reuses the partially created
+			// exchange data)
+			println("First share failed: $it")
+			createPatientSharedWithGroup()
+		}
+		val rawExchangeDataApi = RawExchangeDataApiImpl(
+			baseUrl,
+			delegator.authService(),
+			DefaultRawApiConfig
+		)
+		val exchangeDataGroupId = patient.securityMetadata.shouldNotBeNull().secureDelegations.values.single {
+			it.delegate == group.dataOwnerId
+		}.exchangeDataId.shouldNotBeNull()
+		val allPiecesOfGroup = rawExchangeDataApi.getExchangeDataGroupById(exchangeDataGroupId, limit = 1000).successBody().rows
+		withClue("Exchange data should have a piece for each member of the group") {
+			allPiecesOfGroup.map { it.recipient }.toSet() shouldBe (fillers.map { it.id } + delegator.dataOwnerId).toSet()
+		}
+		withClue("First share should succeed") {
+			firstAttempt.exceptionOrNull() shouldBe null
+		}
+	}
+
+	"Should work for very large groups".config(enabled = HEAVY_ENABLED) {
 		val hcp = createHcpUser()
 		val topGroup = createHcpUser(groupLinkType = DataOwnerGroupLinkType.Simple)
 		val hcpRawApi = RawHealthcarePartyApiImpl(baseUrl, superadminAuth(), DefaultRawApiConfig)

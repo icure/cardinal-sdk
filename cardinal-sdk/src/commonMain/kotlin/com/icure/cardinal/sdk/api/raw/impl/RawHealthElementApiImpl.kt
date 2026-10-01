@@ -88,7 +88,7 @@ class RawHealthElementApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(healthElementIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listHealthElementIdsByDataOwnerPatientOpeningDate(
 		dataOwnerId: String,
@@ -254,7 +254,7 @@ class RawHealthElementApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBodyWithSerializer(FilterChainSerializer(HealthElementAbstractFilterSerializer), filterChain)
-		}.wrap()
+		}.wrapPaginatedList()
 
 	override suspend fun bulkShare(
 		request: BulkShareOrUpdateMetadataParams,
@@ -310,7 +310,7 @@ class RawHealthElementApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedHealthElement>,
@@ -436,7 +436,7 @@ class RawHealthElementApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(healthElementIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun deleteHealthElementInGroup(
 		groupId: String,
@@ -573,7 +573,7 @@ class RawHealthElementApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

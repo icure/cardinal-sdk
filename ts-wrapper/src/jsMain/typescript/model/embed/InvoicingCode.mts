@@ -321,6 +321,12 @@ export interface InvoicingCode extends Encryptable {
 
 	/**
 	 *
+	 *  The reimbursement agreement number obtained during a pre-authorization.
+	 */
+	agreementNumber: string | undefined;
+
+	/**
+	 *
 	 *  The reason for canceling patient intervention.
 	 */
 	cancelPatientInterventionReason: number | undefined;
@@ -665,6 +671,12 @@ export class DecryptedInvoicingCode {
 
 	/**
 	 *
+	 *  The reimbursement agreement number obtained during a pre-authorization.
+	 */
+	agreementNumber: string | undefined = undefined;
+
+	/**
+	 *
 	 *  The reason for canceling patient intervention.
 	 */
 	cancelPatientInterventionReason: number | undefined = undefined;
@@ -748,6 +760,7 @@ export class DecryptedInvoicingCode {
 		if ('archived' in partial) this.archived = partial.archived;
 		if ('lost' in partial) this.lost = partial.lost;
 		if ('insuranceJustification' in partial) this.insuranceJustification = partial.insuranceJustification;
+		if ('agreementNumber' in partial) this.agreementNumber = partial.agreementNumber;
 		if ('cancelPatientInterventionReason' in partial) this.cancelPatientInterventionReason = partial.cancelPatientInterventionReason;
 		if ('status' in partial) this.status = partial.status;
 		if ('codeLabel' in partial) this.codeLabel = partial.codeLabel;
@@ -808,6 +821,7 @@ export class DecryptedInvoicingCode {
 		if (this.archived != undefined) res['archived'] = this.archived
 		if (this.lost != undefined) res['lost'] = this.lost
 		if (this.insuranceJustification != undefined) res['insuranceJustification'] = this.insuranceJustification
+		if (this.agreementNumber != undefined) res['agreementNumber'] = this.agreementNumber
 		if (this.cancelPatientInterventionReason != undefined) res['cancelPatientInterventionReason'] = this.cancelPatientInterventionReason
 		if (this.status != undefined) res['status'] = this.status
 		if (this.codeLabel != undefined) res['codeLabel'] = this.codeLabel
@@ -874,6 +888,7 @@ export class DecryptedInvoicingCode {
 			archived: expectBoolean(extractEntry(jCpy, 'archived', false, path), true, [...path, ".archived"]),
 			lost: expectBoolean(extractEntry(jCpy, 'lost', false, path), true, [...path, ".lost"]),
 			insuranceJustification: expectNumber(extractEntry(jCpy, 'insuranceJustification', false, path), true, true, [...path, ".insuranceJustification"]),
+			agreementNumber: expectString(extractEntry(jCpy, 'agreementNumber', false, path), true, [...path, ".agreementNumber"]),
 			cancelPatientInterventionReason: expectNumber(extractEntry(jCpy, 'cancelPatientInterventionReason', false, path), true, true, [...path, ".cancelPatientInterventionReason"]),
 			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
 			codeLabel: expectString(extractEntry(jCpy, 'codeLabel', false, path), true, [...path, ".codeLabel"]),
@@ -1210,6 +1225,12 @@ export class EncryptedInvoicingCode {
 
 	/**
 	 *
+	 *  The reimbursement agreement number obtained during a pre-authorization.
+	 */
+	agreementNumber: string | undefined = undefined;
+
+	/**
+	 *
 	 *  The reason for canceling patient intervention.
 	 */
 	cancelPatientInterventionReason: number | undefined = undefined;
@@ -1293,6 +1314,7 @@ export class EncryptedInvoicingCode {
 		if ('archived' in partial) this.archived = partial.archived;
 		if ('lost' in partial) this.lost = partial.lost;
 		if ('insuranceJustification' in partial) this.insuranceJustification = partial.insuranceJustification;
+		if ('agreementNumber' in partial) this.agreementNumber = partial.agreementNumber;
 		if ('cancelPatientInterventionReason' in partial) this.cancelPatientInterventionReason = partial.cancelPatientInterventionReason;
 		if ('status' in partial) this.status = partial.status;
 		if ('codeLabel' in partial) this.codeLabel = partial.codeLabel;
@@ -1353,6 +1375,7 @@ export class EncryptedInvoicingCode {
 		if (this.archived != undefined) res['archived'] = this.archived
 		if (this.lost != undefined) res['lost'] = this.lost
 		if (this.insuranceJustification != undefined) res['insuranceJustification'] = this.insuranceJustification
+		if (this.agreementNumber != undefined) res['agreementNumber'] = this.agreementNumber
 		if (this.cancelPatientInterventionReason != undefined) res['cancelPatientInterventionReason'] = this.cancelPatientInterventionReason
 		if (this.status != undefined) res['status'] = this.status
 		if (this.codeLabel != undefined) res['codeLabel'] = this.codeLabel
@@ -1419,6 +1442,7 @@ export class EncryptedInvoicingCode {
 			archived: expectBoolean(extractEntry(jCpy, 'archived', false, path), true, [...path, ".archived"]),
 			lost: expectBoolean(extractEntry(jCpy, 'lost', false, path), true, [...path, ".lost"]),
 			insuranceJustification: expectNumber(extractEntry(jCpy, 'insuranceJustification', false, path), true, true, [...path, ".insuranceJustification"]),
+			agreementNumber: expectString(extractEntry(jCpy, 'agreementNumber', false, path), true, [...path, ".agreementNumber"]),
 			cancelPatientInterventionReason: expectNumber(extractEntry(jCpy, 'cancelPatientInterventionReason', false, path), true, true, [...path, ".cancelPatientInterventionReason"]),
 			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
 			codeLabel: expectString(extractEntry(jCpy, 'codeLabel', false, path), true, [...path, ".codeLabel"]),

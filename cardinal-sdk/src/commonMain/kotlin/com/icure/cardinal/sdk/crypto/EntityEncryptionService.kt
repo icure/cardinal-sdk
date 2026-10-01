@@ -47,7 +47,7 @@ interface EntityEncryptionService : EntityValidationService {
 	 * Get the encryption keys of an entity that the provided data owner can access, potentially using the keys for his parent.
 	 * There should only be one encryption key for each entity, but the method supports more to allow to deal with conflicts and merged duplicate data.
 	 * @param entity an encrypted entity.
-	 * @param dataOwnerId optionally a data owner part of the hierarchy for the current data owner, defaults to the current data owner.
+	 * @param dataOwnerId optionally a data owner part of the hierarchy for the current data owner (including groups linked with any link type), defaults to the current data owner.
 	 * @return the encryption keys that the provided data owner can decrypt, deduplicated.
 	 */
 	suspend fun encryptionKeysOf(
@@ -60,7 +60,7 @@ interface EntityEncryptionService : EntityValidationService {
 	/**
 	 * Get the secret ids (SFKs) of an entity that the provided data owner can access, potentially using the keys for his parent.
 	 * @param entity an encrypted entity.
-	 * @param dataOwnerId optionally a data owner part of the hierarchy for the current data owner, defaults to the current data owner.
+	 * @param dataOwnerId optionally a data owner part of the hierarchy for the current data owner (including groups linked with any link type), defaults to the current data owner.
 	 * @return the secret ids (SFKs) that the provided data owner can decrypt, deduplicated (including keys decrypted from the hierarchy).
 	 */
 	suspend fun secretIdsOf(
@@ -90,7 +90,7 @@ interface EntityEncryptionService : EntityValidationService {
 	 * There should only be one owning entity id for each entity, but the method supports more to allow to deal with conflicts and merged duplicate
 	 * data.
 	 * @param entity an encrypted entity.
-	 * @param dataOwnerId optionally a data owner part of the hierarchy for the current data owner, defaults to the current data owner.
+	 * @param dataOwnerId optionally a data owner part of the hierarchy for the current data owner (including groups linked with any link type), defaults to the current data owner.
 	 * @return the owning entity ids (CFKs) that the provided data owner can decrypt, deduplicated.
 	 */
 	suspend fun owningEntityIdsOf(

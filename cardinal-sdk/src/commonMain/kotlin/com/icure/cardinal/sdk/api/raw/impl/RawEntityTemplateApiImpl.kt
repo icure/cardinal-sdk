@@ -49,7 +49,7 @@ class RawEntityTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listAllEntityTemplatesBy(
 		type: String,
@@ -65,7 +65,7 @@ class RawEntityTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listEntityTemplatesByKeyword(
 		userId: String,
@@ -81,7 +81,7 @@ class RawEntityTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findAllEntityTemplatesByKeyword(
 		type: String,
@@ -96,7 +96,7 @@ class RawEntityTemplateApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun createEntityTemplate(c: EntityTemplate): HttpResponse<EntityTemplate> =
 		post(authProvider) {
@@ -118,7 +118,7 @@ class RawEntityTemplateApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityTemplateIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getEntityTemplate(entityTemplateId: String): HttpResponse<EntityTemplate> =
 		get(authProvider) {

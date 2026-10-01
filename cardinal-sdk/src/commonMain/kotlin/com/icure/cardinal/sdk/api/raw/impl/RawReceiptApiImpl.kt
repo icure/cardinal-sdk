@@ -247,7 +247,7 @@ class RawReceiptApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(receiptIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun findReceiptsDelegationsStubsByIds(receiptIds: ListOfIds): HttpResponse<List<IcureStub>> =
 		post(authProvider) {
@@ -268,7 +268,7 @@ class RawReceiptApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listReceiptsBetweenDates(
 		startDate: Long?,
@@ -285,7 +285,7 @@ class RawReceiptApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun modifyReceipt(receiptDto: EncryptedReceipt): HttpResponse<EncryptedReceipt> =
 		put(authProvider) {
@@ -350,7 +350,7 @@ class RawReceiptApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedReceipt>,
@@ -476,7 +476,7 @@ class RawReceiptApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(receiptIds)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun listReceiptsBetweenDatesInGroup(
 		groupId: String,
@@ -494,7 +494,7 @@ class RawReceiptApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun getReceiptAttachmentInGroup(
 		groupId: String,
@@ -631,7 +631,7 @@ class RawReceiptApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
-		}.wrap()
+		}.wrapList()
 
 	override suspend fun declareConflictWinnerInGroup(
 		groupId: String,

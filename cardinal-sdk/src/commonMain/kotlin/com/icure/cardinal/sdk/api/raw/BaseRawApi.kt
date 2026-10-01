@@ -1,11 +1,14 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.utils.SDK_VERSION
+import com.icure.cardinal.sdk.api.raw.HttpResponse as SdkHttpResponse
 import com.icure.cardinal.sdk.auth.minAuthClassForLevel
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.auth.services.AuthService
 import com.icure.cardinal.sdk.auth.services.setAuthorizationWith
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
+import com.icure.cardinal.sdk.options.EntityListDecodingStrategy
 import com.icure.cardinal.sdk.options.RequestRetryConfiguration
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.utils.InternalIcureApi
@@ -24,6 +27,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.TextContent
 import kotlinx.coroutines.delay
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import kotlin.time.Duration
 
 @InternalIcureApi
@@ -32,7 +36,8 @@ data class RawApiConfig(
 	val additionalHeaders: Map<String, String>,
 	val requestTimeout : Duration?,
 	val json: Json,
-	val retryConfiguration: RequestRetryConfiguration
+	val retryConfiguration: RequestRetryConfiguration,
+	val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
 )
 
 @InternalIcureApi
@@ -50,6 +55,38 @@ abstract class BaseRawApi(
 	}
 
 	protected open suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? = null
+
+	@PublishedApi
+	internal val entityListDecodingStrategy: EntityListDecodingStrategy get() = config.entityListDecodingStrategy
+
+	@PublishedApi
+	internal val entityJson: Json get() = config.json
+
+	/**
+	 * Wraps the response of a read endpoint returning a list of stored entities: the list is decoded according to the
+	 * configured [EntityListDecodingStrategy].
+	 */
+	protected inline fun <reified T : Any> HttpResponse.wrapList(): SdkHttpResponse<List<T>> =
+		when (val strategy = entityListDecodingStrategy) {
+			EntityListDecodingStrategy.Strict -> wrap<List<T>>()
+			is EntityListDecodingStrategy.DiscardMalformed -> SdkHttpResponse(
+				this,
+				DiscardingListBodyProvider(entityJson.serializersModule.serializer<T>(), entityJson, strategy.handler),
+			)
+		}
+
+	/**
+	 * Wraps the response of a read endpoint returning a page of stored entities: the rows are decoded according to the
+	 * configured [EntityListDecodingStrategy].
+	 */
+	protected inline fun <reified T : Any> HttpResponse.wrapPaginatedList(): SdkHttpResponse<PaginatedList<T>> =
+		when (val strategy = entityListDecodingStrategy) {
+			EntityListDecodingStrategy.Strict -> wrap<PaginatedList<T>>()
+			is EntityListDecodingStrategy.DiscardMalformed -> SdkHttpResponse(
+				this,
+				DiscardingPaginatedListBodyProvider(entityJson.serializersModule.serializer<T>(), entityJson, strategy.handler),
+			)
+		}
 
 	private suspend fun HttpRequestBuilder.addAccessControlKeys(groupId: String?) {
 		getAccessControlKeysHeaderValues(groupId)?.forEach {
