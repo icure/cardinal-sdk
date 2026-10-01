@@ -99,6 +99,11 @@ export interface SdkOptions {
    * of [ignoreUnknownFields].
    */
   readonly unversionedEntitiesDecryptedJsonStrictness?: DecryptedJsonStrictness
+  /**
+   * How the lists of entities returned by the read endpoints of the backend are decoded.
+   * Refer to {@link EntityListDecodingStrategy}. Defaults to {@link EntityListDecodingStrategy.Strict}.
+   */
+  readonly entityListDecodingStrategy?: EntityListDecodingStrategy
 }
 
 export interface BasicSdkOptions {
@@ -138,6 +143,10 @@ export interface BasicSdkOptions {
    * If not null the SDK will immediately set the data owner scope to the provided value after login.
    */
   readonly dataOwnerScope?: string
+  /**
+   * Refer to {@link SdkOptions.entityListDecodingStrategy }
+   */
+  readonly entityListDecodingStrategy?: EntityListDecodingStrategy
 }
 
 /**
@@ -170,6 +179,66 @@ export interface BasicToFullSdkOptions {
   readonly unversionedEntitiesDecryptedJsonStrictness?: DecryptedJsonStrictness
 }
 
+/**
+ * Strategy used to decode the lists of entities returned by the read endpoints of the backend (get by ids, filter,
+ * find, list, ...).
+ */
+export type EntityListDecodingStrategy = typeof EntityListDecodingStrategy.Strict | EntityListDecodingStrategy.DiscardMalformed
+
+export namespace EntityListDecodingStrategy {
+  /**
+   * If an entity of the list can't be deserialized the whole request fails. This is the default behaviour.
+   */
+  export const Strict: {
+    readonly $ktClass: 'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.Strict'
+  } = {
+    $ktClass: 'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.Strict'
+  }
+
+  /**
+   * The entities of the list that can't be deserialized are dropped from the result instead of failing the whole
+   * request, and {@link handler} is called once for each dropped entity. Methods returning lists may then return fewer
+   * entities than requested, and pages may contain fewer rows than their limit.
+   *
+   * Single entity reads, write operations and the entities used internally by the crypto layer are never affected.
+   * Only type mismatches inside a valid json are recoverable: a response that is not valid json still fails.
+   * If {@link handler} throws, the request fails with that error.
+   *
+   * The `json` of the entity contains all its non-encrypted data, including personal data: avoid logging it as is.
+   */
+  export class DiscardMalformed {
+    readonly $ktClass: 'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.DiscardMalformed' =
+      'com.icure.cardinal.sdk.options.EntityListDecodingStrategy.DiscardMalformed'
+
+    constructor(readonly handler: (entity: MalformedEntity) => void) {}
+  }
+}
+
+/**
+ * An entity returned by the backend in a list that could not be deserialized and was discarded.
+ */
+export interface MalformedEntity {
+  /**
+   * Serial name of the expected type of the entity, e.g. "com.icure.cardinal.sdk.model.EncryptedPatient".
+   */
+  readonly entityType: string
+  /**
+   * Id of the entity, if it could be read from its raw json.
+   */
+  readonly entityId: string | undefined
+  /**
+   * The raw json of the entity, as returned by the backend.
+   */
+  readonly json: any
+  /**
+   * Message of the deserialization error.
+   */
+  readonly error: string
+  /**
+   * Url of the request that returned the entity.
+   */
+  readonly requestUrl: string
+}
 
 export interface AnonymousSdkOptions {
   /**
@@ -181,4 +250,8 @@ export interface AnonymousSdkOptions {
    * This behaviour is disabled by default (strict by default).
    */
   readonly ignoreUnknownFields?: boolean
+  /**
+   * Refer to {@link SdkOptions.entityListDecodingStrategy }
+   */
+  readonly entityListDecodingStrategy?: EntityListDecodingStrategy
 }

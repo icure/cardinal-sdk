@@ -80,6 +80,7 @@ external interface SdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
 	val unversionedEntitiesDecryptedJsonStrictness: String?
+	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
 }
 
 @JsName("BasicToFullSdkOptions")
@@ -98,11 +99,28 @@ external interface BasicSdkOptionsJs {
 	val groupSelector: ((availableGroups: Array<UserGroupJs>) -> Promise<String>)?
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
+	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
 }
 
 @JsName("AnonymousSdkOptions")
 external interface AnonymousSdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
+	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
+}
+
+@JsName("EntityListDecodingStrategy")
+external interface EntityListDecodingStrategyJs {
+	@JsName($$"$ktClass")
+	val ktClass: String
+}
+
+@JsName("MalformedEntity")
+external interface MalformedEntityJs {
+	val entityType: String
+	val entityId: String?
+	val json: dynamic
+	val error: String
+	val requestUrl: String
 }
 
 @JsName("CustomisedSdkOptions")
