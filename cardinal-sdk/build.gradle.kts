@@ -22,8 +22,8 @@ group = "com.icure"
 // from the git tags. See RELEASING.md.
 val sdkVersionProperty: String? = providers.gradleProperty("sdkVersion").orNull
 val version: String = sdkVersionProperty?.also {
-	require(SdkVersion.isReleaseVersion(it)) { "sdkVersion=$it is not a release version (X.Y.Z or X.Y.Z-PREVIEW.N)" }
-} ?: SdkVersion.devVersion(gitTags())
+	require(ReleaseVersion.isReleaseVersion(it)) { "sdkVersion=$it is not a release version (X.Y.Z or X.Y.Z-PREVIEW.N)" }
+} ?: ReleaseVersion.devVersion(gitTags())
 project.version = version
 
 fun gitTags(): List<String> = runCatching {
