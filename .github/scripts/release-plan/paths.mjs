@@ -11,7 +11,7 @@ const RULES = [
 			'**/src/*Test/**', 'ts-wrapper/test/**', 'python-wrapper/test/**',
 		],
 	},
-	{ units: ['ts'], globs: ['ts-wrapper/**', 'cardinal-mcp-server/**', 'cardinal-sdk/src/jsMain/**'] },
+	{ units: ['ts'], globs: ['ts-wrapper/**', 'cardinal-mcp-server/**'] },
 	{
 		units: ['python'],
 		globs: [
@@ -26,6 +26,8 @@ const RULES = [
 			'cardinal-sdk/src/ios*Main/**',
 		],
 	},
+	// The JS target of the KMP SDK: built into the npm package, and published on Maven for Kotlin/JS consumers.
+	{ units: ['kotlin', 'ts'], globs: ['cardinal-sdk/src/jsMain/**'] },
 	// Shared by the iOS targets (Kotlin) and the native targets the Python wheels are built from: nativeMain is the
 	// parent of appleMain, linuxMain and mingwMain, appleMain the parent of iosMain and macosMain.
 	{ units: ['kotlin', 'python'], globs: ['cardinal-sdk/src/nativeMain/**', 'cardinal-sdk/src/appleMain/**'] },
