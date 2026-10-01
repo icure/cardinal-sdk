@@ -28,6 +28,10 @@ jobs:
             -   name: Check out code
                 uses: actions/checkout@v4
                 with:
+                    # The tags give the SDK version sent to the backend in Cardinal-SDK-Version (`<last release>-SNAPSHOT`).
+                    # Without them it is 0.0.0-SNAPSHOT, and the backend answers with the legacy data model.
+                    fetch-depth: 0
+                    fetch-tags: true
                     submodules: 'recursive'
                     token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
 
