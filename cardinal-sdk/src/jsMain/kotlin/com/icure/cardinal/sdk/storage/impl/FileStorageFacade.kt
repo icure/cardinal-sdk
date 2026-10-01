@@ -20,16 +20,13 @@ class NodeFileStorageFacade private constructor (
 	companion object {
 		@Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
 		suspend fun initialise(directory: String): NodeFileStorageFacade {
-			val fs = if (eval("typeof(require) !== 'function'") as Boolean) {
-				(eval("import('fs/promises')") as Promise<NodeFsAsync>).await()
-			} else eval("require('fs/promises')") as NodeFsAsync
 			try {
-				fs.mkdir(directory, json("recursive" to true)).await()
+				nodeFs.mkdir(directory, json("recursive" to true)).await()
 			} catch (e: Exception) {
 				throw IllegalStateException("Could not initialise storage directory", e)
 			}
 
-			return NodeFileStorageFacade(directory, fs)
+			return NodeFileStorageFacade(directory, nodeFs)
 		}
 	}
 
@@ -75,6 +72,10 @@ private external interface NodeFsAsync {
 	fun writeFile(path: String, data: ByteArray): Promise<Unit>
 	fun readFile(path: String): Promise<ByteArray>
 	fun mkdir(path: String, options: dynamic): Promise<Unit>
+}
+
+private val nodeFs: NodeFsAsync by lazy {
+	js("process.getBuiltinModule('node:fs/promises')").unsafeCast<NodeFsAsync>()
 }
 
 @Suppress("PropertyName")

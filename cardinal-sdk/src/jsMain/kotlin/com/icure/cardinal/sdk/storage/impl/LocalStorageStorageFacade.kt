@@ -5,7 +5,7 @@ import kotlinx.browser.localStorage
 
 class LocalStorageStorageFacade : StorageFacade {
 	init {
-		check(eval("typeof(localStorage) === 'object'") as Boolean) {
+		check(js("typeof(localStorage) === 'object'") as Boolean) {
 			"No global local storage is available"
 		}
 	}
