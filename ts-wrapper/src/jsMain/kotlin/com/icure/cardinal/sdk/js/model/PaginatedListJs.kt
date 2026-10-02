@@ -14,4 +14,6 @@ public external class PaginatedListJs<T>(
 	public val rows: Array<T>
 
 	public val nextKeyPair: PaginatedDocumentKeyIdPairJs?
+
+	public val error: PaginationErrorJs?
 }

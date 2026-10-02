@@ -17,6 +17,5 @@ import kotlin.js.Promise
 public external interface ShamirKeysManagerApiJs {
 	public fun getExistingSplitsInfo(dataOwner: CryptoActorJs): Record<String, Array<String>>
 
-	public fun updateSelfSplits(keySplitsToUpdate: Record<String, ShamirUpdateRequestJs>,
-			keySplitsToDelete: Array<String>): Promise<CryptoActorStubWithTypeJs>
+	public fun updateSelfSplits(keySplitsToUpdate: Record<String, ShamirUpdateRequestJs>, keySplitsToDelete: Array<String>): Promise<CryptoActorStubWithTypeJs>
 }

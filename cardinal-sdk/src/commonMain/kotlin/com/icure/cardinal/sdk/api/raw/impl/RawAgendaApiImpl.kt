@@ -37,7 +37,8 @@ class RawAgendaApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawAgendaApi {
+) : BaseRawApi(rawApiConfig),
+	RawAgendaApi {
 	// region common endpoints
 
 	override suspend fun getAgendas(

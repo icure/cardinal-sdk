@@ -22,11 +22,9 @@ import kotlin.js.Promise
 public external interface RecoveryApiJs {
 	public fun createRecoveryInfoForAvailableKeyPairs(options: dynamic): Promise<RecoveryDataKeyJs>
 
-	public fun createRecoveryInfoForAvailableParentKeyPairs(parentId: String, options: dynamic):
-			Promise<RecoveryDataKeyJs>
+	public fun createRecoveryInfoForAvailableParentKeyPairs(parentId: String, options: dynamic): Promise<RecoveryDataKeyJs>
 
-	public fun recoverKeyPairs(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean):
-			Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>>
+	public fun recoverKeyPairs(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean): Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>>
 
 	public fun recoverKeyPairsWaitingForCreation(
 		recoveryKey: RecoveryDataKeyJs,
@@ -34,13 +32,11 @@ public external interface RecoveryApiJs {
 		waitSeconds: Double,
 	): CancellablePromise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>>
 
-	public fun createExchangeDataRecoveryInfo(delegateId: String, options: dynamic):
-			Promise<RecoveryDataKeyJs?>
+	public fun createExchangeDataRecoveryInfo(delegateId: String, options: dynamic): Promise<RecoveryDataKeyJs?>
 
 	public fun recoverExchangeData(recoveryKey: RecoveryDataKeyJs): Promise<String?>
 
-	public fun getRecoveryExchangeData(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean):
-			Promise<RecoveryResultJs<Array<RawDecryptedExchangeDataJs>>>
+	public fun getRecoveryExchangeData(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean): Promise<RecoveryResultJs<Array<RawDecryptedExchangeDataJs>>>
 
 	public fun purgeRecoveryInfo(recoveryKey: RecoveryDataKeyJs): Promise<Unit>
 

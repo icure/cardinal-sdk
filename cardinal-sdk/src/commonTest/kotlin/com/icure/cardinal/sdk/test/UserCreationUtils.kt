@@ -9,6 +9,8 @@ import com.icure.cardinal.sdk.model.DatabaseInitialisation
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.DelegationTag
@@ -114,24 +116,27 @@ suspend fun createUserInMultipleGroups(): List<DataOwnerDetails> {
 			username = userLogin,
 			password = userPw12,
 			keypair = defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256),
-			parent = null,
-			groupId = groupId1
+			parents = emptyList(),
+			groupId = groupId1,
+			effectiveGroupLinkType = DataOwnerGroupLinkType.Parent
 		),
 		DataOwnerDetails(
 			dataOwnerId = "",
 			username = userLogin,
 			password = userPw12,
 			keypair = defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256),
-			parent = null,
-			groupId = groupId2
+			parents = emptyList(),
+			groupId = groupId2,
+			effectiveGroupLinkType = DataOwnerGroupLinkType.Parent
 		),
 		DataOwnerDetails(
 			dataOwnerId = "",
 			username = userLogin,
 			password = userPw3,
 			keypair = defaultCryptoService.rsa.generateKeyPair(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256),
-			parent = null,
-			groupId = groupId3
+			parents = emptyList(),
+			groupId = groupId3,
+			effectiveGroupLinkType = DataOwnerGroupLinkType.Parent
 		),
 	)
 }
@@ -149,10 +154,36 @@ suspend fun createHcpUser(
 	useLegacyKey: Boolean = false,
 	roles: Set<String>? = null,
 	inGroup: String = testGroupId,
-	inheritsPermissions: Boolean = false
+	inheritsPermissions: Boolean = false,
+	groupLinkType: DataOwnerGroupLinkType? = null,
+): DataOwnerDetails = createHcpUser(
+	parents = listOfNotNull(parent),
+	useLegacyKey = useLegacyKey,
+	roles = roles,
+	inGroup = inGroup,
+	inheritsPermissions = inheritsPermissions,
+	groupLinkType = groupLinkType,
+)
+
+/**
+ * @param parents the direct parents of this data owner. A data owner can have more than one parent (e.g. it
+ * belongs to more than one hierarchical group); each parent may in turn have its own parents, forming a tree of
+ * ancestors rather than a single chain. If empty the data owner will not have any parent.
+ *
+ * Outside of the local test environment no user is created: one of the pre-configured healthcare party
+ * users is returned instead (see [nextPreConfiguredHcpUser]), and none of the parameters can be used.
+ */
+@OptIn(InternalIcureApi::class)
+suspend fun createHcpUser(
+	parents: List<DataOwnerDetails>,
+	useLegacyKey: Boolean = false,
+	roles: Set<String>? = null,
+	inGroup: String = testGroupId,
+	inheritsPermissions: Boolean = false,
+	groupLinkType: DataOwnerGroupLinkType? = null,
 ): DataOwnerDetails {
 	if (!isLocalTestMode) {
-		check(parent == null && !useLegacyKey && roles == null && inGroup == testGroupId && !inheritsPermissions) {
+		check(parents.isEmpty() && !useLegacyKey && roles == null && inGroup == testGroupId && !inheritsPermissions) {
 			"A pre-configured healthcare party user can't be customised: this test must be disabled with " +
 				"`LOCAL_ENV_ONLY`"
 		}
@@ -163,22 +194,25 @@ suspend fun createHcpUser(
 	val hcpId = uuid()
 	val login = "hcp-${uuid()}"
 	val password = uuid()
-	val keypair = defaultCryptoService.rsa.generateKeyPair(
-		if (useLegacyKey)
-			RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1
-		else
-			RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256
-	)
-	val exportedPublic = defaultCryptoService.rsa.exportPublicKeySpki(keypair.public).toHexString().let { SpkiHexString(it) }
+	val keypair = if (groupLinkType != DataOwnerGroupLinkType.Simple) {
+		defaultCryptoService.rsa.generateKeyPair(
+			if (useLegacyKey)
+				RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1
+			else
+				RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256
+		)
+	} else null
+	val exportedPublic = if (keypair != null) defaultCryptoService.rsa.exportPublicKeySpki(keypair.public).toHexString().let { SpkiHexString(it) } else null
 	val hcp = hcpRawApi.createHealthcarePartyInGroup(
 		inGroup,
 		HealthcareParty(
 			hcpId,
 			firstName = "Hcp-$hcpId",
 			lastName = "Hcp-$hcpId",
-			publicKeysForOaepWithSha256 = if (useLegacyKey) emptySet() else setOf(exportedPublic),
+			publicKeysForOaepWithSha256 = if (useLegacyKey) emptySet() else setOfNotNull(exportedPublic),
 			publicKey = if (useLegacyKey) exportedPublic else null,
-			parentId = parent?.dataOwnerId
+			dataOwnerGroups = parents.map { DataOwnerGroupLink(it.dataOwnerId) },
+			groupLinkType = groupLinkType,
 		)
 	).successBody()
 	val created = userRawApi.createUserInGroup(
@@ -189,7 +223,7 @@ suspend fun createHcpUser(
 			email = DataOwnerDetails.testEmailForLogin(login),
 			passwordHash = password,
 			healthcarePartyId = hcp.id,
-			autoDelegations = mapOf(DelegationTag.All to parent?.hierarchy()?.toSet().orEmpty())
+			autoDelegations = mapOf(DelegationTag.All to parents.flatMap { it.hierarchy() }.toSet())
 		)
 	).successBody()
 	if (roles != null) {
@@ -198,7 +232,7 @@ suspend fun createHcpUser(
 			groupId = inGroup,
 			rolesId = ListOfIds(roles.toList())
 		)
-	} else if (parent != null) {
+	} else if (parents.isNotEmpty()) {
 		val currentUserRoles = userRawApi.getUserInGroup(
 			groupId = inGroup,
 			userId = created.id
@@ -212,7 +246,15 @@ suspend fun createHcpUser(
 		}
 	}
 	if (inheritsPermissions) userRawApi.setUserInheritsPermissions(userId = created.id, groupId = inGroup, value = true)
-	return DataOwnerDetails(hcpId, login, password, keypair, parent, inGroup)
+	return DataOwnerDetails(
+		dataOwnerId = hcpId,
+		username = login,
+		password = password,
+		keypair = keypair,
+		parents = parents,
+		groupId = inGroup,
+		effectiveGroupLinkType = groupLinkType ?: DataOwnerGroupLinkType.Parent,
+	)
 }
 
 data class PlainUserDetails(
@@ -298,7 +340,15 @@ suspend fun createPatientUser(
 		)
 	).successBody()
 	if (inheritsPermissions) userRawApi.setUserInheritsPermissions(userId = user.id, groupId = inGroup, value = true)
-	return DataOwnerDetails(patientId, login, password, keypair, null, inGroup)
+	return DataOwnerDetails(
+		dataOwnerId = patientId,
+		username = login,
+		password = password,
+		keypair = keypair,
+		parents = emptyList(),
+		groupId = inGroup,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.NotAllowed
+	)
 }
 
 @OptIn(InternalIcureApi::class)
@@ -326,5 +376,13 @@ suspend fun createUserFromExistingPatient(patient: Patient, keylessPatient: Bool
 			patientId = updatedPatient.id
 		)
 	).successBody()
-	return DataOwnerDetails(patient.id, login, password, keypair.takeIf { !keylessPatient }, null, testGroupId)
+	return DataOwnerDetails(
+		dataOwnerId = patient.id,
+		username = login,
+		password = password,
+		keypair = keypair.takeIf { !keylessPatient },
+		parents = emptyList(),
+		groupId = testGroupId,
+		effectiveGroupLinkType = updatedPatient.groupLinkType ?: DataOwnerGroupLinkType.NotAllowed
+	)
 }

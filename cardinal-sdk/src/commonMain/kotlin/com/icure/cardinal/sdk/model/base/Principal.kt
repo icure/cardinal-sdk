@@ -8,8 +8,7 @@ import kotlin.collections.Set
 
 /**
  *
- *  Interface for entities that represent a security principal with an identity, a name, and a set
- * of properties.
+ *  Interface for entities that represent a security principal with an identity, a name, and a set of properties.
  */
 
 interface Principal : Identifiable<String>, Named {

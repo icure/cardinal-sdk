@@ -47,39 +47,29 @@ public external interface ReceiptInGroupApiJs {
 
 	public fun hasWriteAccess(receipt: GroupScopedJs<ReceiptJs>): Promise<Boolean>
 
-	public fun decryptPatientIdOf(receipt: GroupScopedJs<ReceiptJs>):
-			Promise<Array<EntityReferenceInGroupJs>>
+	public fun decryptPatientIdOf(receipt: GroupScopedJs<ReceiptJs>): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<ReceiptJs>,
-			delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<ReceiptJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
 
-	public fun decrypt(receipts: Array<GroupScopedJs<EncryptedReceiptJs>>):
-			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+	public fun decrypt(receipts: Array<GroupScopedJs<EncryptedReceiptJs>>): Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 
-	public fun tryDecrypt(receipts: Array<GroupScopedJs<EncryptedReceiptJs>>):
-			Promise<Array<GroupScopedJs<ReceiptJs>>>
+	public fun tryDecrypt(receipts: Array<GroupScopedJs<EncryptedReceiptJs>>): Promise<Array<GroupScopedJs<ReceiptJs>>>
 
-	public fun deleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteReceipt(receipt: GroupScopedJs<ReceiptJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<Unit>
 
-	public fun purgeReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun getRawReceiptAttachment(
 		groupId: String,
@@ -93,40 +83,27 @@ public external interface ReceiptInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
-	public fun shareWithMany(receipt: GroupScopedJs<DecryptedReceiptJs>,
-			delegates: Array<EntityReferenceInGroupToReceiptShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<DecryptedReceiptJs>>
+	public fun shareWithMany(receipt: GroupScopedJs<DecryptedReceiptJs>, delegates: Array<EntityReferenceInGroupToReceiptShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
-	public fun createReceipt(entity: GroupScopedJs<DecryptedReceiptJs>):
-			Promise<GroupScopedJs<DecryptedReceiptJs>>
+	public fun createReceipt(entity: GroupScopedJs<DecryptedReceiptJs>): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
-	public fun createReceipts(entities: Array<GroupScopedJs<DecryptedReceiptJs>>):
-			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+	public fun createReceipts(entities: Array<GroupScopedJs<DecryptedReceiptJs>>): Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 
-	public fun undeleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<DecryptedReceiptJs>>
+	public fun undeleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
-	public fun undeleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+	public fun undeleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 
-	public fun undeleteReceipt(receipt: GroupScopedJs<ReceiptJs>):
-			Promise<GroupScopedJs<DecryptedReceiptJs>>
+	public fun undeleteReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
-	public fun undeleteReceipts(receipts: Array<GroupScopedJs<DecryptedReceiptJs>>):
-			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+	public fun undeleteReceipts(receipts: Array<GroupScopedJs<DecryptedReceiptJs>>): Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 
-	public fun modifyReceipt(entity: GroupScopedJs<DecryptedReceiptJs>):
-			Promise<GroupScopedJs<DecryptedReceiptJs>>
+	public fun modifyReceipt(entity: GroupScopedJs<DecryptedReceiptJs>): Promise<GroupScopedJs<DecryptedReceiptJs>>
 
-	public fun modifyReceipts(entities: Array<GroupScopedJs<DecryptedReceiptJs>>):
-			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+	public fun modifyReceipts(entities: Array<GroupScopedJs<DecryptedReceiptJs>>): Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 
-	public fun getReceipt(groupId: String, entityId: String):
-			Promise<GroupScopedJs<DecryptedReceiptJs>?>
+	public fun getReceipt(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedReceiptJs>?>
 
-	public fun getReceipts(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+	public fun getReceipts(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 
-	public fun listReceiptsBetweenDates(groupId: String, options: dynamic):
-			Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
+	public fun listReceiptsBetweenDates(groupId: String, options: dynamic): Promise<Array<GroupScopedJs<DecryptedReceiptJs>>>
 }

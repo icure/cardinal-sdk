@@ -8,8 +8,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents a reference to another entity by its document id. Entity references provide a
- * lightweight
+ * Represents a reference to another entity by its document id. Entity references provide a lightweight
  * way to create links between entities.
  * /
  */
@@ -20,8 +19,7 @@ data class EntityReference(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the entity reference in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the entity reference in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

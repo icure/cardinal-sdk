@@ -25,7 +25,8 @@ class RawFilterApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawFilterApi {
+) : BaseRawApi(rawApiConfig),
+	RawFilterApi {
 	// region common endpoints
 
 	override suspend fun allFilterDefinitions(): HttpResponse<Map<String, List<FilterDefinition>>> =

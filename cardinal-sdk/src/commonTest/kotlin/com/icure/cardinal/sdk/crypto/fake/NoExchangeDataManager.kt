@@ -37,7 +37,7 @@ object NoExchangeDataManager : ExchangeDataManager {
 		TODO("Not yet implemented")
 	}
 
-	override suspend fun getDecryptionDataByIds(
+	override suspend fun getDecryptionDataByExchangeDataGroupIds(
 		groupId: String?,
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean

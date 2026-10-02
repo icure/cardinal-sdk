@@ -42,7 +42,8 @@ class RawDeviceApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawDeviceApi {
+) : BaseRawApi(rawApiConfig),
+	RawDeviceApi {
 	// region common endpoints
 
 	override suspend fun getDevice(deviceId: String): HttpResponse<Device> =

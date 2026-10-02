@@ -47,7 +47,7 @@ class InternalCryptoApiImpl(
 	 * Deletes all cached data in crypto services and reloads as needed.
 	 */
 	override suspend fun forceReload() {
-		dataOwnerApi.clearCurrentDataOwnerIdsCache()
+		dataOwnerApi.clearCurrentDataOwnerHierarchyCache()
 		userEncryptionKeysManager.reloadKeys()
 		exchangeDataManager.clearOrRepopulateCache()
 		exchangeKeysManager.requestCacheReload()

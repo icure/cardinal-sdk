@@ -7,8 +7,7 @@ import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun maintenanceTaskShareOptions_toJs(obj: MaintenanceTaskShareOptions):
-		MaintenanceTaskShareOptionsJs {
+public fun maintenanceTaskShareOptions_toJs(obj: MaintenanceTaskShareOptions): MaintenanceTaskShareOptionsJs {
 	val requestedPermissions = obj.requestedPermissions.name
 	val shareEncryptionKey = obj.shareEncryptionKey.name
 	val shareSecretIds = secretIdShareOptions_toJs(obj.shareSecretIds)
@@ -19,8 +18,7 @@ public fun maintenanceTaskShareOptions_toJs(obj: MaintenanceTaskShareOptions):
 	"}"))
 }
 
-public fun maintenanceTaskShareOptions_fromJs(obj: MaintenanceTaskShareOptionsJs):
-		MaintenanceTaskShareOptions {
+public fun maintenanceTaskShareOptions_fromJs(obj: MaintenanceTaskShareOptionsJs): MaintenanceTaskShareOptions {
 	val requestedPermissions = RequestedPermission.valueOf(obj.requestedPermissions)
 	val shareEncryptionKey = ShareMetadataBehaviour.valueOf(obj.shareEncryptionKey)
 	val shareSecretIds = secretIdShareOptions_fromJs(obj.shareSecretIds)

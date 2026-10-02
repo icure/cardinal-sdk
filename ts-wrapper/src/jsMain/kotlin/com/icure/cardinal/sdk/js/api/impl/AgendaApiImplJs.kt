@@ -42,8 +42,7 @@ internal class AgendaApiImplJs(
 	private val agendaApi: AgendaApi,
 ) : AgendaApiJs {
 	override val inGroup: AgendaInGroupApiJs = object : AgendaInGroupApiJs {
-		override fun getAgenda(groupId: String, entityId: String): Promise<GroupScopedJs<AgendaJs>?> =
-				GlobalScope.promise {
+		override fun getAgenda(groupId: String, entityId: String): Promise<GroupScopedJs<AgendaJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = agendaApi.inGroup.getAgenda(
@@ -62,8 +61,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun getAgendas(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
+		override fun getAgendas(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -89,8 +87,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun createAgenda(entity: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>> =
-				GlobalScope.promise {
+		override fun createAgenda(entity: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<Agenda> = groupScoped_fromJs(
 				entity,
 				{ x1: AgendaJs ->
@@ -108,8 +105,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun createAgendas(entities: Array<GroupScopedJs<AgendaJs>>):
-				Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
+		override fun createAgendas(entities: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<Agenda>> = arrayToList(
 				entities,
 				"entities",
@@ -138,8 +134,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun modifyAgenda(entity: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>> =
-				GlobalScope.promise {
+		override fun modifyAgenda(entity: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<Agenda> = groupScoped_fromJs(
 				entity,
 				{ x1: AgendaJs ->
@@ -157,8 +152,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun modifyAgendas(entities: Array<GroupScopedJs<AgendaJs>>):
-				Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
+		override fun modifyAgendas(entities: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<Agenda>> = arrayToList(
 				entities,
 				"entities",
@@ -187,8 +181,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun deleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -217,8 +210,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun deleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -236,8 +228,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun deleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val agendasConverted: List<GroupScoped<Agenda>> = arrayToList(
 				agendas,
 				"agendas",
@@ -266,8 +257,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun deleteAgenda(agenda: GroupScopedJs<AgendaJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteAgenda(agenda: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val agendaConverted: GroupScoped<Agenda> = groupScoped_fromJs(
 				agenda,
 				{ x1: AgendaJs ->
@@ -285,8 +275,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun undeleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
+		override fun undeleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -315,8 +304,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun undeleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<AgendaJs>> = GlobalScope.promise {
+		override fun undeleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<AgendaJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -334,8 +322,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun undeleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>):
-				Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
+		override fun undeleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
 			val agendasConverted: List<GroupScoped<Agenda>> = arrayToList(
 				agendas,
 				"agendas",
@@ -364,8 +351,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun undeleteAgenda(agenda: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>> =
-				GlobalScope.promise {
+		override fun undeleteAgenda(agenda: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>> = GlobalScope.promise {
 			val agendaConverted: GroupScoped<Agenda> = groupScoped_fromJs(
 				agenda,
 				{ x1: AgendaJs ->
@@ -383,8 +369,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun purgeAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -413,8 +398,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun purgeAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -427,8 +411,7 @@ internal class AgendaApiImplJs(
 
 		}
 
-		override fun purgeAgendas(agendas: Array<GroupScopedJs<AgendaJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeAgendas(agendas: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val agendasConverted: List<GroupScoped<Agenda>> = arrayToList(
 				agendas,
 				"agendas",
@@ -470,8 +453,7 @@ internal class AgendaApiImplJs(
 
 		}
 
-		override fun matchAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Agenda> = baseFilterOptions_fromJs(filter)
 			val result = agendaApi.inGroup.matchAgendasBy(
@@ -486,8 +468,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun matchAgendasBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AgendaJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchAgendasBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseSortableFilterOptions<Agenda> = baseSortableFilterOptions_fromJs(filter)
 			val result = agendaApi.inGroup.matchAgendasBySorted(
@@ -502,8 +483,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun filterAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
+		override fun filterAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Agenda> = baseFilterOptions_fromJs(filter)
 			val result = agendaApi.inGroup.filterAgendasBy(
@@ -523,9 +503,7 @@ internal class AgendaApiImplJs(
 			)
 		}
 
-		override fun filterAgendasBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<AgendaJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
+		override fun filterAgendasBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseSortableFilterOptions<Agenda> = baseSortableFilterOptions_fromJs(filter)
 			val result = agendaApi.inGroup.filterAgendasBySorted(
@@ -554,8 +532,7 @@ internal class AgendaApiImplJs(
 		agenda_toJs(result)
 	}
 
-	override fun createAgendas(agendas: Array<AgendaJs>): Promise<Array<AgendaJs>> =
-			GlobalScope.promise {
+	override fun createAgendas(agendas: Array<AgendaJs>): Promise<Array<AgendaJs>> = GlobalScope.promise {
 		val agendasConverted: List<Agenda> = arrayToList(
 			agendas,
 			"agendas",
@@ -574,8 +551,7 @@ internal class AgendaApiImplJs(
 		)
 	}
 
-	override fun deleteAgendaById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteAgendaById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = agendaApi.deleteAgendaById(
@@ -585,8 +561,7 @@ internal class AgendaApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -615,8 +590,7 @@ internal class AgendaApiImplJs(
 
 	}
 
-	override fun purgeAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -645,8 +619,7 @@ internal class AgendaApiImplJs(
 		agenda_toJs(result)
 	}
 
-	override fun undeleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<AgendaJs>> = GlobalScope.promise {
+	override fun undeleteAgendasByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<AgendaJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -665,8 +638,7 @@ internal class AgendaApiImplJs(
 		)
 	}
 
-	override fun deleteAgenda(agenda: AgendaJs): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteAgenda(agenda: AgendaJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val agendaConverted: Agenda = agenda_fromJs(agenda)
 		val result = agendaApi.deleteAgenda(
 			agendaConverted,
@@ -674,8 +646,7 @@ internal class AgendaApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteAgendas(agendas: Array<AgendaJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deleteAgendas(agendas: Array<AgendaJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val agendasConverted: List<Agenda> = arrayToList(
 			agendas,
 			"agendas",
@@ -702,8 +673,7 @@ internal class AgendaApiImplJs(
 
 	}
 
-	override fun purgeAgendas(agendas: Array<AgendaJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun purgeAgendas(agendas: Array<AgendaJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val agendasConverted: List<Agenda> = arrayToList(
 			agendas,
 			"agendas",
@@ -730,8 +700,7 @@ internal class AgendaApiImplJs(
 		agenda_toJs(result)
 	}
 
-	override fun undeleteAgendas(agendas: Array<AgendaJs>): Promise<Array<AgendaJs>> =
-			GlobalScope.promise {
+	override fun undeleteAgendas(agendas: Array<AgendaJs>): Promise<Array<AgendaJs>> = GlobalScope.promise {
 		val agendasConverted: List<Agenda> = arrayToList(
 			agendas,
 			"agendas",
@@ -789,8 +758,7 @@ internal class AgendaApiImplJs(
 		agenda_toJs(result)
 	}
 
-	override fun modifyAgendas(agendas: Array<AgendaJs>): Promise<Array<AgendaJs>> =
-			GlobalScope.promise {
+	override fun modifyAgendas(agendas: Array<AgendaJs>): Promise<Array<AgendaJs>> = GlobalScope.promise {
 		val agendasConverted: List<Agenda> = arrayToList(
 			agendas,
 			"agendas",
@@ -809,8 +777,7 @@ internal class AgendaApiImplJs(
 		)
 	}
 
-	override fun matchAgendasBy(filter: BaseFilterOptionsJs<AgendaJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchAgendasBy(filter: BaseFilterOptionsJs<AgendaJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Agenda> = baseFilterOptions_fromJs(filter)
 		val result = agendaApi.matchAgendasBy(
 			filterConverted,
@@ -823,8 +790,7 @@ internal class AgendaApiImplJs(
 		)
 	}
 
-	override fun matchAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseSortableFilterOptions<Agenda> = baseSortableFilterOptions_fromJs(filter)
 		val result = agendaApi.matchAgendasBySorted(
 			filterConverted,
@@ -837,8 +803,7 @@ internal class AgendaApiImplJs(
 		)
 	}
 
-	override fun filterAgendasBy(filter: BaseFilterOptionsJs<AgendaJs>):
-			Promise<PaginatedListIteratorJs<AgendaJs>> = GlobalScope.promise {
+	override fun filterAgendasBy(filter: BaseFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<AgendaJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Agenda> = baseFilterOptions_fromJs(filter)
 		val result = agendaApi.filterAgendasBy(
 			filterConverted,
@@ -851,8 +816,7 @@ internal class AgendaApiImplJs(
 		)
 	}
 
-	override fun filterAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>):
-			Promise<PaginatedListIteratorJs<AgendaJs>> = GlobalScope.promise {
+	override fun filterAgendasBySorted(filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<AgendaJs>> = GlobalScope.promise {
 		val filterConverted: BaseSortableFilterOptions<Agenda> = baseSortableFilterOptions_fromJs(filter)
 		val result = agendaApi.filterAgendasBySorted(
 			filterConverted,

@@ -7,8 +7,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents metadata about an attachment that has been deleted, preserving its former storage
- * identifiers and deletion time.
+ * Represents metadata about an attachment that has been deleted, preserving its former storage identifiers and deletion time.
  * /
  */
 @Serializable
@@ -18,8 +17,7 @@ data class DeletedAttachment(
 	 */
 	public val couchDbAttachmentId: String? = null,
 	/**
-	 * The former object storage identifier, if the attachment was stored using the object storage
-	 * service.
+	 * The former object storage identifier, if the attachment was stored using the object storage service.
 	 */
 	public val objectStoreAttachmentId: String? = null,
 	/**

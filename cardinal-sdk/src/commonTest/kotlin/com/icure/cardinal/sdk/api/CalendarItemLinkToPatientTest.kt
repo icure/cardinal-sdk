@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.CardinalSdk
+import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -45,7 +46,7 @@ class CalendarItemLinkToPatientTest : StringSpec({
 			)
 		)
 		calendarItem.secretForeignKeys.shouldBeEmpty()
-		val linked = api.calendarItem.linkToPatient(calendarItem, patient, emptySet())
+		val linked = api.calendarItem.linkToPatient(calendarItem, patient, emptySet(), SecretIdUseOption.UseAnySharedWithHierarchy)
 		linked.secretForeignKeys shouldBe api.patient.getSecretIdsOf(patient).keys
 		api.calendarItem.decryptPatientIdOf(linked) shouldBe setOf(EntityReferenceInGroup(patient.id, null))
 	}
@@ -63,7 +64,7 @@ class CalendarItemLinkToPatientTest : StringSpec({
 			)
 		)
 		shouldThrow<IllegalArgumentException> {
-			api.calendarItem.linkToPatient(calendarItem, patient, emptySet())
+			api.calendarItem.linkToPatient(calendarItem, patient, emptySet(), SecretIdUseOption.UseAnySharedWithHierarchy)
 		}
 	}
 })

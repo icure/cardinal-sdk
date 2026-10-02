@@ -79,6 +79,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 	requestGroup = requestGroup,
 ) {
 	private class Caches(
+		// TODO Currently this is exchange data only by real group id; we don't support yet anonymous data owners part of simple type groups, might change in future
 		val dataById: Map<String, CachedExchangeDataDetails>,
 		val dataByDelegationKey: Map<SecureDelegationKeyString, CachedExchangeDataDetails>,
 		val verifiedDataByDelegateId: Map<String, CachedExchangeDataDetails>,
@@ -216,7 +217,6 @@ private class FullyCachedExchangeDataManagerInGroup(
 		allowCreationWithoutDelegatorKey: Boolean,
 	): ExchangeDataWithUnencryptedContent = createNewExchangeData(
 		delegateReference,
-		null,
 		allowCreationWithoutDelegateKey,
 		allowCreationWithoutDelegatorKey,
 	).also { created ->
@@ -262,7 +262,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 			}.toMap()
 		}
 
-	override suspend fun getDecryptionDataByIds(
+	override suspend fun getDecryptionDataByExchangeDataGroupIds(
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean,
 	): Map<String, ExchangeDataWithPotentiallyDecryptedContent> =

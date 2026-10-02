@@ -5,8 +5,7 @@ import {RemoteAuthentication} from './RemoteAuthentication.mjs';
 
 /**
  *
- *  Data transfer object representing a remote CouchDB endpoint with its URL and optional
- *  authentication.
+ *  Data transfer object representing a remote CouchDB endpoint with its URL and optional authentication.
  *  /
  */
 export class Remote {

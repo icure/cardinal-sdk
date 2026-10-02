@@ -8,8 +8,7 @@ import kotlin.collections.Set
 /**
  *
  *  Interface for entities that own and control access to encrypted data in the iCure system.
- *  Data owners (such as healthcare parties, patients, and devices) can grant access to their data
- * through delegations.
+ *  Data owners (such as healthcare parties, patients, and devices) can grant access to their data through delegations.
  */
 
 interface DataOwner {

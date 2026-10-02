@@ -28,8 +28,7 @@ public object InternalDeviceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byResponsibleInGroup(responsible: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<DeviceJs> {
+	public fun byResponsibleInGroup(responsible: EntityReferenceInGroupJs): BaseFilterOptionsJs<DeviceJs> {
 		val responsibleConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(responsible)
 		val result = DeviceFilters.byResponsibleInGroup(
 			responsibleConverted,

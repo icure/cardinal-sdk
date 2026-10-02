@@ -30,7 +30,8 @@ import kotlin.collections.List
 class RawAnonymousApiImpl(
 	internal val apiUrl: String,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawAnonymousApi {
+) : BaseRawApi(rawApiConfig),
+	RawAnonymousApi {
 	// region anonymous calendaritem endpoints
 
 	override suspend fun listAppointmentTypesForUser(

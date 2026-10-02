@@ -22,8 +22,7 @@ data class RecoveryData(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the recovery data in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the recovery data in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

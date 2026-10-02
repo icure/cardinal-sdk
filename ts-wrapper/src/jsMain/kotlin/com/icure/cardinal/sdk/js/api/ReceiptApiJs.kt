@@ -43,8 +43,7 @@ public external interface ReceiptApiJs {
 		options: dynamic,
 	): Promise<DecryptedReceiptJs>
 
-	public fun getAndDecryptReceiptAttachment(receipt: ReceiptJs, attachmentId: String):
-			Promise<ByteArray>
+	public fun getAndDecryptReceiptAttachment(receipt: ReceiptJs, attachmentId: String): Promise<ByteArray>
 
 	public fun encryptAndSetReceiptAttachment(
 		receipt: ReceiptJs,
@@ -58,8 +57,7 @@ public external interface ReceiptApiJs {
 
 	public fun decryptPatientIdOf(receipt: ReceiptJs): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: ReceiptJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: ReceiptJs, delegates: Array<String>): Promise<Unit>
 
 	public fun logReceipt(
 		user: UserJs,
@@ -75,13 +73,11 @@ public external interface ReceiptApiJs {
 
 	public fun deleteReceiptById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeReceiptById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteReceipt(receipt: ReceiptJs): Promise<StoredDocumentIdentifierJs>
 
@@ -106,8 +102,7 @@ public external interface ReceiptApiJs {
 		options: dynamic,
 	): Promise<DecryptedReceiptJs>
 
-	public fun shareWithMany(receipt: DecryptedReceiptJs,
-			delegates: Record<String, ReceiptShareOptionsJs>): Promise<DecryptedReceiptJs>
+	public fun shareWithMany(receipt: DecryptedReceiptJs, delegates: Record<String, ReceiptShareOptionsJs>): Promise<DecryptedReceiptJs>
 
 	public fun createReceipt(entity: DecryptedReceiptJs): Promise<DecryptedReceiptJs>
 
@@ -115,8 +110,7 @@ public external interface ReceiptApiJs {
 
 	public fun undeleteReceiptById(id: String, rev: String): Promise<DecryptedReceiptJs>
 
-	public fun undeleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedReceiptJs>>
+	public fun undeleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedReceiptJs>>
 
 	public fun undeleteReceipt(receipt: ReceiptJs): Promise<DecryptedReceiptJs>
 

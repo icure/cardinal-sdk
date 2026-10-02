@@ -53,8 +53,7 @@ internal class FormTemplateApiImplJs(
 		}
 	}
 
-	override fun getFormTemplates(formTemplateIds: Array<String>): Promise<Array<FormTemplateJs>> =
-			GlobalScope.promise {
+	override fun getFormTemplates(formTemplateIds: Array<String>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplateIdsConverted: List<String> = arrayToList(
 			formTemplateIds,
 			"formTemplateIds",
@@ -73,8 +72,7 @@ internal class FormTemplateApiImplJs(
 		)
 	}
 
-	override fun createFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun createFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formTemplateApi.createFormTemplate(
 			formTemplateConverted,
@@ -82,8 +80,7 @@ internal class FormTemplateApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun createFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun createFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -102,8 +99,7 @@ internal class FormTemplateApiImplJs(
 		)
 	}
 
-	override fun modifyFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun modifyFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formTemplateApi.modifyFormTemplate(
 			formTemplateConverted,
@@ -111,8 +107,7 @@ internal class FormTemplateApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun modifyFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun modifyFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -131,8 +126,7 @@ internal class FormTemplateApiImplJs(
 		)
 	}
 
-	override fun deleteFormTemplateById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteFormTemplateById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = formTemplateApi.deleteFormTemplateById(
@@ -142,8 +136,7 @@ internal class FormTemplateApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -162,8 +155,7 @@ internal class FormTemplateApiImplJs(
 		)
 	}
 
-	override fun deleteFormTemplate(formTemplate: FormTemplateJs): Promise<StoredDocumentIdentifierJs>
-			= GlobalScope.promise {
+	override fun deleteFormTemplate(formTemplate: FormTemplateJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formTemplateApi.deleteFormTemplate(
 			formTemplateConverted,
@@ -171,8 +163,7 @@ internal class FormTemplateApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -191,8 +182,7 @@ internal class FormTemplateApiImplJs(
 		)
 	}
 
-	override fun undeleteFormTemplateById(id: String, rev: String): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun undeleteFormTemplateById(id: String, rev: String): Promise<FormTemplateJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = formTemplateApi.undeleteFormTemplateById(
@@ -202,8 +192,7 @@ internal class FormTemplateApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -222,8 +211,7 @@ internal class FormTemplateApiImplJs(
 		)
 	}
 
-	override fun undeleteFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun undeleteFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formTemplateApi.undeleteFormTemplate(
 			formTemplateConverted,
@@ -231,8 +219,7 @@ internal class FormTemplateApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun undeleteFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun undeleteFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -261,8 +248,7 @@ internal class FormTemplateApiImplJs(
 
 	}
 
-	override fun purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -289,8 +275,7 @@ internal class FormTemplateApiImplJs(
 
 	}
 
-	override fun purgeFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -309,8 +294,7 @@ internal class FormTemplateApiImplJs(
 		)
 	}
 
-	override fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String> =
-			GlobalScope.promise {
+	override fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String> = GlobalScope.promise {
 		val formTemplateIdConverted: String = formTemplateId
 		val payloadConverted: ByteArray = payload
 		val result = formTemplateApi.setTemplateAttachment(
@@ -320,8 +304,7 @@ internal class FormTemplateApiImplJs(
 		result
 	}
 
-	override fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
 		val result = formTemplateApi.matchFormTemplateBy(
 			filterConverted,

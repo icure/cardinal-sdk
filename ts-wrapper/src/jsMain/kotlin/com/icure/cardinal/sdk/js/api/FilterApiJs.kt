@@ -13,6 +13,5 @@ import kotlin.js.Promise
 
 @JsName("FilterApi")
 public external interface FilterApiJs {
-	public fun getFilterOptionsDefinitions():
-			Promise<Record<String, Array<FilterOptionGroupWithViewsJs>>>
+	public fun getFilterOptionsDefinitions(): Promise<Record<String, Array<FilterOptionGroupWithViewsJs>>>
 }

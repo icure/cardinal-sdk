@@ -16,8 +16,7 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 @Serializable
 data class SecurityMetadata(
 	/**
-	 * A map from hex-encoded SHA-256 hash of an access control key to its corresponding secure
-	 * delegation.
+	 * A map from hex-encoded SHA-256 hash of an access control key to its corresponding secure delegation.
 	 */
 	public val secureDelegations: Map<SecureDelegationKeyString, SecureDelegation>,
 ) {

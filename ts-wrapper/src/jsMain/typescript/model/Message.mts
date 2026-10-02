@@ -16,8 +16,7 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents a message exchanged between healthcare parties. Messages can be used for internal
- *  communication,
+ *  Represents a message exchanged between healthcare parties. Messages can be used for internal communication,
  *  eHealth box messages, eFact batches, and other types of healthcare-related communications.
  *  /
  */
@@ -121,8 +120,7 @@ export interface Message extends StoredDocument, ICureDocument<string>, HasMedic
 
 /**
  *
- *  Represents a message exchanged between healthcare parties. Messages can be used for internal
- *  communication,
+ *  Represents a message exchanged between healthcare parties. Messages can be used for internal communication,
  *  eHealth box messages, eFact batches, and other types of healthcare-related communications.
  *  /
  */
@@ -457,8 +455,7 @@ export class DecryptedMessage {
 
 /**
  *
- *  Represents a message exchanged between healthcare parties. Messages can be used for internal
- *  communication,
+ *  Represents a message exchanged between healthcare parties. Messages can be used for internal communication,
  *  eHealth box messages, eFact batches, and other types of healthcare-related communications.
  *  /
  */

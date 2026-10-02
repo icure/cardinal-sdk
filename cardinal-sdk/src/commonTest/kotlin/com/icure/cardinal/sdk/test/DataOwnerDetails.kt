@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.crypto.impl.BasicCryptoStrategies
 import com.icure.cardinal.sdk.model.DataOwnerWithType
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.SdkOptions
@@ -32,9 +33,10 @@ data class DataOwnerDetails private constructor (
 	val username: String,
 	val password: String,
 	val keypair: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>?,
-	val parent: DataOwnerDetails?,
+	val parents: List<DataOwnerDetails>,
 	val publicKeySpki: SpkiHexString?,
-	val groupId: String
+	val groupId: String,
+	val effectiveGroupLinkType: DataOwnerGroupLinkType
 ) {
 	companion object {
 		fun testEmailForLogin(login: String) = "$login@test.com"
@@ -44,16 +46,18 @@ data class DataOwnerDetails private constructor (
 			username: String,
 			password: String,
 			keypair: RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm>?,
-			parent: DataOwnerDetails?,
-			groupId: String
+			parents: List<DataOwnerDetails>,
+			groupId: String,
+			effectiveGroupLinkType: DataOwnerGroupLinkType
 		) = DataOwnerDetails(
 			dataOwnerId = dataOwnerId,
 			username = username,
 			password = password,
 			keypair = keypair,
-			parent = parent,
+			parents = parents,
 			publicKeySpki = keypair?.let {SpkiHexString( defaultCryptoService.rsa.exportPublicKeySpki(it.public).toHexString())},
-			groupId = groupId
+			groupId = groupId,
+			effectiveGroupLinkType = effectiveGroupLinkType
 		)
 	}
 
@@ -65,13 +69,17 @@ data class DataOwnerDetails private constructor (
 	/**
 	 * Creates a new api with access to the original key of the user and his parents.
 	 * @param options extra options to use for the sdk, but some will be overridden by this method (including the cryptoStrategies).
+	 * @param useHierarchicalDataOwners value of [SdkOptions.useHierarchicalDataOwners] for the sdk.
 	 */
 	suspend fun api(
 		baseJob: Job,
 		cryptoStrategies: CryptoStrategies = BasicCryptoStrategies,
-		options: SdkOptions = SdkOptions()
+		options: SdkOptions = SdkOptions(),
+		useHierarchicalDataOwners: Boolean = true,
 	): CardinalSdk =
-		initApi(baseJob, cryptoStrategies, options = options) { addInitialKeysToStorage(it) }
+		initApi(baseJob, cryptoStrategies, options = options, useHierarchicalDataOwners = useHierarchicalDataOwners) {
+			addInitialKeysToStorage(it)
+		}
 
 	/**
 	 * Creates a new api with access to the original key of the user and his parents.
@@ -103,17 +111,19 @@ data class DataOwnerDetails private constructor (
 		cryptoStrategies: CryptoStrategies = BasicCryptoStrategies
 	): CardinalSdk =
 		initApi(baseJob, cryptoStrategies) { storage ->
-			var currParent = this.parent
-			while (currParent != null) {
-				currParent.keypair?.also {
-					storage.saveEncryptionKeypair(
-						currParent.dataOwnerId,
-						it,
-						true
-					)
+			suspend fun saveAncestorKeysOf(details: DataOwnerDetails) {
+				details.parents.filter { it.effectiveGroupLinkType == DataOwnerGroupLinkType.Parent }.forEach { ancestor ->
+					ancestor.keypair?.also {
+						storage.saveEncryptionKeypair(
+							ancestor.dataOwnerId,
+							it,
+							true
+						)
+					}
+					saveAncestorKeysOf(ancestor)
 				}
-				currParent = currParent.parent
 			}
+			saveAncestorKeysOf(this)
 		}
 
 	/**
@@ -175,6 +185,7 @@ data class DataOwnerDetails private constructor (
 		cryptoStrategies: CryptoStrategies,
 		storageFacade: StorageFacade = VolatileStorageFacade(),
 		options: SdkOptions = SdkOptions(),
+		useHierarchicalDataOwners: Boolean = true,
 		fillStorage: suspend (storage: CardinalStorageFacade) -> Unit
 	): CardinalSdk =
 		CardinalSdk.initialize(
@@ -191,7 +202,7 @@ data class DataOwnerDetails private constructor (
 				))
 			},
 			options.copy(
-				useHierarchicalDataOwners = true,
+				useHierarchicalDataOwners = useHierarchicalDataOwners,
 				cryptoStrategies = cryptoStrategies,
 				parentJob = parentJob
 			)
@@ -205,8 +216,16 @@ data class DataOwnerDetails private constructor (
 				true
 			)
 		}
-		parent?.addInitialKeysToStorage(storage)
+		parents.filter {
+			it.effectiveGroupLinkType == DataOwnerGroupLinkType.Parent
+		}.forEach {
+			it.addInitialKeysToStorage(storage)
+		}
 	}
 
-	fun hierarchy(): List<String> = parent?.hierarchy().orEmpty() + dataOwnerId
+	/**
+	 * All ancestor ids of this data owner (following every parent branch) plus this data owner's own id,
+	 * deduplicated.
+	 */
+	fun hierarchy(): List<String> = (parents.flatMap { it.hierarchy() } + dataOwnerId).distinct()
 }

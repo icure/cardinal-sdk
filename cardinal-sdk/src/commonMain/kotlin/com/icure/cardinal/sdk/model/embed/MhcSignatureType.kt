@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumerates the types of signatures used for medical house contracts, by holder or legal
- * representative, via eID or paper.
+ *  Enumerates the types of signatures used for medical house contracts, by holder or legal representative, via eID or paper.
  */
 @Serializable
 enum class MhcSignatureType(

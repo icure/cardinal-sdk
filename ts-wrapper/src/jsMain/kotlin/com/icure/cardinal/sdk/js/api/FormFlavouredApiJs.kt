@@ -28,8 +28,7 @@ public external interface FormFlavouredApiJs<E : FormJs> {
 
 	public fun filterFormsBy(filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createForm(entity: E): Promise<E>
 

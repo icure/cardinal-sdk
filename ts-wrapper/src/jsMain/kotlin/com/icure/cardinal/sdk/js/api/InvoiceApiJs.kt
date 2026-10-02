@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedInvoiceJs
@@ -52,22 +53,21 @@ public external interface InvoiceApiJs {
 
 	public fun decryptPatientIdOf(invoice: InvoiceJs): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: InvoiceJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: InvoiceJs, delegates: Array<String>): Promise<Unit>
 
 	public fun decrypt(invoice: EncryptedInvoiceJs): Promise<DecryptedInvoiceJs>
 
 	public fun tryDecrypt(invoice: EncryptedInvoiceJs): Promise<InvoiceJs>
 
+	public fun shareInvoicesByIds(invoiceIds: Array<String>, delegates: Record<String, InvoiceShareOptionsJs>): Promise<BulkShareByIdsResultJs>
+
 	public fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeInvoiceById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteInvoice(invoice: InvoiceJs): Promise<StoredDocumentIdentifierJs>
 
@@ -77,8 +77,7 @@ public external interface InvoiceApiJs {
 
 	public fun purgeInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getTarificationsCodesOccurrences(minOccurrence: Double):
-			Promise<Array<LabelledOccurenceJs>>
+	public fun getTarificationsCodesOccurrences(minOccurrence: Double): Promise<Array<LabelledOccurenceJs>>
 
 	public fun shareWith(
 		delegateId: String,
@@ -86,8 +85,7 @@ public external interface InvoiceApiJs {
 		options: dynamic,
 	): Promise<DecryptedInvoiceJs>
 
-	public fun shareWithMany(invoice: DecryptedInvoiceJs,
-			delegates: Record<String, InvoiceShareOptionsJs>): Promise<DecryptedInvoiceJs>
+	public fun shareWithMany(invoice: DecryptedInvoiceJs, delegates: Record<String, InvoiceShareOptionsJs>): Promise<DecryptedInvoiceJs>
 
 	public fun findInvoicesByHcPartyPatient(
 		hcPartyId: String,
@@ -101,8 +99,7 @@ public external interface InvoiceApiJs {
 
 	public fun undeleteInvoiceById(id: String, rev: String): Promise<DecryptedInvoiceJs>
 
-	public fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedInvoiceJs>>
+	public fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedInvoiceJs>>
 
 	public fun undeleteInvoice(invoice: InvoiceJs): Promise<DecryptedInvoiceJs>
 
@@ -142,11 +139,9 @@ public external interface InvoiceApiJs {
 		tarificationIds: Array<String>,
 	): Promise<Array<DecryptedInvoiceJs>>
 
-	public fun findInvoicesByAuthor(hcPartyId: String, options: dynamic):
-			Promise<PaginatedListJs<DecryptedInvoiceJs>>
+	public fun findInvoicesByAuthor(hcPartyId: String, options: dynamic): Promise<PaginatedListJs<DecryptedInvoiceJs>>
 
-	public fun listInvoicesByHcPartyAndGroupId(hcPartyId: String, groupId: String):
-			Promise<Array<DecryptedInvoiceJs>>
+	public fun listInvoicesByHcPartyAndGroupId(hcPartyId: String, groupId: String): Promise<Array<DecryptedInvoiceJs>>
 
 	public fun listInvoicesByHcPartySentMediumTypeInvoiceTypeSentDate(
 		hcPartyId: String,
@@ -158,8 +153,7 @@ public external interface InvoiceApiJs {
 
 	public fun listInvoicesByContactIds(contactIds: Array<String>): Promise<Array<DecryptedInvoiceJs>>
 
-	public fun listInvoicesByRecipientsIds(recipientsIds: Array<String>):
-			Promise<Array<DecryptedInvoiceJs>>
+	public fun listInvoicesByRecipientsIds(recipientsIds: Array<String>): Promise<Array<DecryptedInvoiceJs>>
 
 	public fun listToInsurances(userIds: Array<String>): Promise<Array<DecryptedInvoiceJs>>
 

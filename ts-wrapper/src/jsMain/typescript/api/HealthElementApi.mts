@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {HealthElementDelegateOptions} from '../crypto/entities/HealthElementDelegateOptions.mjs';
 import {HealthElementShareOptions} from '../crypto/entities/HealthElementShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -182,6 +183,29 @@ export interface HealthElementApi {
 	 *  @return a list of health element ids
 	 */
 	matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  Share many already-existing health elements with one or more delegates at once, retrieving them by id instead
+	 *  of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per health element when you already know the ids of many health elements to share and don't otherwise need
+	 *  their decrypted content, since only lightweight metadata (not the full content of each health element) is ever
+	 *  retrieved, and no content flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found health element. Unlike [shareWithMany], if
+	 *  the share fails for some (health element, delegate) pairs this method reports the failure for those specific
+	 *  pairs in the returned result instead of throwing, so sharing proceeds normally for every other health element
+	 *  and delegate in the batch.
+	 *
+	 *  @param healthElementIds ids of the health elements to share. Ids that don't exist, or exist but for which the
+	 *  current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each health element, and the options for sharing
+	 *  with each of them (see [HealthElementShareOptions]). The exact same options are applied to every health element
+	 *  in [healthElementIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareHealthElementsByIds(healthElementIds: Array<string>,
+			delegates: { [ key: string ]: HealthElementShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *
@@ -413,6 +437,26 @@ export interface HealthElementApi {
 	/**
 	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *
+	 *  # Access control
+	 *
+	 *  The subscription will only receive notifications about entities that the SDK user can access; currently this
+	 *  validation varies slightly from standard read methods.
+	 *
+	 *  ## Encryptable entities
+	 *
+	 *  Applies the same access control rules as the standard read methods; depending on the permissions of the user the
+	 *  entity might need to have a direct delegation to the user, or to a parent, or if the user has the permission to
+	 *  read any entity of the type regardless of delegations then all notification of entities (matching the filter)
+	 *  will be received.
+	 *
+	 *  ## Healthcare party
+	 *
+	 *  Currently, regardless of user permissions, only notifications about healthcare parties that have the current SDK
+	 *  data owner as a DIRECT link will be returned.
+	 *
+	 *  This behaviour is not in line with current Cardinal SDK ideology and is subject to change in future versions.
+	 *
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
 	 *  make the filter as restrictive as possible.

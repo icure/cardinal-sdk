@@ -26,21 +26,17 @@ public external interface FormBasicApiJs {
 
 	public fun matchFormsBySorted(filter: BaseSortableFilterOptionsJs<FormJs>): Promise<Array<String>>
 
-	public fun filterFormsBy(filter: BaseFilterOptionsJs<FormJs>):
-			Promise<PaginatedListIteratorJs<EncryptedFormJs>>
+	public fun filterFormsBy(filter: BaseFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<EncryptedFormJs>>
 
-	public fun filterFormsBySorted(filter: BaseSortableFilterOptionsJs<FormJs>):
-			Promise<PaginatedListIteratorJs<EncryptedFormJs>>
+	public fun filterFormsBySorted(filter: BaseSortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<EncryptedFormJs>>
 
 	public fun deleteFormById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeFormById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteForm(form: FormJs): Promise<StoredDocumentIdentifierJs>
 
@@ -56,44 +52,35 @@ public external interface FormBasicApiJs {
 
 	public fun createFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs>
 
-	public fun createFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>>
+	public fun createFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>>
 
 	public fun modifyFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs>
 
-	public fun modifyFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>>
+	public fun modifyFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>>
 
-	public fun deleteFormTemplateById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs>
+	public fun deleteFormTemplateById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteFormTemplate(formTemplate: FormTemplateJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun undeleteFormTemplateById(id: String, rev: String): Promise<FormTemplateJs>
 
-	public fun undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<FormTemplateJs>>
+	public fun undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<FormTemplateJs>>
 
 	public fun undeleteFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs>
 
-	public fun undeleteFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>>
+	public fun undeleteFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>>
 
 	public fun purgeFormTemplateById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeFormTemplate(formTemplate: FormTemplateJs): Promise<Unit>
 
-	public fun purgeFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String>
 
@@ -109,8 +96,7 @@ public external interface FormBasicApiJs {
 
 	public fun undeleteFormById(id: String, rev: String): Promise<EncryptedFormJs>
 
-	public fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedFormJs>>
+	public fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedFormJs>>
 
 	public fun undeleteForm(form: FormJs): Promise<EncryptedFormJs>
 

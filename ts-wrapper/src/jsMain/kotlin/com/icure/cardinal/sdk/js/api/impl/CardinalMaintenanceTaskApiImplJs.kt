@@ -25,18 +25,15 @@ import kotlinx.coroutines.promise
 internal class CardinalMaintenanceTaskApiImplJs(
 	private val cardinalMaintenanceTaskApi: CardinalMaintenanceTaskApi,
 ) : CardinalMaintenanceTaskApiJs {
-	override fun applyKeyPairUpdate(updateRequest: KeyPairUpdateNotificationJs): Promise<Unit> =
-			GlobalScope.promise {
-		val updateRequestConverted: KeyPairUpdateNotification =
-				keyPairUpdateNotification_fromJs(updateRequest)
+	override fun applyKeyPairUpdate(updateRequest: KeyPairUpdateNotificationJs): Promise<Unit> = GlobalScope.promise {
+		val updateRequestConverted: KeyPairUpdateNotification = keyPairUpdateNotification_fromJs(updateRequest)
 		cardinalMaintenanceTaskApi.applyKeyPairUpdate(
 			updateRequestConverted,
 		)
 
 	}
 
-	override fun createKeyPairUpdateNotificationsToAllDelegationCounterparts(key: String,
-			options: dynamic): Promise<Unit> {
+	override fun createKeyPairUpdateNotificationsToAllDelegationCounterparts(key: String, options: dynamic): Promise<Unit> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val keyConverted: SpkiHexString = spkiHexString_fromJs(key)
@@ -61,8 +58,7 @@ internal class CardinalMaintenanceTaskApiImplJs(
 		}
 	}
 
-	override fun createKeyPairUpdateNotificationTo(dataOwnerId: String, key: String): Promise<Unit> =
-			GlobalScope.promise {
+	override fun createKeyPairUpdateNotificationTo(dataOwnerId: String, key: String): Promise<Unit> = GlobalScope.promise {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val keyConverted: SpkiHexString = spkiHexString_fromJs(key)
 		cardinalMaintenanceTaskApi.createKeyPairUpdateNotificationTo(

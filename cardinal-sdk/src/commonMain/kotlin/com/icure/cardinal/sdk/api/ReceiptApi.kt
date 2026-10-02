@@ -385,8 +385,8 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedReceipt
@@ -397,8 +397,8 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 		delegates: Map<String, ReceiptDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedReceipt
@@ -435,8 +435,8 @@ interface ReceiptInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): GroupScoped<DecryptedReceipt>
@@ -451,8 +451,8 @@ interface ReceiptInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptFlavoure
 		delegates: Map<String, ReceiptDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): GroupScoped<DecryptedReceipt>

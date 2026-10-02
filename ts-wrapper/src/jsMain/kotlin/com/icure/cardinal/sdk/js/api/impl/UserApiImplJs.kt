@@ -74,8 +74,7 @@ internal class UserApiImplJs(
 	private val userApi: UserApi,
 ) : UserApiJs {
 	override val inGroup: UserInGroupApiJs = object : UserInGroupApiJs {
-		override fun createUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
-				GlobalScope.promise {
+		override fun createUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -93,8 +92,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun createUsers(users: Array<GroupScopedJs<UserJs>>):
-				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+		override fun createUsers(users: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
 			val usersConverted: List<GroupScoped<User>> = arrayToList(
 				users,
 				"users",
@@ -123,8 +121,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun getUser(groupId: String, userId: String): Promise<GroupScopedJs<UserJs>?> =
-				GlobalScope.promise {
+		override fun getUser(groupId: String, userId: String): Promise<GroupScopedJs<UserJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val userIdConverted: String = userId
 			val result = userApi.inGroup.getUser(
@@ -143,8 +140,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun getUsers(groupId: String, userIds: Array<String>):
-				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+		override fun getUsers(groupId: String, userIds: Array<String>): Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val userIdsConverted: List<String> = arrayToList(
 				userIds,
@@ -170,8 +166,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun modifyUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
-				GlobalScope.promise {
+		override fun modifyUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -189,8 +184,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun modifyUsers(users: Array<GroupScopedJs<UserJs>>):
-				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+		override fun modifyUsers(users: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
 			val usersConverted: List<GroupScoped<User>> = arrayToList(
 				users,
 				"users",
@@ -219,8 +213,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun deleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val userIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				userId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -238,8 +231,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun deleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val userIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				userIds,
 				"userIds",
@@ -268,8 +260,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun deleteUser(user: GroupScopedJs<UserJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -287,8 +278,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun deleteUsers(users: Array<GroupScopedJs<UserJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteUsers(users: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val usersConverted: List<GroupScoped<User>> = arrayToList(
 				users,
 				"users",
@@ -317,8 +307,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun purgeUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val userIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				userId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -331,8 +320,7 @@ internal class UserApiImplJs(
 
 		}
 
-		override fun purgeUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val userIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				userIds,
 				"userIds",
@@ -374,8 +362,7 @@ internal class UserApiImplJs(
 
 		}
 
-		override fun purgeUsers(userIds: Array<GroupScopedJs<UserJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeUsers(userIds: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val userIdsConverted: List<GroupScoped<User>> = arrayToList(
 				userIds,
 				"userIds",
@@ -404,8 +391,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun undeleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
+		override fun undeleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
 			val userIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				userId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -423,8 +409,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun undeleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+		override fun undeleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
 			val userIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				userIds,
 				"userIds",
@@ -453,8 +438,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun undeleteUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
-				GlobalScope.promise {
+		override fun undeleteUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -472,8 +456,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun undeleteUsers(users: Array<GroupScopedJs<UserJs>>):
-				Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+		override fun undeleteUsers(users: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<UserJs>>> = GlobalScope.promise {
 			val usersConverted: List<GroupScoped<User>> = arrayToList(
 				users,
 				"users",
@@ -502,8 +485,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun filterUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+		override fun filterUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
 			val result = userApi.inGroup.filterUsersBy(
@@ -523,8 +505,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun matchUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
 			val result = userApi.inGroup.matchUsersBy(
@@ -539,8 +520,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun filterUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>> = GlobalScope.promise {
+		override fun filterUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
 			val result = userApi.inGroup.filterUsersBySorted(
@@ -560,8 +540,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun matchUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
 			val result = userApi.inGroup.matchUsersBySorted(
@@ -576,8 +555,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun setUserRoles(user: GroupScopedJs<UserJs>, rolesIds: Array<String>):
-				Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
+		override fun setUserRoles(user: GroupScopedJs<UserJs>, rolesIds: Array<String>): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -603,8 +581,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun resetUserRoles(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
-				GlobalScope.promise {
+		override fun resetUserRoles(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -696,8 +673,7 @@ internal class UserApiImplJs(
 			}
 		}
 
-		override fun enable2faForUser(user: GroupScopedJs<UserJs>, request: Enable2faRequestJs):
-				Promise<Unit> = GlobalScope.promise {
+		override fun enable2faForUser(user: GroupScopedJs<UserJs>, request: Enable2faRequestJs): Promise<Unit> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -725,8 +701,7 @@ internal class UserApiImplJs(
 
 		}
 
-		override fun createAdminUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> =
-				GlobalScope.promise {
+		override fun createAdminUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -813,8 +788,7 @@ internal class UserApiImplJs(
 			)
 		}
 
-		override fun setUserInheritsPermissions(user: GroupScopedJs<UserJs>, `value`: Boolean):
-				Promise<Unit> = GlobalScope.promise {
+		override fun setUserInheritsPermissions(user: GroupScopedJs<UserJs>, `value`: Boolean): Promise<Unit> = GlobalScope.promise {
 			val userConverted: GroupScoped<User> = groupScoped_fromJs(
 				user,
 				{ x1: UserJs ->
@@ -992,8 +966,7 @@ internal class UserApiImplJs(
 		)
 	}
 
-	override fun assignHealthcareParty(healthcarePartyId: String): Promise<UserJs> =
-			GlobalScope.promise {
+	override fun assignHealthcareParty(healthcarePartyId: String): Promise<UserJs> = GlobalScope.promise {
 		val healthcarePartyIdConverted: String = healthcarePartyId
 		val result = userApi.assignHealthcareParty(
 			healthcarePartyIdConverted,
@@ -1001,8 +974,7 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun modifyProperties(userId: String, properties: Array<EncryptedPropertyStubJs>?):
-			Promise<UserJs> = GlobalScope.promise {
+	override fun modifyProperties(userId: String, properties: Array<EncryptedPropertyStubJs>?): Promise<UserJs> = GlobalScope.promise {
 		val userIdConverted: String = userId
 		val propertiesConverted: List<EncryptedPropertyStub>? = arrayToList(
 			properties,
@@ -1051,8 +1023,7 @@ internal class UserApiImplJs(
 		}
 	}
 
-	override fun filterUsersBy(filter: BaseFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<UserJs>> = GlobalScope.promise {
+	override fun filterUsersBy(filter: BaseFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<UserJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
 		val result = userApi.filterUsersBy(
 			filterConverted,
@@ -1065,8 +1036,7 @@ internal class UserApiImplJs(
 		)
 	}
 
-	override fun matchUsersBy(filter: BaseFilterOptionsJs<UserJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchUsersBy(filter: BaseFilterOptionsJs<UserJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)
 		val result = userApi.matchUsersBy(
 			filterConverted,
@@ -1079,8 +1049,7 @@ internal class UserApiImplJs(
 		)
 	}
 
-	override fun filterUsersBySorted(filter: BaseSortableFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<UserJs>> = GlobalScope.promise {
+	override fun filterUsersBySorted(filter: BaseSortableFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<UserJs>> = GlobalScope.promise {
 		val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
 		val result = userApi.filterUsersBySorted(
 			filterConverted,
@@ -1093,8 +1062,7 @@ internal class UserApiImplJs(
 		)
 	}
 
-	override fun matchUsersBySorted(filter: BaseSortableFilterOptionsJs<UserJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchUsersBySorted(filter: BaseSortableFilterOptionsJs<UserJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseSortableFilterOptions<User> = baseSortableFilterOptions_fromJs(filter)
 		val result = userApi.matchUsersBySorted(
 			filterConverted,
@@ -1118,8 +1086,7 @@ internal class UserApiImplJs(
 		)
 	}
 
-	override fun setUserRoles(userId: String, rolesIds: Array<String>): Promise<UserJs> =
-			GlobalScope.promise {
+	override fun setUserRoles(userId: String, rolesIds: Array<String>): Promise<UserJs> = GlobalScope.promise {
 		val userIdConverted: String = userId
 		val rolesIdsConverted: List<String> = arrayToList(
 			rolesIds,
@@ -1143,8 +1110,7 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun enable2faForUser(userId: String, request: Enable2faRequestJs): Promise<Unit> =
-			GlobalScope.promise {
+	override fun enable2faForUser(userId: String, request: Enable2faRequestJs): Promise<Unit> = GlobalScope.promise {
 		val userIdConverted: String = userId
 		val requestConverted: Enable2faRequest = enable2faRequest_fromJs(request)
 		userApi.enable2faForUser(
@@ -1170,8 +1136,7 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun modifyUserPassword(userId: String, newPassword: String): Promise<UserJs> =
-			GlobalScope.promise {
+	override fun modifyUserPassword(userId: String, newPassword: String): Promise<UserJs> = GlobalScope.promise {
 		val userIdConverted: String = userId
 		val newPasswordConverted: String = newPassword
 		val result = userApi.modifyUserPassword(
@@ -1213,8 +1178,7 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun removeUserMobilePhone(userId: String, previousMobilePhone: String?): Promise<UserJs> =
-			GlobalScope.promise {
+	override fun removeUserMobilePhone(userId: String, previousMobilePhone: String?): Promise<UserJs> = GlobalScope.promise {
 		val userIdConverted: String = userId
 		val previousMobilePhoneConverted: String? = undefinedToNull(previousMobilePhone)
 		val result = userApi.removeUserMobilePhone(
@@ -1224,8 +1188,7 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteUserById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = userApi.deleteUserById(
@@ -1235,8 +1198,7 @@ internal class UserApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val userIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			userIds,
 			"userIds",
@@ -1265,8 +1227,7 @@ internal class UserApiImplJs(
 
 	}
 
-	override fun purgeUsersByIds(userIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val userIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			userIds,
 			"userIds",
@@ -1295,8 +1256,7 @@ internal class UserApiImplJs(
 		user_toJs(result)
 	}
 
-	override fun undeleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<UserJs>>
-			= GlobalScope.promise {
+	override fun undeleteUsersByIds(userIds: Array<StoredDocumentIdentifierJs>): Promise<Array<UserJs>> = GlobalScope.promise {
 		val userIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			userIds,
 			"userIds",
@@ -1323,8 +1283,7 @@ internal class UserApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deleteUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val usersConverted: List<User> = arrayToList(
 			users,
 			"users",
@@ -1351,8 +1310,7 @@ internal class UserApiImplJs(
 
 	}
 
-	override fun purgeUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun purgeUsers(users: Array<UserJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val usersConverted: List<User> = arrayToList(
 			users,
 			"users",
@@ -1398,8 +1356,7 @@ internal class UserApiImplJs(
 		)
 	}
 
-	override fun setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: String,
-			externalAuthenticationToken: String): Promise<Boolean> = GlobalScope.promise {
+	override fun setExternalJwtAuthByIdentifiersForCurrentUser(externalJwtConfigId: String, externalAuthenticationToken: String): Promise<Boolean> = GlobalScope.promise {
 		val externalJwtConfigIdConverted: String = externalJwtConfigId
 		val externalAuthenticationTokenConverted: String = externalAuthenticationToken
 		val result = userApi.setExternalJwtAuthByIdentifiersForCurrentUser(
@@ -1424,8 +1381,7 @@ internal class UserApiImplJs(
 				},
 			)
 			val filterConverted: FilterOptions<User> = filterOptions_fromJs(filter)
-			val subscriptionConfigConverted: EntitySubscriptionConfiguration? =
-					convertingOptionOrDefaultNullable(
+			val subscriptionConfigConverted: EntitySubscriptionConfiguration? = convertingOptionOrDefaultNullable(
 				_options,
 				"subscriptionConfig",
 				null

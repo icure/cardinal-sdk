@@ -84,7 +84,10 @@ data class PlanOfActionTemplate(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val forms: List<FormSkeleton> = emptyList(),
-) : ICureDocument<String>, HasMedicalLocation, Named, HasEndOfLife {
+) : ICureDocument<String>,
+	HasMedicalLocation,
+	Named,
+	HasEndOfLife {
 	// region PlanOfActionTemplate-PlanOfActionTemplate
 
 	// endregion

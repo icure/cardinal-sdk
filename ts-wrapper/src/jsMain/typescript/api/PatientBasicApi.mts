@@ -276,6 +276,7 @@ export interface PatientBasicApi {
 	 *    Note that since the metadata is automatically updated by this method you must not change the metadata of the `mergedInto` patient
 	 *    (`delegations`, mergedInto`, ...): if there is any change between the metadata of the provided `mergedInto` patient and the stored patient this
 	 *    method will fail.
+	 *  - Encryption keys WILL NOT be merged
 	 *
 	 *  In case the revisions of [from] and/or [mergedInto] does not match the latest revisions for these patients in the database this
 	 *  method will fail without soft-deleting the `from` patient and without updating the `into` patient with the merged content and metadata. You will
@@ -292,6 +293,11 @@ export interface PatientBasicApi {
 	 *
 	 *  Note that the user performing this operation must have write access to both patients.
 	 *
+	 *  # Merging encrypted patients
+	 *
+	 *  When merging encrypted patients make sure that you don't merge `encryptedSelf` values coming from different
+	 *  patients, as that will create an undecryptable patient
+	 *
 	 *  @param from the original, unmodified `from` patient. Its content will be unchanged and its metadata will be automatically updated by this method
 	 *  to reflect the merge.
 	 *  @param mergedInto the `into` patient with updated content result of the merge with the `from` patient, as specified by your application logic.
@@ -304,6 +310,26 @@ export interface PatientBasicApi {
 	/**
 	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *
+	 *  # Access control
+	 *
+	 *  The subscription will only receive notifications about entities that the SDK user can access; currently this
+	 *  validation varies slightly from standard read methods.
+	 *
+	 *  ## Encryptable entities
+	 *
+	 *  Applies the same access control rules as the standard read methods; depending on the permissions of the user the
+	 *  entity might need to have a direct delegation to the user, or to a parent, or if the user has the permission to
+	 *  read any entity of the type regardless of delegations then all notification of entities (matching the filter)
+	 *  will be received.
+	 *
+	 *  ## Healthcare party
+	 *
+	 *  Currently, regardless of user permissions, only notifications about healthcare parties that have the current SDK
+	 *  data owner as a DIRECT link will be returned.
+	 *
+	 *  This behaviour is not in line with current Cardinal SDK ideology and is subject to change in future versions.
+	 *
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
 	 *  make the filter as restrictive as possible.

@@ -25,7 +25,8 @@ class RawEntityReferenceApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawEntityReferenceApi {
+) : BaseRawApi(rawApiConfig),
+	RawEntityReferenceApi {
 	// region common endpoints
 
 	override suspend fun getLatest(prefix: String): HttpResponse<EntityReference> =

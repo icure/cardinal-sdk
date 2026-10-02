@@ -12,8 +12,7 @@ import kotlin.String
 import kotlin.collections.Map
 
 /**
- * Links the public keys of a data owner to their exchange data. This entity associates secure
- * delegation keys
+ * Links the public keys of a data owner to their exchange data. This entity associates secure delegation keys
  * to the encrypted id of the exchange data used for the creation of the secure delegation.
  * /
  */
@@ -24,8 +23,7 @@ data class ExchangeDataMap(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the exchange data map in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the exchange data map in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

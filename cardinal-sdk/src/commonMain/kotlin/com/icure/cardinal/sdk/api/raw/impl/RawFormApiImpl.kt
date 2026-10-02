@@ -49,12 +49,10 @@ class RawFormApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawFormApi {
+) : BaseRawApi(rawApiConfig),
+	RawFormApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.Form,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Form)
 
 	// region common endpoints
 
@@ -818,10 +816,7 @@ class RawFormApiImpl(
 		groupId: String,
 		formTemplateIdsAndRevs: ListOfIdsAndRev,
 	): HttpResponse<List<FormTemplate>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "undelete", "batch")
@@ -906,10 +901,7 @@ class RawFormApiImpl(
 		groupId: String,
 		formTemplates: List<FormTemplate>,
 	): HttpResponse<List<FormTemplate>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "batch")
@@ -923,10 +915,7 @@ class RawFormApiImpl(
 		groupId: String,
 		formTemplates: List<FormTemplate>,
 	): HttpResponse<List<FormTemplate>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "form", "template", "inGroup", groupId, "batch")

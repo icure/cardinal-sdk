@@ -16,7 +16,8 @@ import kotlin.js.JsQualifier
 @JsName("Code")
 public external class CodeJs(
 	partial: dynamic,
-) : StoredDocumentJs, CodeIdentificationJs<String> {
+) : StoredDocumentJs,
+    CodeIdentificationJs<String> {
 	override val id: String
 
 	override val rev: String?

@@ -24,10 +24,8 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
- * operations
- * such as key exchange requests, data migrations, or other administrative operations that require
- * asynchronous processing.
+ * Represents a maintenance task in the iCure system. Maintenance tasks are used to track background operations
+ * such as key exchange requests, data migrations, or other administrative operations that require asynchronous processing.
  * /
  */
 
@@ -45,8 +43,7 @@ sealed interface MaintenanceTask :
 	override val id: String
 
 	/**
-	 * The revision of the maintenance task in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the maintenance task in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String?
 
@@ -147,10 +144,8 @@ sealed interface MaintenanceTask :
 }
 
 /**
- * Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
- * operations
- * such as key exchange requests, data migrations, or other administrative operations that require
- * asynchronous processing.
+ * Represents a maintenance task in the iCure system. Maintenance tasks are used to track background operations
+ * such as key exchange requests, data migrations, or other administrative operations that require asynchronous processing.
  * /
  */
 @Serializable
@@ -160,8 +155,7 @@ data class DecryptedMaintenanceTask(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the maintenance task in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the maintenance task in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -253,10 +247,8 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a maintenance task in the iCure system. Maintenance tasks are used to track background
- * operations
- * such as key exchange requests, data migrations, or other administrative operations that require
- * asynchronous processing.
+ * Represents a maintenance task in the iCure system. Maintenance tasks are used to track background operations
+ * such as key exchange requests, data migrations, or other administrative operations that require asynchronous processing.
  * /
  */
 @Serializable
@@ -266,8 +258,7 @@ data class EncryptedMaintenanceTask(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the maintenance task in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the maintenance task in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

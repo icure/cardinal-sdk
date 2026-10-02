@@ -78,45 +78,33 @@ public external interface DocumentInGroupApiJs {
 
 	public fun hasWriteAccess(document: GroupScopedJs<DocumentJs>): Promise<Boolean>
 
-	public fun decryptOwningEntityIdsOf(document: GroupScopedJs<DocumentJs>):
-			Promise<Array<EntityReferenceInGroupJs>>
+	public fun decryptOwningEntityIdsOf(document: GroupScopedJs<DocumentJs>): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<DocumentJs>,
-			delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<DocumentJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
 
-	public fun decrypt(documents: Array<GroupScopedJs<EncryptedDocumentJs>>):
-			Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun decrypt(documents: Array<GroupScopedJs<EncryptedDocumentJs>>): Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
 
-	public fun tryDecrypt(documents: Array<GroupScopedJs<EncryptedDocumentJs>>):
-			Promise<Array<GroupScopedJs<DocumentJs>>>
+	public fun tryDecrypt(documents: Array<GroupScopedJs<EncryptedDocumentJs>>): Promise<Array<GroupScopedJs<DocumentJs>>>
 
-	public fun matchDocumentsBy(groupId: String, filter: FilterOptionsJs<DocumentJs>):
-			Promise<Array<String>>
+	public fun matchDocumentsBy(groupId: String, filter: FilterOptionsJs<DocumentJs>): Promise<Array<String>>
 
-	public fun matchDocumentsBySorted(groupId: String, filter: SortableFilterOptionsJs<DocumentJs>):
-			Promise<Array<String>>
+	public fun matchDocumentsBySorted(groupId: String, filter: SortableFilterOptionsJs<DocumentJs>): Promise<Array<String>>
 
-	public fun deleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteDocument(document: GroupScopedJs<DocumentJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteDocument(document: GroupScopedJs<DocumentJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteDocuments(documents: Array<GroupScopedJs<DocumentJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteDocuments(documents: Array<GroupScopedJs<DocumentJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeDocument(document: GroupScopedJs<DocumentJs>): Promise<Unit>
 
-	public fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
@@ -124,43 +112,29 @@ public external interface DocumentInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
-	public fun shareWithMany(document: GroupScopedJs<DecryptedDocumentJs>,
-			delegates: Array<EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<DecryptedDocumentJs>>
+	public fun shareWithMany(document: GroupScopedJs<DecryptedDocumentJs>, delegates: Array<EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
-	public fun filterDocumentsBy(groupId: String, filter: FilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun filterDocumentsBy(groupId: String, filter: FilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedDocumentJs>>>
 
-	public fun filterDocumentsBySorted(groupId: String, filter: SortableFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun filterDocumentsBySorted(groupId: String, filter: SortableFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedDocumentJs>>>
 
-	public fun createDocument(entity: GroupScopedJs<DecryptedDocumentJs>):
-			Promise<GroupScopedJs<DecryptedDocumentJs>>
+	public fun createDocument(entity: GroupScopedJs<DecryptedDocumentJs>): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
-	public fun createDocuments(entities: Array<GroupScopedJs<DecryptedDocumentJs>>):
-			Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun createDocuments(entities: Array<GroupScopedJs<DecryptedDocumentJs>>): Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
 
-	public fun undeleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<DecryptedDocumentJs>>
+	public fun undeleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
-	public fun undeleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun undeleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
 
-	public fun undeleteDocument(document: GroupScopedJs<DocumentJs>):
-			Promise<GroupScopedJs<DecryptedDocumentJs>>
+	public fun undeleteDocument(document: GroupScopedJs<DocumentJs>): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
-	public fun undeleteDocuments(documents: Array<GroupScopedJs<DecryptedDocumentJs>>):
-			Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun undeleteDocuments(documents: Array<GroupScopedJs<DecryptedDocumentJs>>): Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
 
-	public fun modifyDocument(entity: GroupScopedJs<DecryptedDocumentJs>):
-			Promise<GroupScopedJs<DecryptedDocumentJs>>
+	public fun modifyDocument(entity: GroupScopedJs<DecryptedDocumentJs>): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
-	public fun modifyDocuments(entities: Array<GroupScopedJs<DecryptedDocumentJs>>):
-			Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun modifyDocuments(entities: Array<GroupScopedJs<DecryptedDocumentJs>>): Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
 
-	public fun getDocument(groupId: String, entityId: String):
-			Promise<GroupScopedJs<DecryptedDocumentJs>?>
+	public fun getDocument(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedDocumentJs>?>
 
-	public fun getDocuments(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
+	public fun getDocuments(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedDocumentJs>>>
 }

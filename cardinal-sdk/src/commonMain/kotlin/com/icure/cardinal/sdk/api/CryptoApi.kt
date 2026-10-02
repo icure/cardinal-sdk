@@ -6,8 +6,8 @@ import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV1String
 import com.icure.cardinal.sdk.model.specializations.Pkcs8Bytes
+import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.utils.DefaultValue
-import com.icure.kryptom.crypto.RsaAlgorithm
 
 
 /**
@@ -32,15 +32,17 @@ interface CryptoApi {
 	suspend fun forceReload()
 
 	/**
-	 * Get the available keys for the current data and his parents (if using hierarchical data owners).
-	 * The result is a map associating the current data owner or parent id to a map containing all the available keys
-	 * for that data owner.
-	 * The keys map associates the key fingerprint to the pkcs8 bytes of the private key.
+	 * Get the available keys for the data owner associated to the instance of the SDK and, if using hierarchical data
+	 * owners, also its parents.
+	 * Note that the result does not necessarily include the keys of the current user's data owner: this might be the
+	 * case if the SDK was initialized using the "parent delegator", "keyless", or "child-scoped" modes.
+	 * The result is an (unordered) map containing all the available private keys, indexed by their data owner id and
+	 * fingerprint.
 	 * @param filterTrustedKeys if true (default) only keys fully trusted by this instance of the sdk will be returned.
 	 * Otherwise, also unverified keys may be returned.
 	 * @return the available keys
 	 */
-	suspend fun currentDataOwnerKeys(
+	suspend fun availableKeys(
 		@DefaultValue("true")
 		filterTrustedKeys: Boolean = true
 	): Map<String, Map<KeypairFingerprintV1String, Pkcs8Bytes>>
@@ -64,6 +66,31 @@ interface CryptoApi {
 		details: List<ExchangeDataInjectionDetails>,
 		reEncryptWithOwnKeys: Boolean
 	)
+
+	/**
+	 * Make sure that a data owner that is a member of the same simple-type group as the current data owner has access
+	 * to all the exchange data of that group.
+	 *
+	 * [sharedSimpleDataOwnerGroupId] must be a simple-type data owner group, of the same data-owner-type as the current
+	 * delegator actor, and both the current delegator actor data owner and the [delegate] data owner must be directly
+	 * or indirectly through transitive links members of the [sharedSimpleDataOwnerGroupId] group; if they are not this
+	 * method fails with a [IllegalArgumentException] without applying any change to the exchange data.
+	 *
+	 * If [delegatePublicKey] is null this method will simply check that for each exchange data of the group there is
+	 * also a piece for the [delegate] data owner. If [delegatePublicKey] is not null this method will also check that
+	 * the piece for the [delegate] data owner contains entries for the provided public key.
+	 *
+	 * This method returns true if all exchange data that was found for [sharedSimpleDataOwnerGroupId] could be
+	 * successfully reshared with the [delegate] data owner, false if some data could not be shared (failed to update
+	 * it, or there is no piece that the current sdk could decrypt); this method will do its best effort to share as
+	 * much as possible (does not stop on the first failure)
+	 */
+	suspend fun ensureHasAccessToSharedSimpleDataOwnerGroupExchangeData(
+		delegate: String,
+		sharedSimpleDataOwnerGroupId: String,
+		@DefaultValue("null")
+		delegatePublicKey: SpkiHexString? = null,
+	): Boolean
 }
 
 interface CryptoInGroupApi {

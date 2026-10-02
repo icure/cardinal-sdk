@@ -35,7 +35,8 @@ class RawCalendarItemTypeApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawCalendarItemTypeApi {
+) : BaseRawApi(rawApiConfig),
+	RawCalendarItemTypeApi {
 	// region common endpoints
 
 	override suspend fun getCalendarItemTypes(

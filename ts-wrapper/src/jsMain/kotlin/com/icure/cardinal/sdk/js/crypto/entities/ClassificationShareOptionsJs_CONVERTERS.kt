@@ -7,8 +7,7 @@ import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun classificationShareOptions_toJs(obj: ClassificationShareOptions):
-		ClassificationShareOptionsJs {
+public fun classificationShareOptions_toJs(obj: ClassificationShareOptions): ClassificationShareOptionsJs {
 	val requestedPermissions = obj.requestedPermissions.name
 	val shareEncryptionKey = obj.shareEncryptionKey.name
 	val sharePatientId = obj.sharePatientId.name
@@ -21,8 +20,7 @@ public fun classificationShareOptions_toJs(obj: ClassificationShareOptions):
 	"}"))
 }
 
-public fun classificationShareOptions_fromJs(obj: ClassificationShareOptionsJs):
-		ClassificationShareOptions {
+public fun classificationShareOptions_fromJs(obj: ClassificationShareOptionsJs): ClassificationShareOptions {
 	val requestedPermissions = RequestedPermission.valueOf(obj.requestedPermissions)
 	val shareEncryptionKey = ShareMetadataBehaviour.valueOf(obj.shareEncryptionKey)
 	val sharePatientId = ShareMetadataBehaviour.valueOf(obj.sharePatientId)

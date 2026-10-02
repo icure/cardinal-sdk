@@ -24,7 +24,8 @@ class RawPermissionApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawPermissionApi {
+) : BaseRawApi(rawApiConfig),
+	RawPermissionApi {
 	// region cloud endpoints
 
 	override suspend fun modifyUserPermissions(

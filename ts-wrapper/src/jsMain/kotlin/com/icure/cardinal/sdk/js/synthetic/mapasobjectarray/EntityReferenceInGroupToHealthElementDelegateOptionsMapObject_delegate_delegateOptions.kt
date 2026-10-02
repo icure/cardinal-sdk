@@ -12,28 +12,21 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import kotlin.Array
 import kotlin.collections.Map
 
-public external interface
-    EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions {
+public external interface EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions {
   public val `delegate`: EntityReferenceInGroupJs
 
   public val delegateOptions: HealthElementDelegateOptionsJs
 }
 
-public
-    fun EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions_toJs(ktMap: Map<EntityReferenceInGroup, HealthElementDelegateOptions>):
-    Array<EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions> =
-    ktMap.map { entry ->
+public fun EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions_toJs(ktMap: Map<EntityReferenceInGroup, HealthElementDelegateOptions>): Array<EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions> = ktMap.map { entry ->
   val delegateKt = entry.key
   val delegate: EntityReferenceInGroupJs = entityReferenceInGroup_toJs(delegateKt)
   val delegateOptionsKt = entry.value
-  val delegateOptions: HealthElementDelegateOptionsJs =
-      healthElementDelegateOptions_toJs(delegateOptionsKt)
+  val delegateOptions: HealthElementDelegateOptionsJs = healthElementDelegateOptions_toJs(delegateOptionsKt)
   js("{delegate: delegate, delegateOptions: delegateOptions}")
 }.toTypedArray()
 
-public
-    fun EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions_fromJs(jsArray: Array<EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions>):
-    Map<EntityReferenceInGroup, HealthElementDelegateOptions> = CheckedConverters.objectArrayToMap(
+public fun EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions_fromJs(jsArray: Array<EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions>): Map<EntityReferenceInGroup, HealthElementDelegateOptions> = CheckedConverters.objectArrayToMap(
   jsArray,
   { entry ->
     val key = entry.delegate

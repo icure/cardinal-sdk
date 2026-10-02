@@ -167,8 +167,7 @@ internal class RoleApiImplJs(
 		}
 	}
 
-	override fun modifyRolePermissions(roleId: String, permissions: Array<String>): Promise<RoleJs> =
-			GlobalScope.promise {
+	override fun modifyRolePermissions(roleId: String, permissions: Array<String>): Promise<RoleJs> = GlobalScope.promise {
 		val roleIdConverted: String = roleId
 		val permissionsConverted: Set<String> = arrayToSet(
 			permissions,

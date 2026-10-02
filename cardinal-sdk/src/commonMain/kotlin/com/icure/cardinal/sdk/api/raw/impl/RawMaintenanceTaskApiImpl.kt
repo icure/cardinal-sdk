@@ -43,12 +43,10 @@ class RawMaintenanceTaskApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawMaintenanceTaskApi {
+) : BaseRawApi(rawApiConfig),
+	RawMaintenanceTaskApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.MaintenanceTask)
 
 	// region common endpoints
 
@@ -182,10 +180,7 @@ class RawMaintenanceTaskApiImpl(
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
-			setBodyWithSerializer(
-				FilterChainSerializer(MaintenanceTaskAbstractFilterSerializer),
-				filterChain,
-			)
+			setBodyWithSerializer(FilterChainSerializer(MaintenanceTaskAbstractFilterSerializer), filterChain)
 		}.wrapPaginatedList()
 
 	override suspend fun matchMaintenanceTasksBy(filter: AbstractFilter<MaintenanceTask>): HttpResponse<List<String>> =
