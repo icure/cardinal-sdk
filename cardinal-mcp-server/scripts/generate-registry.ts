@@ -6,21 +6,10 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { parseMethodSignatures, type MethodInfo } from "./dts-signatures.js";
 
 const NPM_SDK = path.resolve(import.meta.dirname!, "..", "node_modules", "@icure", "cardinal-sdk");
 const OUT_FILE = path.resolve(import.meta.dirname!, "..", "generated", "method-registry.ts");
-
-interface ParamInfo {
-	name: string;
-	type: string;
-	optional: boolean;
-}
-
-interface MethodInfo {
-	name: string;
-	params: ParamInfo[];
-	returnType: string;
-}
 
 interface ApiInfo {
 	apiName: string;
@@ -32,7 +21,7 @@ interface ApiInfo {
 const ENCRYPTABLE_ENTITIES = new Set([
 	"AccessLog", "CalendarItem", "Contact", "Document",
 	"Form", "HealthElement", "Invoice", "MaintenanceTask", "Message",
-	"Patient", "Receipt", "Topic",
+	"Patient", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 /**
@@ -51,7 +40,7 @@ const ALLOWED_APIS = new Set([
 	// Encryptable entity APIs (used via dispatch)
 	"AccessLog", "Agenda", "CalendarItem", "Code", "Contact",
 	"Document", "Form", "HealthElement", "Insurance", "Invoice",
-	"MaintenanceTask", "Message", "Receipt", "Topic",
+	"MaintenanceTask", "Message", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 // Map from API name prefix to SDK property name
@@ -84,6 +73,7 @@ function toPropertyName(entityName: string): string {
 		"Place": "place",
 		"Receipt": "receipt",
 		"Recovery": "recovery",
+		"RelatedPerson": "relatedPerson",
 		"Role": "role",
 		"System": "system",
 		"Topic": "topic",
@@ -94,75 +84,6 @@ function toPropertyName(entityName: string): string {
 		"FormTemplate": "formTemplate",
 	};
 	return map[entityName] || entityName.charAt(0).toLowerCase() + entityName.slice(1);
-}
-
-function splitTopLevel(str: string, sep: string): string[] {
-	const parts: string[] = [];
-	let depth = 0;
-	let current = "";
-
-	for (const ch of str) {
-		if (ch === "(" || ch === "{" || ch === "[" || ch === "<") depth++;
-		else if (ch === ")" || ch === "}" || ch === "]" || ch === ">") depth--;
-
-		if (depth === 0 && ch === sep) {
-			parts.push(current);
-			current = "";
-		} else {
-			current += ch;
-		}
-	}
-	if (current.trim()) parts.push(current);
-	return parts;
-}
-
-function parseMethodSignatures(dtsContent: string): MethodInfo[] {
-	const methods: MethodInfo[] = [];
-
-	// Match method signatures - handle multiline by first collapsing
-	const lines = dtsContent.split("\n");
-	let buffer = "";
-
-	for (const line of lines) {
-		buffer += " " + line.trim();
-		if (line.includes(";") || line.trim() === "}") {
-			// Try to match a method signature
-			const methodMatch = buffer.match(/(\w+)\(([^)]*)\):\s*(.+?)\s*;/);
-			if (methodMatch) {
-				const [, name, rawParams, returnType] = methodMatch;
-				if (name !== "constructor" && !name.startsWith("readonly")) {
-					const params = parseParams(rawParams);
-					methods.push({ name, params, returnType: returnType.trim() });
-				}
-			}
-			buffer = "";
-		}
-	}
-
-	return methods;
-}
-
-function parseParams(rawParams: string): ParamInfo[] {
-	if (!rawParams.trim()) return [];
-
-	const params: ParamInfo[] = [];
-	const parts = splitTopLevel(rawParams, ",");
-
-	for (const part of parts) {
-		const trimmed = part.trim();
-		if (!trimmed) continue;
-
-		const paramMatch = trimmed.match(/^(\w+)(\?)?:\s*(.+)$/);
-		if (paramMatch) {
-			params.push({
-				name: paramMatch[1],
-				type: paramMatch[3].trim(),
-				optional: !!paramMatch[2],
-			});
-		}
-	}
-
-	return params;
 }
 
 function main() {

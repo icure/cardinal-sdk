@@ -11,6 +11,7 @@
  */
 import * as fs from "node:fs";
 import * as path from "node:path";
+import { parseMethodSignatures } from "./dts-signatures.js";
 
 const CARDINAL_SDK_ROOT = process.env.CARDINAL_SDK_ROOT || path.resolve(import.meta.dirname!, "..", "..");
 const NPM_SDK = path.resolve(import.meta.dirname!, "..", "node_modules", "@icure", "cardinal-sdk");
@@ -252,7 +253,7 @@ function parseKDocComments(kotlinSource: string): Map<string, { description: str
 const ENCRYPTABLE_ENTITIES = new Set([
 	"AccessLog", "CalendarItem", "Contact", "Document",
 	"Form", "HealthElement", "Invoice", "MaintenanceTask", "Message",
-	"Patient", "Receipt", "Topic",
+	"Patient", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 /**
@@ -271,77 +272,23 @@ const ALLOWED_APIS = new Set([
 	// Encryptable entity APIs (used via dispatch)
 	"AccessLog", "Agenda", "CalendarItem", "Code", "Contact",
 	"Document", "Form", "HealthElement", "Insurance", "Invoice",
-	"MaintenanceTask", "Message", "Receipt", "Topic",
+	"MaintenanceTask", "Message", "Receipt", "RelatedPerson", "Topic",
 ]);
 
 function parseApiInterface(dtsContent: string, _apiName: string): MethodDoc[] {
-	const methods: MethodDoc[] = [];
-
-	const methodPattern = /^\s+(\w+)\(([^)]*)\):\s*Promise<([^>]+)>|^\s+(\w+)\(([^)]*)\):\s*([^;]+);/gm;
-	let match;
-	while ((match = methodPattern.exec(dtsContent)) !== null) {
-		const name = match[1] || match[4];
-		const rawParams = match[2] || match[5] || "";
-		const returnType = match[3] || match[6] || "void";
-
-		if (!name || name === "constructor") continue;
-
-		const params = parseParams(rawParams);
-
-		methods.push({
-			name,
-			description: "",
-			params,
-			returnType: returnType.trim(),
-			flavours: ["none"],
-		});
-	}
-
-	return methods;
+	return parseMethodSignatures(dtsContent).map(method => ({
+		name: method.name,
+		description: "",
+		params: method.params.map(param => ({ ...param, description: "" })),
+		returnType: unwrapPromise(method.returnType),
+		flavours: ["none"],
+	}));
 }
 
-function parseParams(rawParams: string): ParamDoc[] {
-	if (!rawParams.trim()) return [];
-
-	const params: ParamDoc[] = [];
-	const parts = splitTopLevel(rawParams, ",");
-
-	for (const part of parts) {
-		const trimmed = part.trim();
-		if (!trimmed) continue;
-
-		const paramMatch = trimmed.match(/^(\w+)(\?)?:\s*(.+)$/);
-		if (paramMatch) {
-			params.push({
-				name: paramMatch[1],
-				type: paramMatch[3].trim(),
-				description: "",
-				optional: !!paramMatch[2],
-			});
-		}
-	}
-
-	return params;
-}
-
-function splitTopLevel(str: string, sep: string): string[] {
-	const parts: string[] = [];
-	let depth = 0;
-	let current = "";
-
-	for (const ch of str) {
-		if (ch === "(" || ch === "{" || ch === "[" || ch === "<") depth++;
-		else if (ch === ")" || ch === "}" || ch === "]" || ch === ">") depth--;
-
-		if (depth === 0 && ch === sep) {
-			parts.push(current);
-			current = "";
-		} else {
-			current += ch;
-		}
-	}
-	if (current.trim()) parts.push(current);
-	return parts;
+/** The docs show what a call resolves to: `Promise<X>` is reported as `X`. */
+function unwrapPromise(returnType: string): string {
+	const match = returnType.match(/^Promise<([\s\S]+)>$/);
+	return match ? match[1].trim() : returnType;
 }
 
 function extractApis(): Record<string, ApiDoc> {

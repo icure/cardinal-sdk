@@ -7,8 +7,9 @@ name: Update MCP server
 # PR (generate_typescript.yml) merging: the MCP registry is generated from the
 # wrapper's .d.mts declarations, so there is nothing to sync before that, and
 # the sync PR still lands in the release PR because it tracks develop. A
-# release whose TS generation produced no change gets no sync run. A manual
-# dispatch always runs from develop.
+# release whose TS generation produced no change gets no sync run; the-forge stamps the version at publish time
+# anyway. A manual dispatch syncs `ref` (default develop) to `version` (default: the open release PR's title), and
+# opens its PR into `ref`: for a unit patch, `ref` is the head branch of the release PR into support/*.
 #
 # Shell steps do the deterministic work: build the unreleased TS wrapper, run
 # generate/build/test, bump the package version. Claude runs only when the
@@ -24,6 +25,17 @@ on:
         paths:
             - 'ts-wrapper/src/jsMain/**'
     workflow_dispatch:
+        inputs:
+            ref:
+                description: 'Branch to sync: develop, or the head branch of a release PR into support/*'
+                required: false
+                default: 'develop'
+                type: string
+            version:
+                description: 'SDK version to sync to (default: from the title of the open release PR towards main)'
+                required: false
+                default: ''
+                type: string
 
 concurrency:
     group: update-mcp-server
@@ -37,29 +49,32 @@ jobs:
     check-open-pr:
         runs-on: ubuntu-latest
         name: Check for an open PR towards main
-        # On `workflow_dispatch` the user asked for the run.
-        if: github.event_name == 'push'
         permissions:
             pull-requests: read
         outputs:
             has-open-pr: ${{ steps.check.outputs.has-open-pr }}
+            version: ${{ steps.check.outputs.version }}
         steps:
             -   name: Look for an open PR from develop to main
                 id: check
                 env:
                     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
                 run: |
-                    COUNT=$(gh api "repos/${{ github.repository }}/pulls?state=open&base=main&head=${{ github.repository_owner }}:develop" --jq 'length')
-                    echo "Found $COUNT open PR(s) from develop towards main"
-                    if [ "$COUNT" -gt 0 ]; then
-                        echo "has-open-pr=true" >> $GITHUB_OUTPUT
-                    else
+                    TITLE=$(gh api "repos/${{ github.repository }}/pulls?state=open&base=main&head=${{ github.repository_owner }}:develop" --jq '.[0].title // ""')
+                    if [ -z "$TITLE" ]; then
+                        echo "No open PR from develop towards main"
                         echo "has-open-pr=false" >> $GITHUB_OUTPUT
+                        exit 0
                     fi
+                    echo "Open release PR: $TITLE"
+                    echo "has-open-pr=true" >> $GITHUB_OUTPUT
+                    # A full release PR declares exactly one bare tag: "Release X.Y.Z" or "Release X.Y.Z-PREVIEW.N".
+                    VERSION=$(echo "$TITLE" | sed -nE 's/^ *Release +([0-9]+\.[0-9]+\.[0-9]+(-PREVIEW\.[0-9]+)?) *$/\1/p')
+                    echo "version=$VERSION" >> $GITHUB_OUTPUT
 
     update-mcp-server:
         needs: check-open-pr
-        # `!cancelled()` is needed because `check-open-pr` is skipped on `workflow_dispatch`.
+        # `!cancelled()` keeps the job's own condition, not a skipped or failed dependency, in charge of whether it runs.
         if: >-
             !cancelled() && (
               github.event_name == 'workflow_dispatch'
@@ -68,10 +83,30 @@ jobs:
         runs-on: ubuntu-latest
         name: Update MCP server
         timeout-minutes: 120
+        env:
+            SDK_VERSION: ${{ inputs.version || needs.check-open-pr.outputs.version }}
         permissions:
             contents: read
             id-token: write # claude-code-action OIDC
         steps:
+            -   name: Check the SDK version is known
+                env:
+                    EVENT_NAME: ${{ github.event_name }}
+                    INPUT_REF: ${{ inputs.ref }}
+                    INPUT_VERSION: ${{ inputs.version }}
+                run: |
+                    # The open release PR towards main gives the version of develop only: a dispatch that syncs another
+                    # branch (a unit patch) must name its version.
+                    if [ "$EVENT_NAME" = workflow_dispatch ] && [ "$INPUT_REF" != develop ] && [ -z "$INPUT_VERSION" ]; then
+                        echo "::error::A dispatch with ref=$INPUT_REF needs the version input: the open release PR towards main only gives the version of develop."
+                        exit 1
+                    fi
+                    if [ -z "$SDK_VERSION" ]; then
+                        echo "::error::No SDK version: the open release PR towards main is not titled \"Release X.Y.Z\" and no version input was given."
+                        exit 1
+                    fi
+                    echo "Syncing to SDK $SDK_VERSION"
+
             -   name: Pick a scratch directory outside the checkout
                 # Logs and the PR body must not show up as changes to the working tree. `runner.temp` is not
                 # available to a job-level `env`, so it is exported here for every later step.
@@ -80,9 +115,9 @@ jobs:
             -   name: Check out code
                 uses: actions/checkout@v4
                 with:
-                    # `workflow_dispatch`: always develop, whatever branch the dispatch was started from.
+                    # `workflow_dispatch`: the `ref` input (develop by default), whatever branch the dispatch was started from.
                     # `push`: the pushed commit.
-                    ref: ${{ (github.event_name == 'workflow_dispatch' && 'develop') || github.sha }}
+                    ref: ${{ (github.event_name == 'workflow_dispatch' && inputs.ref) || github.sha }}
                     submodules: 'recursive'
                     # Full history and tags: the "what changed" digest for Claude walks from the last release tag.
                     fetch-depth: 0
@@ -114,6 +149,7 @@ jobs:
                     ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
                     ORG_GRADLE_PROJECT_mavenRepository: ${{ secrets.MAVEN_REPOSITORY }}
                     ORG_GRADLE_PROJECT_mavenReleasesRepository: ${{ secrets.MAVEN_RELEASES_REPOSITORY }}
+                    ORG_GRADLE_PROJECT_sdkVersion: ${{ env.SDK_VERSION }}
                 run: |
                     ./gradlew :ts-wrapper:prepareDistributionPackage
                     test -f ${{ env.TS_PACKAGE_DIR }}/package.json
@@ -134,11 +170,10 @@ jobs:
                 id: versions
                 working-directory: ${{ env.MCP_DIR }}
                 run: |
-                    SDK_VERSION=$(grep -E '^val version = "' ../cardinal-sdk/build.gradle.kts | sed -E 's/.*"(.*)".*/\1/')
                     PACKAGE_VERSION=$(node -p "require('../${{ env.TS_PACKAGE_DIR }}/package.json').version")
                     PREVIOUS_SDK_VERSION=$(node -p "require('./package.json').dependencies['@icure/cardinal-sdk'].replace(/^[\^~]/, '')")
                     if [ "$SDK_VERSION" != "$PACKAGE_VERSION" ]; then
-                        echo "::error::cardinal-sdk/build.gradle.kts says $SDK_VERSION but the built package says $PACKAGE_VERSION"
+                        echo "::error::The package was built for -PsdkVersion=$SDK_VERSION but says $PACKAGE_VERSION"
                         exit 1
                     fi
                     echo "SDK version: $SDK_VERSION (MCP server currently targets $PREVIOUS_SDK_VERSION)"
@@ -352,7 +387,7 @@ jobs:
                     # Fixed name per SDK version: a rerun (e.g. after the TS generation PR merges) updates the same PR.
                     branch: mcp-server/sync-${{ steps.versions.outputs.sdk-version }}
                     delete-branch: true
-                    base: develop
+                    base: ${{ inputs.ref || 'develop' }}
                     author: ${{ steps.bot-details.outputs.name-email }}
                     committer: ${{ steps.bot-details.outputs.name-email }}
                     team-reviewers: 'icure/dev'

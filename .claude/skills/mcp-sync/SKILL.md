@@ -33,8 +33,9 @@ When run by hand without arguments, follow the **Running locally** section first
   workflow and fails verification.
 - **Never edit `generated/` by hand.** `docs-manifest.json` and `method-registry.ts` are outputs of
   `yarn run generate`. When something is wrong or missing in them, change what produces them: the allow-lists in
-  `scripts/generate-registry.ts` when an API is missing, the parsers in `scripts/extract-docs.ts` or
-  `scripts/generate-registry.ts` when a `.d.mts` shape is not understood, or `SDK.md` for documentation content. Then
+  `scripts/generate-registry.ts` when an API is missing, the shared method-signature parser
+  `scripts/dts-signatures.ts` or the model and filter parsers in `scripts/extract-docs.ts` when a `.d.mts` shape is not
+  understood, or `SDK.md` for documentation content. Then
   rerun `yarn run generate`. Most of the time the output moves because the SDK changed and no script needs to change.
 - **Do not run `git commit`, `git push`, `gh`, `yarn add`, `yarn remove` or `yarn install`.** The workflow commits
   and opens the PR. Dependencies do not change during a sync; if one must, say so in the PR body and stop.
@@ -77,9 +78,10 @@ When run by hand without arguments, follow the **Running locally** section first
    ```
 
    Typical breakage and where it lives:
-   - `generate` fails or drops entries → a `.d.mts` shape changed; fix the regexes in `scripts/extract-docs.ts` or
-     `scripts/generate-registry.ts`. Confirm by checking the count of APIs, models and filters the script prints
-     against the previous run.
+   - `generate` fails or drops entries → a `.d.mts` shape changed; fix the parsers in `scripts/extract-docs.ts` or
+     `scripts/dts-signatures.ts`. Confirm by checking the count of APIs, models and filters the script prints
+     against the previous run; `test/method-registry.test.ts` fails when a documented method is missing from the
+     registry.
    - `build` fails → a type imported from `@icure/cardinal-sdk` in `src/` was renamed or removed; follow the new
      declaration.
    - `test` fails → `test/*.test.ts` assert on tool names, resource URIs and search results. Update the expectation
@@ -136,13 +138,15 @@ stop. The workflow's verification step fails the run and attaches your partial d
 To do a sync by hand, from the repository root:
 
 ```bash
-./gradlew :ts-wrapper:prepareDistributionPackage
+# The version comes from the release tag, not from a file: take it from the release PR title ("Release 2.14.20" →
+# 2.14.20, "Release ts-2.14.11" → 2.14.11), or ask the user.
+SDK_VERSION=<version>
+./gradlew :ts-wrapper:prepareDistributionPackage -PsdkVersion="$SDK_VERSION"
 cd cardinal-mcp-server
 corepack enable
 yarn install
 rm -rf node_modules/@icure/cardinal-sdk
 cp -R ../ts-wrapper/build/tsPackage node_modules/@icure/cardinal-sdk
-SDK_VERSION=$(grep -E '^val version = "' ../cardinal-sdk/build.gradle.kts | sed -E 's/.*"(.*)".*/\1/')
 npm pkg set "version=$SDK_VERSION" "dependencies.@icure/cardinal-sdk=^$SDK_VERSION"
 mkdir -p /tmp/mcp-sync && : > /tmp/mcp-sync/outcomes.txt
 yarn run generate > /tmp/mcp-sync/generate.log 2>&1 || echo generate=failed >> /tmp/mcp-sync/outcomes.txt
@@ -161,6 +165,7 @@ and follow the procedure above.
 
 The sync bumps `dependencies["@icure/cardinal-sdk"]` to a version that is not on npm yet, so `yarn install` cannot
 refresh the lockfile entry for it. The committed `yarn.lock` therefore keeps the previous SDK resolution until the
-next sync. The update workflow here and the `publish-mcp-server` job of `publish-cardinal-sdk.yml` in `icure/the-forge`
-both run a mutable `yarn install` followed by `.github/scripts/mcp-check-yarn-lock-drift.sh`, which allows that single
-entry to move and fails on anything else. Do not try to fix this in a sync.
+next sync. The update workflow here and the `publish-mcp-server` job of `publish-cardinal-sdk-ts.yml` (called by
+`release-cardinal-sdk.yml`) in `icure/the-forge` both run a mutable `yarn install` followed by
+`.github/scripts/mcp-check-yarn-lock-drift.sh`, which allows that single entry to move and fails on anything else. Do
+not try to fix this in a sync.

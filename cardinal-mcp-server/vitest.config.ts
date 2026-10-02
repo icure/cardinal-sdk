@@ -6,7 +6,8 @@ export default defineConfig({
 		environment: "node",
 		// Share module state across files so the heavy @icure/cardinal-sdk bundle
 		// (loaded transitively when the server is created) is parsed only once.
-		// Safe here: the hermetic tests never mutate the sdk-state singleton.
+		// Safe here: only test/dispatch-object-params.test.ts sets the sdk-state singleton (to a stub) and it
+		// resets it when done; the other tests never touch it.
 		isolate: false,
 		testTimeout: 30_000,
 		hookTimeout: 30_000,

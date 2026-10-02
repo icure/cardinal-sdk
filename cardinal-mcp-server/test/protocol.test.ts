@@ -118,6 +118,7 @@ describe("resources/templates/list", () => {
  *   - a stub that returns a value -> serialized JSON payload
  *   - a stub that returns a {hasNext,next} iterator -> first page + cardinal_continue_iteration paging
  * (Error shapes verified: dispatch.ts errorResult vs. McpServer createToolError for thrown errors.)
+ * test/dispatch-object-params.test.ts already uses that stub approach for the argument-building part.
  */
 describe.skip("operational tool behaviour — DEFERRED (tools not finalized)", () => {
 	it("placeholder", () => {});
