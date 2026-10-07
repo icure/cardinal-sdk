@@ -1,0 +1,24 @@
+name: Test release plan
+
+on:
+    pull_request:
+        paths:
+            - '.github/scripts/release-plan.mjs'
+            - '.github/scripts/release-plan/**'
+            - '.github/workflows/test_release_plan.yml'
+
+jobs:
+    release-plan-tests:
+        runs-on: ubuntu-latest
+        name: Run the release plan tests
+        steps:
+            -   name: Check out code
+                uses: actions/checkout@v4
+
+            -   name: Set up Node
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '24'
+
+            -   name: Run the tests
+                run: node --test .github/scripts/release-plan/*.test.mjs

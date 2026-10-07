@@ -26,6 +26,7 @@ import com.icure.cardinal.sdk.js.api.DataOwnerApiJs
 import com.icure.cardinal.sdk.js.api.DeviceApiJs
 import com.icure.cardinal.sdk.js.api.DocumentApiJs
 import com.icure.cardinal.sdk.js.api.DocumentBasicApiJs
+import com.icure.cardinal.sdk.js.api.FilterApiJs
 import com.icure.cardinal.sdk.js.api.FormApiJs
 import com.icure.cardinal.sdk.js.api.FormBasicApiJs
 import com.icure.cardinal.sdk.js.api.FrontEndMigrationApiJs
@@ -71,6 +72,7 @@ import com.icure.cardinal.sdk.js.api.impl.DataOwnerApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.DeviceApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.DocumentApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.DocumentBasicApiImplJs
+import com.icure.cardinal.sdk.js.api.impl.FilterApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.FormApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.FormBasicApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.FrontEndMigrationApiImplJs
@@ -272,6 +274,7 @@ internal class CardinalApisJsImpl(
 	override val contact: ContactApiJs by lazy { ContactApiImplJs(sdk.contact) }
 	override val document: DocumentApiJs by lazy { DocumentApiImplJs(sdk.document) }
 	override val form: FormApiJs by lazy { FormApiImplJs(sdk.form) }
+	override val filter: FilterApiJs by lazy { FilterApiImplJs(sdk.filter) }
 	override val healthElement: HealthElementApiJs by lazy { HealthElementApiImplJs(sdk.healthElement) }
 	override val invoice: InvoiceApiJs by lazy { InvoiceApiImplJs(sdk.invoice) }
 	override val maintenanceTask: MaintenanceTaskApiJs by lazy { MaintenanceTaskApiImplJs(sdk.maintenanceTask) }
@@ -323,6 +326,7 @@ internal class CardinalBaseApisJsImpl(
 	override val contact: ContactBasicApiJs by lazy { ContactBasicApiImplJs(sdk.contact) }
 	override val document: DocumentBasicApiJs by lazy { DocumentBasicApiImplJs(sdk.document) }
 	override val form: FormBasicApiJs by lazy { FormBasicApiImplJs(sdk.form) }
+	override val filter: FilterApiJs by lazy { FilterApiImplJs(sdk.filter) }
 	override val healthElement: HealthElementBasicApiJs by lazy { HealthElementBasicApiImplJs(sdk.healthElement) }
 	override val invoice: InvoiceBasicApiJs by lazy { InvoiceBasicApiImplJs(sdk.invoice) }
 	override val maintenanceTask: MaintenanceTaskBasicApiJs by lazy { MaintenanceTaskBasicApiImplJs(sdk.maintenanceTask) }

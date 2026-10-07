@@ -701,10 +701,10 @@ private class ReceiptApiImpl(
 			?: throw UnavailableEncryptionKeyException("Cannot extract encryption key from receipt")
 		val payload = config.crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setReceiptAttachment(
-			receipt.id,
-			receipt.rev ?: throw IllegalArgumentException("Receipt must have a revision set before setting the attachment"),
-			blobType,
-			payload,
+			receiptId = receipt.id,
+			rev = receipt.rev ?: throw IllegalArgumentException("Receipt must have a revision set before setting the attachment"),
+			blobType = blobType,
+			payload = payload,
 		).successBody()
 	}
 
