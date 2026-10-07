@@ -84,13 +84,23 @@ function a2b(s: string): string {
   throw new Error('Unsupported operation a2b')
 }
 
+/*
+ * The customized SDK also uses these internal methods
+ */
+
 // Decode a base64 string using the url-unsafe alphabet to an Int8Array
-export function decodeBase64(s: string, path: string[]): Int8Array
-export function decodeBase64(s: string | undefined, path: string[]): Int8Array | undefined
-export function decodeBase64(s: string | undefined, path: string[]): Int8Array | undefined {
+export function decodeBase64(s: string): Int8Array
+export function decodeBase64(s: string, path: string[] | undefined): Int8Array
+export function decodeBase64(s: string | undefined): Int8Array | undefined
+export function decodeBase64(s: string | undefined, path: string[] | undefined): Int8Array | undefined
+export function decodeBase64(s: string | undefined, path: string[] | undefined = undefined): Int8Array | undefined {
   if (s == undefined) return undefined
   const padded = validateAndPadBase64(s)
-  if (padded == null) throw new Error(`Invalid base64 string '${s}' at ${path.join()}`)
+  if (padded == null) throw new Error(
+    path == undefined
+      ? `Invalid base64 string '${s}'`
+      : `Invalid base64 string '${s}' at ${path.join()}`
+  )
   return stringAsBytes(a2b(s))
 }
 
