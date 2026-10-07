@@ -556,7 +556,7 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	suspend fun matchAccessLogsBySorted(filter: SortableFilterOptions<AccessLog>): List<String>
 }
 
-interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBasicFlavouredInGroupApi<DecryptedAccessLog> {
+interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogFlavouredInGroupApi<DecryptedAccessLog> {
 	/**
 	 * Give access to the encrypted flavour of the api
 	 */
