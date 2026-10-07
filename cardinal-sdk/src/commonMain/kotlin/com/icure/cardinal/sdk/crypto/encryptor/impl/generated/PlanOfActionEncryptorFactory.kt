@@ -41,6 +41,7 @@ internal object PlanOfActionEncryptorFactory : EntityEncryptorFactory<EncryptedP
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
 					endOfLife = clearEntity.endOfLife,
@@ -54,10 +55,14 @@ internal object PlanOfActionEncryptorFactory : EntityEncryptorFactory<EncryptedP
 					note = clearEntity.note,
 					idOpeningContact = clearEntity.idOpeningContact,
 					idClosingContact = clearEntity.idClosingContact,
+					status = clearEntity.status,
+					documentIds = clearEntity.documentIds,
+					numberOfCares = clearEntity.numberOfCares,
 					careTeamMemberships =
 						clearEntity.careTeamMemberships.map { x0 ->
 							CareTeamMembershipEncryptorFactory.empty.encrypt(encryptionKey, x0)
 						},
+					relevant = clearEntity.relevant,
 					encryptedSelf = null,
 					extensions = clearEntity.extensions,
 				)
@@ -83,6 +88,7 @@ internal object PlanOfActionEncryptorFactory : EntityEncryptorFactory<EncryptedP
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
 			prescriberId_e = "prescriberId" in manifest.fieldsToEncrypt,
@@ -95,6 +101,9 @@ internal object PlanOfActionEncryptorFactory : EntityEncryptorFactory<EncryptedP
 			note_e = "note" in manifest.fieldsToEncrypt,
 			idOpeningContact_e = "idOpeningContact" in manifest.fieldsToEncrypt,
 			idClosingContact_e = "idClosingContact" in manifest.fieldsToEncrypt,
+			status_e = "status" in manifest.fieldsToEncrypt,
+			documentIds_e = "documentIds" in manifest.fieldsToEncrypt,
+			numberOfCares_e = "numberOfCares" in manifest.fieldsToEncrypt,
 			careTeamMemberships_e =
 				if ("careTeamMemberships" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
@@ -109,6 +118,7 @@ internal object PlanOfActionEncryptorFactory : EntityEncryptorFactory<EncryptedP
 						)
 					} ?: EncryptableFieldConfig.None(CareTeamMembershipEncryptorFactory)
 				},
+			relevant_e = "relevant" in manifest.fieldsToEncrypt,
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
@@ -122,6 +132,7 @@ private class PlanOfActionEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
 	private val prescriberId_e: Boolean,
@@ -134,7 +145,11 @@ private class PlanOfActionEncryptor(
 	private val note_e: Boolean,
 	private val idOpeningContact_e: Boolean,
 	private val idClosingContact_e: Boolean,
+	private val status_e: Boolean,
+	private val documentIds_e: Boolean,
+	private val numberOfCares_e: Boolean,
 	private val careTeamMemberships_e: EncryptableFieldConfig<EncryptedCareTeamMembership, DecryptedCareTeamMembership>,
+	private val relevant_e: Boolean,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
@@ -151,6 +166,12 @@ private class PlanOfActionEncryptor(
 			dataToEncrypt["responsible"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.responsible,
+				)
+		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
 				)
 		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
@@ -195,18 +216,33 @@ private class PlanOfActionEncryptor(
 					clearEntity.idClosingContact,
 				)
 		}
+		if (status_e && clearEntity.status != 0) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
+		if (documentIds_e && clearEntity.documentIds.isNotEmpty()) {
+			dataToEncrypt["documentIds"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.documentIds,
+				)
+		}
+		if (numberOfCares_e && clearEntity.numberOfCares != null) {
+			dataToEncrypt["numberOfCares"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.numberOfCares,
+				)
+		}
 		if (careTeamMemberships_e.fullEncryption && clearEntity.careTeamMemberships.isNotEmpty()) {
 			dataToEncrypt["careTeamMemberships"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.careTeamMemberships,
 				)
 		}
+		if (relevant_e && clearEntity.relevant != true) dataToEncrypt["relevant"] = encodingJson.encodeToJsonElement(clearEntity.relevant)
 		return EncryptedPlanOfAction(
 			id = clearEntity.id,
 			created = if (created_e) null else clearEntity.created,
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
 			endOfLife = clearEntity.endOfLife,
@@ -220,6 +256,9 @@ private class PlanOfActionEncryptor(
 			note = if (note_e) null else clearEntity.note,
 			idOpeningContact = if (idOpeningContact_e) null else clearEntity.idOpeningContact,
 			idClosingContact = if (idClosingContact_e) null else clearEntity.idClosingContact,
+			status = if (status_e) 0 else clearEntity.status,
+			documentIds = if (documentIds_e) emptySet() else clearEntity.documentIds,
+			numberOfCares = if (numberOfCares_e) null else clearEntity.numberOfCares,
 			careTeamMemberships =
 				careTeamMemberships_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
@@ -230,6 +269,7 @@ private class PlanOfActionEncryptor(
 						}
 					}
 				},
+			relevant = if (relevant_e) true else clearEntity.relevant,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 		)

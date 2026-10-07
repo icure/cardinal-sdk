@@ -6,4 +6,7 @@
  *   Interface for entities that are associated with a medical location.
  */
 export interface HasMedicalLocation {
+
+	medicalLocationId: string | undefined;
+
 }

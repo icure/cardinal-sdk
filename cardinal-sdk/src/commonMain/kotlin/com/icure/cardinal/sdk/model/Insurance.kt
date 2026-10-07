@@ -11,12 +11,13 @@ import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import kotlin.Boolean
 
 /**
  *
@@ -57,6 +58,24 @@ data class Insurance(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Whether this is a private insurance.
+	 */
+	@param:DefaultValue("false")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val privateInsurance: Boolean = false,
+	/**
+	 * Whether this insurance covers hospitalisation.
+	 */
+	@param:DefaultValue("false")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val hospitalisationInsurance: Boolean = false,
+	/**
+	 * Whether this insurance covers ambulatory care.
+	 */
+	@param:DefaultValue("false")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val ambulatoryInsurance: Boolean = false,
 	/**
 	 * The insurance code.
 	 */

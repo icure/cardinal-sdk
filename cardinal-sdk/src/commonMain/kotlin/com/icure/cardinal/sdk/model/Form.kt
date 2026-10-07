@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -37,9 +38,15 @@ sealed interface Form :
 
 	override val responsible: String?
 
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
 	override val tags: Set<CodeStub>
 
 	override val codes: Set<CodeStub>
+
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	override val deletionDate: Long?
 
@@ -48,6 +55,9 @@ sealed interface Form :
 	public val status: String?
 
 	public val version: Int?
+
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val logicalUuid: String?
 
 	public val descr: String?
 
@@ -89,14 +99,20 @@ data class DecryptedForm(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val status: String? = null,
 	override val version: Int? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val logicalUuid: String? = null,
 	override val descr: String? = null,
 	override val uniqueId: String? = null,
 	override val formTemplateId: String? = null,
@@ -130,14 +146,20 @@ data class EncryptedForm(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	override val deletionDate: Long? = null,
 	override val openingDate: Long? = null,
 	override val status: String? = null,
 	override val version: Int? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val logicalUuid: String? = null,
 	override val descr: String? = null,
 	override val uniqueId: String? = null,
 	override val formTemplateId: String? = null,

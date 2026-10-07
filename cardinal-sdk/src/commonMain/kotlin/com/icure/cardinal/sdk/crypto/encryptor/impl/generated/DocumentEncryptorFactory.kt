@@ -39,14 +39,19 @@ internal object DocumentEncryptorFactory : EntityEncryptorFactory<EncryptedDocum
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
+					documentLocation = clearEntity.documentLocation,
 					documentType = clearEntity.documentType,
 					documentStatus = clearEntity.documentStatus,
 					externalUri = clearEntity.externalUri,
 					name = clearEntity.name,
 					version = clearEntity.version,
+					storedICureDocumentId = clearEntity.storedICureDocumentId,
+					externalUuid = clearEntity.externalUuid,
 					size = clearEntity.size,
 					hash = clearEntity.hash,
 					openingContactId = clearEntity.openingContactId,
@@ -58,6 +63,8 @@ internal object DocumentEncryptorFactory : EntityEncryptorFactory<EncryptedDocum
 					extraMainAttachmentInfo = clearEntity.extraMainAttachmentInfo,
 					secondaryAttachments = clearEntity.secondaryAttachments,
 					deletedAttachments = clearEntity.deletedAttachments,
+					encryptedAttachment = clearEntity.encryptedAttachment,
+					decryptedAttachment = clearEntity.decryptedAttachment,
 					secretForeignKeys = clearEntity.secretForeignKeys,
 					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 					delegations = clearEntity.delegations,
@@ -89,13 +96,18 @@ internal object DocumentEncryptorFactory : EntityEncryptorFactory<EncryptedDocum
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
+			documentLocation_e = "documentLocation" in manifest.fieldsToEncrypt,
 			documentType_e = "documentType" in manifest.fieldsToEncrypt,
 			documentStatus_e = "documentStatus" in manifest.fieldsToEncrypt,
 			externalUri_e = "externalUri" in manifest.fieldsToEncrypt,
 			name_e = "name" in manifest.fieldsToEncrypt,
 			version_e = "version" in manifest.fieldsToEncrypt,
+			storedICureDocumentId_e = "storedICureDocumentId" in manifest.fieldsToEncrypt,
+			externalUuid_e = "externalUuid" in manifest.fieldsToEncrypt,
 			openingContactId_e = "openingContactId" in manifest.fieldsToEncrypt,
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
@@ -110,13 +122,18 @@ private class DocumentEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
+	private val documentLocation_e: Boolean,
 	private val documentType_e: Boolean,
 	private val documentStatus_e: Boolean,
 	private val externalUri_e: Boolean,
 	private val name_e: Boolean,
 	private val version_e: Boolean,
+	private val storedICureDocumentId_e: Boolean,
+	private val externalUuid_e: Boolean,
 	private val openingContactId_e: Boolean,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
@@ -136,8 +153,21 @@ private class DocumentEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
+		if (documentLocation_e && clearEntity.documentLocation != null) {
+			dataToEncrypt["documentLocation"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.documentLocation,
+				)
+		}
 		if (documentType_e && clearEntity.documentType != null) {
 			dataToEncrypt["documentType"] =
 				encodingJson.encodeToJsonElement(
@@ -158,6 +188,18 @@ private class DocumentEncryptor(
 		}
 		if (name_e && clearEntity.name != null) dataToEncrypt["name"] = encodingJson.encodeToJsonElement(clearEntity.name)
 		if (version_e && clearEntity.version != null) dataToEncrypt["version"] = encodingJson.encodeToJsonElement(clearEntity.version)
+		if (storedICureDocumentId_e && clearEntity.storedICureDocumentId != null) {
+			dataToEncrypt["storedICureDocumentId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.storedICureDocumentId,
+				)
+		}
+		if (externalUuid_e && clearEntity.externalUuid != null) {
+			dataToEncrypt["externalUuid"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.externalUuid,
+				)
+		}
 		if (openingContactId_e && clearEntity.openingContactId != null) {
 			dataToEncrypt["openingContactId"] =
 				encodingJson.encodeToJsonElement(
@@ -171,14 +213,19 @@ private class DocumentEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
+			documentLocation = if (documentLocation_e) null else clearEntity.documentLocation,
 			documentType = if (documentType_e) null else clearEntity.documentType,
 			documentStatus = if (documentStatus_e) null else clearEntity.documentStatus,
 			externalUri = if (externalUri_e) null else clearEntity.externalUri,
 			name = if (name_e) null else clearEntity.name,
 			version = if (version_e) null else clearEntity.version,
+			storedICureDocumentId = if (storedICureDocumentId_e) null else clearEntity.storedICureDocumentId,
+			externalUuid = if (externalUuid_e) null else clearEntity.externalUuid,
 			size = clearEntity.size,
 			hash = clearEntity.hash,
 			openingContactId = if (openingContactId_e) null else clearEntity.openingContactId,
@@ -190,6 +237,8 @@ private class DocumentEncryptor(
 			extraMainAttachmentInfo = clearEntity.extraMainAttachmentInfo,
 			secondaryAttachments = clearEntity.secondaryAttachments,
 			deletedAttachments = clearEntity.deletedAttachments,
+			encryptedAttachment = clearEntity.encryptedAttachment,
+			decryptedAttachment = clearEntity.decryptedAttachment,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,

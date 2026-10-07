@@ -36,12 +36,15 @@ internal object FormEncryptorFactory : EntityEncryptorFactory<EncryptedForm, Dec
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					openingDate = clearEntity.openingDate,
 					status = clearEntity.status,
 					version = clearEntity.version,
+					logicalUuid = clearEntity.logicalUuid,
 					descr = clearEntity.descr,
 					uniqueId = clearEntity.uniqueId,
 					formTemplateId = clearEntity.formTemplateId,
@@ -74,11 +77,14 @@ internal object FormEncryptorFactory : EntityEncryptorFactory<EncryptedForm, Dec
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			openingDate_e = "openingDate" in manifest.fieldsToEncrypt,
 			status_e = "status" in manifest.fieldsToEncrypt,
 			version_e = "version" in manifest.fieldsToEncrypt,
+			logicalUuid_e = "logicalUuid" in manifest.fieldsToEncrypt,
 			descr_e = "descr" in manifest.fieldsToEncrypt,
 			uniqueId_e = "uniqueId" in manifest.fieldsToEncrypt,
 			formTemplateId_e = "formTemplateId" in manifest.fieldsToEncrypt,
@@ -99,11 +105,14 @@ private class FormEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val openingDate_e: Boolean,
 	private val status_e: Boolean,
 	private val version_e: Boolean,
+	private val logicalUuid_e: Boolean,
 	private val descr_e: Boolean,
 	private val uniqueId_e: Boolean,
 	private val formTemplateId_e: Boolean,
@@ -129,8 +138,15 @@ private class FormEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (openingDate_e && clearEntity.openingDate != null) {
 			dataToEncrypt["openingDate"] =
 				encodingJson.encodeToJsonElement(
@@ -139,6 +155,12 @@ private class FormEncryptor(
 		}
 		if (status_e && clearEntity.status != null) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
 		if (version_e && clearEntity.version != null) dataToEncrypt["version"] = encodingJson.encodeToJsonElement(clearEntity.version)
+		if (logicalUuid_e && clearEntity.logicalUuid != null) {
+			dataToEncrypt["logicalUuid"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.logicalUuid,
+				)
+		}
 		if (descr_e && clearEntity.descr != null) dataToEncrypt["descr"] = encodingJson.encodeToJsonElement(clearEntity.descr)
 		if (uniqueId_e && clearEntity.uniqueId != null) dataToEncrypt["uniqueId"] = encodingJson.encodeToJsonElement(clearEntity.uniqueId)
 		if (formTemplateId_e && clearEntity.formTemplateId != null) {
@@ -169,12 +191,15 @@ private class FormEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			openingDate = if (openingDate_e) null else clearEntity.openingDate,
 			status = if (status_e) null else clearEntity.status,
 			version = if (version_e) null else clearEntity.version,
+			logicalUuid = if (logicalUuid_e) null else clearEntity.logicalUuid,
 			descr = if (descr_e) null else clearEntity.descr,
 			uniqueId = if (uniqueId_e) null else clearEntity.uniqueId,
 			formTemplateId = if (formTemplateId_e) null else clearEntity.formTemplateId,

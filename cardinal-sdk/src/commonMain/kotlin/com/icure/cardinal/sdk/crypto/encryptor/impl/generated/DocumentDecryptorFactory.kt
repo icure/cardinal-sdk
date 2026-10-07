@@ -116,6 +116,12 @@ private class DocumentDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -128,7 +134,19 @@ private class DocumentDecryptor(
 						encryptedEntity.codes,
 						entityCustomisedModelVersion,
 					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
+						entityCustomisedModelVersion,
+					),
 				deletionDate = encryptedEntity.deletionDate,
+				documentLocation =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["documentLocation"]?.also { usedEncryptedContent += "documentLocation" },
+						encryptedEntity.documentLocation,
+						entityCustomisedModelVersion,
+					),
 				documentType =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["documentType"]?.also { usedEncryptedContent += "documentType" },
@@ -159,6 +177,18 @@ private class DocumentDecryptor(
 						encryptedEntity.version,
 						entityCustomisedModelVersion,
 					),
+				storedICureDocumentId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["storedICureDocumentId"]?.also { usedEncryptedContent += "storedICureDocumentId" },
+						encryptedEntity.storedICureDocumentId,
+						entityCustomisedModelVersion,
+					),
+				externalUuid =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["externalUuid"]?.also { usedEncryptedContent += "externalUuid" },
+						encryptedEntity.externalUuid,
+						entityCustomisedModelVersion,
+					),
 				size = encryptedEntity.size,
 				hash = encryptedEntity.hash,
 				openingContactId =
@@ -175,6 +205,8 @@ private class DocumentDecryptor(
 				extraMainAttachmentInfo = encryptedEntity.extraMainAttachmentInfo,
 				secondaryAttachments = encryptedEntity.secondaryAttachments,
 				deletedAttachments = encryptedEntity.deletedAttachments,
+				encryptedAttachment = encryptedEntity.encryptedAttachment,
+				decryptedAttachment = encryptedEntity.decryptedAttachment,
 				secretForeignKeys = encryptedEntity.secretForeignKeys,
 				cryptedForeignKeys = encryptedEntity.cryptedForeignKeys,
 				delegations = encryptedEntity.delegations,

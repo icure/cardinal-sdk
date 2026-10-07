@@ -2,20 +2,21 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
+import com.icure.cardinal.sdk.model.base.AppendixType
+import com.icure.cardinal.sdk.model.base.CodeFlag
 import com.icure.cardinal.sdk.model.base.CodeIdentification
 import com.icure.cardinal.sdk.model.base.StoredDocument
+import com.icure.cardinal.sdk.model.embed.Periodicity
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
+import kotlin.Deprecated
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.AppendixType
-import com.icure.cardinal.sdk.model.base.CodeFlag
-import com.icure.cardinal.sdk.model.embed.Periodicity
-import kotlin.Int
 
 /**
  * Represents a medical code from a terminology system (e.g., ICD, SNOMED). The code id is composed of
@@ -66,6 +67,17 @@ data class Code(
 	@param:DefaultValue("emptySet()")
 	public val regions: Set<String> = emptySet(),
 	/**
+	 * The periodicities associated with this code.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val periodicity: Set<Periodicity> = emptySet(),
+	/**
+	 * The access level of the code (e.g., 0 = System, 1 = optional/user-modifiable).
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val level: Int? = null,
+	/**
 	 * Links towards related codes (corresponds to approximate links in qualifiedLinks).
 	 */
 	@param:DefaultValue("emptySet()")
@@ -76,10 +88,27 @@ data class Code(
 	@param:DefaultValue("emptyMap()")
 	public val qualifiedLinks: Map<String, List<String>> = emptyMap(),
 	/**
+	 * Flags (like female only) for the code.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val flags: Set<CodeFlag> = emptySet(),
+	/**
 	 * Extra search terms indexed by language.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val searchTerms: Map<String, Set<String>> = emptyMap(),
+	/**
+	 * Additional data associated with this code.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val `data`: String? = null,
+	/**
+	 * Appendices associated with this code, keyed by appendix type.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val appendices: Map<AppendixType, String> = emptyMap(),
 	/**
 	 * Whether this code is disabled.
 	 */

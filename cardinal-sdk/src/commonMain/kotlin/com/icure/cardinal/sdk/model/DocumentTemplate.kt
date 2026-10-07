@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.ByteArray
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
@@ -49,6 +50,11 @@ data class DocumentTemplate(
 	 * The id of the data owner that is responsible for this document template.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the document template as being member of a certain class.
 	 */

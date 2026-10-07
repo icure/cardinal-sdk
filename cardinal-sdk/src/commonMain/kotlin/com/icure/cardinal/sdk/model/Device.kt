@@ -18,9 +18,12 @@ import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeyp
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.ByteArray
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -79,6 +82,21 @@ data class Device(
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long? = null,
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
+	 * A non-official external id for the device, not guaranteed to be unique.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val externalId: String? = null,
+	/**
 	 * The name of the device.
 	 */
 	override val name: String? = null,
@@ -99,11 +117,22 @@ data class Device(
 	 */
 	public val serialNumber: String? = null,
 	/**
+	 * The id of the parent of the user representing the device.
+	 */
+	@Deprecated("Use dataOwnerGroups with a DataOwnerGroupLinkTypeDto.parent link instead")
+	override val parentId: String? = null,
+	/**
 	 * The links to the data owners representing the groups this device belongs to.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
 	override val groupLinkType: DataOwnerGroupLinkType? = null,
+	/**
+	 * A picture of the device, usually in JPEG format.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val picture: ByteArray? = null,
 	/**
 	 * Typed properties related to the device (e.g., version, specific device information).
 	 */

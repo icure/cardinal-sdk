@@ -1,8 +1,11 @@
 // auto-generated file
-import {expectArray, expectBoolean, expectMap, expectNumber, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
+import {AppendixType} from './base/AppendixType.mjs';
+import {CodeFlag} from './base/CodeFlag.mjs';
 import {CodeIdentification} from './base/CodeIdentification.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
+import {Periodicity} from './embed/Periodicity.mjs';
 
 
 /**
@@ -75,6 +78,18 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 
 	/**
 	 *
+	 *  The periodicities associated with this code.
+	 */
+	periodicity: Array<Periodicity> = [];
+
+	/**
+	 *
+	 *  The access level of the code (e.g., 0 = System, 1 = optional/user-modifiable).
+	 */
+	level: number | undefined = undefined;
+
+	/**
+	 *
 	 *  Links towards related codes (corresponds to approximate links in qualifiedLinks).
 	 */
 	links: Array<string> = [];
@@ -87,9 +102,27 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 
 	/**
 	 *
+	 *  Flags (like female only) for the code.
+	 */
+	flags: Array<CodeFlag> = [];
+
+	/**
+	 *
 	 *  Extra search terms indexed by language.
 	 */
 	searchTerms: { [ key: string ]: Array<string> } = {};
+
+	/**
+	 *
+	 *  Additional data associated with this code.
+	 */
+	data: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Appendices associated with this code, keyed by appendix type.
+	 */
+	appendices: { [ key in AppendixType ]?: string } = {};
 
 	/**
 	 *
@@ -108,9 +141,14 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 		if ('label' in partial && partial.label !== undefined) this.label = partial.label;
 		if ('author' in partial) this.author = partial.author;
 		if ('regions' in partial && partial.regions !== undefined) this.regions = partial.regions;
+		if ('periodicity' in partial && partial.periodicity !== undefined) this.periodicity = partial.periodicity;
+		if ('level' in partial) this.level = partial.level;
 		if ('links' in partial && partial.links !== undefined) this.links = partial.links;
 		if ('qualifiedLinks' in partial && partial.qualifiedLinks !== undefined) this.qualifiedLinks = partial.qualifiedLinks;
+		if ('flags' in partial && partial.flags !== undefined) this.flags = partial.flags;
 		if ('searchTerms' in partial && partial.searchTerms !== undefined) this.searchTerms = partial.searchTerms;
+		if ('data' in partial) this.data = partial.data;
+		if ('appendices' in partial && partial.appendices !== undefined) this.appendices = partial.appendices;
 		if ('disabled' in partial && partial.disabled !== undefined) this.disabled = partial.disabled;
 	}
 
@@ -126,9 +164,14 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 		res['label'] = Object.fromEntries(Object.entries(this.label).map(([k0, v0]) => [k0, v0]))
 		if (this.author != undefined) res['author'] = this.author
 		res['regions'] = this.regions.map((x0) => x0 )
+		res['periodicity'] = this.periodicity.map((x0) => x0.toJSON() )
+		if (this.level != undefined) res['level'] = this.level
 		res['links'] = this.links.map((x0) => x0 )
 		res['qualifiedLinks'] = Object.fromEntries(Object.entries(this.qualifiedLinks).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		res['flags'] = this.flags.map((x0) => x0 )
 		res['searchTerms'] = Object.fromEntries(Object.entries(this.searchTerms).map(([k0, v0]) => [k0, v0.map((x1) => x1 )]))
+		if (this.data != undefined) res['data'] = this.data
+		res['appendices'] = Object.fromEntries(Object.entries(this.appendices).map(([k0, v0]) => [k0, v0]))
 		res['disabled'] = this.disabled
 		return res
 	}
@@ -154,6 +197,8 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 			),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			regions: expectArray(extractEntry(jCpy, 'regions', false, path), false, [...path, ".regions"], (x0, p0) => expectString(x0, false, p0)),
+			periodicity: expectArray(extractEntry(jCpy, 'periodicity', false, path), false, [...path, ".periodicity"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Periodicity.fromJSON)),
+			level: expectNumber(extractEntry(jCpy, 'level', false, path), true, true, [...path, ".level"]),
 			links: expectArray(extractEntry(jCpy, 'links', false, path), false, [...path, ".links"], (x0, p0) => expectString(x0, false, p0)),
 			qualifiedLinks: expectMap(
 				extractEntry(jCpy, 'qualifiedLinks', false, path),
@@ -162,12 +207,21 @@ export class Code implements StoredDocument, CodeIdentification<string> {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
 			),
+			flags: expectArray(extractEntry(jCpy, 'flags', false, path), false, [...path, ".flags"], (x0, p0) => expectStringEnum(x0, false, p0, CodeFlag, 'CodeFlag')),
 			searchTerms: expectMap(
 				extractEntry(jCpy, 'searchTerms', false, path),
 				false,
 				[...path, ".searchTerms"],
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectArray(v0, false, p0, (x1, p1) => expectString(x1, false, p1))
+			),
+			data: expectString(extractEntry(jCpy, 'data', false, path), true, [...path, ".data"]),
+			appendices: expectMap(
+				extractEntry(jCpy, 'appendices', false, path),
+				false,
+				[...path, ".appendices"],
+				(k0, p0) => expectStringEnum(k0, false, p0, AppendixType, 'AppendixType'),
+				(v0, p0) => expectString(v0, false, p0)
 			),
 			disabled: expectBoolean(extractEntry(jCpy, 'disabled', false, path), false, [...path, ".disabled"]),
 		})

@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.enums.UsersStatus
+import com.icure.cardinal.sdk.model.enums.UsersType
 import com.icure.cardinal.sdk.model.security.AuthenticationToken
 import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.Permission
@@ -17,6 +18,7 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -24,7 +26,6 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
-import com.icure.cardinal.sdk.model.enums.UsersType
 
 /**
  *
@@ -74,6 +75,11 @@ data class User(
 	@param:DefaultValue("emptySet()")
 	public val roles: Set<String> = emptySet(),
 	/**
+	 * Authorization source for user ('Database', 'ldap' or 'token').
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val type: UsersType? = null,
+	/**
 	 * State of user's activeness: 'Active', 'Disabled' or 'Registering'.
 	 */
 	public val status: UsersStatus? = null,
@@ -119,6 +125,12 @@ data class User(
 	 * Mobile phone of the user (used for token exchange or password recovery).
 	 */
 	public val mobilePhone: String? = null,
+	/**
+	 * Long lived authentication tokens used for inter-applications authentication.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("Long lived authentication tokens used for inter-applications authentication")
+	public val applicationTokens: Map<String, String> = emptyMap(),
 	/**
 	 * Encrypted and time-limited authentication tokens used for inter-applications authentication.
 	 */

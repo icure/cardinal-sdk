@@ -44,6 +44,8 @@ internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, D
 					tags = clearEntity.tags,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					activeParticipants = clearEntity.activeParticipants,
 					securityMetadata = clearEntity.securityMetadata,
@@ -84,6 +86,8 @@ internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, D
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			linkedHealthElements_e = "linkedHealthElements" in manifest.fieldsToEncrypt,
 			linkedServices_e = "linkedServices" in manifest.fieldsToEncrypt,
 			extensionsEncryptor = extensionsEncryptor,
@@ -104,6 +108,8 @@ private class TopicEncryptor(
 	private val tags_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val linkedHealthElements_e: Boolean,
 	private val linkedServices_e: Boolean,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
@@ -139,6 +145,13 @@ private class TopicEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (linkedHealthElements_e && clearEntity.linkedHealthElements.isNotEmpty()) {
 			dataToEncrypt["linkedHealthElements"] =
 				encodingJson.encodeToJsonElement(
@@ -163,6 +176,8 @@ private class TopicEncryptor(
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			activeParticipants = clearEntity.activeParticipants,
 			securityMetadata = clearEntity.securityMetadata,

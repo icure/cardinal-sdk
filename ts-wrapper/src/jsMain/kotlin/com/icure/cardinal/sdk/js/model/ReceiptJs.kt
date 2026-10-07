@@ -24,6 +24,8 @@ import kotlin.js.JsQualifier
 @JsName("Receipt")
 public sealed external interface ReceiptJs : StoredDocumentJs, ICureDocumentJs<String>,
 		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs {
+	public val endOfLife: Double?
+
 	public val attachmentIds: Record<String, out String>
 
 	public val attachmentInfos: Record<String, out DataAttachmentJs>
@@ -57,9 +59,13 @@ public external class DecryptedReceiptJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
+
+	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -108,9 +114,13 @@ public external class EncryptedReceiptJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
+
+	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 

@@ -34,6 +34,8 @@ internal object PartnershipEncryptorFactory : EntityEncryptorFactory<EncryptedPa
 					status = clearEntity.status,
 					partnerId = clearEntity.partnerId,
 					partnerType = clearEntity.partnerType,
+					meToOtherRelationshipDescription = clearEntity.meToOtherRelationshipDescription,
+					otherToMeRelationshipDescription = clearEntity.otherToMeRelationshipDescription,
 					encryptedSelf = null,
 				)
 		}
@@ -53,6 +55,8 @@ internal object PartnershipEncryptorFactory : EntityEncryptorFactory<EncryptedPa
 			status_e = "status" in manifest.fieldsToEncrypt,
 			partnerId_e = "partnerId" in manifest.fieldsToEncrypt,
 			partnerType_e = "partnerType" in manifest.fieldsToEncrypt,
+			meToOtherRelationshipDescription_e = "meToOtherRelationshipDescription" in manifest.fieldsToEncrypt,
+			otherToMeRelationshipDescription_e = "otherToMeRelationshipDescription" in manifest.fieldsToEncrypt,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -65,6 +69,8 @@ private class PartnershipEncryptor(
 	private val status_e: Boolean,
 	private val partnerId_e: Boolean,
 	private val partnerType_e: Boolean,
+	private val meToOtherRelationshipDescription_e: Boolean,
+	private val otherToMeRelationshipDescription_e: Boolean,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedPartnership, DecryptedPartnership>(cryptoService) {
@@ -82,11 +88,25 @@ private class PartnershipEncryptor(
 					clearEntity.partnerType,
 				)
 		}
+		if (meToOtherRelationshipDescription_e && clearEntity.meToOtherRelationshipDescription != null) {
+			dataToEncrypt["meToOtherRelationshipDescription"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.meToOtherRelationshipDescription,
+				)
+		}
+		if (otherToMeRelationshipDescription_e && clearEntity.otherToMeRelationshipDescription != null) {
+			dataToEncrypt["otherToMeRelationshipDescription"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.otherToMeRelationshipDescription,
+				)
+		}
 		return EncryptedPartnership(
 			type = if (type_e) null else clearEntity.type,
 			status = if (status_e) null else clearEntity.status,
 			partnerId = if (partnerId_e) null else clearEntity.partnerId,
 			partnerType = if (partnerType_e) null else clearEntity.partnerType,
+			meToOtherRelationshipDescription = if (meToOtherRelationshipDescription_e) null else clearEntity.meToOtherRelationshipDescription,
+			otherToMeRelationshipDescription = if (otherToMeRelationshipDescription_e) null else clearEntity.otherToMeRelationshipDescription,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}

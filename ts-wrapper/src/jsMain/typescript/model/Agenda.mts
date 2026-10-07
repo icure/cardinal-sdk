@@ -11,6 +11,7 @@ import {ICureDocument} from './base/ICureDocument.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {AgendaSlottingAlgorithm} from './embed/AgendaSlottingAlgorithm.mjs';
 import {ResourceGroupAllocationSchedule} from './embed/ResourceGroupAllocationSchedule.mjs';
+import {Right} from './embed/Right.mjs';
 import {UserAccessLevel} from './embed/UserAccessLevel.mjs';
 
 
@@ -57,6 +58,12 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 	 *  The id of the data owner that is responsible for this agenda.
 	 */
 	responsible: string | undefined = undefined;
+
+	/**
+	 *
+	 *  The medical location where this entity was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
 
 	/**
 	 *
@@ -114,6 +121,12 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 
 	/**
 	 *
+	 *  The legacy rights for this agenda. Deprecated: use userRights instead.
+	 */
+	rights: Array<Right> = [];
+
+	/**
+	 *
 	 *  Associates a user id to the permission that user has on the entity.
 	 */
 	userRights: { [ key: string ]: UserAccessLevel } = {};
@@ -153,6 +166,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
@@ -162,6 +176,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 		if ('name' in partial) this.name = partial.name;
 		if ('userId' in partial) this.userId = partial.userId;
 		if ('zoneId' in partial) this.zoneId = partial.zoneId;
+		if ('rights' in partial && partial.rights !== undefined) this.rights = partial.rights;
 		if ('userRights' in partial && partial.userRights !== undefined) this.userRights = partial.userRights;
 		if ('slottingAlgorithm' in partial) this.slottingAlgorithm = partial.slottingAlgorithm;
 		if ('publicBookingQuota' in partial) this.publicBookingQuota = partial.publicBookingQuota;
@@ -179,6 +194,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
@@ -188,6 +204,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 		if (this.name != undefined) res['name'] = this.name
 		if (this.userId != undefined) res['userId'] = this.userId
 		if (this.zoneId != undefined) res['zoneId'] = this.zoneId
+		res['rights'] = this.rights.map((x0) => x0.toJSON() )
 		res['userRights'] = Object.fromEntries(Object.entries(this.userRights).map(([k0, v0]) => [k0, v0]))
 		if (this.slottingAlgorithm != undefined) res['slottingAlgorithm'] = this.slottingAlgorithm.toJSON()
 		if (this.publicBookingQuota != undefined) res['publicBookingQuota'] = this.publicBookingQuota
@@ -209,6 +226,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
@@ -218,6 +236,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			userId: expectString(extractEntry(jCpy, 'userId', false, path), true, [...path, ".userId"]),
 			zoneId: expectString(extractEntry(jCpy, 'zoneId', false, path), true, [...path, ".zoneId"]),
+			rights: expectArray(extractEntry(jCpy, 'rights', false, path), false, [...path, ".rights"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Right.fromJSON)),
 			userRights: expectMap(
 				extractEntry(jCpy, 'userRights', false, path),
 				false,

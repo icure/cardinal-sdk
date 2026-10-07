@@ -11,19 +11,20 @@ import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
+import com.icure.cardinal.sdk.model.embed.MessageAttachment
 import com.icure.cardinal.sdk.model.embed.MessageReadStatus
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
+import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.MessageAttachment
-import kotlin.collections.List
 
 /**
  * Represents a message exchanged between healthcare parties. Messages can be used for internal communication,
@@ -70,6 +71,12 @@ sealed interface Message :
 	override val responsible: String?
 
 	/**
+	 * The id of the medical location where this message was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
 	 * Tags that qualify the message as being member of a certain class.
 	 */
 	override val tags: Set<CodeStub>
@@ -78,6 +85,12 @@ sealed interface Message :
 	 * Codes that identify or qualify this particular message.
 	 */
 	override val codes: Set<CodeStub>
+
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
@@ -93,6 +106,24 @@ sealed interface Message :
 	 * ID of the healthcare party sending the message.
 	 */
 	public val fromHealthcarePartyId: String?
+
+	/**
+	 * The id of the form linked to this message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val formId: String?
+
+	/**
+	 * Status of the message as a bitfield.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val status: Int?
+
+	/**
+	 * The type of user who is the recipient of this message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val recipientsType: String?
 
 	/**
 	 * List of IDs of healthcare parties to whom the message is addressed.
@@ -125,6 +156,12 @@ sealed interface Message :
 	public val readStatus: Map<String, MessageReadStatus>
 
 	/**
+	 * List of message attachments.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val messageAttachments: List<MessageAttachment>
+
+	/**
 	 * Transport-level identifier for the message, format depends on the transport type.
 	 */
 	public val transportGuid: String?
@@ -153,6 +190,30 @@ sealed interface Message :
 	 * ID of a parent in a message conversation.
 	 */
 	public val parentId: String?
+
+	/**
+	 * External reference for the message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val externalRef: String?
+
+	/**
+	 * Set of unassigned result references.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val unassignedResults: Set<String>
+
+	/**
+	 * Map of assigned results (ContactId to reference).
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val assignedResults: Map<String, String>
+
+	/**
+	 * Map of sender references.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val senderReferences: Map<String, String>
 
 	/**
 	 * Extra properties for the message.
@@ -231,6 +292,11 @@ data class DecryptedMessage(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this message was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the message as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -240,6 +306,11 @@ data class DecryptedMessage(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -252,6 +323,21 @@ data class DecryptedMessage(
 	 * ID of the healthcare party sending the message.
 	 */
 	override val fromHealthcarePartyId: String? = null,
+	/**
+	 * The id of the form linked to this message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val formId: String? = null,
+	/**
+	 * Status of the message as a bitfield.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int? = null,
+	/**
+	 * The type of user who is the recipient of this message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val recipientsType: String? = null,
 	/**
 	 * List of IDs of healthcare parties to whom the message is addressed.
 	 */
@@ -281,6 +367,12 @@ data class DecryptedMessage(
 	@param:DefaultValue("emptyMap()")
 	override val readStatus: Map<String, MessageReadStatus> = emptyMap(),
 	/**
+	 * List of message attachments.
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val messageAttachments: List<MessageAttachment> = emptyList(),
+	/**
 	 * Transport-level identifier for the message, format depends on the transport type.
 	 */
 	override val transportGuid: String? = null,
@@ -305,6 +397,29 @@ data class DecryptedMessage(
 	 * ID of a parent in a message conversation.
 	 */
 	override val parentId: String? = null,
+	/**
+	 * External reference for the message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalRef: String? = null,
+	/**
+	 * Set of unassigned result references.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val unassignedResults: Set<String> = emptySet(),
+	/**
+	 * Map of assigned results (ContactId to reference).
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val assignedResults: Map<String, String> = emptyMap(),
+	/**
+	 * Map of sender references.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val senderReferences: Map<String, String> = emptyMap(),
 	/**
 	 * Extra properties for the message.
 	 */
@@ -379,6 +494,11 @@ data class EncryptedMessage(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this message was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the message as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -388,6 +508,11 @@ data class EncryptedMessage(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -400,6 +525,21 @@ data class EncryptedMessage(
 	 * ID of the healthcare party sending the message.
 	 */
 	override val fromHealthcarePartyId: String? = null,
+	/**
+	 * The id of the form linked to this message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val formId: String? = null,
+	/**
+	 * Status of the message as a bitfield.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int? = null,
+	/**
+	 * The type of user who is the recipient of this message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val recipientsType: String? = null,
 	/**
 	 * List of IDs of healthcare parties to whom the message is addressed.
 	 */
@@ -429,6 +569,12 @@ data class EncryptedMessage(
 	@param:DefaultValue("emptyMap()")
 	override val readStatus: Map<String, MessageReadStatus> = emptyMap(),
 	/**
+	 * List of message attachments.
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val messageAttachments: List<MessageAttachment> = emptyList(),
+	/**
 	 * Transport-level identifier for the message, format depends on the transport type.
 	 */
 	override val transportGuid: String? = null,
@@ -453,6 +599,29 @@ data class EncryptedMessage(
 	 * ID of a parent in a message conversation.
 	 */
 	override val parentId: String? = null,
+	/**
+	 * External reference for the message.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalRef: String? = null,
+	/**
+	 * Set of unassigned result references.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val unassignedResults: Set<String> = emptySet(),
+	/**
+	 * Map of assigned results (ContactId to reference).
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val assignedResults: Map<String, String> = emptyMap(),
+	/**
+	 * Map of sender references.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val senderReferences: Map<String, String> = emptyMap(),
 	/**
 	 * Extra properties for the message.
 	 */

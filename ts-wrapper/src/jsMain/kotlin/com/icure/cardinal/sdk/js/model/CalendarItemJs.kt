@@ -18,6 +18,7 @@ import com.icure.cardinal.sdk.js.model.embed.DelegationJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedAddressJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedCalendarItemTagJs
+import com.icure.cardinal.sdk.js.model.embed.FlowItemJs
 import com.icure.cardinal.sdk.js.model.embed.SecurityMetadataJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
@@ -30,11 +31,15 @@ import kotlin.js.JsQualifier
 @JsName("CalendarItem")
 public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumentJs<String>,
 		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, CustomisableRootJs, ExtendableJs {
+	public val endOfLife: Double?
+
 	public val title: String?
 
 	public val calendarItemTypeId: String?
 
 	public val masterCalendarItemId: String?
+
+	public val patientId: String?
 
 	public val important: Boolean?
 
@@ -78,6 +83,8 @@ public sealed external interface CalendarItemJs : StoredDocumentJs, ICureDocumen
 
 	public val meetingTags: Array<out CalendarItemTagJs>
 
+	public val flowItem: FlowItemJs?
+
 	public val properties: Array<out PropertyStubJs>
 
 	public val isEncrypted: Boolean
@@ -99,9 +106,13 @@ public external class DecryptedCalendarItemJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
+
+	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -110,6 +121,8 @@ public external class DecryptedCalendarItemJs(
 	override val calendarItemTypeId: String?
 
 	override val masterCalendarItemId: String?
+
+	override val patientId: String?
 
 	override val important: Boolean?
 
@@ -153,6 +166,8 @@ public external class DecryptedCalendarItemJs(
 
 	override val meetingTags: Array<DecryptedCalendarItemTagJs>
 
+	override val flowItem: FlowItemJs?
+
 	override val properties: Array<DecryptedPropertyStubJs>
 
 	override val secretForeignKeys: Array<String>
@@ -190,9 +205,13 @@ public external class EncryptedCalendarItemJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
+
+	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -201,6 +220,8 @@ public external class EncryptedCalendarItemJs(
 	override val calendarItemTypeId: String?
 
 	override val masterCalendarItemId: String?
+
+	override val patientId: String?
 
 	override val important: Boolean?
 
@@ -243,6 +264,8 @@ public external class EncryptedCalendarItemJs(
 	override val recurrenceId: String?
 
 	override val meetingTags: Array<EncryptedCalendarItemTagJs>
+
+	override val flowItem: FlowItemJs?
 
 	override val properties: Array<EncryptedPropertyStubJs>
 

@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
+import com.icure.cardinal.sdk.model.base.ParticipantType
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
@@ -32,14 +33,13 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.ParticipantType
-import kotlin.Deprecated
 
 /**
  * This entity is a root-level object. It represents a contact. It is serialized in JSON and saved in the underlying
@@ -97,6 +97,12 @@ sealed interface Contact :
 	override val responsible: String?
 
 	/**
+	 * The id of the medical location where the contact was recorded. Deprecated for use with Cardinal SDK.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
 	 * Tags that qualify the contact as being member of a certain class.
 	 */
 	override val tags: Set<CodeStub>
@@ -147,6 +153,12 @@ sealed interface Contact :
 	public val location: String?
 
 	/**
+	 * An external (from another source) id with no guarantee or requirement for unicity. Deprecated for use with Cardinal SDK.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val externalId: String?
+
+	/**
 	 * The type of encounter made for the contact.
 	 */
 	public val encounterType: CodeStub?
@@ -167,9 +179,27 @@ sealed interface Contact :
 	public val services: Set<Service>
 
 	/**
+	 * The participants to the contact. The key is the type of participant, the value is the id of the participant data owner id. Deprecated: use [participantList] instead.
+	 */
+	@Deprecated("Use participantList")
+	public val participants: Map<ParticipantType, String>
+
+	/**
 	 * The list of participants to the contact, with their type and data owner id.
 	 */
 	public val participantList: List<ContactParticipant>
+
+	/**
+	 * Deprecated: use [responsible] instead.
+	 */
+	@Deprecated("Use responsible")
+	public val healthcarePartyId: String?
+
+	/**
+	 * Deprecated: use [groupId] instead.
+	 */
+	@Deprecated("Use groupId")
+	public val modifiedContactId: String?
 
 	/**
 	 * The secret patient key, encrypted in the patient document, in clear here.
@@ -257,6 +287,11 @@ data class DecryptedContact(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where the contact was recorded. Deprecated for use with Cardinal SDK.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the contact as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -300,6 +335,11 @@ data class DecryptedContact(
 	 */
 	override val location: String? = null,
 	/**
+	 * An external (from another source) id with no guarantee or requirement for unicity. Deprecated for use with Cardinal SDK.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalId: String? = null,
+	/**
 	 * The type of encounter made for the contact.
 	 */
 	override val encounterType: CodeStub? = null,
@@ -318,10 +358,26 @@ data class DecryptedContact(
 	@param:DefaultValue("emptySet()")
 	override val services: Set<DecryptedService> = emptySet(),
 	/**
+	 * The participants to the contact. The key is the type of participant, the value is the id of the participant data owner id. Deprecated: use [participantList] instead.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("Use participantList")
+	override val participants: Map<ParticipantType, String> = emptyMap(),
+	/**
 	 * The list of participants to the contact, with their type and data owner id.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val participantList: List<ContactParticipant> = emptyList(),
+	/**
+	 * Deprecated: use [responsible] instead.
+	 */
+	@Deprecated("Use responsible")
+	override val healthcarePartyId: String? = null,
+	/**
+	 * Deprecated: use [groupId] instead.
+	 */
+	@Deprecated("Use groupId")
+	override val modifiedContactId: String? = null,
 	/**
 	 * The secret patient key, encrypted in the patient document, in clear here.
 	 */
@@ -405,6 +461,11 @@ data class EncryptedContact(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where the contact was recorded. Deprecated for use with Cardinal SDK.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the contact as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -448,6 +509,11 @@ data class EncryptedContact(
 	 */
 	override val location: String? = null,
 	/**
+	 * An external (from another source) id with no guarantee or requirement for unicity. Deprecated for use with Cardinal SDK.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalId: String? = null,
+	/**
 	 * The type of encounter made for the contact.
 	 */
 	override val encounterType: CodeStub? = null,
@@ -466,10 +532,26 @@ data class EncryptedContact(
 	@param:DefaultValue("emptySet()")
 	override val services: Set<EncryptedService> = emptySet(),
 	/**
+	 * The participants to the contact. The key is the type of participant, the value is the id of the participant data owner id. Deprecated: use [participantList] instead.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("Use participantList")
+	override val participants: Map<ParticipantType, String> = emptyMap(),
+	/**
 	 * The list of participants to the contact, with their type and data owner id.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val participantList: List<ContactParticipant> = emptyList(),
+	/**
+	 * Deprecated: use [responsible] instead.
+	 */
+	@Deprecated("Use responsible")
+	override val healthcarePartyId: String? = null,
+	/**
+	 * Deprecated: use [groupId] instead.
+	 */
+	@Deprecated("Use groupId")
+	override val modifiedContactId: String? = null,
 	/**
 	 * The secret patient key, encrypted in the patient document, in clear here.
 	 */

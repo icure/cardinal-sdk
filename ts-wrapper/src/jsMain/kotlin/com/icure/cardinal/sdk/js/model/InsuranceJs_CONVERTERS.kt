@@ -61,6 +61,9 @@ public fun insurance_toJs(obj: Insurance): InsuranceJs {
 			codeStub_toJs(x1)
 		},
 	)
+	val privateInsurance = obj.privateInsurance
+	val hospitalisationInsurance = obj.hospitalisationInsurance
+	val ambulatoryInsurance = obj.ambulatoryInsurance
 	val code = nullToUndefined(
 		obj.code
 	)
@@ -79,6 +82,9 @@ public fun insurance_toJs(obj: Insurance): InsuranceJs {
 		"identifier:identifier," +
 		"tags:tags," +
 		"codes:codes," +
+		"privateInsurance:privateInsurance," +
+		"hospitalisationInsurance:hospitalisationInsurance," +
+		"ambulatoryInsurance:ambulatoryInsurance," +
 		"code:code," +
 		"agreementNumber:agreementNumber," +
 		"parent:parent," +
@@ -121,6 +127,9 @@ public fun insurance_fromJs(obj: InsuranceJs): Insurance {
 			codeStub_fromJs(x1)
 		},
 	)
+	val privateInsurance = obj.privateInsurance
+	val hospitalisationInsurance = obj.hospitalisationInsurance
+	val ambulatoryInsurance = obj.ambulatoryInsurance
 	val code = undefinedToNull(obj.code)
 	val agreementNumber = undefinedToNull(obj.agreementNumber)
 	val parent = undefinedToNull(obj.parent)
@@ -133,6 +142,9 @@ public fun insurance_fromJs(obj: InsuranceJs): Insurance {
 		identifier = identifier,
 		tags = tags,
 		codes = codes,
+		privateInsurance = privateInsurance,
+		hospitalisationInsurance = hospitalisationInsurance,
+		ambulatoryInsurance = ambulatoryInsurance,
 		code = code,
 		agreementNumber = agreementNumber,
 		parent = parent,

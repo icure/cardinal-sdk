@@ -88,6 +88,15 @@ public fun device_toJs(obj: Device): DeviceJs {
 			codeStub_toJs(x1)
 		},
 	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
+	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
+	val externalId = nullToUndefined(
+		obj.externalId
+	)
 	val name = nullToUndefined(
 		obj.name
 	)
@@ -103,6 +112,9 @@ public fun device_toJs(obj: Device): DeviceJs {
 	val serialNumber = nullToUndefined(
 		obj.serialNumber
 	)
+	val parentId = nullToUndefined(
+		obj.parentId
+	)
 	val dataOwnerGroups = listToArray(
 		obj.dataOwnerGroups,
 		{ x1: DataOwnerGroupLink ->
@@ -113,6 +125,9 @@ public fun device_toJs(obj: Device): DeviceJs {
 		obj.groupLinkType?.let { nonNull1 ->
 			nonNull1.name
 		}
+	)
+	val picture = nullToUndefined(
+		obj.picture
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -219,13 +234,18 @@ public fun device_toJs(obj: Device): DeviceJs {
 		"responsible:responsible," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
+		"medicalLocationId:medicalLocationId," +
+		"externalId:externalId," +
 		"name:name," +
 		"type:type," +
 		"brand:brand," +
 		"model:model," +
 		"serialNumber:serialNumber," +
+		"parentId:parentId," +
 		"dataOwnerGroups:dataOwnerGroups," +
 		"groupLinkType:groupLinkType," +
+		"picture:picture," +
 		"properties:properties," +
 		"hcPartyKeys:hcPartyKeys," +
 		"aesExchangeKeys:aesExchangeKeys," +
@@ -268,11 +288,15 @@ public fun device_fromJs(obj: DeviceJs): Device {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
+	val externalId = undefinedToNull(obj.externalId)
 	val name = undefinedToNull(obj.name)
 	val type = undefinedToNull(obj.type)
 	val brand = undefinedToNull(obj.brand)
 	val model = undefinedToNull(obj.model)
 	val serialNumber = undefinedToNull(obj.serialNumber)
+	val parentId = undefinedToNull(obj.parentId)
 	val dataOwnerGroups = arrayToList(
 		obj.dataOwnerGroups,
 		"obj.dataOwnerGroups",
@@ -283,6 +307,7 @@ public fun device_fromJs(obj: DeviceJs): Device {
 	val groupLinkType = obj.groupLinkType?.let { nonNull1 ->
 		DataOwnerGroupLinkType.valueOf(nonNull1)
 	}
+	val picture = undefinedToNull(obj.picture)
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -393,13 +418,18 @@ public fun device_fromJs(obj: DeviceJs): Device {
 		responsible = responsible,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
+		medicalLocationId = medicalLocationId,
+		externalId = externalId,
 		name = name,
 		type = type,
 		brand = brand,
 		model = model,
 		serialNumber = serialNumber,
+		parentId = parentId,
 		dataOwnerGroups = dataOwnerGroups,
 		groupLinkType = groupLinkType,
+		picture = picture,
 		properties = properties,
 		hcPartyKeys = hcPartyKeys,
 		aesExchangeKeys = aesExchangeKeys,

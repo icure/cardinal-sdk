@@ -118,6 +118,12 @@ private class AccessLogDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -128,6 +134,12 @@ private class AccessLogDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
 						encryptedEntity.codes,
+						entityCustomisedModelVersion,
+					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
 						entityCustomisedModelVersion,
 					),
 				deletionDate = encryptedEntity.deletionDate,
@@ -160,6 +172,12 @@ private class AccessLogDecryptor(
 						InstantSerializer.nullable,
 						decryptedContent["date"]?.also { usedEncryptedContent += "date" },
 						encryptedEntity.date,
+						entityCustomisedModelVersion,
+					),
+				patientId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["patientId"]?.also { usedEncryptedContent += "patientId" },
+						encryptedEntity.patientId,
 						entityCustomisedModelVersion,
 					),
 				secretForeignKeys = encryptedEntity.secretForeignKeys,

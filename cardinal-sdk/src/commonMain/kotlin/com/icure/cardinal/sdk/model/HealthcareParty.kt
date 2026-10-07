@@ -18,16 +18,23 @@ import com.icure.cardinal.sdk.model.base.Person
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
+import com.icure.cardinal.sdk.model.embed.DecryptedFlatRateTarification
 import com.icure.cardinal.sdk.model.embed.Gender
+import com.icure.cardinal.sdk.model.embed.HealthcarePartyHistoryStatus
+import com.icure.cardinal.sdk.model.embed.HealthcarePartyStatus
 import com.icure.cardinal.sdk.model.embed.PersonName
+import com.icure.cardinal.sdk.model.embed.TelecomType
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.ByteArray
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -132,11 +139,46 @@ data class HealthcareParty(
 	 */
 	public val invoiceHeader: String? = null,
 	/**
+	 * Identifier number for institution type if the healthcare party is an enterprise.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val cbe: String? = null,
+	/**
+	 * Identifier number for the institution if the healthcare party is an organization.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val ehp: String? = null,
+	/**
+	 * The id of the user that usually handles this healthcare party.
+	 */
+	@Deprecated("Discouraged, use custom property if you really want them")
+	public val userId: String? = null,
+	/**
+	 * The id of the parent healthcare party.
+	 */
+	@Deprecated("Use dataOwnerGroups with a DataOwnerGroupLinkTypeDto.parent link instead")
+	override val parentId: String? = null,
+	/**
 	 * The links to the data owners representing the groups this healthcare party belongs to.
 	 */
 	@param:DefaultValue("emptyList()")
 	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
 	override val groupLinkType: DataOwnerGroupLinkType? = null,
+	/**
+	 * The convention number (0, 1, 2, or 9).
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val convention: Int? = null,
+	/**
+	 * National Institute for Health and Invalidity Insurance number.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val nihii: String? = null,
+	/**
+	 * NIHII specialization code.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val nihiiSpecCode: String? = null,
 	/**
 	 * Social security inscription number.
 	 */
@@ -152,10 +194,34 @@ data class HealthcareParty(
 	@param:DefaultValue("emptyList()")
 	override val languages: List<String> = emptyList(),
 	/**
+	 * A picture usually saved in JPEG format.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val picture: ByteArray? = null,
+	/**
+	 * The healthcare party's status: 'trainee' or 'withconvention' or 'accredited'.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val statuses: Set<HealthcarePartyStatus> = emptySet(),
+	/**
+	 * The healthcare party's status history.
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val statusHistory: List<HealthcarePartyHistoryStatus> = emptyList(),
+	/**
 	 * Medical specialty of the healthcare party codified using FHIR or Kmehr codification scheme.
 	 */
 	@param:DefaultValue("emptySet()")
 	public val specialityCodes: Set<CodeStub> = emptySet(),
+	/**
+	 * The type of format for contacting the healthcare party.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val sendFormats: Map<TelecomType, String> = emptyMap(),
 	/**
 	 * Text notes.
 	 */
@@ -170,6 +236,49 @@ data class HealthcareParty(
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val descr: Map<String, String> = emptyMap(),
+	/**
+	 * The invoicing scheme this healthcare party adheres to: 'service fee' or 'flat rate'.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val billingType: String? = null,
+	/**
+	 * The type of healthcare party (e.g., 'persphysician', 'medicalHouse', 'perstechnician').
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val type: String? = null,
+	/**
+	 * Contact person name.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val contactPerson: String? = null,
+	/**
+	 * Contact person healthcare party id.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val contactPersonHcpId: String? = null,
+	/**
+	 * The id of the supervisor.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val supervisorId: String? = null,
+	/**
+	 * List of flat rate tarifications for medical houses.
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val flatRateTarifications: List<DecryptedFlatRateTarification> = emptyList(),
+	/**
+	 * Imported data map.
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val importedData: Map<String, String> = emptyMap(),
+	/**
+	 * Additional options (deprecated, use properties instead).
+	 */
+	@param:DefaultValue("emptyMap()")
+	@Deprecated("Use properties instead")
+	public val options: Map<String, String> = emptyMap(),
 	/**
 	 * Extra properties for the healthcare party.
 	 */

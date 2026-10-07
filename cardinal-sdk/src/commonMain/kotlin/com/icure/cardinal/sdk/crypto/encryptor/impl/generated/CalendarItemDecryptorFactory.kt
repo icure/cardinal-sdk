@@ -167,6 +167,12 @@ private class CalendarItemDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -177,6 +183,12 @@ private class CalendarItemDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
 						encryptedEntity.codes,
+						entityCustomisedModelVersion,
+					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
 						entityCustomisedModelVersion,
 					),
 				deletionDate = encryptedEntity.deletionDate,
@@ -196,6 +208,12 @@ private class CalendarItemDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["masterCalendarItemId"]?.also { usedEncryptedContent += "masterCalendarItemId" },
 						encryptedEntity.masterCalendarItemId,
+						entityCustomisedModelVersion,
+					),
+				patientId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["patientId"]?.also { usedEncryptedContent += "patientId" },
+						encryptedEntity.patientId,
 						entityCustomisedModelVersion,
 					),
 				important =
@@ -329,6 +347,12 @@ private class CalendarItemDecryptor(
 								customisedModelVersion = customisedModelVersion,
 							)
 						},
+						entityCustomisedModelVersion,
+					),
+				flowItem =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["flowItem"]?.also { usedEncryptedContent += "flowItem" },
+						encryptedEntity.flowItem,
 						entityCustomisedModelVersion,
 					),
 				properties =

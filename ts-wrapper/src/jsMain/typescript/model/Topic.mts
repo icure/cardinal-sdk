@@ -43,6 +43,12 @@ export interface Topic extends StoredDocument, ICureDocument<string>, HasMedical
 
 	/**
 	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined;
+
+	/**
+	 *
 	 *  Map of active participants with their roles (participant, admin, or owner).
 	 */
 	activeParticipants: { [ key: string ]: TopicRole };
@@ -141,6 +147,18 @@ export class DecryptedTopic {
 
 	/**
 	 *
+	 *  The id of the medical location where this topic was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
+
+	/**
+	 *
 	 *  Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	deletionDate: number | undefined = undefined;
@@ -222,6 +240,8 @@ export class DecryptedTopic {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('activeParticipants' in partial && partial.activeParticipants !== undefined) this.activeParticipants = partial.activeParticipants;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
@@ -249,6 +269,8 @@ export class DecryptedTopic {
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		res['activeParticipants'] = Object.fromEntries(Object.entries(this.activeParticipants).map(([k0, v0]) => [k0, v0]))
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
@@ -282,6 +304,8 @@ export class DecryptedTopic {
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			activeParticipants: expectMap(
 				extractEntry(jCpy, 'activeParticipants', false, path),
@@ -403,6 +427,18 @@ export class EncryptedTopic {
 
 	/**
 	 *
+	 *  The id of the medical location where this topic was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
+
+	/**
+	 *
 	 *  Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	deletionDate: number | undefined = undefined;
@@ -484,6 +520,8 @@ export class EncryptedTopic {
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('activeParticipants' in partial && partial.activeParticipants !== undefined) this.activeParticipants = partial.activeParticipants;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
@@ -511,6 +549,8 @@ export class EncryptedTopic {
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		res['activeParticipants'] = Object.fromEntries(Object.entries(this.activeParticipants).map(([k0, v0]) => [k0, v0]))
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
@@ -544,6 +584,8 @@ export class EncryptedTopic {
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			activeParticipants: expectMap(
 				extractEntry(jCpy, 'activeParticipants', false, path),

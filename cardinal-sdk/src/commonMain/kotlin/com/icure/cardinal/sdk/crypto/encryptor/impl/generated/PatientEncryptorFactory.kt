@@ -16,24 +16,30 @@ import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
+import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
+import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
+import com.icure.cardinal.sdk.model.embed.EncryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.EncryptedPartnership
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
+import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.Gender
 import com.icure.cardinal.sdk.model.embed.PersonalStatus
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
+import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
@@ -61,6 +67,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 					responsible = clearEntity.responsible,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					firstName = clearEntity.firstName,
 					lastName = clearEntity.lastName,
@@ -102,6 +109,9 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 					nationality = clearEntity.nationality,
 					race = clearEntity.race,
 					ethnicity = clearEntity.ethnicity,
+					preferredUserId = clearEntity.preferredUserId,
+					picture = clearEntity.picture,
+					externalId = clearEntity.externalId,
 					insurabilities =
 						clearEntity.insurabilities.map { x0 ->
 							InsurabilityEncryptorFactory.empty.encrypt(encryptionKey, x0)
@@ -141,6 +151,25 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 					encryptedSelf = null,
 					securityMetadata = clearEntity.securityMetadata,
 					cryptoActorProperties = clearEntity.cryptoActorProperties,
+					medicalLocationId = clearEntity.medicalLocationId,
+					nonDuplicateIds = clearEntity.nonDuplicateIds,
+					encryptedAdministrativesDocuments = clearEntity.encryptedAdministrativesDocuments,
+					comment = clearEntity.comment,
+					warning = clearEntity.warning,
+					fatherBirthCountry = clearEntity.fatherBirthCountry,
+					birthCountry = clearEntity.birthCountry,
+					nativeCountry = clearEntity.nativeCountry,
+					socialStatus = clearEntity.socialStatus,
+					mainSourceOfIncome = clearEntity.mainSourceOfIncome,
+					schoolingInfos =
+						clearEntity.schoolingInfos.map { x0 ->
+							SchoolingInfoEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					employementInfos =
+						clearEntity.employementInfos.map { x0 ->
+							EmploymentInfoEncryptorFactory.empty.encrypt(encryptionKey, x0)
+						},
+					parentId = clearEntity.parentId,
 					dataOwnerGroups = clearEntity.dataOwnerGroups,
 					groupLinkType = clearEntity.groupLinkType,
 					extensions = clearEntity.extensions,
@@ -171,6 +200,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			firstName_e = "firstName" in manifest.fieldsToEncrypt,
 			lastName_e = "lastName" in manifest.fieldsToEncrypt,
 			names_e = "names" in manifest.fieldsToEncrypt,
@@ -229,6 +259,9 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 			nationality_e = "nationality" in manifest.fieldsToEncrypt,
 			race_e = "race" in manifest.fieldsToEncrypt,
 			ethnicity_e = "ethnicity" in manifest.fieldsToEncrypt,
+			preferredUserId_e = "preferredUserId" in manifest.fieldsToEncrypt,
+			picture_e = "picture" in manifest.fieldsToEncrypt,
+			externalId_e = "externalId" in manifest.fieldsToEncrypt,
 			insurabilities_e =
 				if ("insurabilities" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
@@ -315,6 +348,44 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 						)
 					} ?: EncryptableFieldConfig.None(PropertyStubEncryptorFactory)
 				},
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
+			nonDuplicateIds_e = "nonDuplicateIds" in manifest.fieldsToEncrypt,
+			encryptedAdministrativesDocuments_e = "encryptedAdministrativesDocuments" in manifest.fieldsToEncrypt,
+			comment_e = "comment" in manifest.fieldsToEncrypt,
+			warning_e = "warning" in manifest.fieldsToEncrypt,
+			fatherBirthCountry_e = "fatherBirthCountry" in manifest.fieldsToEncrypt,
+			birthCountry_e = "birthCountry" in manifest.fieldsToEncrypt,
+			nativeCountry_e = "nativeCountry" in manifest.fieldsToEncrypt,
+			socialStatus_e = "socialStatus" in manifest.fieldsToEncrypt,
+			mainSourceOfIncome_e = "mainSourceOfIncome" in manifest.fieldsToEncrypt,
+			schoolingInfos_e =
+				if ("schoolingInfos" in manifest.fieldsToEncrypt) {
+					EncryptableFieldConfig.Full()
+				} else {
+					manifest.recursiveEncryption["schoolingInfos"]?.let {
+						EncryptableFieldConfig.Configured(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
+								entityManifestName = it,
+								encryptedClass = EncryptedSchoolingInfo::class,
+								decryptedClass = DecryptedSchoolingInfo::class,
+							),
+						)
+					} ?: EncryptableFieldConfig.None(SchoolingInfoEncryptorFactory)
+				},
+			employementInfos_e =
+				if ("employementInfos" in manifest.fieldsToEncrypt) {
+					EncryptableFieldConfig.Full()
+				} else {
+					manifest.recursiveEncryption["employementInfos"]?.let {
+						EncryptableFieldConfig.Configured(
+							encryptorsFactoryContext.getEntityEncryptorsProvider(
+								entityManifestName = it,
+								encryptedClass = EncryptedEmploymentInfo::class,
+								decryptedClass = DecryptedEmploymentInfo::class,
+							),
+						)
+					} ?: EncryptableFieldConfig.None(EmploymentInfoEncryptorFactory)
+				},
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
@@ -331,6 +402,7 @@ private class PatientEncryptor(
 	private val responsible_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val firstName_e: Boolean,
 	private val lastName_e: Boolean,
 	private val names_e: Boolean,
@@ -363,6 +435,9 @@ private class PatientEncryptor(
 	private val nationality_e: Boolean,
 	private val race_e: Boolean,
 	private val ethnicity_e: Boolean,
+	private val preferredUserId_e: Boolean,
+	private val picture_e: Boolean,
+	private val externalId_e: Boolean,
 	private val insurabilities_e: EncryptableFieldConfig<EncryptedInsurability, DecryptedInsurability>,
 	private val partnerships_e: EncryptableFieldConfig<EncryptedPartnership, DecryptedPartnership>,
 	private val patientHealthCareParties_e: EncryptableFieldConfig<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty>,
@@ -372,6 +447,18 @@ private class PatientEncryptor(
 	private val patientProfessions_e: Boolean,
 	private val parameters_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
+	private val medicalLocationId_e: Boolean,
+	private val nonDuplicateIds_e: Boolean,
+	private val encryptedAdministrativesDocuments_e: Boolean,
+	private val comment_e: Boolean,
+	private val warning_e: Boolean,
+	private val fatherBirthCountry_e: Boolean,
+	private val birthCountry_e: Boolean,
+	private val nativeCountry_e: Boolean,
+	private val socialStatus_e: Boolean,
+	private val mainSourceOfIncome_e: Boolean,
+	private val schoolingInfos_e: EncryptableFieldConfig<EncryptedSchoolingInfo, DecryptedSchoolingInfo>,
+	private val employementInfos_e: EncryptableFieldConfig<EncryptedEmploymentInfo, DecryptedEmploymentInfo>,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
@@ -398,6 +485,7 @@ private class PatientEncryptor(
 		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (firstName_e && clearEntity.firstName != null) dataToEncrypt["firstName"] = encodingJson.encodeToJsonElement(clearEntity.firstName)
 		if (lastName_e && clearEntity.lastName != null) dataToEncrypt["lastName"] = encodingJson.encodeToJsonElement(clearEntity.lastName)
 		if (names_e && clearEntity.names.isNotEmpty()) dataToEncrypt["names"] = encodingJson.encodeToJsonElement(clearEntity.names)
@@ -505,6 +593,20 @@ private class PatientEncryptor(
 		}
 		if (race_e && clearEntity.race != null) dataToEncrypt["race"] = encodingJson.encodeToJsonElement(clearEntity.race)
 		if (ethnicity_e && clearEntity.ethnicity != null) dataToEncrypt["ethnicity"] = encodingJson.encodeToJsonElement(clearEntity.ethnicity)
+		if (preferredUserId_e && clearEntity.preferredUserId != null) {
+			dataToEncrypt["preferredUserId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.preferredUserId,
+				)
+		}
+		if (picture_e && clearEntity.picture != null) {
+			dataToEncrypt["picture"] =
+				encodingJson.encodeToJsonElement(
+					ByteArraySerializer.nullable,
+					clearEntity.picture,
+				)
+		}
+		if (externalId_e && clearEntity.externalId != null) dataToEncrypt["externalId"] = encodingJson.encodeToJsonElement(clearEntity.externalId)
 		if (insurabilities_e.fullEncryption && clearEntity.insurabilities.isNotEmpty()) {
 			dataToEncrypt["insurabilities"] =
 				encodingJson.encodeToJsonElement(
@@ -553,6 +655,68 @@ private class PatientEncryptor(
 					clearEntity.properties,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
+		if (nonDuplicateIds_e && clearEntity.nonDuplicateIds.isNotEmpty()) {
+			dataToEncrypt["nonDuplicateIds"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.nonDuplicateIds,
+				)
+		}
+		if (encryptedAdministrativesDocuments_e && clearEntity.encryptedAdministrativesDocuments.isNotEmpty()) {
+			dataToEncrypt["encryptedAdministrativesDocuments"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.encryptedAdministrativesDocuments,
+				)
+		}
+		if (comment_e && clearEntity.comment != null) dataToEncrypt["comment"] = encodingJson.encodeToJsonElement(clearEntity.comment)
+		if (warning_e && clearEntity.warning != null) dataToEncrypt["warning"] = encodingJson.encodeToJsonElement(clearEntity.warning)
+		if (fatherBirthCountry_e && clearEntity.fatherBirthCountry != null) {
+			dataToEncrypt["fatherBirthCountry"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.fatherBirthCountry,
+				)
+		}
+		if (birthCountry_e && clearEntity.birthCountry != null) {
+			dataToEncrypt["birthCountry"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.birthCountry,
+				)
+		}
+		if (nativeCountry_e && clearEntity.nativeCountry != null) {
+			dataToEncrypt["nativeCountry"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.nativeCountry,
+				)
+		}
+		if (socialStatus_e && clearEntity.socialStatus != null) {
+			dataToEncrypt["socialStatus"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.socialStatus,
+				)
+		}
+		if (mainSourceOfIncome_e && clearEntity.mainSourceOfIncome != null) {
+			dataToEncrypt["mainSourceOfIncome"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.mainSourceOfIncome,
+				)
+		}
+		if (schoolingInfos_e.fullEncryption && clearEntity.schoolingInfos.isNotEmpty()) {
+			dataToEncrypt["schoolingInfos"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.schoolingInfos,
+				)
+		}
+		if (employementInfos_e.fullEncryption && clearEntity.employementInfos.isNotEmpty()) {
+			dataToEncrypt["employementInfos"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.employementInfos,
+				)
+		}
 		return EncryptedPatient(
 			id = clearEntity.id,
 			identifier = if (identifier_e) emptyList() else clearEntity.identifier,
@@ -563,6 +727,7 @@ private class PatientEncryptor(
 			responsible = if (responsible_e) null else clearEntity.responsible,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			firstName = if (firstName_e) null else clearEntity.firstName,
 			lastName = if (lastName_e) null else clearEntity.lastName,
@@ -616,6 +781,9 @@ private class PatientEncryptor(
 			nationality = if (nationality_e) null else clearEntity.nationality,
 			race = if (race_e) null else clearEntity.race,
 			ethnicity = if (ethnicity_e) null else clearEntity.ethnicity,
+			preferredUserId = if (preferredUserId_e) null else clearEntity.preferredUserId,
+			picture = if (picture_e) null else clearEntity.picture,
+			externalId = if (externalId_e) null else clearEntity.externalId,
 			insurabilities =
 				insurabilities_e.encryptor.let { encryptor ->
 					if (encryptor == null) {
@@ -691,6 +859,37 @@ private class PatientEncryptor(
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			cryptoActorProperties = clearEntity.cryptoActorProperties,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
+			nonDuplicateIds = if (nonDuplicateIds_e) emptySet() else clearEntity.nonDuplicateIds,
+			encryptedAdministrativesDocuments = if (encryptedAdministrativesDocuments_e) emptySet() else clearEntity.encryptedAdministrativesDocuments,
+			comment = if (comment_e) null else clearEntity.comment,
+			warning = if (warning_e) null else clearEntity.warning,
+			fatherBirthCountry = if (fatherBirthCountry_e) null else clearEntity.fatherBirthCountry,
+			birthCountry = if (birthCountry_e) null else clearEntity.birthCountry,
+			nativeCountry = if (nativeCountry_e) null else clearEntity.nativeCountry,
+			socialStatus = if (socialStatus_e) null else clearEntity.socialStatus,
+			mainSourceOfIncome = if (mainSourceOfIncome_e) null else clearEntity.mainSourceOfIncome,
+			schoolingInfos =
+				schoolingInfos_e.encryptor.let { encryptor ->
+					if (encryptor == null) {
+						emptyList()
+					} else {
+						clearEntity.schoolingInfos.map { x0 ->
+							encryptor.encrypt(encryptionKey, x0)
+						}
+					}
+				},
+			employementInfos =
+				employementInfos_e.encryptor.let { encryptor ->
+					if (encryptor == null) {
+						emptyList()
+					} else {
+						clearEntity.employementInfos.map { x0 ->
+							encryptor.encrypt(encryptionKey, x0)
+						}
+					}
+				},
+			parentId = clearEntity.parentId,
 			dataOwnerGroups = clearEntity.dataOwnerGroups,
 			groupLinkType = clearEntity.groupLinkType,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,

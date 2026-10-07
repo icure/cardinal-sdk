@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.TimeTableItem
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -52,6 +53,11 @@ data class TimeTable(
 	 * The id of the HealthcareParty that is responsible for this timetable.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The id of the medical location where this timetable was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the timetable as being member of a certain class.
 	 */

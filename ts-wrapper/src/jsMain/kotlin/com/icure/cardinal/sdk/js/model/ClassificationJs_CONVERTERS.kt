@@ -47,6 +47,9 @@ public fun classification_toJs(obj: DecryptedClassification): DecryptedClassific
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -137,6 +140,7 @@ public fun classification_toJs(obj: DecryptedClassification): DecryptedClassific
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -160,6 +164,7 @@ public fun classification_fromJs(obj: DecryptedClassificationJs): DecryptedClass
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -247,6 +252,7 @@ public fun classification_fromJs(obj: DecryptedClassificationJs): DecryptedClass
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,
@@ -280,6 +286,9 @@ public fun classification_toJs(obj: EncryptedClassification): EncryptedClassific
 	)
 	val responsible = nullToUndefined(
 		obj.responsible
+	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
 	)
 	val tags = setToArray(
 		obj.tags,
@@ -371,6 +380,7 @@ public fun classification_toJs(obj: EncryptedClassification): EncryptedClassific
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
 		"endOfLife:endOfLife," +
@@ -394,6 +404,7 @@ public fun classification_fromJs(obj: EncryptedClassificationJs): EncryptedClass
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -481,6 +492,7 @@ public fun classification_fromJs(obj: EncryptedClassificationJs): EncryptedClass
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
 		endOfLife = endOfLife,

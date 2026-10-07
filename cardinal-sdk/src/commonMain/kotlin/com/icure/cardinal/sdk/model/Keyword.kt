@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.KeywordSubword
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
@@ -45,6 +46,11 @@ data class Keyword(
 	 * The id of the HealthcareParty that is responsible for this keyword.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The id of the medical location where this keyword was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the keyword as being member of a certain class.
 	 */

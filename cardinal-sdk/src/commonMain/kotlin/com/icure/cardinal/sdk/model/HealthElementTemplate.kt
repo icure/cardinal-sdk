@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.model.embed.PlanOfActionTemplate
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -48,6 +49,11 @@ data class HealthElementTemplate(
 	 * The id of the HealthcareParty that is responsible for this template.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The id of the medical location where this template was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the template as being member of a certain class.
 	 */

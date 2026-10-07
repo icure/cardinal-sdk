@@ -30,6 +30,8 @@ public sealed external interface TopicJs : StoredDocumentJs, ICureDocumentJs<Str
 
 	public val description: String?
 
+	public val endOfLife: Double?
+
 	public val activeParticipants: Record<String, out String>
 
 	public val linkedHealthElements: Array<out String>
@@ -64,6 +66,10 @@ public external class DecryptedTopicJs(
 	override val author: String?
 
 	override val responsible: String?
+
+	override val medicalLocationId: String?
+
+	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 
@@ -117,6 +123,10 @@ public external class EncryptedTopicJs(
 	override val author: String?
 
 	override val responsible: String?
+
+	override val medicalLocationId: String?
+
+	override val endOfLife: Double?
 
 	override val deletionDate: Double?
 

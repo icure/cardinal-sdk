@@ -48,6 +48,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
 					identifier = clearEntity.identifier,
@@ -58,6 +59,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 					closingDate = clearEntity.closingDate,
 					descr = clearEntity.descr,
 					location = clearEntity.location,
+					externalId = clearEntity.externalId,
 					encounterType = clearEntity.encounterType,
 					encounterLocation =
 						clearEntity.encounterLocation?.let {
@@ -71,7 +73,10 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 						clearEntity.services.mapTo(mutableSetOf()) { x0 ->
 							ServiceEncryptorFactory.empty.encrypt(encryptionKey, x0)
 						},
+					participants = clearEntity.participants,
 					participantList = clearEntity.participantList,
+					healthcarePartyId = clearEntity.healthcarePartyId,
+					modifiedContactId = clearEntity.modifiedContactId,
 					secretForeignKeys = clearEntity.secretForeignKeys,
 					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 					delegations = clearEntity.delegations,
@@ -107,6 +112,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
 			identifier_e = "identifier" in manifest.fieldsToEncrypt,
@@ -115,6 +121,7 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 			closingDate_e = "closingDate" in manifest.fieldsToEncrypt,
 			descr_e = "descr" in manifest.fieldsToEncrypt,
 			location_e = "location" in manifest.fieldsToEncrypt,
+			externalId_e = "externalId" in manifest.fieldsToEncrypt,
 			encounterType_e = "encounterType" in manifest.fieldsToEncrypt,
 			encounterLocation_e =
 				if ("encounterLocation" in manifest.fieldsToEncrypt) {
@@ -158,7 +165,10 @@ internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContac
 						)
 					} ?: EncryptableFieldConfig.None(ServiceEncryptorFactory)
 				},
+			participants_e = "participants" in manifest.fieldsToEncrypt,
 			participantList_e = "participantList" in manifest.fieldsToEncrypt,
+			healthcarePartyId_e = "healthcarePartyId" in manifest.fieldsToEncrypt,
+			modifiedContactId_e = "modifiedContactId" in manifest.fieldsToEncrypt,
 			notes_e =
 				if ("notes" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
@@ -186,6 +196,7 @@ private class ContactEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
 	private val identifier_e: Boolean,
@@ -194,11 +205,15 @@ private class ContactEncryptor(
 	private val closingDate_e: Boolean,
 	private val descr_e: Boolean,
 	private val location_e: Boolean,
+	private val externalId_e: Boolean,
 	private val encounterType_e: Boolean,
 	private val encounterLocation_e: EncryptableFieldConfig<EncryptedAddress, DecryptedAddress>,
 	private val subContacts_e: EncryptableFieldConfig<EncryptedSubContact, DecryptedSubContact>,
 	private val services_e: EncryptableFieldConfig<EncryptedService, DecryptedService>,
+	private val participants_e: Boolean,
 	private val participantList_e: Boolean,
+	private val healthcarePartyId_e: Boolean,
+	private val modifiedContactId_e: Boolean,
 	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
@@ -216,6 +231,12 @@ private class ContactEncryptor(
 			dataToEncrypt["responsible"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.responsible,
+				)
+		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
 				)
 		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
@@ -241,6 +262,7 @@ private class ContactEncryptor(
 		}
 		if (descr_e && clearEntity.descr != null) dataToEncrypt["descr"] = encodingJson.encodeToJsonElement(clearEntity.descr)
 		if (location_e && clearEntity.location != null) dataToEncrypt["location"] = encodingJson.encodeToJsonElement(clearEntity.location)
+		if (externalId_e && clearEntity.externalId != null) dataToEncrypt["externalId"] = encodingJson.encodeToJsonElement(clearEntity.externalId)
 		if (encounterType_e && clearEntity.encounterType != null) {
 			dataToEncrypt["encounterType"] =
 				encodingJson.encodeToJsonElement(
@@ -265,10 +287,28 @@ private class ContactEncryptor(
 					clearEntity.services,
 				)
 		}
+		if (participants_e && clearEntity.participants.isNotEmpty()) {
+			dataToEncrypt["participants"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.participants,
+				)
+		}
 		if (participantList_e && clearEntity.participantList.isNotEmpty()) {
 			dataToEncrypt["participantList"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.participantList,
+				)
+		}
+		if (healthcarePartyId_e && clearEntity.healthcarePartyId != null) {
+			dataToEncrypt["healthcarePartyId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.healthcarePartyId,
+				)
+		}
+		if (modifiedContactId_e && clearEntity.modifiedContactId != null) {
+			dataToEncrypt["modifiedContactId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.modifiedContactId,
 				)
 		}
 		if (notes_e.fullEncryption && clearEntity.notes.isNotEmpty()) dataToEncrypt["notes"] = encodingJson.encodeToJsonElement(clearEntity.notes)
@@ -279,6 +319,7 @@ private class ContactEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
 			identifier = if (identifier_e) emptyList() else clearEntity.identifier,
@@ -289,6 +330,7 @@ private class ContactEncryptor(
 			closingDate = if (closingDate_e) null else clearEntity.closingDate,
 			descr = if (descr_e) null else clearEntity.descr,
 			location = if (location_e) null else clearEntity.location,
+			externalId = if (externalId_e) null else clearEntity.externalId,
 			encounterType = if (encounterType_e) null else clearEntity.encounterType,
 			encounterLocation =
 				encounterLocation_e.encryptor.let { encryptor ->
@@ -320,7 +362,10 @@ private class ContactEncryptor(
 						}
 					}
 				},
+			participants = if (participants_e) emptyMap() else clearEntity.participants,
 			participantList = if (participantList_e) emptyList() else clearEntity.participantList,
+			healthcarePartyId = if (healthcarePartyId_e) null else clearEntity.healthcarePartyId,
+			modifiedContactId = if (modifiedContactId_e) null else clearEntity.modifiedContactId,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,

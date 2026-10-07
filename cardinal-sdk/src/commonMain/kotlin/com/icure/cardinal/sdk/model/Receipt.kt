@@ -16,6 +16,7 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -66,6 +67,12 @@ sealed interface Receipt :
 	override val responsible: String?
 
 	/**
+	 * The id of the medical location where this receipt was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
 	 * Tags that qualify the receipt as being member of a certain class.
 	 */
 	override val tags: Set<CodeStub>
@@ -74,6 +81,12 @@ sealed interface Receipt :
 	 * Codes that identify or qualify this particular receipt.
 	 */
 	override val codes: Set<CodeStub>
+
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
@@ -182,6 +195,11 @@ data class DecryptedReceipt(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this receipt was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the receipt as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -191,6 +209,11 @@ data class DecryptedReceipt(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -295,6 +318,11 @@ data class EncryptedReceipt(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this receipt was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the receipt as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -304,6 +332,11 @@ data class EncryptedReceipt(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */

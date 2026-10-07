@@ -146,6 +146,18 @@ private class TopicDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
+						entityCustomisedModelVersion,
+					),
 				deletionDate = encryptedEntity.deletionDate,
 				activeParticipants = encryptedEntity.activeParticipants,
 				securityMetadata = encryptedEntity.securityMetadata,

@@ -108,6 +108,12 @@ private class PatientHealthCarePartyDecryptor(
 						encryptedEntity.referralPeriods,
 						entityCustomisedModelVersion,
 					),
+				referral =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["referral"]?.also { usedEncryptedContent += "referral" },
+						encryptedEntity.referral,
+						entityCustomisedModelVersion,
+					),
 				properties =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["properties"]?.also { usedEncryptedContent += "properties" },

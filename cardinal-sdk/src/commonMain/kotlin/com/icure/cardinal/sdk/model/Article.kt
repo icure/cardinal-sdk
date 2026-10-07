@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
@@ -60,6 +61,12 @@ sealed interface Article :
 	 * The id of the data owner that is responsible for this article.
 	 */
 	override val responsible: String?
+
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
 
 	/**
 	 * Tags that qualify the article as being member of a certain class.
@@ -156,6 +163,11 @@ data class DecryptedArticle(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the article as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -246,6 +258,11 @@ data class EncryptedArticle(
 	 * The id of the data owner that is responsible for this article.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the article as being member of a certain class.
 	 */

@@ -1,10 +1,12 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
+import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -17,9 +19,12 @@ import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.js.model.embed.DelegationJs
+import com.icure.cardinal.sdk.js.model.embed.MessageAttachmentJs
 import com.icure.cardinal.sdk.js.model.embed.MessageReadStatusJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
+import com.icure.cardinal.sdk.js.model.embed.messageAttachment_fromJs
+import com.icure.cardinal.sdk.js.model.embed.messageAttachment_toJs
 import com.icure.cardinal.sdk.js.model.embed.messageReadStatus_fromJs
 import com.icure.cardinal.sdk.js.model.embed.messageReadStatus_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
@@ -33,6 +38,7 @@ import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.cardinal.sdk.model.embed.MessageAttachment
 import com.icure.cardinal.sdk.model.embed.MessageReadStatus
 import kotlin.Array
 import kotlin.String
@@ -57,6 +63,9 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -69,6 +78,9 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 			codeStub_toJs(x1)
 		},
 	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
+	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
@@ -77,6 +89,15 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 	)
 	val fromHealthcarePartyId = nullToUndefined(
 		obj.fromHealthcarePartyId
+	)
+	val formId = nullToUndefined(
+		obj.formId
+	)
+	val status = nullToUndefined(
+		intToNumber(obj.status)
+	)
+	val recipientsType = nullToUndefined(
+		obj.recipientsType
 	)
 	val recipients = setToArray(
 		obj.recipients,
@@ -114,6 +135,12 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 			messageReadStatus_toJs(x1)
 		},
 	)
+	val messageAttachments = listToArray(
+		obj.messageAttachments,
+		{ x1: MessageAttachment ->
+			messageAttachment_toJs(x1)
+		},
+	)
 	val transportGuid = nullToUndefined(
 		obj.transportGuid
 	)
@@ -134,6 +161,33 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 	)
 	val parentId = nullToUndefined(
 		obj.parentId
+	)
+	val externalRef = nullToUndefined(
+		obj.externalRef
+	)
+	val unassignedResults = setToArray(
+		obj.unassignedResults,
+		{ x1: String ->
+			x1
+		},
+	)
+	val assignedResults = mapToObject(
+		obj.assignedResults,
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val senderReferences = mapToObject(
+		obj.senderReferences,
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -212,23 +266,33 @@ public fun message_toJs(obj: DecryptedMessage): DecryptedMessageJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"fromAddress:fromAddress," +
 		"fromHealthcarePartyId:fromHealthcarePartyId," +
+		"formId:formId," +
+		"status:status," +
+		"recipientsType:recipientsType," +
 		"recipients:recipients," +
 		"toAddresses:toAddresses," +
 		"received:received," +
 		"sent:sent," +
 		"metas:metas," +
 		"readStatus:readStatus," +
+		"messageAttachments:messageAttachments," +
 		"transportGuid:transportGuid," +
 		"remark:remark," +
 		"conversationGuid:conversationGuid," +
 		"subject:subject," +
 		"invoiceIds:invoiceIds," +
 		"parentId:parentId," +
+		"externalRef:externalRef," +
+		"unassignedResults:unassignedResults," +
+		"assignedResults:assignedResults," +
+		"senderReferences:senderReferences," +
 		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
@@ -248,6 +312,7 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -262,9 +327,13 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val fromAddress = undefinedToNull(obj.fromAddress)
 	val fromHealthcarePartyId = undefinedToNull(obj.fromHealthcarePartyId)
+	val formId = undefinedToNull(obj.formId)
+	val status = numberToInt(obj.status, "obj.status")
+	val recipientsType = undefinedToNull(obj.recipientsType)
 	val recipients = arrayToSet(
 		obj.recipients,
 		"obj.recipients",
@@ -301,6 +370,13 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 			messageReadStatus_fromJs(x1)
 		},
 	)
+	val messageAttachments = arrayToList(
+		obj.messageAttachments,
+		"obj.messageAttachments",
+		{ x1: MessageAttachmentJs ->
+			messageAttachment_fromJs(x1)
+		},
+	)
 	val transportGuid = undefinedToNull(obj.transportGuid)
 	val remark = undefinedToNull(obj.remark)
 	val conversationGuid = undefinedToNull(obj.conversationGuid)
@@ -313,6 +389,34 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 		},
 	)
 	val parentId = undefinedToNull(obj.parentId)
+	val externalRef = undefinedToNull(obj.externalRef)
+	val unassignedResults = arrayToSet(
+		obj.unassignedResults,
+		"obj.unassignedResults",
+		{ x1: String ->
+			x1
+		},
+	)
+	val assignedResults = objectToMap(
+		obj.assignedResults,
+		"obj.assignedResults",
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val senderReferences = objectToMap(
+		obj.senderReferences,
+		"obj.senderReferences",
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -390,23 +494,33 @@ public fun message_fromJs(obj: DecryptedMessageJs): DecryptedMessage {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		fromAddress = fromAddress,
 		fromHealthcarePartyId = fromHealthcarePartyId,
+		formId = formId,
+		status = status,
+		recipientsType = recipientsType,
 		recipients = recipients,
 		toAddresses = toAddresses,
 		received = received,
 		sent = sent,
 		metas = metas,
 		readStatus = readStatus,
+		messageAttachments = messageAttachments,
 		transportGuid = transportGuid,
 		remark = remark,
 		conversationGuid = conversationGuid,
 		subject = subject,
 		invoiceIds = invoiceIds,
 		parentId = parentId,
+		externalRef = externalRef,
+		unassignedResults = unassignedResults,
+		assignedResults = assignedResults,
+		senderReferences = senderReferences,
 		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
@@ -437,6 +551,9 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -449,6 +566,9 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 			codeStub_toJs(x1)
 		},
 	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
+	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
@@ -457,6 +577,15 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 	)
 	val fromHealthcarePartyId = nullToUndefined(
 		obj.fromHealthcarePartyId
+	)
+	val formId = nullToUndefined(
+		obj.formId
+	)
+	val status = nullToUndefined(
+		intToNumber(obj.status)
+	)
+	val recipientsType = nullToUndefined(
+		obj.recipientsType
 	)
 	val recipients = setToArray(
 		obj.recipients,
@@ -494,6 +623,12 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 			messageReadStatus_toJs(x1)
 		},
 	)
+	val messageAttachments = listToArray(
+		obj.messageAttachments,
+		{ x1: MessageAttachment ->
+			messageAttachment_toJs(x1)
+		},
+	)
 	val transportGuid = nullToUndefined(
 		obj.transportGuid
 	)
@@ -514,6 +649,33 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 	)
 	val parentId = nullToUndefined(
 		obj.parentId
+	)
+	val externalRef = nullToUndefined(
+		obj.externalRef
+	)
+	val unassignedResults = setToArray(
+		obj.unassignedResults,
+		{ x1: String ->
+			x1
+		},
+	)
+	val assignedResults = mapToObject(
+		obj.assignedResults,
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val senderReferences = mapToObject(
+		obj.senderReferences,
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -592,23 +754,33 @@ public fun message_toJs(obj: EncryptedMessage): EncryptedMessageJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"fromAddress:fromAddress," +
 		"fromHealthcarePartyId:fromHealthcarePartyId," +
+		"formId:formId," +
+		"status:status," +
+		"recipientsType:recipientsType," +
 		"recipients:recipients," +
 		"toAddresses:toAddresses," +
 		"received:received," +
 		"sent:sent," +
 		"metas:metas," +
 		"readStatus:readStatus," +
+		"messageAttachments:messageAttachments," +
 		"transportGuid:transportGuid," +
 		"remark:remark," +
 		"conversationGuid:conversationGuid," +
 		"subject:subject," +
 		"invoiceIds:invoiceIds," +
 		"parentId:parentId," +
+		"externalRef:externalRef," +
+		"unassignedResults:unassignedResults," +
+		"assignedResults:assignedResults," +
+		"senderReferences:senderReferences," +
 		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
@@ -628,6 +800,7 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -642,9 +815,13 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val fromAddress = undefinedToNull(obj.fromAddress)
 	val fromHealthcarePartyId = undefinedToNull(obj.fromHealthcarePartyId)
+	val formId = undefinedToNull(obj.formId)
+	val status = numberToInt(obj.status, "obj.status")
+	val recipientsType = undefinedToNull(obj.recipientsType)
 	val recipients = arrayToSet(
 		obj.recipients,
 		"obj.recipients",
@@ -681,6 +858,13 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 			messageReadStatus_fromJs(x1)
 		},
 	)
+	val messageAttachments = arrayToList(
+		obj.messageAttachments,
+		"obj.messageAttachments",
+		{ x1: MessageAttachmentJs ->
+			messageAttachment_fromJs(x1)
+		},
+	)
 	val transportGuid = undefinedToNull(obj.transportGuid)
 	val remark = undefinedToNull(obj.remark)
 	val conversationGuid = undefinedToNull(obj.conversationGuid)
@@ -693,6 +877,34 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 		},
 	)
 	val parentId = undefinedToNull(obj.parentId)
+	val externalRef = undefinedToNull(obj.externalRef)
+	val unassignedResults = arrayToSet(
+		obj.unassignedResults,
+		"obj.unassignedResults",
+		{ x1: String ->
+			x1
+		},
+	)
+	val assignedResults = objectToMap(
+		obj.assignedResults,
+		"obj.assignedResults",
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
+	val senderReferences = objectToMap(
+		obj.senderReferences,
+		"obj.senderReferences",
+		{ x1: String ->
+			x1
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -770,23 +982,33 @@ public fun message_fromJs(obj: EncryptedMessageJs): EncryptedMessage {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		fromAddress = fromAddress,
 		fromHealthcarePartyId = fromHealthcarePartyId,
+		formId = formId,
+		status = status,
+		recipientsType = recipientsType,
 		recipients = recipients,
 		toAddresses = toAddresses,
 		received = received,
 		sent = sent,
 		metas = metas,
 		readStatus = readStatus,
+		messageAttachments = messageAttachments,
 		transportGuid = transportGuid,
 		remark = remark,
 		conversationGuid = conversationGuid,
 		subject = subject,
 		invoiceIds = invoiceIds,
 		parentId = parentId,
+		externalRef = externalRef,
+		unassignedResults = unassignedResults,
+		assignedResults = assignedResults,
+		senderReferences = senderReferences,
 		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,

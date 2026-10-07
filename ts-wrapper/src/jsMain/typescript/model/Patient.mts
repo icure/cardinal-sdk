@@ -1,4 +1,5 @@
 // auto-generated file
+import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
 import {expectArray, expectBoolean, expectMap, expectNullish, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
@@ -16,6 +17,7 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 import {DecryptedAddress, EncryptedAddress} from './embed/Address.mjs';
 import {Annotation, DecryptedAnnotation, EncryptedAnnotation} from './embed/Annotation.mjs';
 import {Delegation} from './embed/Delegation.mjs';
+import {DecryptedEmploymentInfo, EmploymentInfo, EncryptedEmploymentInfo} from './embed/EmploymentInfo.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
 import {DecryptedFinancialInstitutionInformation, EncryptedFinancialInstitutionInformation, FinancialInstitutionInformation} from './embed/FinancialInstitutionInformation.mjs';
 import {Gender} from './embed/Gender.mjs';
@@ -25,6 +27,7 @@ import {DecryptedPartnership, EncryptedPartnership, Partnership} from './embed/P
 import {DecryptedPatientHealthCareParty, EncryptedPatientHealthCareParty, PatientHealthCareParty} from './embed/PatientHealthCareParty.mjs';
 import {PersonName} from './embed/PersonName.mjs';
 import {PersonalStatus} from './embed/PersonalStatus.mjs';
+import {DecryptedSchoolingInfo, EncryptedSchoolingInfo, SchoolingInfo} from './embed/SchoolingInfo.mjs';
 import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {AesExchangeKeyEncryptionKeypairIdentifier} from './specializations/AesExchangeKeyEncryptionKeypairIdentifier.mjs';
 import {AesExchangeKeyEntryKeyString} from './specializations/AesExchangeKeyEntryKeyString.mjs';
@@ -41,6 +44,12 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  /
  */
 export interface Patient extends StoredDocument, ICureDocument<string>, HasMedicalLocation, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor, CustomisableRoot, Extendable {
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined;
 
 	birthSex: Gender | undefined;
 
@@ -176,6 +185,24 @@ export interface Patient extends StoredDocument, ICureDocument<string>, HasMedic
 
 	/**
 	 *
+	 *  The id of the user that usually handles this patient.
+	 */
+	preferredUserId: string | undefined;
+
+	/**
+	 *
+	 *  A picture usually saved in JPEG format.
+	 */
+	picture: Int8Array | undefined;
+
+	/**
+	 *
+	 *  An external (from another source) id with no guarantee of unicity.
+	 */
+	externalId: string | undefined;
+
+	/**
+	 *
 	 *  List of insurance coverages.
 	 */
 	insurabilities: Array<Insurability>;
@@ -227,6 +254,78 @@ export interface Patient extends StoredDocument, ICureDocument<string>, HasMedic
 	 *  Properties related to crypto actor functionality.
 	 */
 	cryptoActorProperties: Array<DecryptedPropertyStub>;
+
+	/**
+	 *
+	 *  Set of patient ids that are not duplicates of this patient.
+	 */
+	nonDuplicateIds: Array<string>;
+
+	/**
+	 *
+	 *  Set of encrypted administrative documents.
+	 */
+	encryptedAdministrativesDocuments: Array<string>;
+
+	/**
+	 *
+	 *  A comment on the patient (deprecated, use note or administrativeNote).
+	 */
+	comment: string | undefined;
+
+	/**
+	 *
+	 *  A warning on the patient (deprecated, use note or administrativeNote).
+	 */
+	warning: string | undefined;
+
+	/**
+	 *
+	 *  The father's birth country (deprecated, use properties instead).
+	 */
+	fatherBirthCountry: CodeStub | undefined;
+
+	/**
+	 *
+	 *  The patient's birth country (deprecated, use properties instead).
+	 */
+	birthCountry: CodeStub | undefined;
+
+	/**
+	 *
+	 *  The patient's native country (deprecated, use properties instead).
+	 */
+	nativeCountry: CodeStub | undefined;
+
+	/**
+	 *
+	 *  The social status of the patient (deprecated, use properties instead).
+	 */
+	socialStatus: CodeStub | undefined;
+
+	/**
+	 *
+	 *  The main source of income (deprecated, use properties instead).
+	 */
+	mainSourceOfIncome: CodeStub | undefined;
+
+	/**
+	 *
+	 *  Schooling information (deprecated, use properties instead).
+	 */
+	schoolingInfos: Array<SchoolingInfo>;
+
+	/**
+	 *
+	 *  Employment information (deprecated, use properties instead).
+	 */
+	employementInfos: Array<EmploymentInfo>;
+
+	/**
+	 *
+	 *  Always null for patients.
+	 */
+	parentId: undefined;
 
 	/**
 	 *
@@ -304,6 +403,12 @@ export class DecryptedPatient {
 	 *  Codes that identify or qualify this particular patient.
 	 */
 	codes: Array<CodeStub> = [];
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
 
 	/**
 	 *
@@ -489,6 +594,24 @@ export class DecryptedPatient {
 
 	/**
 	 *
+	 *  The id of the user that usually handles this patient.
+	 */
+	preferredUserId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  A picture usually saved in JPEG format.
+	 */
+	picture: Int8Array | undefined = undefined;
+
+	/**
+	 *
+	 *  An external (from another source) id with no guarantee of unicity.
+	 */
+	externalId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  List of insurance coverages.
 	 */
 	insurabilities: Array<DecryptedInsurability> = [];
@@ -615,6 +738,84 @@ export class DecryptedPatient {
 
 	/**
 	 *
+	 *  The id of the medical location where this patient was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Set of patient ids that are not duplicates of this patient.
+	 */
+	nonDuplicateIds: Array<string> = [];
+
+	/**
+	 *
+	 *  Set of encrypted administrative documents.
+	 */
+	encryptedAdministrativesDocuments: Array<string> = [];
+
+	/**
+	 *
+	 *  A comment on the patient (deprecated, use note or administrativeNote).
+	 */
+	comment: string | undefined = undefined;
+
+	/**
+	 *
+	 *  A warning on the patient (deprecated, use note or administrativeNote).
+	 */
+	warning: string | undefined = undefined;
+
+	/**
+	 *
+	 *  The father's birth country (deprecated, use properties instead).
+	 */
+	fatherBirthCountry: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The patient's birth country (deprecated, use properties instead).
+	 */
+	birthCountry: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The patient's native country (deprecated, use properties instead).
+	 */
+	nativeCountry: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The social status of the patient (deprecated, use properties instead).
+	 */
+	socialStatus: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The main source of income (deprecated, use properties instead).
+	 */
+	mainSourceOfIncome: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  Schooling information (deprecated, use properties instead).
+	 */
+	schoolingInfos: Array<DecryptedSchoolingInfo> = [];
+
+	/**
+	 *
+	 *  Employment information (deprecated, use properties instead).
+	 */
+	employementInfos: Array<DecryptedEmploymentInfo> = [];
+
+	/**
+	 *
+	 *  Always null for patients.
+	 */
+	parentId: undefined = undefined;
+
+	/**
+	 *
 	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
 	dataOwnerGroups: Array<never> = [];
@@ -640,6 +841,7 @@ export class DecryptedPatient {
 		if ('responsible' in partial) this.responsible = partial.responsible;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('firstName' in partial) this.firstName = partial.firstName;
 		if ('lastName' in partial) this.lastName = partial.lastName;
@@ -675,6 +877,9 @@ export class DecryptedPatient {
 		if ('nationality' in partial) this.nationality = partial.nationality;
 		if ('race' in partial) this.race = partial.race;
 		if ('ethnicity' in partial) this.ethnicity = partial.ethnicity;
+		if ('preferredUserId' in partial) this.preferredUserId = partial.preferredUserId;
+		if ('picture' in partial) this.picture = partial.picture;
+		if ('externalId' in partial) this.externalId = partial.externalId;
 		if ('insurabilities' in partial && partial.insurabilities !== undefined) this.insurabilities = partial.insurabilities;
 		if ('partnerships' in partial && partial.partnerships !== undefined) this.partnerships = partial.partnerships;
 		if ('patientHealthCareParties' in partial && partial.patientHealthCareParties !== undefined) this.patientHealthCareParties = partial.patientHealthCareParties;
@@ -696,6 +901,19 @@ export class DecryptedPatient {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
+		if ('nonDuplicateIds' in partial && partial.nonDuplicateIds !== undefined) this.nonDuplicateIds = partial.nonDuplicateIds;
+		if ('encryptedAdministrativesDocuments' in partial && partial.encryptedAdministrativesDocuments !== undefined) this.encryptedAdministrativesDocuments = partial.encryptedAdministrativesDocuments;
+		if ('comment' in partial) this.comment = partial.comment;
+		if ('warning' in partial) this.warning = partial.warning;
+		if ('fatherBirthCountry' in partial) this.fatherBirthCountry = partial.fatherBirthCountry;
+		if ('birthCountry' in partial) this.birthCountry = partial.birthCountry;
+		if ('nativeCountry' in partial) this.nativeCountry = partial.nativeCountry;
+		if ('socialStatus' in partial) this.socialStatus = partial.socialStatus;
+		if ('mainSourceOfIncome' in partial) this.mainSourceOfIncome = partial.mainSourceOfIncome;
+		if ('schoolingInfos' in partial && partial.schoolingInfos !== undefined) this.schoolingInfos = partial.schoolingInfos;
+		if ('employementInfos' in partial && partial.employementInfos !== undefined) this.employementInfos = partial.employementInfos;
+		if ('parentId' in partial) this.parentId = partial.parentId;
 		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
 		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('extensions' in partial) this.extensions = partial.extensions;
@@ -713,6 +931,7 @@ export class DecryptedPatient {
 		if (this.responsible != undefined) res['responsible'] = this.responsible
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.firstName != undefined) res['firstName'] = this.firstName
 		if (this.lastName != undefined) res['lastName'] = this.lastName
@@ -748,6 +967,9 @@ export class DecryptedPatient {
 		if (this.nationality != undefined) res['nationality'] = this.nationality
 		if (this.race != undefined) res['race'] = this.race
 		if (this.ethnicity != undefined) res['ethnicity'] = this.ethnicity
+		if (this.preferredUserId != undefined) res['preferredUserId'] = this.preferredUserId
+		if (this.picture != undefined) res['picture'] = encodeBase64(this.picture)
+		if (this.externalId != undefined) res['externalId'] = this.externalId
 		res['insurabilities'] = this.insurabilities.map((x0) => x0.toJSON() )
 		res['partnerships'] = this.partnerships.map((x0) => x0.toJSON() )
 		res['patientHealthCareParties'] = this.patientHealthCareParties.map((x0) => x0.toJSON() )
@@ -769,6 +991,19 @@ export class DecryptedPatient {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['nonDuplicateIds'] = this.nonDuplicateIds.map((x0) => x0 )
+		res['encryptedAdministrativesDocuments'] = this.encryptedAdministrativesDocuments.map((x0) => x0 )
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.warning != undefined) res['warning'] = this.warning
+		if (this.fatherBirthCountry != undefined) res['fatherBirthCountry'] = this.fatherBirthCountry.toJSON()
+		if (this.birthCountry != undefined) res['birthCountry'] = this.birthCountry.toJSON()
+		if (this.nativeCountry != undefined) res['nativeCountry'] = this.nativeCountry.toJSON()
+		if (this.socialStatus != undefined) res['socialStatus'] = this.socialStatus.toJSON()
+		if (this.mainSourceOfIncome != undefined) res['mainSourceOfIncome'] = this.mainSourceOfIncome.toJSON()
+		res['schoolingInfos'] = this.schoolingInfos.map((x0) => x0.toJSON() )
+		res['employementInfos'] = this.employementInfos.map((x0) => x0.toJSON() )
+		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
 		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
 		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
@@ -794,6 +1029,7 @@ export class DecryptedPatient {
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			firstName: expectString(extractEntry(jCpy, 'firstName', false, path), true, [...path, ".firstName"]),
 			lastName: expectString(extractEntry(jCpy, 'lastName', false, path), true, [...path, ".lastName"]),
@@ -829,6 +1065,9 @@ export class DecryptedPatient {
 			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
 			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
 			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
+			preferredUserId: expectString(extractEntry(jCpy, 'preferredUserId', false, path), true, [...path, ".preferredUserId"]),
+			picture: decodeBase64(expectString(extractEntry(jCpy, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
+			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
 			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedInsurability.fromJSON)),
 			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPartnership.fromJSON)),
 			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPatientHealthCareParty.fromJSON)),
@@ -916,6 +1155,19 @@ export class DecryptedPatient {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			nonDuplicateIds: expectArray(extractEntry(jCpy, 'nonDuplicateIds', false, path), false, [...path, ".nonDuplicateIds"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedAdministrativesDocuments: expectArray(extractEntry(jCpy, 'encryptedAdministrativesDocuments', false, path), false, [...path, ".encryptedAdministrativesDocuments"], (x0, p0) => expectString(x0, false, p0)),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			warning: expectString(extractEntry(jCpy, 'warning', false, path), true, [...path, ".warning"]),
+			fatherBirthCountry: expectObject(extractEntry(jCpy, 'fatherBirthCountry', false, path), true, ignoreUnknownKeys, [...path, ".fatherBirthCountry"], CodeStub.fromJSON),
+			birthCountry: expectObject(extractEntry(jCpy, 'birthCountry', false, path), true, ignoreUnknownKeys, [...path, ".birthCountry"], CodeStub.fromJSON),
+			nativeCountry: expectObject(extractEntry(jCpy, 'nativeCountry', false, path), true, ignoreUnknownKeys, [...path, ".nativeCountry"], CodeStub.fromJSON),
+			socialStatus: expectObject(extractEntry(jCpy, 'socialStatus', false, path), true, ignoreUnknownKeys, [...path, ".socialStatus"], CodeStub.fromJSON),
+			mainSourceOfIncome: expectObject(extractEntry(jCpy, 'mainSourceOfIncome', false, path), true, ignoreUnknownKeys, [...path, ".mainSourceOfIncome"], CodeStub.fromJSON),
+			schoolingInfos: expectArray(extractEntry(jCpy, 'schoolingInfos', false, path), false, [...path, ".schoolingInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedSchoolingInfo.fromJSON)),
+			employementInfos: expectArray(extractEntry(jCpy, 'employementInfos', false, path), false, [...path, ".employementInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedEmploymentInfo.fromJSON)),
+			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
 			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
 			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
@@ -991,6 +1243,12 @@ export class EncryptedPatient {
 	 *  Codes that identify or qualify this particular patient.
 	 */
 	codes: Array<CodeStub> = [];
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
 
 	/**
 	 *
@@ -1176,6 +1434,24 @@ export class EncryptedPatient {
 
 	/**
 	 *
+	 *  The id of the user that usually handles this patient.
+	 */
+	preferredUserId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  A picture usually saved in JPEG format.
+	 */
+	picture: Int8Array | undefined = undefined;
+
+	/**
+	 *
+	 *  An external (from another source) id with no guarantee of unicity.
+	 */
+	externalId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  List of insurance coverages.
 	 */
 	insurabilities: Array<EncryptedInsurability> = [];
@@ -1302,6 +1578,84 @@ export class EncryptedPatient {
 
 	/**
 	 *
+	 *  The id of the medical location where this patient was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Set of patient ids that are not duplicates of this patient.
+	 */
+	nonDuplicateIds: Array<string> = [];
+
+	/**
+	 *
+	 *  Set of encrypted administrative documents.
+	 */
+	encryptedAdministrativesDocuments: Array<string> = [];
+
+	/**
+	 *
+	 *  A comment on the patient (deprecated, use note or administrativeNote).
+	 */
+	comment: string | undefined = undefined;
+
+	/**
+	 *
+	 *  A warning on the patient (deprecated, use note or administrativeNote).
+	 */
+	warning: string | undefined = undefined;
+
+	/**
+	 *
+	 *  The father's birth country (deprecated, use properties instead).
+	 */
+	fatherBirthCountry: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The patient's birth country (deprecated, use properties instead).
+	 */
+	birthCountry: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The patient's native country (deprecated, use properties instead).
+	 */
+	nativeCountry: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The social status of the patient (deprecated, use properties instead).
+	 */
+	socialStatus: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  The main source of income (deprecated, use properties instead).
+	 */
+	mainSourceOfIncome: CodeStub | undefined = undefined;
+
+	/**
+	 *
+	 *  Schooling information (deprecated, use properties instead).
+	 */
+	schoolingInfos: Array<EncryptedSchoolingInfo> = [];
+
+	/**
+	 *
+	 *  Employment information (deprecated, use properties instead).
+	 */
+	employementInfos: Array<EncryptedEmploymentInfo> = [];
+
+	/**
+	 *
+	 *  Always null for patients.
+	 */
+	parentId: undefined = undefined;
+
+	/**
+	 *
 	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
 	dataOwnerGroups: Array<never> = [];
@@ -1327,6 +1681,7 @@ export class EncryptedPatient {
 		if ('responsible' in partial) this.responsible = partial.responsible;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('firstName' in partial) this.firstName = partial.firstName;
 		if ('lastName' in partial) this.lastName = partial.lastName;
@@ -1362,6 +1717,9 @@ export class EncryptedPatient {
 		if ('nationality' in partial) this.nationality = partial.nationality;
 		if ('race' in partial) this.race = partial.race;
 		if ('ethnicity' in partial) this.ethnicity = partial.ethnicity;
+		if ('preferredUserId' in partial) this.preferredUserId = partial.preferredUserId;
+		if ('picture' in partial) this.picture = partial.picture;
+		if ('externalId' in partial) this.externalId = partial.externalId;
 		if ('insurabilities' in partial && partial.insurabilities !== undefined) this.insurabilities = partial.insurabilities;
 		if ('partnerships' in partial && partial.partnerships !== undefined) this.partnerships = partial.partnerships;
 		if ('patientHealthCareParties' in partial && partial.patientHealthCareParties !== undefined) this.patientHealthCareParties = partial.patientHealthCareParties;
@@ -1383,6 +1741,19 @@ export class EncryptedPatient {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
+		if ('nonDuplicateIds' in partial && partial.nonDuplicateIds !== undefined) this.nonDuplicateIds = partial.nonDuplicateIds;
+		if ('encryptedAdministrativesDocuments' in partial && partial.encryptedAdministrativesDocuments !== undefined) this.encryptedAdministrativesDocuments = partial.encryptedAdministrativesDocuments;
+		if ('comment' in partial) this.comment = partial.comment;
+		if ('warning' in partial) this.warning = partial.warning;
+		if ('fatherBirthCountry' in partial) this.fatherBirthCountry = partial.fatherBirthCountry;
+		if ('birthCountry' in partial) this.birthCountry = partial.birthCountry;
+		if ('nativeCountry' in partial) this.nativeCountry = partial.nativeCountry;
+		if ('socialStatus' in partial) this.socialStatus = partial.socialStatus;
+		if ('mainSourceOfIncome' in partial) this.mainSourceOfIncome = partial.mainSourceOfIncome;
+		if ('schoolingInfos' in partial && partial.schoolingInfos !== undefined) this.schoolingInfos = partial.schoolingInfos;
+		if ('employementInfos' in partial && partial.employementInfos !== undefined) this.employementInfos = partial.employementInfos;
+		if ('parentId' in partial) this.parentId = partial.parentId;
 		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
 		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('extensions' in partial) this.extensions = partial.extensions;
@@ -1400,6 +1771,7 @@ export class EncryptedPatient {
 		if (this.responsible != undefined) res['responsible'] = this.responsible
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.firstName != undefined) res['firstName'] = this.firstName
 		if (this.lastName != undefined) res['lastName'] = this.lastName
@@ -1435,6 +1807,9 @@ export class EncryptedPatient {
 		if (this.nationality != undefined) res['nationality'] = this.nationality
 		if (this.race != undefined) res['race'] = this.race
 		if (this.ethnicity != undefined) res['ethnicity'] = this.ethnicity
+		if (this.preferredUserId != undefined) res['preferredUserId'] = this.preferredUserId
+		if (this.picture != undefined) res['picture'] = encodeBase64(this.picture)
+		if (this.externalId != undefined) res['externalId'] = this.externalId
 		res['insurabilities'] = this.insurabilities.map((x0) => x0.toJSON() )
 		res['partnerships'] = this.partnerships.map((x0) => x0.toJSON() )
 		res['patientHealthCareParties'] = this.patientHealthCareParties.map((x0) => x0.toJSON() )
@@ -1456,6 +1831,19 @@ export class EncryptedPatient {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
+		res['nonDuplicateIds'] = this.nonDuplicateIds.map((x0) => x0 )
+		res['encryptedAdministrativesDocuments'] = this.encryptedAdministrativesDocuments.map((x0) => x0 )
+		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.warning != undefined) res['warning'] = this.warning
+		if (this.fatherBirthCountry != undefined) res['fatherBirthCountry'] = this.fatherBirthCountry.toJSON()
+		if (this.birthCountry != undefined) res['birthCountry'] = this.birthCountry.toJSON()
+		if (this.nativeCountry != undefined) res['nativeCountry'] = this.nativeCountry.toJSON()
+		if (this.socialStatus != undefined) res['socialStatus'] = this.socialStatus.toJSON()
+		if (this.mainSourceOfIncome != undefined) res['mainSourceOfIncome'] = this.mainSourceOfIncome.toJSON()
+		res['schoolingInfos'] = this.schoolingInfos.map((x0) => x0.toJSON() )
+		res['employementInfos'] = this.employementInfos.map((x0) => x0.toJSON() )
+		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
 		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
 		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
@@ -1481,6 +1869,7 @@ export class EncryptedPatient {
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			firstName: expectString(extractEntry(jCpy, 'firstName', false, path), true, [...path, ".firstName"]),
 			lastName: expectString(extractEntry(jCpy, 'lastName', false, path), true, [...path, ".lastName"]),
@@ -1516,6 +1905,9 @@ export class EncryptedPatient {
 			nationality: expectString(extractEntry(jCpy, 'nationality', false, path), true, [...path, ".nationality"]),
 			race: expectString(extractEntry(jCpy, 'race', false, path), true, [...path, ".race"]),
 			ethnicity: expectString(extractEntry(jCpy, 'ethnicity', false, path), true, [...path, ".ethnicity"]),
+			preferredUserId: expectString(extractEntry(jCpy, 'preferredUserId', false, path), true, [...path, ".preferredUserId"]),
+			picture: decodeBase64(expectString(extractEntry(jCpy, 'picture', false, path), true, [...path, ".picture"]), [...path, ".picture"]),
+			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
 			insurabilities: expectArray(extractEntry(jCpy, 'insurabilities', false, path), false, [...path, ".insurabilities"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedInsurability.fromJSON)),
 			partnerships: expectArray(extractEntry(jCpy, 'partnerships', false, path), false, [...path, ".partnerships"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPartnership.fromJSON)),
 			patientHealthCareParties: expectArray(extractEntry(jCpy, 'patientHealthCareParties', false, path), false, [...path, ".patientHealthCareParties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPatientHealthCareParty.fromJSON)),
@@ -1603,6 +1995,19 @@ export class EncryptedPatient {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
+			nonDuplicateIds: expectArray(extractEntry(jCpy, 'nonDuplicateIds', false, path), false, [...path, ".nonDuplicateIds"], (x0, p0) => expectString(x0, false, p0)),
+			encryptedAdministrativesDocuments: expectArray(extractEntry(jCpy, 'encryptedAdministrativesDocuments', false, path), false, [...path, ".encryptedAdministrativesDocuments"], (x0, p0) => expectString(x0, false, p0)),
+			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			warning: expectString(extractEntry(jCpy, 'warning', false, path), true, [...path, ".warning"]),
+			fatherBirthCountry: expectObject(extractEntry(jCpy, 'fatherBirthCountry', false, path), true, ignoreUnknownKeys, [...path, ".fatherBirthCountry"], CodeStub.fromJSON),
+			birthCountry: expectObject(extractEntry(jCpy, 'birthCountry', false, path), true, ignoreUnknownKeys, [...path, ".birthCountry"], CodeStub.fromJSON),
+			nativeCountry: expectObject(extractEntry(jCpy, 'nativeCountry', false, path), true, ignoreUnknownKeys, [...path, ".nativeCountry"], CodeStub.fromJSON),
+			socialStatus: expectObject(extractEntry(jCpy, 'socialStatus', false, path), true, ignoreUnknownKeys, [...path, ".socialStatus"], CodeStub.fromJSON),
+			mainSourceOfIncome: expectObject(extractEntry(jCpy, 'mainSourceOfIncome', false, path), true, ignoreUnknownKeys, [...path, ".mainSourceOfIncome"], CodeStub.fromJSON),
+			schoolingInfos: expectArray(extractEntry(jCpy, 'schoolingInfos', false, path), false, [...path, ".schoolingInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedSchoolingInfo.fromJSON)),
+			employementInfos: expectArray(extractEntry(jCpy, 'employementInfos', false, path), false, [...path, ".employementInfos"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedEmploymentInfo.fromJSON)),
+			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
 			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
 			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),

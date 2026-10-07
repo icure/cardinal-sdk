@@ -116,6 +116,12 @@ private class InvoiceDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -126,6 +132,12 @@ private class InvoiceDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
 						encryptedEntity.codes,
+						entityCustomisedModelVersion,
+					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
 						entityCustomisedModelVersion,
 					),
 				deletionDate = encryptedEntity.deletionDate,
@@ -163,6 +175,12 @@ private class InvoiceDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["receipts"]?.also { usedEncryptedContent += "receipts" },
 						encryptedEntity.receipts,
+						entityCustomisedModelVersion,
+					),
+				recipientType =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["recipientType"]?.also { usedEncryptedContent += "recipientType" },
+						encryptedEntity.recipientType,
 						entityCustomisedModelVersion,
 					),
 				recipientId =
@@ -207,6 +225,24 @@ private class InvoiceDecryptor(
 						encryptedEntity.reason,
 						entityCustomisedModelVersion,
 					),
+				invoiceType =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["invoiceType"]?.also { usedEncryptedContent += "invoiceType" },
+						encryptedEntity.invoiceType,
+						entityCustomisedModelVersion,
+					),
+				sentMediumType =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["sentMediumType"]?.also { usedEncryptedContent += "sentMediumType" },
+						encryptedEntity.sentMediumType,
+						entityCustomisedModelVersion,
+					),
+				interventionType =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["interventionType"]?.also { usedEncryptedContent += "interventionType" },
+						encryptedEntity.interventionType,
+						entityCustomisedModelVersion,
+					),
 				groupId =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["groupId"]?.also { usedEncryptedContent += "groupId" },
@@ -229,6 +265,12 @@ private class InvoiceDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["payments"]?.also { usedEncryptedContent += "payments" },
 						encryptedEntity.payments,
+						entityCustomisedModelVersion,
+					),
+				gnotionNihii =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["gnotionNihii"]?.also { usedEncryptedContent += "gnotionNihii" },
+						encryptedEntity.gnotionNihii,
 						entityCustomisedModelVersion,
 					),
 				gnotionSsin =
@@ -267,6 +309,12 @@ private class InvoiceDecryptor(
 						encryptedEntity.careProviderType,
 						entityCustomisedModelVersion,
 					),
+				internshipNihii =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["internshipNihii"]?.also { usedEncryptedContent += "internshipNihii" },
+						encryptedEntity.internshipNihii,
+						entityCustomisedModelVersion,
+					),
 				internshipSsin =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["internshipSsin"]?.also { usedEncryptedContent += "internshipSsin" },
@@ -295,6 +343,12 @@ private class InvoiceDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["internshipCbe"]?.also { usedEncryptedContent += "internshipCbe" },
 						encryptedEntity.internshipCbe,
+						entityCustomisedModelVersion,
+					),
+				supervisorNihii =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["supervisorNihii"]?.also { usedEncryptedContent += "supervisorNihii" },
+						encryptedEntity.supervisorNihii,
 						entityCustomisedModelVersion,
 					),
 				supervisorSsin =
@@ -337,6 +391,12 @@ private class InvoiceDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["encounterLocationName"]?.also { usedEncryptedContent += "encounterLocationName" },
 						encryptedEntity.encounterLocationName,
+						entityCustomisedModelVersion,
+					),
+				encounterLocationNihii =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["encounterLocationNihii"]?.also { usedEncryptedContent += "encounterLocationNihii" },
+						encryptedEntity.encounterLocationNihii,
 						entityCustomisedModelVersion,
 					),
 				encounterLocationNorm =
@@ -385,6 +445,12 @@ private class InvoiceDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["admissionDate"]?.also { usedEncryptedContent += "admissionDate" },
 						encryptedEntity.admissionDate,
+						entityCustomisedModelVersion,
+					),
+				locationNihii =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["locationNihii"]?.also { usedEncryptedContent += "locationNihii" },
+						encryptedEntity.locationNihii,
 						entityCustomisedModelVersion,
 					),
 				locationService =

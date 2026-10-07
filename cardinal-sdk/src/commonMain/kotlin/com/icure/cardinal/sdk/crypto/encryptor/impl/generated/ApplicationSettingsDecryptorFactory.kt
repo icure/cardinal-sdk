@@ -92,6 +92,12 @@ private class ApplicationSettingsDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },

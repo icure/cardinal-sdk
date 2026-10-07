@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CustomisableRoot} from './base/CustomisableRoot.mjs';
@@ -10,6 +10,7 @@ import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
 import {Identifier} from './base/Identifier.mjs';
+import {ParticipantType} from './base/ParticipantType.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
 import {Address, DecryptedAddress, EncryptedAddress} from './embed/Address.mjs';
 import {Annotation, DecryptedAnnotation, EncryptedAnnotation} from './embed/Annotation.mjs';
@@ -71,6 +72,12 @@ export interface Contact extends StoredDocument, ICureDocument<string>, HasMedic
 
 	/**
 	 *
+	 *  An external (from another source) id with no guarantee or requirement for unicity. Deprecated for use with Cardinal SDK.
+	 */
+	externalId: string | undefined;
+
+	/**
+	 *
 	 *  The type of encounter made for the contact.
 	 */
 	encounterType: CodeStub | undefined;
@@ -95,9 +102,27 @@ export interface Contact extends StoredDocument, ICureDocument<string>, HasMedic
 
 	/**
 	 *
+	 *  The participants to the contact. The key is the type of participant, the value is the id of the participant data owner id. Deprecated: use [participantList] instead.
+	 */
+	participants: { [ key in ParticipantType ]?: string };
+
+	/**
+	 *
 	 *  The list of participants to the contact, with their type and data owner id.
 	 */
 	participantList: Array<ContactParticipant>;
+
+	/**
+	 *
+	 *  Deprecated: use [responsible] instead.
+	 */
+	healthcarePartyId: string | undefined;
+
+	/**
+	 *
+	 *  Deprecated: use [groupId] instead.
+	 */
+	modifiedContactId: string | undefined;
 
 	/**
 	 *
@@ -166,6 +191,12 @@ export class DecryptedContact {
 
 	/**
 	 *
+	 *  The id of the medical location where the contact was recorded. Deprecated for use with Cardinal SDK.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the contact as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -226,6 +257,12 @@ export class DecryptedContact {
 
 	/**
 	 *
+	 *  An external (from another source) id with no guarantee or requirement for unicity. Deprecated for use with Cardinal SDK.
+	 */
+	externalId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  The type of encounter made for the contact.
 	 */
 	encounterType: CodeStub | undefined = undefined;
@@ -250,9 +287,27 @@ export class DecryptedContact {
 
 	/**
 	 *
+	 *  The participants to the contact. The key is the type of participant, the value is the id of the participant data owner id. Deprecated: use [participantList] instead.
+	 */
+	participants: { [ key in ParticipantType ]?: string } = {};
+
+	/**
+	 *
 	 *  The list of participants to the contact, with their type and data owner id.
 	 */
 	participantList: Array<ContactParticipant> = [];
+
+	/**
+	 *
+	 *  Deprecated: use [responsible] instead.
+	 */
+	healthcarePartyId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Deprecated: use [groupId] instead.
+	 */
+	modifiedContactId: string | undefined = undefined;
 
 	/**
 	 *
@@ -310,6 +365,7 @@ export class DecryptedContact {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('identifier' in partial && partial.identifier !== undefined) this.identifier = partial.identifier;
@@ -320,11 +376,15 @@ export class DecryptedContact {
 		if ('closingDate' in partial) this.closingDate = partial.closingDate;
 		if ('descr' in partial) this.descr = partial.descr;
 		if ('location' in partial) this.location = partial.location;
+		if ('externalId' in partial) this.externalId = partial.externalId;
 		if ('encounterType' in partial) this.encounterType = partial.encounterType;
 		if ('encounterLocation' in partial) this.encounterLocation = partial.encounterLocation;
 		if ('subContacts' in partial && partial.subContacts !== undefined) this.subContacts = partial.subContacts;
 		if ('services' in partial && partial.services !== undefined) this.services = partial.services;
+		if ('participants' in partial && partial.participants !== undefined) this.participants = partial.participants;
 		if ('participantList' in partial && partial.participantList !== undefined) this.participantList = partial.participantList;
+		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
+		if ('modifiedContactId' in partial) this.modifiedContactId = partial.modifiedContactId;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -344,6 +404,7 @@ export class DecryptedContact {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
@@ -354,11 +415,15 @@ export class DecryptedContact {
 		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
 		if (this.descr != undefined) res['descr'] = this.descr
 		if (this.location != undefined) res['location'] = this.location
+		if (this.externalId != undefined) res['externalId'] = this.externalId
 		if (this.encounterType != undefined) res['encounterType'] = this.encounterType.toJSON()
 		if (this.encounterLocation != undefined) res['encounterLocation'] = this.encounterLocation.toJSON()
 		res['subContacts'] = this.subContacts.map((x0) => x0.toJSON() )
 		res['services'] = this.services.map((x0) => x0.toJSON() )
+		res['participants'] = Object.fromEntries(Object.entries(this.participants).map(([k0, v0]) => [k0, v0]))
 		res['participantList'] = this.participantList.map((x0) => x0.toJSON() )
+		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
+		if (this.modifiedContactId != undefined) res['modifiedContactId'] = this.modifiedContactId
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -384,6 +449,7 @@ export class DecryptedContact {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
@@ -394,11 +460,21 @@ export class DecryptedContact {
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			location: expectString(extractEntry(jCpy, 'location', false, path), true, [...path, ".location"]),
+			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
 			encounterType: expectObject(extractEntry(jCpy, 'encounterType', false, path), true, ignoreUnknownKeys, [...path, ".encounterType"], CodeStub.fromJSON),
 			encounterLocation: expectObject(extractEntry(jCpy, 'encounterLocation', false, path), true, ignoreUnknownKeys, [...path, ".encounterLocation"], DecryptedAddress.fromJSON),
 			subContacts: expectArray(extractEntry(jCpy, 'subContacts', false, path), false, [...path, ".subContacts"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedSubContact.fromJSON)),
 			services: expectArray(extractEntry(jCpy, 'services', false, path), false, [...path, ".services"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedService.fromJSON)),
+			participants: expectMap(
+				extractEntry(jCpy, 'participants', false, path),
+				false,
+				[...path, ".participants"],
+				(k0, p0) => expectStringEnum(k0, false, p0, ParticipantType, 'ParticipantType'),
+				(v0, p0) => expectString(v0, false, p0)
+			),
 			participantList: expectArray(extractEntry(jCpy, 'participantList', false, path), false, [...path, ".participantList"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ContactParticipant.fromJSON)),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			modifiedContactId: expectString(extractEntry(jCpy, 'modifiedContactId', false, path), true, [...path, ".modifiedContactId"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -490,6 +566,12 @@ export class EncryptedContact {
 
 	/**
 	 *
+	 *  The id of the medical location where the contact was recorded. Deprecated for use with Cardinal SDK.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the contact as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -550,6 +632,12 @@ export class EncryptedContact {
 
 	/**
 	 *
+	 *  An external (from another source) id with no guarantee or requirement for unicity. Deprecated for use with Cardinal SDK.
+	 */
+	externalId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  The type of encounter made for the contact.
 	 */
 	encounterType: CodeStub | undefined = undefined;
@@ -574,9 +662,27 @@ export class EncryptedContact {
 
 	/**
 	 *
+	 *  The participants to the contact. The key is the type of participant, the value is the id of the participant data owner id. Deprecated: use [participantList] instead.
+	 */
+	participants: { [ key in ParticipantType ]?: string } = {};
+
+	/**
+	 *
 	 *  The list of participants to the contact, with their type and data owner id.
 	 */
 	participantList: Array<ContactParticipant> = [];
+
+	/**
+	 *
+	 *  Deprecated: use [responsible] instead.
+	 */
+	healthcarePartyId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Deprecated: use [groupId] instead.
+	 */
+	modifiedContactId: string | undefined = undefined;
 
 	/**
 	 *
@@ -634,6 +740,7 @@ export class EncryptedContact {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('identifier' in partial && partial.identifier !== undefined) this.identifier = partial.identifier;
@@ -644,11 +751,15 @@ export class EncryptedContact {
 		if ('closingDate' in partial) this.closingDate = partial.closingDate;
 		if ('descr' in partial) this.descr = partial.descr;
 		if ('location' in partial) this.location = partial.location;
+		if ('externalId' in partial) this.externalId = partial.externalId;
 		if ('encounterType' in partial) this.encounterType = partial.encounterType;
 		if ('encounterLocation' in partial) this.encounterLocation = partial.encounterLocation;
 		if ('subContacts' in partial && partial.subContacts !== undefined) this.subContacts = partial.subContacts;
 		if ('services' in partial && partial.services !== undefined) this.services = partial.services;
+		if ('participants' in partial && partial.participants !== undefined) this.participants = partial.participants;
 		if ('participantList' in partial && partial.participantList !== undefined) this.participantList = partial.participantList;
+		if ('healthcarePartyId' in partial) this.healthcarePartyId = partial.healthcarePartyId;
+		if ('modifiedContactId' in partial) this.modifiedContactId = partial.modifiedContactId;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -668,6 +779,7 @@ export class EncryptedContact {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		res['identifier'] = this.identifier.map((x0) => x0.toJSON() )
@@ -678,11 +790,15 @@ export class EncryptedContact {
 		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
 		if (this.descr != undefined) res['descr'] = this.descr
 		if (this.location != undefined) res['location'] = this.location
+		if (this.externalId != undefined) res['externalId'] = this.externalId
 		if (this.encounterType != undefined) res['encounterType'] = this.encounterType.toJSON()
 		if (this.encounterLocation != undefined) res['encounterLocation'] = this.encounterLocation.toJSON()
 		res['subContacts'] = this.subContacts.map((x0) => x0.toJSON() )
 		res['services'] = this.services.map((x0) => x0.toJSON() )
+		res['participants'] = Object.fromEntries(Object.entries(this.participants).map(([k0, v0]) => [k0, v0]))
 		res['participantList'] = this.participantList.map((x0) => x0.toJSON() )
+		if (this.healthcarePartyId != undefined) res['healthcarePartyId'] = this.healthcarePartyId
+		if (this.modifiedContactId != undefined) res['modifiedContactId'] = this.modifiedContactId
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -708,6 +824,7 @@ export class EncryptedContact {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			identifier: expectArray(extractEntry(jCpy, 'identifier', false, path), false, [...path, ".identifier"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
@@ -718,11 +835,21 @@ export class EncryptedContact {
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),
 			descr: expectString(extractEntry(jCpy, 'descr', false, path), true, [...path, ".descr"]),
 			location: expectString(extractEntry(jCpy, 'location', false, path), true, [...path, ".location"]),
+			externalId: expectString(extractEntry(jCpy, 'externalId', false, path), true, [...path, ".externalId"]),
 			encounterType: expectObject(extractEntry(jCpy, 'encounterType', false, path), true, ignoreUnknownKeys, [...path, ".encounterType"], CodeStub.fromJSON),
 			encounterLocation: expectObject(extractEntry(jCpy, 'encounterLocation', false, path), true, ignoreUnknownKeys, [...path, ".encounterLocation"], EncryptedAddress.fromJSON),
 			subContacts: expectArray(extractEntry(jCpy, 'subContacts', false, path), false, [...path, ".subContacts"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedSubContact.fromJSON)),
 			services: expectArray(extractEntry(jCpy, 'services', false, path), false, [...path, ".services"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedService.fromJSON)),
+			participants: expectMap(
+				extractEntry(jCpy, 'participants', false, path),
+				false,
+				[...path, ".participants"],
+				(k0, p0) => expectStringEnum(k0, false, p0, ParticipantType, 'ParticipantType'),
+				(v0, p0) => expectString(v0, false, p0)
+			),
 			participantList: expectArray(extractEntry(jCpy, 'participantList', false, path), false, [...path, ".participantList"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ContactParticipant.fromJSON)),
+			healthcarePartyId: expectString(extractEntry(jCpy, 'healthcarePartyId', false, path), true, [...path, ".healthcarePartyId"]),
+			modifiedContactId: expectString(extractEntry(jCpy, 'modifiedContactId', false, path), true, [...path, ".modifiedContactId"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),

@@ -90,6 +90,18 @@ private class PartnershipDecryptor(
 						encryptedEntity.partnerType,
 						entityCustomisedModelVersion,
 					),
+				meToOtherRelationshipDescription =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["meToOtherRelationshipDescription"]?.also { usedEncryptedContent += "meToOtherRelationshipDescription" },
+						encryptedEntity.meToOtherRelationshipDescription,
+						entityCustomisedModelVersion,
+					),
+				otherToMeRelationshipDescription =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["otherToMeRelationshipDescription"]?.also { usedEncryptedContent += "otherToMeRelationshipDescription" },
+						encryptedEntity.otherToMeRelationshipDescription,
+						entityCustomisedModelVersion,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
 		val hasUnexpectedDecryptedContent =

@@ -13,9 +13,11 @@ import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.CustomFilter
+import com.icure.cardinal.sdk.model.filter.chain.FilterChain
 import com.icure.cardinal.sdk.model.requests.BulkShareOrUpdateMetadataParams
 import com.icure.cardinal.sdk.model.requests.EntityBulkShareResult
 import com.icure.utils.InternalIcureApi
+import kotlin.Int
 import kotlin.Nothing
 import kotlin.String
 import kotlin.collections.List
@@ -81,6 +83,12 @@ public interface RawRelatedPersonApi {
 	): HttpResponse<List<MergeResult>>
 
 	suspend fun matchRelatedPersonsByCustomFilter(filter: CustomFilter): HttpResponse<PaginatedList<IdWithValue>>
+
+	suspend fun filterRelatedPersonsBy(
+		startDocumentId: String? = null,
+		limit: Int? = null,
+		filterChain: FilterChain<RelatedPerson>,
+	): HttpResponse<PaginatedList<EncryptedRelatedPerson>>
 	// endregion
 
 	// region cloud endpoints

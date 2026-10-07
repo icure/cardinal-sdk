@@ -18,6 +18,10 @@ public sealed external interface PartnershipJs : EncryptableJs {
 
 	public val partnerType: String?
 
+	public val meToOtherRelationshipDescription: String?
+
+	public val otherToMeRelationshipDescription: String?
+
 	public val isEncrypted: Boolean
 }
 
@@ -32,6 +36,10 @@ public external class DecryptedPartnershipJs(
 	override val partnerId: String?
 
 	override val partnerType: String?
+
+	override val meToOtherRelationshipDescription: String?
+
+	override val otherToMeRelationshipDescription: String?
 
 	override val encryptedSelf: String?
 
@@ -49,6 +57,10 @@ public external class EncryptedPartnershipJs(
 	override val partnerId: String?
 
 	override val partnerType: String?
+
+	override val meToOtherRelationshipDescription: String?
+
+	override val otherToMeRelationshipDescription: String?
 
 	override val encryptedSelf: String?
 

@@ -12,12 +12,13 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.Boolean
+import kotlin.Deprecated
+import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Set
-import kotlin.Boolean
-import kotlin.Int
 
 sealed interface PlanOfAction :
 	Encryptable,
@@ -35,6 +36,9 @@ sealed interface PlanOfAction :
 	override val author: String?
 
 	override val responsible: String?
+
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
 
 	override val tags: Set<CodeStub>
 
@@ -62,7 +66,19 @@ sealed interface PlanOfAction :
 
 	public val idClosingContact: String?
 
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val status: Int
+
+	@Deprecated("Use services linked to this healthcare approach")
+	public val documentIds: Set<String>
+
+	@Deprecated("Use services (one per care) linked to this healthcare approach")
+	public val numberOfCares: Int?
+
 	public val careTeamMemberships: List<CareTeamMembership>
+
+	@Deprecated("Use status")
+	public val relevant: Boolean
 
 	override val encryptedSelf: Base64String?
 
@@ -79,6 +95,8 @@ data class DecryptedPlanOfAction(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@param:DefaultValue("emptySet()")
@@ -94,8 +112,19 @@ data class DecryptedPlanOfAction(
 	override val note: String? = null,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
+	@param:DefaultValue("0")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int = 0,
+	@param:DefaultValue("emptySet()")
+	@Deprecated("Use services linked to this healthcare approach")
+	override val documentIds: Set<String> = emptySet(),
+	@Deprecated("Use services (one per care) linked to this healthcare approach")
+	override val numberOfCares: Int? = null,
 	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<DecryptedCareTeamMembership> = emptyList(),
+	@param:DefaultValue("true")
+	@Deprecated("Use status")
+	override val relevant: Boolean = true,
 	override val encryptedSelf: Base64String? = null,
 	override val extensions: JsonObject? = null,
 ) : PlanOfAction {
@@ -111,6 +140,8 @@ data class EncryptedPlanOfAction(
 	override val modified: Long? = null,
 	override val author: String? = null,
 	override val responsible: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	@param:DefaultValue("emptySet()")
 	override val tags: Set<CodeStub> = emptySet(),
 	@param:DefaultValue("emptySet()")
@@ -126,8 +157,19 @@ data class EncryptedPlanOfAction(
 	override val note: String? = null,
 	override val idOpeningContact: String? = null,
 	override val idClosingContact: String? = null,
+	@param:DefaultValue("0")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int = 0,
+	@param:DefaultValue("emptySet()")
+	@Deprecated("Use services linked to this healthcare approach")
+	override val documentIds: Set<String> = emptySet(),
+	@Deprecated("Use services (one per care) linked to this healthcare approach")
+	override val numberOfCares: Int? = null,
 	@param:DefaultValue("emptyList()")
 	override val careTeamMemberships: List<EncryptedCareTeamMembership> = emptyList(),
+	@param:DefaultValue("true")
+	@Deprecated("Use status")
+	override val relevant: Boolean = true,
 	override val encryptedSelf: Base64String? = null,
 	override val extensions: JsonObject? = null,
 ) : PlanOfAction {

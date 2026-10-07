@@ -38,6 +38,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.DataAttachment
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.DeletedAttachment
+import com.icure.cardinal.sdk.model.embed.DocumentLocation
 import com.icure.cardinal.sdk.model.embed.DocumentStatus
 import com.icure.cardinal.sdk.model.embed.DocumentType
 import kotlin.Array
@@ -63,6 +64,9 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -75,8 +79,16 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 			codeStub_toJs(x1)
 		},
 	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
+	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
+	)
+	val documentLocation = nullToUndefined(
+		obj.documentLocation?.let { nonNull1 ->
+			nonNull1.name
+		}
 	)
 	val documentType = nullToUndefined(
 		obj.documentType?.let { nonNull1 ->
@@ -96,6 +108,12 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 	)
 	val version = nullToUndefined(
 		obj.version
+	)
+	val storedICureDocumentId = nullToUndefined(
+		obj.storedICureDocumentId
+	)
+	val externalUuid = nullToUndefined(
+		obj.externalUuid
 	)
 	val size = nullToUndefined(
 		longToNumber(obj.size)
@@ -143,6 +161,12 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 		{ x1: DeletedAttachment ->
 			deletedAttachment_toJs(x1)
 		},
+	)
+	val encryptedAttachment = nullToUndefined(
+		obj.encryptedAttachment
+	)
+	val decryptedAttachment = nullToUndefined(
+		obj.decryptedAttachment
 	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
@@ -215,14 +239,19 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
+		"documentLocation:documentLocation," +
 		"documentType:documentType," +
 		"documentStatus:documentStatus," +
 		"externalUri:externalUri," +
 		"name:name," +
 		"version:version," +
+		"storedICureDocumentId:storedICureDocumentId," +
+		"externalUuid:externalUuid," +
 		"size:size," +
 		"hash:hash," +
 		"openingContactId:openingContactId," +
@@ -234,6 +263,8 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 		"extraMainAttachmentInfo:extraMainAttachmentInfo," +
 		"secondaryAttachments:secondaryAttachments," +
 		"deletedAttachments:deletedAttachments," +
+		"encryptedAttachment:encryptedAttachment," +
+		"decryptedAttachment:decryptedAttachment," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -252,6 +283,7 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -266,7 +298,11 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
+	val documentLocation = obj.documentLocation?.let { nonNull1 ->
+		DocumentLocation.valueOf(nonNull1)
+	}
 	val documentType = obj.documentType?.let { nonNull1 ->
 		DocumentType.valueOf(nonNull1)
 	}
@@ -276,6 +312,8 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 	val externalUri = undefinedToNull(obj.externalUri)
 	val name = undefinedToNull(obj.name)
 	val version = undefinedToNull(obj.version)
+	val storedICureDocumentId = undefinedToNull(obj.storedICureDocumentId)
+	val externalUuid = undefinedToNull(obj.externalUuid)
 	val size = numberToLong(obj.size, "obj.size")
 	val hash = undefinedToNull(obj.hash)
 	val openingContactId = undefinedToNull(obj.openingContactId)
@@ -310,6 +348,8 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 			deletedAttachment_fromJs(x1)
 		},
 	)
+	val encryptedAttachment = undefinedToNull(obj.encryptedAttachment)
+	val decryptedAttachment = undefinedToNull(obj.decryptedAttachment)
 	val secretForeignKeys = arrayToSet(
 		obj.secretForeignKeys,
 		"obj.secretForeignKeys",
@@ -380,14 +420,19 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
+		documentLocation = documentLocation,
 		documentType = documentType,
 		documentStatus = documentStatus,
 		externalUri = externalUri,
 		name = name,
 		version = version,
+		storedICureDocumentId = storedICureDocumentId,
+		externalUuid = externalUuid,
 		size = size,
 		hash = hash,
 		openingContactId = openingContactId,
@@ -399,6 +444,8 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 		extraMainAttachmentInfo = extraMainAttachmentInfo,
 		secondaryAttachments = secondaryAttachments,
 		deletedAttachments = deletedAttachments,
+		encryptedAttachment = encryptedAttachment,
+		decryptedAttachment = decryptedAttachment,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,
@@ -428,6 +475,9 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -440,8 +490,16 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 			codeStub_toJs(x1)
 		},
 	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
+	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
+	)
+	val documentLocation = nullToUndefined(
+		obj.documentLocation?.let { nonNull1 ->
+			nonNull1.name
+		}
 	)
 	val documentType = nullToUndefined(
 		obj.documentType?.let { nonNull1 ->
@@ -461,6 +519,12 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 	)
 	val version = nullToUndefined(
 		obj.version
+	)
+	val storedICureDocumentId = nullToUndefined(
+		obj.storedICureDocumentId
+	)
+	val externalUuid = nullToUndefined(
+		obj.externalUuid
 	)
 	val size = nullToUndefined(
 		longToNumber(obj.size)
@@ -508,6 +572,12 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 		{ x1: DeletedAttachment ->
 			deletedAttachment_toJs(x1)
 		},
+	)
+	val encryptedAttachment = nullToUndefined(
+		obj.encryptedAttachment
+	)
+	val decryptedAttachment = nullToUndefined(
+		obj.decryptedAttachment
 	)
 	val secretForeignKeys = setToArray(
 		obj.secretForeignKeys,
@@ -580,14 +650,19 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
+		"documentLocation:documentLocation," +
 		"documentType:documentType," +
 		"documentStatus:documentStatus," +
 		"externalUri:externalUri," +
 		"name:name," +
 		"version:version," +
+		"storedICureDocumentId:storedICureDocumentId," +
+		"externalUuid:externalUuid," +
 		"size:size," +
 		"hash:hash," +
 		"openingContactId:openingContactId," +
@@ -599,6 +674,8 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 		"extraMainAttachmentInfo:extraMainAttachmentInfo," +
 		"secondaryAttachments:secondaryAttachments," +
 		"deletedAttachments:deletedAttachments," +
+		"encryptedAttachment:encryptedAttachment," +
+		"decryptedAttachment:decryptedAttachment," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
 		"delegations:delegations," +
@@ -617,6 +694,7 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -631,7 +709,11 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
+	val documentLocation = obj.documentLocation?.let { nonNull1 ->
+		DocumentLocation.valueOf(nonNull1)
+	}
 	val documentType = obj.documentType?.let { nonNull1 ->
 		DocumentType.valueOf(nonNull1)
 	}
@@ -641,6 +723,8 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 	val externalUri = undefinedToNull(obj.externalUri)
 	val name = undefinedToNull(obj.name)
 	val version = undefinedToNull(obj.version)
+	val storedICureDocumentId = undefinedToNull(obj.storedICureDocumentId)
+	val externalUuid = undefinedToNull(obj.externalUuid)
 	val size = numberToLong(obj.size, "obj.size")
 	val hash = undefinedToNull(obj.hash)
 	val openingContactId = undefinedToNull(obj.openingContactId)
@@ -675,6 +759,8 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 			deletedAttachment_fromJs(x1)
 		},
 	)
+	val encryptedAttachment = undefinedToNull(obj.encryptedAttachment)
+	val decryptedAttachment = undefinedToNull(obj.decryptedAttachment)
 	val secretForeignKeys = arrayToSet(
 		obj.secretForeignKeys,
 		"obj.secretForeignKeys",
@@ -745,14 +831,19 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
+		documentLocation = documentLocation,
 		documentType = documentType,
 		documentStatus = documentStatus,
 		externalUri = externalUri,
 		name = name,
 		version = version,
+		storedICureDocumentId = storedICureDocumentId,
+		externalUuid = externalUuid,
 		size = size,
 		hash = hash,
 		openingContactId = openingContactId,
@@ -764,6 +855,8 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 		extraMainAttachmentInfo = extraMainAttachmentInfo,
 		secondaryAttachments = secondaryAttachments,
 		deletedAttachments = deletedAttachments,
+		encryptedAttachment = encryptedAttachment,
+		decryptedAttachment = decryptedAttachment,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
 		delegations = delegations,

@@ -14,7 +14,10 @@ import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.IdentityDocumentReader
+import com.icure.cardinal.sdk.model.embed.InvoiceInterventionType
+import com.icure.cardinal.sdk.model.embed.InvoiceType
 import com.icure.cardinal.sdk.model.embed.InvoicingCode
+import com.icure.cardinal.sdk.model.embed.MediumType
 import com.icure.cardinal.sdk.model.embed.Payment
 import com.icure.cardinal.sdk.model.embed.PaymentType
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
@@ -22,6 +25,7 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Double
 import kotlin.Int
 import kotlin.Long
@@ -29,9 +33,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.InvoiceInterventionType
-import com.icure.cardinal.sdk.model.embed.InvoiceType
-import com.icure.cardinal.sdk.model.embed.MediumType
 
 /**
  * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
@@ -82,6 +83,12 @@ sealed interface Invoice :
 	override val responsible: String?
 
 	/**
+	 * The id of the medical location where this invoice was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
 	 * Tags that qualify the invoice as being member of a certain class.
 	 */
 	override val tags: Set<CodeStub>
@@ -90,6 +97,12 @@ sealed interface Invoice :
 	 * Codes that identify or qualify this particular invoice.
 	 */
 	override val codes: Set<CodeStub>
+
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
@@ -120,6 +133,12 @@ sealed interface Invoice :
 	 * Map of receipt references.
 	 */
 	public val receipts: Map<String, String>
+
+	/**
+	 * The type of user who is the recipient of this invoice (patient or healthcare party).
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val recipientType: String?
 
 	/**
 	 * Id of the recipient of the invoice.
@@ -157,6 +176,24 @@ sealed interface Invoice :
 	public val reason: String?
 
 	/**
+	 * The format the invoice should follow based on the recipient.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val invoiceType: InvoiceType?
+
+	/**
+	 * Medium of the invoice: CD ROM, Email, paper, etc.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val sentMediumType: MediumType?
+
+	/**
+	 * The type of intervention.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val interventionType: InvoiceInterventionType?
+
+	/**
 	 * The group id for grouping related invoices.
 	 */
 	public val groupId: String?
@@ -175,6 +212,12 @@ sealed interface Invoice :
 	 * List of payments made for this invoice.
 	 */
 	public val payments: List<Payment>?
+
+	/**
+	 * NIHII number of the gnotion.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val gnotionNihii: String?
 
 	/**
 	 * SSIN of the gnotion.
@@ -207,6 +250,12 @@ sealed interface Invoice :
 	public val careProviderType: String?
 
 	/**
+	 * NIHII number of the internship.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val internshipNihii: String?
+
+	/**
 	 * SSIN of the internship.
 	 */
 	public val internshipSsin: String?
@@ -230,6 +279,12 @@ sealed interface Invoice :
 	 * CBE number of the internship.
 	 */
 	public val internshipCbe: String?
+
+	/**
+	 * NIHII number of the supervisor.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val supervisorNihii: String?
 
 	/**
 	 * SSIN of the supervisor.
@@ -265,6 +320,12 @@ sealed interface Invoice :
 	 * Name of the encounter location.
 	 */
 	public val encounterLocationName: String?
+
+	/**
+	 * NIHII number of the encounter location.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val encounterLocationNihii: String?
 
 	/**
 	 * Norm of the encounter location.
@@ -305,6 +366,12 @@ sealed interface Invoice :
 	 * The admission date for hospitalization invoices.
 	 */
 	public val admissionDate: Long?
+
+	/**
+	 * NIHII number of the location.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val locationNihii: String?
 
 	/**
 	 * Service code of the location.
@@ -397,6 +464,11 @@ data class DecryptedInvoice(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this invoice was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the invoice as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -406,6 +478,11 @@ data class DecryptedInvoice(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -432,6 +509,11 @@ data class DecryptedInvoice(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val receipts: Map<String, String> = emptyMap(),
+	/**
+	 * The type of user who is the recipient of this invoice (patient or healthcare party).
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val recipientType: String? = null,
 	/**
 	 * Id of the recipient of the invoice.
 	 */
@@ -461,6 +543,21 @@ data class DecryptedInvoice(
 	 */
 	override val reason: String? = null,
 	/**
+	 * The format the invoice should follow based on the recipient.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val invoiceType: InvoiceType? = null,
+	/**
+	 * Medium of the invoice: CD ROM, Email, paper, etc.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val sentMediumType: MediumType? = null,
+	/**
+	 * The type of intervention.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val interventionType: InvoiceInterventionType? = null,
+	/**
 	 * The group id for grouping related invoices.
 	 */
 	override val groupId: String? = null,
@@ -476,6 +573,11 @@ data class DecryptedInvoice(
 	 * List of payments made for this invoice.
 	 */
 	override val payments: List<Payment>? = null,
+	/**
+	 * NIHII number of the gnotion.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val gnotionNihii: String? = null,
 	/**
 	 * SSIN of the gnotion.
 	 */
@@ -501,6 +603,11 @@ data class DecryptedInvoice(
 	 */
 	override val careProviderType: String? = null,
 	/**
+	 * NIHII number of the internship.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val internshipNihii: String? = null,
+	/**
 	 * SSIN of the internship.
 	 */
 	override val internshipSsin: String? = null,
@@ -520,6 +627,11 @@ data class DecryptedInvoice(
 	 * CBE number of the internship.
 	 */
 	override val internshipCbe: String? = null,
+	/**
+	 * NIHII number of the supervisor.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val supervisorNihii: String? = null,
 	/**
 	 * SSIN of the supervisor.
 	 */
@@ -548,6 +660,11 @@ data class DecryptedInvoice(
 	 * Name of the encounter location.
 	 */
 	override val encounterLocationName: String? = null,
+	/**
+	 * NIHII number of the encounter location.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val encounterLocationNihii: String? = null,
 	/**
 	 * Norm of the encounter location.
 	 */
@@ -580,6 +697,11 @@ data class DecryptedInvoice(
 	 * The admission date for hospitalization invoices.
 	 */
 	override val admissionDate: Long? = null,
+	/**
+	 * NIHII number of the location.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val locationNihii: String? = null,
 	/**
 	 * Service code of the location.
 	 */
@@ -669,6 +791,11 @@ data class EncryptedInvoice(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this invoice was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the invoice as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -678,6 +805,11 @@ data class EncryptedInvoice(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -704,6 +836,11 @@ data class EncryptedInvoice(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val receipts: Map<String, String> = emptyMap(),
+	/**
+	 * The type of user who is the recipient of this invoice (patient or healthcare party).
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val recipientType: String? = null,
 	/**
 	 * Id of the recipient of the invoice.
 	 */
@@ -733,6 +870,21 @@ data class EncryptedInvoice(
 	 */
 	override val reason: String? = null,
 	/**
+	 * The format the invoice should follow based on the recipient.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val invoiceType: InvoiceType? = null,
+	/**
+	 * Medium of the invoice: CD ROM, Email, paper, etc.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val sentMediumType: MediumType? = null,
+	/**
+	 * The type of intervention.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val interventionType: InvoiceInterventionType? = null,
+	/**
 	 * The group id for grouping related invoices.
 	 */
 	override val groupId: String? = null,
@@ -748,6 +900,11 @@ data class EncryptedInvoice(
 	 * List of payments made for this invoice.
 	 */
 	override val payments: List<Payment>? = null,
+	/**
+	 * NIHII number of the gnotion.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val gnotionNihii: String? = null,
 	/**
 	 * SSIN of the gnotion.
 	 */
@@ -773,6 +930,11 @@ data class EncryptedInvoice(
 	 */
 	override val careProviderType: String? = null,
 	/**
+	 * NIHII number of the internship.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val internshipNihii: String? = null,
+	/**
 	 * SSIN of the internship.
 	 */
 	override val internshipSsin: String? = null,
@@ -792,6 +954,11 @@ data class EncryptedInvoice(
 	 * CBE number of the internship.
 	 */
 	override val internshipCbe: String? = null,
+	/**
+	 * NIHII number of the supervisor.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val supervisorNihii: String? = null,
 	/**
 	 * SSIN of the supervisor.
 	 */
@@ -820,6 +987,11 @@ data class EncryptedInvoice(
 	 * Name of the encounter location.
 	 */
 	override val encounterLocationName: String? = null,
+	/**
+	 * NIHII number of the encounter location.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val encounterLocationNihii: String? = null,
 	/**
 	 * Norm of the encounter location.
 	 */
@@ -852,6 +1024,11 @@ data class EncryptedInvoice(
 	 * The admission date for hospitalization invoices.
 	 */
 	override val admissionDate: Long? = null,
+	/**
+	 * NIHII number of the location.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val locationNihii: String? = null,
 	/**
 	 * Service code of the location.
 	 */

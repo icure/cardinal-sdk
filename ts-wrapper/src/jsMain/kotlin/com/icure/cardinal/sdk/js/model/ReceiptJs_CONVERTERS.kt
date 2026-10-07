@@ -58,6 +58,9 @@ public fun receipt_toJs(obj: DecryptedReceipt): DecryptedReceiptJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -69,6 +72,9 @@ public fun receipt_toJs(obj: DecryptedReceipt): DecryptedReceiptJs {
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
+	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -177,8 +183,10 @@ public fun receipt_toJs(obj: DecryptedReceipt): DecryptedReceiptJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"attachmentIds:attachmentIds," +
 		"attachmentInfos:attachmentInfos," +
@@ -203,6 +211,7 @@ public fun receipt_fromJs(obj: DecryptedReceiptJs): DecryptedReceipt {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -217,6 +226,7 @@ public fun receipt_fromJs(obj: DecryptedReceiptJs): DecryptedReceipt {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val attachmentIds = objectToMap(
 		obj.attachmentIds,
@@ -323,8 +333,10 @@ public fun receipt_fromJs(obj: DecryptedReceiptJs): DecryptedReceipt {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		attachmentIds = attachmentIds,
 		attachmentInfos = attachmentInfos,
@@ -360,6 +372,9 @@ public fun receipt_toJs(obj: EncryptedReceipt): EncryptedReceiptJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -371,6 +386,9 @@ public fun receipt_toJs(obj: EncryptedReceipt): EncryptedReceiptJs {
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
+	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -479,8 +497,10 @@ public fun receipt_toJs(obj: EncryptedReceipt): EncryptedReceiptJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"attachmentIds:attachmentIds," +
 		"attachmentInfos:attachmentInfos," +
@@ -505,6 +525,7 @@ public fun receipt_fromJs(obj: EncryptedReceiptJs): EncryptedReceipt {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -519,6 +540,7 @@ public fun receipt_fromJs(obj: EncryptedReceiptJs): EncryptedReceipt {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val attachmentIds = objectToMap(
 		obj.attachmentIds,
@@ -625,8 +647,10 @@ public fun receipt_fromJs(obj: EncryptedReceiptJs): EncryptedReceipt {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		attachmentIds = attachmentIds,
 		attachmentInfos = attachmentInfos,

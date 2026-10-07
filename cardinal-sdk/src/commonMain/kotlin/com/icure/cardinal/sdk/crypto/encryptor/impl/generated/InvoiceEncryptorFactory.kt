@@ -40,8 +40,10 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					invoiceDate = clearEntity.invoiceDate,
 					sentDate = clearEntity.sentDate,
@@ -51,6 +53,7 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 							InvoicingCodeEncryptorFactory.empty.encrypt(encryptionKey, x0)
 						},
 					receipts = clearEntity.receipts,
+					recipientType = clearEntity.recipientType,
 					recipientId = clearEntity.recipientId,
 					invoiceReference = clearEntity.invoiceReference,
 					decisionReference = clearEntity.decisionReference,
@@ -58,21 +61,27 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 					thirdPartyPaymentJustification = clearEntity.thirdPartyPaymentJustification,
 					thirdPartyPaymentReason = clearEntity.thirdPartyPaymentReason,
 					reason = clearEntity.reason,
+					invoiceType = clearEntity.invoiceType,
+					sentMediumType = clearEntity.sentMediumType,
+					interventionType = clearEntity.interventionType,
 					groupId = clearEntity.groupId,
 					paymentType = clearEntity.paymentType,
 					paid = clearEntity.paid,
 					payments = clearEntity.payments,
+					gnotionNihii = clearEntity.gnotionNihii,
 					gnotionSsin = clearEntity.gnotionSsin,
 					gnotionLastName = clearEntity.gnotionLastName,
 					gnotionFirstName = clearEntity.gnotionFirstName,
 					gnotionCdHcParty = clearEntity.gnotionCdHcParty,
 					invoicePeriod = clearEntity.invoicePeriod,
 					careProviderType = clearEntity.careProviderType,
+					internshipNihii = clearEntity.internshipNihii,
 					internshipSsin = clearEntity.internshipSsin,
 					internshipLastName = clearEntity.internshipLastName,
 					internshipFirstName = clearEntity.internshipFirstName,
 					internshipCdHcParty = clearEntity.internshipCdHcParty,
 					internshipCbe = clearEntity.internshipCbe,
+					supervisorNihii = clearEntity.supervisorNihii,
 					supervisorSsin = clearEntity.supervisorSsin,
 					supervisorLastName = clearEntity.supervisorLastName,
 					supervisorFirstName = clearEntity.supervisorFirstName,
@@ -80,6 +89,7 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 					supervisorCbe = clearEntity.supervisorCbe,
 					error = clearEntity.error,
 					encounterLocationName = clearEntity.encounterLocationName,
+					encounterLocationNihii = clearEntity.encounterLocationNihii,
 					encounterLocationNorm = clearEntity.encounterLocationNorm,
 					longDelayJustification = clearEntity.longDelayJustification,
 					correctiveInvoiceId = clearEntity.correctiveInvoiceId,
@@ -88,6 +98,7 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 					creditNoteRelatedInvoiceId = clearEntity.creditNoteRelatedInvoiceId,
 					idDocument = clearEntity.idDocument,
 					admissionDate = clearEntity.admissionDate,
+					locationNihii = clearEntity.locationNihii,
 					locationService = clearEntity.locationService,
 					cancelReason = clearEntity.cancelReason,
 					cancelDate = clearEntity.cancelDate,
@@ -117,8 +128,10 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			invoiceDate_e = "invoiceDate" in manifest.fieldsToEncrypt,
 			sentDate_e = "sentDate" in manifest.fieldsToEncrypt,
 			printedDate_e = "printedDate" in manifest.fieldsToEncrypt,
@@ -137,6 +150,7 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 					} ?: EncryptableFieldConfig.None(InvoicingCodeEncryptorFactory)
 				},
 			receipts_e = "receipts" in manifest.fieldsToEncrypt,
+			recipientType_e = "recipientType" in manifest.fieldsToEncrypt,
 			recipientId_e = "recipientId" in manifest.fieldsToEncrypt,
 			invoiceReference_e = "invoiceReference" in manifest.fieldsToEncrypt,
 			decisionReference_e = "decisionReference" in manifest.fieldsToEncrypt,
@@ -144,21 +158,27 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 			thirdPartyPaymentJustification_e = "thirdPartyPaymentJustification" in manifest.fieldsToEncrypt,
 			thirdPartyPaymentReason_e = "thirdPartyPaymentReason" in manifest.fieldsToEncrypt,
 			reason_e = "reason" in manifest.fieldsToEncrypt,
+			invoiceType_e = "invoiceType" in manifest.fieldsToEncrypt,
+			sentMediumType_e = "sentMediumType" in manifest.fieldsToEncrypt,
+			interventionType_e = "interventionType" in manifest.fieldsToEncrypt,
 			groupId_e = "groupId" in manifest.fieldsToEncrypt,
 			paymentType_e = "paymentType" in manifest.fieldsToEncrypt,
 			paid_e = "paid" in manifest.fieldsToEncrypt,
 			payments_e = "payments" in manifest.fieldsToEncrypt,
+			gnotionNihii_e = "gnotionNihii" in manifest.fieldsToEncrypt,
 			gnotionSsin_e = "gnotionSsin" in manifest.fieldsToEncrypt,
 			gnotionLastName_e = "gnotionLastName" in manifest.fieldsToEncrypt,
 			gnotionFirstName_e = "gnotionFirstName" in manifest.fieldsToEncrypt,
 			gnotionCdHcParty_e = "gnotionCdHcParty" in manifest.fieldsToEncrypt,
 			invoicePeriod_e = "invoicePeriod" in manifest.fieldsToEncrypt,
 			careProviderType_e = "careProviderType" in manifest.fieldsToEncrypt,
+			internshipNihii_e = "internshipNihii" in manifest.fieldsToEncrypt,
 			internshipSsin_e = "internshipSsin" in manifest.fieldsToEncrypt,
 			internshipLastName_e = "internshipLastName" in manifest.fieldsToEncrypt,
 			internshipFirstName_e = "internshipFirstName" in manifest.fieldsToEncrypt,
 			internshipCdHcParty_e = "internshipCdHcParty" in manifest.fieldsToEncrypt,
 			internshipCbe_e = "internshipCbe" in manifest.fieldsToEncrypt,
+			supervisorNihii_e = "supervisorNihii" in manifest.fieldsToEncrypt,
 			supervisorSsin_e = "supervisorSsin" in manifest.fieldsToEncrypt,
 			supervisorLastName_e = "supervisorLastName" in manifest.fieldsToEncrypt,
 			supervisorFirstName_e = "supervisorFirstName" in manifest.fieldsToEncrypt,
@@ -166,6 +186,7 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 			supervisorCbe_e = "supervisorCbe" in manifest.fieldsToEncrypt,
 			error_e = "error" in manifest.fieldsToEncrypt,
 			encounterLocationName_e = "encounterLocationName" in manifest.fieldsToEncrypt,
+			encounterLocationNihii_e = "encounterLocationNihii" in manifest.fieldsToEncrypt,
 			encounterLocationNorm_e = "encounterLocationNorm" in manifest.fieldsToEncrypt,
 			longDelayJustification_e = "longDelayJustification" in manifest.fieldsToEncrypt,
 			correctiveInvoiceId_e = "correctiveInvoiceId" in manifest.fieldsToEncrypt,
@@ -174,6 +195,7 @@ internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoic
 			creditNoteRelatedInvoiceId_e = "creditNoteRelatedInvoiceId" in manifest.fieldsToEncrypt,
 			idDocument_e = "idDocument" in manifest.fieldsToEncrypt,
 			admissionDate_e = "admissionDate" in manifest.fieldsToEncrypt,
+			locationNihii_e = "locationNihii" in manifest.fieldsToEncrypt,
 			locationService_e = "locationService" in manifest.fieldsToEncrypt,
 			cancelReason_e = "cancelReason" in manifest.fieldsToEncrypt,
 			cancelDate_e = "cancelDate" in manifest.fieldsToEncrypt,
@@ -191,13 +213,16 @@ private class InvoiceEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val invoiceDate_e: Boolean,
 	private val sentDate_e: Boolean,
 	private val printedDate_e: Boolean,
 	private val invoicingCodes_e: EncryptableFieldConfig<EncryptedInvoicingCode, DecryptedInvoicingCode>,
 	private val receipts_e: Boolean,
+	private val recipientType_e: Boolean,
 	private val recipientId_e: Boolean,
 	private val invoiceReference_e: Boolean,
 	private val decisionReference_e: Boolean,
@@ -205,21 +230,27 @@ private class InvoiceEncryptor(
 	private val thirdPartyPaymentJustification_e: Boolean,
 	private val thirdPartyPaymentReason_e: Boolean,
 	private val reason_e: Boolean,
+	private val invoiceType_e: Boolean,
+	private val sentMediumType_e: Boolean,
+	private val interventionType_e: Boolean,
 	private val groupId_e: Boolean,
 	private val paymentType_e: Boolean,
 	private val paid_e: Boolean,
 	private val payments_e: Boolean,
+	private val gnotionNihii_e: Boolean,
 	private val gnotionSsin_e: Boolean,
 	private val gnotionLastName_e: Boolean,
 	private val gnotionFirstName_e: Boolean,
 	private val gnotionCdHcParty_e: Boolean,
 	private val invoicePeriod_e: Boolean,
 	private val careProviderType_e: Boolean,
+	private val internshipNihii_e: Boolean,
 	private val internshipSsin_e: Boolean,
 	private val internshipLastName_e: Boolean,
 	private val internshipFirstName_e: Boolean,
 	private val internshipCdHcParty_e: Boolean,
 	private val internshipCbe_e: Boolean,
+	private val supervisorNihii_e: Boolean,
 	private val supervisorSsin_e: Boolean,
 	private val supervisorLastName_e: Boolean,
 	private val supervisorFirstName_e: Boolean,
@@ -227,6 +258,7 @@ private class InvoiceEncryptor(
 	private val supervisorCbe_e: Boolean,
 	private val error_e: Boolean,
 	private val encounterLocationName_e: Boolean,
+	private val encounterLocationNihii_e: Boolean,
 	private val encounterLocationNorm_e: Boolean,
 	private val longDelayJustification_e: Boolean,
 	private val correctiveInvoiceId_e: Boolean,
@@ -235,6 +267,7 @@ private class InvoiceEncryptor(
 	private val creditNoteRelatedInvoiceId_e: Boolean,
 	private val idDocument_e: Boolean,
 	private val admissionDate_e: Boolean,
+	private val locationNihii_e: Boolean,
 	private val locationService_e: Boolean,
 	private val cancelReason_e: Boolean,
 	private val cancelDate_e: Boolean,
@@ -262,8 +295,15 @@ private class InvoiceEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (invoiceDate_e && clearEntity.invoiceDate != null) {
 			dataToEncrypt["invoiceDate"] =
 				encodingJson.encodeToJsonElement(
@@ -284,6 +324,12 @@ private class InvoiceEncryptor(
 				)
 		}
 		if (receipts_e && clearEntity.receipts.isNotEmpty()) dataToEncrypt["receipts"] = encodingJson.encodeToJsonElement(clearEntity.receipts)
+		if (recipientType_e && clearEntity.recipientType != null) {
+			dataToEncrypt["recipientType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.recipientType,
+				)
+		}
 		if (recipientId_e && clearEntity.recipientId != null) {
 			dataToEncrypt["recipientId"] =
 				encodingJson.encodeToJsonElement(
@@ -321,6 +367,24 @@ private class InvoiceEncryptor(
 				)
 		}
 		if (reason_e && clearEntity.reason != null) dataToEncrypt["reason"] = encodingJson.encodeToJsonElement(clearEntity.reason)
+		if (invoiceType_e && clearEntity.invoiceType != null) {
+			dataToEncrypt["invoiceType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.invoiceType,
+				)
+		}
+		if (sentMediumType_e && clearEntity.sentMediumType != null) {
+			dataToEncrypt["sentMediumType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.sentMediumType,
+				)
+		}
+		if (interventionType_e && clearEntity.interventionType != null) {
+			dataToEncrypt["interventionType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.interventionType,
+				)
+		}
 		if (groupId_e && clearEntity.groupId != null) dataToEncrypt["groupId"] = encodingJson.encodeToJsonElement(clearEntity.groupId)
 		if (paymentType_e && clearEntity.paymentType != null) {
 			dataToEncrypt["paymentType"] =
@@ -330,6 +394,12 @@ private class InvoiceEncryptor(
 		}
 		if (paid_e && clearEntity.paid != null) dataToEncrypt["paid"] = encodingJson.encodeToJsonElement(clearEntity.paid)
 		if (payments_e && clearEntity.payments != null) dataToEncrypt["payments"] = encodingJson.encodeToJsonElement(clearEntity.payments)
+		if (gnotionNihii_e && clearEntity.gnotionNihii != null) {
+			dataToEncrypt["gnotionNihii"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.gnotionNihii,
+				)
+		}
 		if (gnotionSsin_e && clearEntity.gnotionSsin != null) {
 			dataToEncrypt["gnotionSsin"] =
 				encodingJson.encodeToJsonElement(
@@ -366,6 +436,12 @@ private class InvoiceEncryptor(
 					clearEntity.careProviderType,
 				)
 		}
+		if (internshipNihii_e && clearEntity.internshipNihii != null) {
+			dataToEncrypt["internshipNihii"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.internshipNihii,
+				)
+		}
 		if (internshipSsin_e && clearEntity.internshipSsin != null) {
 			dataToEncrypt["internshipSsin"] =
 				encodingJson.encodeToJsonElement(
@@ -394,6 +470,12 @@ private class InvoiceEncryptor(
 			dataToEncrypt["internshipCbe"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.internshipCbe,
+				)
+		}
+		if (supervisorNihii_e && clearEntity.supervisorNihii != null) {
+			dataToEncrypt["supervisorNihii"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.supervisorNihii,
 				)
 		}
 		if (supervisorSsin_e && clearEntity.supervisorSsin != null) {
@@ -431,6 +513,12 @@ private class InvoiceEncryptor(
 			dataToEncrypt["encounterLocationName"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.encounterLocationName,
+				)
+		}
+		if (encounterLocationNihii_e && clearEntity.encounterLocationNihii != null) {
+			dataToEncrypt["encounterLocationNihii"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.encounterLocationNihii,
 				)
 		}
 		if (encounterLocationNorm_e && clearEntity.encounterLocationNorm != null) {
@@ -471,6 +559,12 @@ private class InvoiceEncryptor(
 					clearEntity.admissionDate,
 				)
 		}
+		if (locationNihii_e && clearEntity.locationNihii != null) {
+			dataToEncrypt["locationNihii"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.locationNihii,
+				)
+		}
 		if (locationService_e && clearEntity.locationService != null) {
 			dataToEncrypt["locationService"] =
 				encodingJson.encodeToJsonElement(
@@ -493,8 +587,10 @@ private class InvoiceEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			invoiceDate = if (invoiceDate_e) null else clearEntity.invoiceDate,
 			sentDate = if (sentDate_e) null else clearEntity.sentDate,
@@ -510,6 +606,7 @@ private class InvoiceEncryptor(
 					}
 				},
 			receipts = if (receipts_e) emptyMap() else clearEntity.receipts,
+			recipientType = if (recipientType_e) null else clearEntity.recipientType,
 			recipientId = if (recipientId_e) null else clearEntity.recipientId,
 			invoiceReference = if (invoiceReference_e) null else clearEntity.invoiceReference,
 			decisionReference = if (decisionReference_e) null else clearEntity.decisionReference,
@@ -517,21 +614,27 @@ private class InvoiceEncryptor(
 			thirdPartyPaymentJustification = if (thirdPartyPaymentJustification_e) null else clearEntity.thirdPartyPaymentJustification,
 			thirdPartyPaymentReason = if (thirdPartyPaymentReason_e) null else clearEntity.thirdPartyPaymentReason,
 			reason = if (reason_e) null else clearEntity.reason,
+			invoiceType = if (invoiceType_e) null else clearEntity.invoiceType,
+			sentMediumType = if (sentMediumType_e) null else clearEntity.sentMediumType,
+			interventionType = if (interventionType_e) null else clearEntity.interventionType,
 			groupId = if (groupId_e) null else clearEntity.groupId,
 			paymentType = if (paymentType_e) null else clearEntity.paymentType,
 			paid = if (paid_e) null else clearEntity.paid,
 			payments = if (payments_e) null else clearEntity.payments,
+			gnotionNihii = if (gnotionNihii_e) null else clearEntity.gnotionNihii,
 			gnotionSsin = if (gnotionSsin_e) null else clearEntity.gnotionSsin,
 			gnotionLastName = if (gnotionLastName_e) null else clearEntity.gnotionLastName,
 			gnotionFirstName = if (gnotionFirstName_e) null else clearEntity.gnotionFirstName,
 			gnotionCdHcParty = if (gnotionCdHcParty_e) null else clearEntity.gnotionCdHcParty,
 			invoicePeriod = if (invoicePeriod_e) null else clearEntity.invoicePeriod,
 			careProviderType = if (careProviderType_e) null else clearEntity.careProviderType,
+			internshipNihii = if (internshipNihii_e) null else clearEntity.internshipNihii,
 			internshipSsin = if (internshipSsin_e) null else clearEntity.internshipSsin,
 			internshipLastName = if (internshipLastName_e) null else clearEntity.internshipLastName,
 			internshipFirstName = if (internshipFirstName_e) null else clearEntity.internshipFirstName,
 			internshipCdHcParty = if (internshipCdHcParty_e) null else clearEntity.internshipCdHcParty,
 			internshipCbe = if (internshipCbe_e) null else clearEntity.internshipCbe,
+			supervisorNihii = if (supervisorNihii_e) null else clearEntity.supervisorNihii,
 			supervisorSsin = if (supervisorSsin_e) null else clearEntity.supervisorSsin,
 			supervisorLastName = if (supervisorLastName_e) null else clearEntity.supervisorLastName,
 			supervisorFirstName = if (supervisorFirstName_e) null else clearEntity.supervisorFirstName,
@@ -539,6 +642,7 @@ private class InvoiceEncryptor(
 			supervisorCbe = if (supervisorCbe_e) null else clearEntity.supervisorCbe,
 			error = if (error_e) null else clearEntity.error,
 			encounterLocationName = if (encounterLocationName_e) null else clearEntity.encounterLocationName,
+			encounterLocationNihii = if (encounterLocationNihii_e) null else clearEntity.encounterLocationNihii,
 			encounterLocationNorm = if (encounterLocationNorm_e) null else clearEntity.encounterLocationNorm,
 			longDelayJustification = if (longDelayJustification_e) null else clearEntity.longDelayJustification,
 			correctiveInvoiceId = if (correctiveInvoiceId_e) null else clearEntity.correctiveInvoiceId,
@@ -547,6 +651,7 @@ private class InvoiceEncryptor(
 			creditNoteRelatedInvoiceId = if (creditNoteRelatedInvoiceId_e) null else clearEntity.creditNoteRelatedInvoiceId,
 			idDocument = if (idDocument_e) null else clearEntity.idDocument,
 			admissionDate = if (admissionDate_e) null else clearEntity.admissionDate,
+			locationNihii = if (locationNihii_e) null else clearEntity.locationNihii,
 			locationService = if (locationService_e) null else clearEntity.locationService,
 			cancelReason = if (cancelReason_e) null else clearEntity.cancelReason,
 			cancelDate = if (cancelDate_e) null else clearEntity.cancelDate,

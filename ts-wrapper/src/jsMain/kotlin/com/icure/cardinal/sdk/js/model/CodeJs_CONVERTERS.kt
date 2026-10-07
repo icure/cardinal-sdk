@@ -3,15 +3,23 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
+import com.icure.cardinal.sdk.js.model.embed.PeriodicityJs
+import com.icure.cardinal.sdk.js.model.embed.periodicity_fromJs
+import com.icure.cardinal.sdk.js.model.embed.periodicity_toJs
 import com.icure.cardinal.sdk.model.Code
+import com.icure.cardinal.sdk.model.base.AppendixType
+import com.icure.cardinal.sdk.model.base.CodeFlag
+import com.icure.cardinal.sdk.model.embed.Periodicity
 import kotlin.Array
 import kotlin.String
 import kotlin.Suppress
@@ -57,6 +65,15 @@ public fun code_toJs(obj: Code): CodeJs {
 			x1
 		},
 	)
+	val periodicity = setToArray(
+		obj.periodicity,
+		{ x1: Periodicity ->
+			periodicity_toJs(x1)
+		},
+	)
+	val level = nullToUndefined(
+		intToNumber(obj.level)
+	)
 	val links = setToArray(
 		obj.links,
 		{ x1: String ->
@@ -77,6 +94,12 @@ public fun code_toJs(obj: Code): CodeJs {
 			)
 		},
 	)
+	val flags = setToArray(
+		obj.flags,
+		{ x1: CodeFlag ->
+			x1.name
+		},
+	)
 	val searchTerms = mapToObject(
 		obj.searchTerms,
 		{ x1: String ->
@@ -91,6 +114,18 @@ public fun code_toJs(obj: Code): CodeJs {
 			)
 		},
 	)
+	val data = nullToUndefined(
+		obj.data
+	)
+	val appendices = mapToObject(
+		obj.appendices,
+		{ x1: AppendixType ->
+			x1.name
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val disabled = obj.disabled
 	return CodeJs(js("{" +
 		"id:id," +
@@ -103,9 +138,14 @@ public fun code_toJs(obj: Code): CodeJs {
 		"label:label," +
 		"author:author," +
 		"regions:regions," +
+		"periodicity:periodicity," +
+		"level:level," +
 		"links:links," +
 		"qualifiedLinks:qualifiedLinks," +
+		"flags:flags," +
 		"searchTerms:searchTerms," +
+		"data:data," +
+		"appendices:appendices," +
 		"disabled:disabled" +
 	"}"))
 }
@@ -136,6 +176,14 @@ public fun code_fromJs(obj: CodeJs): Code {
 			x1
 		},
 	)
+	val periodicity = arrayToSet(
+		obj.periodicity,
+		"obj.periodicity",
+		{ x1: PeriodicityJs ->
+			periodicity_fromJs(x1)
+		},
+	)
+	val level = numberToInt(obj.level, "obj.level")
 	val links = arrayToSet(
 		obj.links,
 		"obj.links",
@@ -159,6 +207,13 @@ public fun code_fromJs(obj: CodeJs): Code {
 			)
 		},
 	)
+	val flags = arrayToSet(
+		obj.flags,
+		"obj.flags",
+		{ x1: String ->
+			CodeFlag.valueOf(x1)
+		},
+	)
 	val searchTerms = objectToMap(
 		obj.searchTerms,
 		"obj.searchTerms",
@@ -175,6 +230,17 @@ public fun code_fromJs(obj: CodeJs): Code {
 			)
 		},
 	)
+	val data = undefinedToNull(obj.data)
+	val appendices = objectToMap(
+		obj.appendices,
+		"obj.appendices",
+		{ x1: String ->
+			AppendixType.valueOf(x1)
+		},
+		{ x1: String ->
+			x1
+		},
+	)
 	val disabled = obj.disabled
 	return Code(
 		id = id,
@@ -187,9 +253,14 @@ public fun code_fromJs(obj: CodeJs): Code {
 		label = label,
 		author = author,
 		regions = regions,
+		periodicity = periodicity,
+		level = level,
 		links = links,
 		qualifiedLinks = qualifiedLinks,
+		flags = flags,
 		searchTerms = searchTerms,
+		data = data,
+		appendices = appendices,
 		disabled = disabled,
 	)
 }

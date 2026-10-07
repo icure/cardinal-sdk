@@ -49,6 +49,7 @@ internal object HealthElementEncryptorFactory : EntityEncryptorFactory<Encrypted
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
 					endOfLife = clearEntity.endOfLife,
@@ -67,6 +68,7 @@ internal object HealthElementEncryptorFactory : EntityEncryptorFactory<Encrypted
 					idOpeningContact = clearEntity.idOpeningContact,
 					idClosingContact = clearEntity.idClosingContact,
 					idService = clearEntity.idService,
+					status = clearEntity.status,
 					laterality = clearEntity.laterality,
 					plansOfAction =
 						clearEntity.plansOfAction.map { x0 ->
@@ -114,6 +116,7 @@ internal object HealthElementEncryptorFactory : EntityEncryptorFactory<Encrypted
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
 			healthElementId_e = "healthElementId" in manifest.fieldsToEncrypt,
@@ -140,6 +143,7 @@ internal object HealthElementEncryptorFactory : EntityEncryptorFactory<Encrypted
 			idOpeningContact_e = "idOpeningContact" in manifest.fieldsToEncrypt,
 			idClosingContact_e = "idClosingContact" in manifest.fieldsToEncrypt,
 			idService_e = "idService" in manifest.fieldsToEncrypt,
+			status_e = "status" in manifest.fieldsToEncrypt,
 			laterality_e = "laterality" in manifest.fieldsToEncrypt,
 			plansOfAction_e =
 				if ("plansOfAction" in manifest.fieldsToEncrypt) {
@@ -199,6 +203,7 @@ private class HealthElementEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
 	private val healthElementId_e: Boolean,
@@ -212,6 +217,7 @@ private class HealthElementEncryptor(
 	private val idOpeningContact_e: Boolean,
 	private val idClosingContact_e: Boolean,
 	private val idService_e: Boolean,
+	private val status_e: Boolean,
 	private val laterality_e: Boolean,
 	private val plansOfAction_e: EncryptableFieldConfig<EncryptedPlanOfAction, DecryptedPlanOfAction>,
 	private val episodes_e: EncryptableFieldConfig<EncryptedEpisode, DecryptedEpisode>,
@@ -240,6 +246,12 @@ private class HealthElementEncryptor(
 			dataToEncrypt["responsible"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.responsible,
+				)
+		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
 				)
 		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
@@ -280,6 +292,7 @@ private class HealthElementEncryptor(
 				)
 		}
 		if (idService_e && clearEntity.idService != null) dataToEncrypt["idService"] = encodingJson.encodeToJsonElement(clearEntity.idService)
+		if (status_e && clearEntity.status != 0) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
 		if (laterality_e && clearEntity.laterality != null) dataToEncrypt["laterality"] = encodingJson.encodeToJsonElement(clearEntity.laterality)
 		if (plansOfAction_e.fullEncryption && clearEntity.plansOfAction.isNotEmpty()) {
 			dataToEncrypt["plansOfAction"] =
@@ -319,6 +332,7 @@ private class HealthElementEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
 			endOfLife = clearEntity.endOfLife,
@@ -343,6 +357,7 @@ private class HealthElementEncryptor(
 			idOpeningContact = if (idOpeningContact_e) null else clearEntity.idOpeningContact,
 			idClosingContact = if (idClosingContact_e) null else clearEntity.idClosingContact,
 			idService = if (idService_e) null else clearEntity.idService,
+			status = if (status_e) 0 else clearEntity.status,
 			laterality = if (laterality_e) null else clearEntity.laterality,
 			plansOfAction =
 				plansOfAction_e.encryptor.let { encryptor ->

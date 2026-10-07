@@ -52,6 +52,8 @@ public external class DecryptedMaintenanceTaskJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -98,6 +100,8 @@ public external class EncryptedMaintenanceTaskJs(
 	override val author: String?
 
 	override val responsible: String?
+
+	override val medicalLocationId: String?
 
 	override val tags: Array<CodeStubJs>
 

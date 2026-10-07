@@ -11,19 +11,19 @@ import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm
 import com.icure.cardinal.sdk.model.embed.ResourceGroupAllocationSchedule
+import com.icure.cardinal.sdk.model.embed.Right
 import com.icure.cardinal.sdk.model.embed.UserAccessLevel
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.Right
-import kotlin.Deprecated
 
 /**
  *
@@ -56,6 +56,11 @@ data class Agenda(
 	 * The id of the data owner that is responsible for this agenda.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the agenda as being member of a certain class.
 	 */
@@ -95,6 +100,12 @@ data class Agenda(
 	 * An identifier for the time zone of the agenda, must be an id accepted by java's ZoneId.
 	 */
 	public val zoneId: String? = null,
+	/**
+	 * The legacy rights for this agenda. Deprecated: use userRights instead.
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("Use `userRights` instead")
+	public val rights: List<Right> = emptyList(),
 	/**
 	 * Associates a user id to the permission that user has on the entity.
 	 */

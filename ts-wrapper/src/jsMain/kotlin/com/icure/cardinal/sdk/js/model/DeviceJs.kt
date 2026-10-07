@@ -16,6 +16,7 @@ import com.icure.cardinal.sdk.js.model.base.NamedJs
 import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
+import kotlin.ByteArray
 import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
@@ -52,6 +53,12 @@ public external class DeviceJs(
 
 	override val codes: Array<CodeStubJs>
 
+	public val endOfLife: Double?
+
+	override val medicalLocationId: String?
+
+	public val externalId: String?
+
 	override val name: String?
 
 	public val type: String?
@@ -62,9 +69,13 @@ public external class DeviceJs(
 
 	public val serialNumber: String?
 
+	override val parentId: String?
+
 	override val dataOwnerGroups: Array<DataOwnerGroupLinkJs>
 
 	override val groupLinkType: String?
+
+	public val picture: ByteArray?
 
 	override val properties: Array<DecryptedPropertyStubJs>
 

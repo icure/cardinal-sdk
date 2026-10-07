@@ -39,6 +39,7 @@ internal object PropertyStubEncryptorFactory : EntityEncryptorFactory<EncryptedP
 						clearEntity.typedValue?.let {
 							TypedValueEncryptorFactory.empty.encrypt(encryptionKey, it)
 						},
+					deletionDate = clearEntity.deletionDate,
 					encryptedSelf = null,
 				)
 		}
@@ -70,6 +71,7 @@ internal object PropertyStubEncryptorFactory : EntityEncryptorFactory<EncryptedP
 						)
 					} ?: EncryptableFieldConfig.None(TypedValueEncryptorFactory)
 				},
+			deletionDate_e = "deletionDate" in manifest.fieldsToEncrypt,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 		)
@@ -81,6 +83,7 @@ private class PropertyStubEncryptor(
 	private val id_e: Boolean,
 	private val type_e: Boolean,
 	private val typedValue_e: EncryptableFieldConfig<EncryptedTypedValue, DecryptedTypedValue>,
+	private val deletionDate_e: Boolean,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedPropertyStub, DecryptedPropertyStub>(cryptoService) {
@@ -97,6 +100,12 @@ private class PropertyStubEncryptor(
 					clearEntity.typedValue,
 				)
 		}
+		if (deletionDate_e && clearEntity.deletionDate != null) {
+			dataToEncrypt["deletionDate"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.deletionDate,
+				)
+		}
 		return EncryptedPropertyStub(
 			id = if (id_e) null else clearEntity.id,
 			type = if (type_e) null else clearEntity.type,
@@ -110,6 +119,7 @@ private class PropertyStubEncryptor(
 						}
 					}
 				},
+			deletionDate = if (deletionDate_e) null else clearEntity.deletionDate,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 		)
 	}

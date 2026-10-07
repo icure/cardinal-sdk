@@ -37,7 +37,15 @@ public sealed external interface PlanOfActionJs : EncryptableJs, ICureDocumentJs
 
 	public val idClosingContact: String?
 
+	public val status: Double
+
+	public val documentIds: Array<out String>
+
+	public val numberOfCares: Double?
+
 	public val careTeamMemberships: Array<out CareTeamMembershipJs>
+
+	public val relevant: Boolean
 
 	public val isEncrypted: Boolean
 }
@@ -55,6 +63,8 @@ public external class DecryptedPlanOfActionJs(
 	override val author: String?
 
 	override val responsible: String?
+
+	override val medicalLocationId: String?
 
 	override val tags: Array<CodeStubJs>
 
@@ -82,7 +92,15 @@ public external class DecryptedPlanOfActionJs(
 
 	override val idClosingContact: String?
 
+	override val status: Double
+
+	override val documentIds: Array<String>
+
+	override val numberOfCares: Double?
+
 	override val careTeamMemberships: Array<DecryptedCareTeamMembershipJs>
+
+	override val relevant: Boolean
 
 	override val encryptedSelf: String?
 
@@ -105,6 +123,8 @@ public external class EncryptedPlanOfActionJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -131,7 +151,15 @@ public external class EncryptedPlanOfActionJs(
 
 	override val idClosingContact: String?
 
+	override val status: Double
+
+	override val documentIds: Array<String>
+
+	override val numberOfCares: Double?
+
 	override val careTeamMemberships: Array<EncryptedCareTeamMembershipJs>
+
+	override val relevant: Boolean
 
 	override val encryptedSelf: String?
 

@@ -8,11 +8,12 @@ import com.icure.cardinal.sdk.model.PropertyStub
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import kotlin.Boolean
 
 sealed interface PatientHealthCareParty : Encryptable {
 	public val type: PatientHealthCarePartyType?
@@ -22,6 +23,9 @@ sealed interface PatientHealthCareParty : Encryptable {
 	public val sendFormats: Map<TelecomType, String>
 
 	public val referralPeriods: List<ReferralPeriod>
+
+	@Deprecated("Use type")
+	public val referral: Boolean
 
 	public val properties: Set<PropertyStub>?
 
@@ -39,6 +43,9 @@ data class DecryptedPatientHealthCareParty(
 	override val sendFormats: Map<TelecomType, String> = emptyMap(),
 	@param:DefaultValue("emptyList()")
 	override val referralPeriods: List<ReferralPeriod> = emptyList(),
+	@param:DefaultValue("false")
+	@Deprecated("Use type")
+	override val referral: Boolean = false,
 	override val properties: Set<DecryptedPropertyStub>? = null,
 	override val encryptedSelf: Base64String? = null,
 ) : PatientHealthCareParty {
@@ -55,6 +62,9 @@ data class EncryptedPatientHealthCareParty(
 	override val sendFormats: Map<TelecomType, String> = emptyMap(),
 	@param:DefaultValue("emptyList()")
 	override val referralPeriods: List<ReferralPeriod> = emptyList(),
+	@param:DefaultValue("false")
+	@Deprecated("Use type")
+	override val referral: Boolean = false,
 	override val properties: Set<EncryptedPropertyStub>? = null,
 	override val encryptedSelf: Base64String? = null,
 ) : PatientHealthCareParty {

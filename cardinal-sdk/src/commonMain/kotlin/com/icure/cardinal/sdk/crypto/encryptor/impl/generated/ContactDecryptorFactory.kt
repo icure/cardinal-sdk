@@ -184,6 +184,12 @@ internal class ContactDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -234,6 +240,12 @@ internal class ContactDecryptor(
 						encryptedEntity.location,
 						entityCustomisedModelVersion,
 					),
+				externalId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["externalId"]?.also { usedEncryptedContent += "externalId" },
+						encryptedEntity.externalId,
+						entityCustomisedModelVersion,
+					),
 				encounterType =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["encounterType"]?.also { usedEncryptedContent += "encounterType" },
@@ -276,10 +288,28 @@ internal class ContactDecryptor(
 						},
 						entityCustomisedModelVersion,
 					),
+				participants =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["participants"]?.also { usedEncryptedContent += "participants" },
+						encryptedEntity.participants,
+						entityCustomisedModelVersion,
+					),
 				participantList =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["participantList"]?.also { usedEncryptedContent += "participantList" },
 						encryptedEntity.participantList,
+						entityCustomisedModelVersion,
+					),
+				healthcarePartyId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["healthcarePartyId"]?.also { usedEncryptedContent += "healthcarePartyId" },
+						encryptedEntity.healthcarePartyId,
+						entityCustomisedModelVersion,
+					),
+				modifiedContactId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["modifiedContactId"]?.also { usedEncryptedContent += "modifiedContactId" },
+						encryptedEntity.modifiedContactId,
 						entityCustomisedModelVersion,
 					),
 				secretForeignKeys = encryptedEntity.secretForeignKeys,

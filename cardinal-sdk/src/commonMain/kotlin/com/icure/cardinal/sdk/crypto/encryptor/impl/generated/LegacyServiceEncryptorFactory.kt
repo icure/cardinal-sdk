@@ -63,15 +63,19 @@ internal object LegacyServiceEncryptorFactory : EntityEncryptorFactory<Encrypted
 			formIds_e = "formIds" in manifest.fieldsToEncrypt,
 			label_e = "label" in manifest.fieldsToEncrypt,
 			index_e = "index" in manifest.fieldsToEncrypt,
+			encryptedContent_e = "encryptedContent" in manifest.fieldsToEncrypt,
 			textIndexes_e = "textIndexes" in manifest.fieldsToEncrypt,
 			valueDate_e = "valueDate" in manifest.fieldsToEncrypt,
 			openingDate_e = "openingDate" in manifest.fieldsToEncrypt,
 			closingDate_e = "closingDate" in manifest.fieldsToEncrypt,
+			formId_e = "formId" in manifest.fieldsToEncrypt,
 			created_e = "created" in manifest.fieldsToEncrypt,
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			comment_e = "comment" in manifest.fieldsToEncrypt,
+			status_e = "status" in manifest.fieldsToEncrypt,
 			invoicingCodes_e = "invoicingCodes" in manifest.fieldsToEncrypt,
 			notes_e =
 				if ("notes" in manifest.fieldsToEncrypt) {
@@ -107,15 +111,19 @@ private class LegacyServiceEncryptor(
 	private val formIds_e: Boolean,
 	private val label_e: Boolean,
 	private val index_e: Boolean,
+	private val encryptedContent_e: Boolean,
 	private val textIndexes_e: Boolean,
 	private val valueDate_e: Boolean,
 	private val openingDate_e: Boolean,
 	private val closingDate_e: Boolean,
+	private val formId_e: Boolean,
 	private val created_e: Boolean,
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val comment_e: Boolean,
+	private val status_e: Boolean,
 	private val invoicingCodes_e: Boolean,
 	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
 	private val qualifiedLinks_e: Boolean,
@@ -182,6 +190,12 @@ private class LegacyServiceEncryptor(
 		if (formIds_e && clearEntity.formIds != null) dataToEncrypt["formIds"] = encodingJson.encodeToJsonElement(clearEntity.formIds)
 		if (label_e && clearEntity.label != null) dataToEncrypt["label"] = encodingJson.encodeToJsonElement(clearEntity.label)
 		if (index_e && clearEntity.index != null) dataToEncrypt["index"] = encodingJson.encodeToJsonElement(clearEntity.index)
+		if (encryptedContent_e && clearEntity.encryptedContent != null) {
+			dataToEncrypt["encryptedContent"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.encryptedContent,
+				)
+		}
 		if (textIndexes_e && clearEntity.textIndexes.isNotEmpty()) {
 			dataToEncrypt["textIndexes"] =
 				encodingJson.encodeToJsonElement(
@@ -201,6 +215,7 @@ private class LegacyServiceEncryptor(
 					clearEntity.closingDate,
 				)
 		}
+		if (formId_e && clearEntity.formId != null) dataToEncrypt["formId"] = encodingJson.encodeToJsonElement(clearEntity.formId)
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
 		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
 		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
@@ -210,7 +225,14 @@ private class LegacyServiceEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (comment_e && clearEntity.comment != null) dataToEncrypt["comment"] = encodingJson.encodeToJsonElement(clearEntity.comment)
+		if (status_e && clearEntity.status != null) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
 		if (invoicingCodes_e && clearEntity.invoicingCodes.isNotEmpty()) {
 			dataToEncrypt["invoicingCodes"] =
 				encodingJson.encodeToJsonElement(
@@ -246,16 +268,20 @@ private class LegacyServiceEncryptor(
 					is ContentLegacyEncryptionResult.Full -> emptyMap()
 					is ContentLegacyEncryptionResult.Partial -> contentEncryptionResult.content
 				},
+			encryptedContent = if (encryptedContent_e) null else clearEntity.encryptedContent,
 			textIndexes = if (textIndexes_e) emptyMap() else clearEntity.textIndexes,
 			valueDate = if (valueDate_e) null else clearEntity.valueDate,
 			openingDate = if (openingDate_e) null else clearEntity.openingDate,
 			closingDate = if (closingDate_e) null else clearEntity.closingDate,
+			formId = if (formId_e) null else clearEntity.formId,
 			created = if (created_e) null else clearEntity.created,
 			modified = if (modified_e) null else clearEntity.modified,
 			endOfLife = clearEntity.endOfLife,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			comment = if (comment_e) null else clearEntity.comment,
+			status = if (status_e) null else clearEntity.status,
 			invoicingCodes = if (invoicingCodes_e) emptySet() else clearEntity.invoicingCodes,
 			notes =
 				notes_e.encryptor.let { encryptor ->

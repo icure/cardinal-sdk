@@ -42,23 +42,33 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					fromAddress = clearEntity.fromAddress,
 					fromHealthcarePartyId = clearEntity.fromHealthcarePartyId,
+					formId = clearEntity.formId,
+					status = clearEntity.status,
+					recipientsType = clearEntity.recipientsType,
 					recipients = clearEntity.recipients,
 					toAddresses = clearEntity.toAddresses,
 					received = clearEntity.received,
 					sent = clearEntity.sent,
 					metas = clearEntity.metas,
 					readStatus = clearEntity.readStatus,
+					messageAttachments = clearEntity.messageAttachments,
 					transportGuid = clearEntity.transportGuid,
 					remark = clearEntity.remark,
 					conversationGuid = clearEntity.conversationGuid,
 					subject = clearEntity.subject,
 					invoiceIds = clearEntity.invoiceIds,
 					parentId = clearEntity.parentId,
+					externalRef = clearEntity.externalRef,
+					unassignedResults = clearEntity.unassignedResults,
+					assignedResults = clearEntity.assignedResults,
+					senderReferences = clearEntity.senderReferences,
 					properties =
 						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
 							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
@@ -94,22 +104,32 @@ internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessag
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			fromAddress_e = "fromAddress" in manifest.fieldsToEncrypt,
 			fromHealthcarePartyId_e = "fromHealthcarePartyId" in manifest.fieldsToEncrypt,
+			formId_e = "formId" in manifest.fieldsToEncrypt,
+			status_e = "status" in manifest.fieldsToEncrypt,
+			recipientsType_e = "recipientsType" in manifest.fieldsToEncrypt,
 			recipients_e = "recipients" in manifest.fieldsToEncrypt,
 			toAddresses_e = "toAddresses" in manifest.fieldsToEncrypt,
 			received_e = "received" in manifest.fieldsToEncrypt,
 			sent_e = "sent" in manifest.fieldsToEncrypt,
 			metas_e = "metas" in manifest.fieldsToEncrypt,
 			readStatus_e = "readStatus" in manifest.fieldsToEncrypt,
+			messageAttachments_e = "messageAttachments" in manifest.fieldsToEncrypt,
 			transportGuid_e = "transportGuid" in manifest.fieldsToEncrypt,
 			remark_e = "remark" in manifest.fieldsToEncrypt,
 			conversationGuid_e = "conversationGuid" in manifest.fieldsToEncrypt,
 			subject_e = "subject" in manifest.fieldsToEncrypt,
 			invoiceIds_e = "invoiceIds" in manifest.fieldsToEncrypt,
 			parentId_e = "parentId" in manifest.fieldsToEncrypt,
+			externalRef_e = "externalRef" in manifest.fieldsToEncrypt,
+			unassignedResults_e = "unassignedResults" in manifest.fieldsToEncrypt,
+			assignedResults_e = "assignedResults" in manifest.fieldsToEncrypt,
+			senderReferences_e = "senderReferences" in manifest.fieldsToEncrypt,
 			properties_e =
 				if ("properties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
@@ -137,22 +157,32 @@ private class MessageEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val fromAddress_e: Boolean,
 	private val fromHealthcarePartyId_e: Boolean,
+	private val formId_e: Boolean,
+	private val status_e: Boolean,
+	private val recipientsType_e: Boolean,
 	private val recipients_e: Boolean,
 	private val toAddresses_e: Boolean,
 	private val received_e: Boolean,
 	private val sent_e: Boolean,
 	private val metas_e: Boolean,
 	private val readStatus_e: Boolean,
+	private val messageAttachments_e: Boolean,
 	private val transportGuid_e: Boolean,
 	private val remark_e: Boolean,
 	private val conversationGuid_e: Boolean,
 	private val subject_e: Boolean,
 	private val invoiceIds_e: Boolean,
 	private val parentId_e: Boolean,
+	private val externalRef_e: Boolean,
+	private val unassignedResults_e: Boolean,
+	private val assignedResults_e: Boolean,
+	private val senderReferences_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
@@ -172,8 +202,15 @@ private class MessageEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (fromAddress_e && clearEntity.fromAddress != null) {
 			dataToEncrypt["fromAddress"] =
 				encodingJson.encodeToJsonElement(
@@ -184,6 +221,14 @@ private class MessageEncryptor(
 			dataToEncrypt["fromHealthcarePartyId"] =
 				encodingJson.encodeToJsonElement(
 					clearEntity.fromHealthcarePartyId,
+				)
+		}
+		if (formId_e && clearEntity.formId != null) dataToEncrypt["formId"] = encodingJson.encodeToJsonElement(clearEntity.formId)
+		if (status_e && clearEntity.status != null) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
+		if (recipientsType_e && clearEntity.recipientsType != null) {
+			dataToEncrypt["recipientsType"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.recipientsType,
 				)
 		}
 		if (recipients_e && clearEntity.recipients.isNotEmpty()) {
@@ -207,6 +252,12 @@ private class MessageEncryptor(
 					clearEntity.readStatus,
 				)
 		}
+		if (messageAttachments_e && clearEntity.messageAttachments.isNotEmpty()) {
+			dataToEncrypt["messageAttachments"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.messageAttachments,
+				)
+		}
 		if (transportGuid_e && clearEntity.transportGuid != null) {
 			dataToEncrypt["transportGuid"] =
 				encodingJson.encodeToJsonElement(
@@ -228,6 +279,30 @@ private class MessageEncryptor(
 				)
 		}
 		if (parentId_e && clearEntity.parentId != null) dataToEncrypt["parentId"] = encodingJson.encodeToJsonElement(clearEntity.parentId)
+		if (externalRef_e && clearEntity.externalRef != null) {
+			dataToEncrypt["externalRef"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.externalRef,
+				)
+		}
+		if (unassignedResults_e && clearEntity.unassignedResults.isNotEmpty()) {
+			dataToEncrypt["unassignedResults"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.unassignedResults,
+				)
+		}
+		if (assignedResults_e && clearEntity.assignedResults.isNotEmpty()) {
+			dataToEncrypt["assignedResults"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.assignedResults,
+				)
+		}
+		if (senderReferences_e && clearEntity.senderReferences.isNotEmpty()) {
+			dataToEncrypt["senderReferences"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.senderReferences,
+				)
+		}
 		if (properties_e.fullEncryption && clearEntity.properties.isNotEmpty()) {
 			dataToEncrypt["properties"] =
 				encodingJson.encodeToJsonElement(
@@ -241,23 +316,33 @@ private class MessageEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			fromAddress = if (fromAddress_e) null else clearEntity.fromAddress,
 			fromHealthcarePartyId = if (fromHealthcarePartyId_e) null else clearEntity.fromHealthcarePartyId,
+			formId = if (formId_e) null else clearEntity.formId,
+			status = if (status_e) null else clearEntity.status,
+			recipientsType = if (recipientsType_e) null else clearEntity.recipientsType,
 			recipients = if (recipients_e) emptySet() else clearEntity.recipients,
 			toAddresses = if (toAddresses_e) emptySet() else clearEntity.toAddresses,
 			received = if (received_e) null else clearEntity.received,
 			sent = if (sent_e) null else clearEntity.sent,
 			metas = if (metas_e) emptyMap() else clearEntity.metas,
 			readStatus = if (readStatus_e) emptyMap() else clearEntity.readStatus,
+			messageAttachments = if (messageAttachments_e) emptyList() else clearEntity.messageAttachments,
 			transportGuid = if (transportGuid_e) null else clearEntity.transportGuid,
 			remark = if (remark_e) null else clearEntity.remark,
 			conversationGuid = if (conversationGuid_e) null else clearEntity.conversationGuid,
 			subject = if (subject_e) null else clearEntity.subject,
 			invoiceIds = if (invoiceIds_e) emptySet() else clearEntity.invoiceIds,
 			parentId = if (parentId_e) null else clearEntity.parentId,
+			externalRef = if (externalRef_e) null else clearEntity.externalRef,
+			unassignedResults = if (unassignedResults_e) emptySet() else clearEntity.unassignedResults,
+			assignedResults = if (assignedResults_e) emptyMap() else clearEntity.assignedResults,
+			senderReferences = if (senderReferences_e) emptyMap() else clearEntity.senderReferences,
 			properties =
 				properties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {

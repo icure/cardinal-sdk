@@ -1,4 +1,5 @@
 // auto-generated file
+import {decodeBase64, encodeBase64} from '../internal/BytesEncoding.mjs';
 import {expectArray, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {Document as Document_} from './Document.mjs';
@@ -12,6 +13,7 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 import {DataAttachment} from './embed/DataAttachment.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {DeletedAttachment} from './embed/DeletedAttachment.mjs';
+import {DocumentLocation} from './embed/DocumentLocation.mjs';
 import {DocumentStatus} from './embed/DocumentStatus.mjs';
 import {DocumentType} from './embed/DocumentType.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
@@ -26,6 +28,18 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  /
  */
 export interface Document extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined;
+
+	/**
+	 *
+	 *  The location of the document.
+	 */
+	documentLocation: DocumentLocation | undefined;
 
 	/**
 	 *
@@ -56,6 +70,18 @@ export interface Document extends StoredDocument, ICureDocument<string>, HasMedi
 	 *  The document version.
 	 */
 	version: string | undefined;
+
+	/**
+	 *
+	 *  The ICureDocument (Form, Contact, ...) used to generate this document.
+	 */
+	storedICureDocumentId: string | undefined;
+
+	/**
+	 *
+	 *  A unique external id from another external source.
+	 */
+	externalUuid: string | undefined;
 
 	/**
 	 *
@@ -106,6 +132,18 @@ export interface Document extends StoredDocument, ICureDocument<string>, HasMedi
 	 *  Information on past attachments for this document.
 	 */
 	deletedAttachments: Array<DeletedAttachment>;
+
+	/**
+	 *
+	 *  The encrypted attachment content as bytes.
+	 */
+	encryptedAttachment: Int8Array | undefined;
+
+	/**
+	 *
+	 *  The decrypted attachment content as bytes.
+	 */
+	decryptedAttachment: Int8Array | undefined;
 
 	readonly isEncrypted: boolean;
 
@@ -159,6 +197,12 @@ export class DecryptedDocument {
 
 	/**
 	 *
+	 *  The medical location where this entity was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the document as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -171,9 +215,21 @@ export class DecryptedDocument {
 
 	/**
 	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
+
+	/**
+	 *
 	 *  Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	deletionDate: number | undefined = undefined;
+
+	/**
+	 *
+	 *  The location of the document.
+	 */
+	documentLocation: DocumentLocation | undefined = undefined;
 
 	/**
 	 *
@@ -204,6 +260,18 @@ export class DecryptedDocument {
 	 *  The document version.
 	 */
 	version: string | undefined = undefined;
+
+	/**
+	 *
+	 *  The ICureDocument (Form, Contact, ...) used to generate this document.
+	 */
+	storedICureDocumentId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  A unique external id from another external source.
+	 */
+	externalUuid: string | undefined = undefined;
 
 	/**
 	 *
@@ -257,6 +325,18 @@ export class DecryptedDocument {
 
 	/**
 	 *
+	 *  The encrypted attachment content as bytes.
+	 */
+	encryptedAttachment: Int8Array | undefined = undefined;
+
+	/**
+	 *
+	 *  The decrypted attachment content as bytes.
+	 */
+	decryptedAttachment: Int8Array | undefined = undefined;
+
+	/**
+	 *
 	 *  The secret foreign keys, used for secure linking to patients.
 	 */
 	secretForeignKeys: Array<string> = [];
@@ -305,14 +385,19 @@ export class DecryptedDocument {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
+		if ('documentLocation' in partial) this.documentLocation = partial.documentLocation;
 		if ('documentType' in partial) this.documentType = partial.documentType;
 		if ('documentStatus' in partial) this.documentStatus = partial.documentStatus;
 		if ('externalUri' in partial) this.externalUri = partial.externalUri;
 		if ('name' in partial) this.name = partial.name;
 		if ('version' in partial) this.version = partial.version;
+		if ('storedICureDocumentId' in partial) this.storedICureDocumentId = partial.storedICureDocumentId;
+		if ('externalUuid' in partial) this.externalUuid = partial.externalUuid;
 		if ('size' in partial) this.size = partial.size;
 		if ('hash' in partial) this.hash = partial.hash;
 		if ('openingContactId' in partial) this.openingContactId = partial.openingContactId;
@@ -324,6 +409,8 @@ export class DecryptedDocument {
 		if ('extraMainAttachmentInfo' in partial) this.extraMainAttachmentInfo = partial.extraMainAttachmentInfo;
 		if ('secondaryAttachments' in partial && partial.secondaryAttachments !== undefined) this.secondaryAttachments = partial.secondaryAttachments;
 		if ('deletedAttachments' in partial && partial.deletedAttachments !== undefined) this.deletedAttachments = partial.deletedAttachments;
+		if ('encryptedAttachment' in partial) this.encryptedAttachment = partial.encryptedAttachment;
+		if ('decryptedAttachment' in partial) this.decryptedAttachment = partial.decryptedAttachment;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -342,14 +429,19 @@ export class DecryptedDocument {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.documentLocation != undefined) res['documentLocation'] = this.documentLocation
 		if (this.documentType != undefined) res['documentType'] = this.documentType
 		if (this.documentStatus != undefined) res['documentStatus'] = this.documentStatus
 		if (this.externalUri != undefined) res['externalUri'] = this.externalUri
 		if (this.name != undefined) res['name'] = this.name
 		if (this.version != undefined) res['version'] = this.version
+		if (this.storedICureDocumentId != undefined) res['storedICureDocumentId'] = this.storedICureDocumentId
+		if (this.externalUuid != undefined) res['externalUuid'] = this.externalUuid
 		if (this.size != undefined) res['size'] = this.size
 		if (this.hash != undefined) res['hash'] = this.hash
 		if (this.openingContactId != undefined) res['openingContactId'] = this.openingContactId
@@ -361,6 +453,8 @@ export class DecryptedDocument {
 		if (this.extraMainAttachmentInfo != undefined) res['extraMainAttachmentInfo'] = this.extraMainAttachmentInfo.toJSON()
 		res['secondaryAttachments'] = Object.fromEntries(Object.entries(this.secondaryAttachments).map(([k0, v0]) => [k0, v0.toJSON()]))
 		res['deletedAttachments'] = this.deletedAttachments.map((x0) => x0.toJSON() )
+		if (this.encryptedAttachment != undefined) res['encryptedAttachment'] = encodeBase64(this.encryptedAttachment)
+		if (this.decryptedAttachment != undefined) res['decryptedAttachment'] = encodeBase64(this.decryptedAttachment)
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -385,14 +479,19 @@ export class DecryptedDocument {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			documentLocation: expectStringEnum(extractEntry(jCpy, 'documentLocation', false, path), true, [...path, ".documentLocation"], DocumentLocation, 'DocumentLocation'),
 			documentType: expectStringEnum(extractEntry(jCpy, 'documentType', false, path), true, [...path, ".documentType"], DocumentType, 'DocumentType'),
 			documentStatus: expectStringEnum(extractEntry(jCpy, 'documentStatus', false, path), true, [...path, ".documentStatus"], DocumentStatus, 'DocumentStatus'),
 			externalUri: expectString(extractEntry(jCpy, 'externalUri', false, path), true, [...path, ".externalUri"]),
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
+			storedICureDocumentId: expectString(extractEntry(jCpy, 'storedICureDocumentId', false, path), true, [...path, ".storedICureDocumentId"]),
+			externalUuid: expectString(extractEntry(jCpy, 'externalUuid', false, path), true, [...path, ".externalUuid"]),
 			size: expectNumber(extractEntry(jCpy, 'size', false, path), true, true, [...path, ".size"]),
 			hash: expectString(extractEntry(jCpy, 'hash', false, path), true, [...path, ".hash"]),
 			openingContactId: expectString(extractEntry(jCpy, 'openingContactId', false, path), true, [...path, ".openingContactId"]),
@@ -410,6 +509,8 @@ export class DecryptedDocument {
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, DataAttachment.fromJSON)
 			),
 			deletedAttachments: expectArray(extractEntry(jCpy, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
+			encryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'encryptedAttachment', false, path), true, [...path, ".encryptedAttachment"]), [...path, ".encryptedAttachment"]),
+			decryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'decryptedAttachment', false, path), true, [...path, ".decryptedAttachment"]), [...path, ".decryptedAttachment"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),
@@ -491,6 +592,12 @@ export class EncryptedDocument {
 
 	/**
 	 *
+	 *  The medical location where this entity was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the document as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -503,9 +610,21 @@ export class EncryptedDocument {
 
 	/**
 	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
+
+	/**
+	 *
 	 *  Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	deletionDate: number | undefined = undefined;
+
+	/**
+	 *
+	 *  The location of the document.
+	 */
+	documentLocation: DocumentLocation | undefined = undefined;
 
 	/**
 	 *
@@ -536,6 +655,18 @@ export class EncryptedDocument {
 	 *  The document version.
 	 */
 	version: string | undefined = undefined;
+
+	/**
+	 *
+	 *  The ICureDocument (Form, Contact, ...) used to generate this document.
+	 */
+	storedICureDocumentId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  A unique external id from another external source.
+	 */
+	externalUuid: string | undefined = undefined;
 
 	/**
 	 *
@@ -589,6 +720,18 @@ export class EncryptedDocument {
 
 	/**
 	 *
+	 *  The encrypted attachment content as bytes.
+	 */
+	encryptedAttachment: Int8Array | undefined = undefined;
+
+	/**
+	 *
+	 *  The decrypted attachment content as bytes.
+	 */
+	decryptedAttachment: Int8Array | undefined = undefined;
+
+	/**
+	 *
 	 *  The secret foreign keys, used for secure linking to patients.
 	 */
 	secretForeignKeys: Array<string> = [];
@@ -637,14 +780,19 @@ export class EncryptedDocument {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
+		if ('documentLocation' in partial) this.documentLocation = partial.documentLocation;
 		if ('documentType' in partial) this.documentType = partial.documentType;
 		if ('documentStatus' in partial) this.documentStatus = partial.documentStatus;
 		if ('externalUri' in partial) this.externalUri = partial.externalUri;
 		if ('name' in partial) this.name = partial.name;
 		if ('version' in partial) this.version = partial.version;
+		if ('storedICureDocumentId' in partial) this.storedICureDocumentId = partial.storedICureDocumentId;
+		if ('externalUuid' in partial) this.externalUuid = partial.externalUuid;
 		if ('size' in partial) this.size = partial.size;
 		if ('hash' in partial) this.hash = partial.hash;
 		if ('openingContactId' in partial) this.openingContactId = partial.openingContactId;
@@ -656,6 +804,8 @@ export class EncryptedDocument {
 		if ('extraMainAttachmentInfo' in partial) this.extraMainAttachmentInfo = partial.extraMainAttachmentInfo;
 		if ('secondaryAttachments' in partial && partial.secondaryAttachments !== undefined) this.secondaryAttachments = partial.secondaryAttachments;
 		if ('deletedAttachments' in partial && partial.deletedAttachments !== undefined) this.deletedAttachments = partial.deletedAttachments;
+		if ('encryptedAttachment' in partial) this.encryptedAttachment = partial.encryptedAttachment;
+		if ('decryptedAttachment' in partial) this.decryptedAttachment = partial.decryptedAttachment;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
 		if ('delegations' in partial && partial.delegations !== undefined) this.delegations = partial.delegations;
@@ -674,14 +824,19 @@ export class EncryptedDocument {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
+		if (this.documentLocation != undefined) res['documentLocation'] = this.documentLocation
 		if (this.documentType != undefined) res['documentType'] = this.documentType
 		if (this.documentStatus != undefined) res['documentStatus'] = this.documentStatus
 		if (this.externalUri != undefined) res['externalUri'] = this.externalUri
 		if (this.name != undefined) res['name'] = this.name
 		if (this.version != undefined) res['version'] = this.version
+		if (this.storedICureDocumentId != undefined) res['storedICureDocumentId'] = this.storedICureDocumentId
+		if (this.externalUuid != undefined) res['externalUuid'] = this.externalUuid
 		if (this.size != undefined) res['size'] = this.size
 		if (this.hash != undefined) res['hash'] = this.hash
 		if (this.openingContactId != undefined) res['openingContactId'] = this.openingContactId
@@ -693,6 +848,8 @@ export class EncryptedDocument {
 		if (this.extraMainAttachmentInfo != undefined) res['extraMainAttachmentInfo'] = this.extraMainAttachmentInfo.toJSON()
 		res['secondaryAttachments'] = Object.fromEntries(Object.entries(this.secondaryAttachments).map(([k0, v0]) => [k0, v0.toJSON()]))
 		res['deletedAttachments'] = this.deletedAttachments.map((x0) => x0.toJSON() )
+		if (this.encryptedAttachment != undefined) res['encryptedAttachment'] = encodeBase64(this.encryptedAttachment)
+		if (this.decryptedAttachment != undefined) res['decryptedAttachment'] = encodeBase64(this.decryptedAttachment)
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		res['delegations'] = Object.fromEntries(Object.entries(this.delegations).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -717,14 +874,19 @@ export class EncryptedDocument {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
+			documentLocation: expectStringEnum(extractEntry(jCpy, 'documentLocation', false, path), true, [...path, ".documentLocation"], DocumentLocation, 'DocumentLocation'),
 			documentType: expectStringEnum(extractEntry(jCpy, 'documentType', false, path), true, [...path, ".documentType"], DocumentType, 'DocumentType'),
 			documentStatus: expectStringEnum(extractEntry(jCpy, 'documentStatus', false, path), true, [...path, ".documentStatus"], DocumentStatus, 'DocumentStatus'),
 			externalUri: expectString(extractEntry(jCpy, 'externalUri', false, path), true, [...path, ".externalUri"]),
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			version: expectString(extractEntry(jCpy, 'version', false, path), true, [...path, ".version"]),
+			storedICureDocumentId: expectString(extractEntry(jCpy, 'storedICureDocumentId', false, path), true, [...path, ".storedICureDocumentId"]),
+			externalUuid: expectString(extractEntry(jCpy, 'externalUuid', false, path), true, [...path, ".externalUuid"]),
 			size: expectNumber(extractEntry(jCpy, 'size', false, path), true, true, [...path, ".size"]),
 			hash: expectString(extractEntry(jCpy, 'hash', false, path), true, [...path, ".hash"]),
 			openingContactId: expectString(extractEntry(jCpy, 'openingContactId', false, path), true, [...path, ".openingContactId"]),
@@ -742,6 +904,8 @@ export class EncryptedDocument {
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, DataAttachment.fromJSON)
 			),
 			deletedAttachments: expectArray(extractEntry(jCpy, 'deletedAttachments', false, path), false, [...path, ".deletedAttachments"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DeletedAttachment.fromJSON)),
+			encryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'encryptedAttachment', false, path), true, [...path, ".encryptedAttachment"]), [...path, ".encryptedAttachment"]),
+			decryptedAttachment: decodeBase64(expectString(extractEntry(jCpy, 'decryptedAttachment', false, path), true, [...path, ".decryptedAttachment"]), [...path, ".decryptedAttachment"]),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
 				extractEntry(jCpy, 'cryptedForeignKeys', false, path),

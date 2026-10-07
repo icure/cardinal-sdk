@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -43,6 +44,11 @@ data class PlanOfActionTemplate(
 	 * The identifier of the responsible entity.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * Deprecated. The identifier of the medical location.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * The set of tags associated with this template.
 	 */

@@ -41,14 +41,17 @@ internal object AccessLogEncryptorFactory : EntityEncryptorFactory<EncryptedAcce
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					objectId = clearEntity.objectId,
 					accessType = clearEntity.accessType,
 					user = clearEntity.user,
 					detail = clearEntity.detail,
 					date = clearEntity.date,
+					patientId = clearEntity.patientId,
 					secretForeignKeys = clearEntity.secretForeignKeys,
 					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 					delegations = clearEntity.delegations,
@@ -80,13 +83,16 @@ internal object AccessLogEncryptorFactory : EntityEncryptorFactory<EncryptedAcce
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			objectId_e = "objectId" in manifest.fieldsToEncrypt,
 			accessType_e = "accessType" in manifest.fieldsToEncrypt,
 			user_e = "user" in manifest.fieldsToEncrypt,
 			detail_e = "detail" in manifest.fieldsToEncrypt,
 			date_e = "date" in manifest.fieldsToEncrypt,
+			patientId_e = "patientId" in manifest.fieldsToEncrypt,
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
@@ -100,13 +106,16 @@ private class AccessLogEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val objectId_e: Boolean,
 	private val accessType_e: Boolean,
 	private val user_e: Boolean,
 	private val detail_e: Boolean,
 	private val date_e: Boolean,
+	private val patientId_e: Boolean,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
@@ -125,8 +134,15 @@ private class AccessLogEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (objectId_e && clearEntity.objectId != null) dataToEncrypt["objectId"] = encodingJson.encodeToJsonElement(clearEntity.objectId)
 		if (accessType_e && clearEntity.accessType != null) dataToEncrypt["accessType"] = encodingJson.encodeToJsonElement(clearEntity.accessType)
 		if (user_e && clearEntity.user != null) dataToEncrypt["user"] = encodingJson.encodeToJsonElement(clearEntity.user)
@@ -138,6 +154,7 @@ private class AccessLogEncryptor(
 					clearEntity.date,
 				)
 		}
+		if (patientId_e && clearEntity.patientId != null) dataToEncrypt["patientId"] = encodingJson.encodeToJsonElement(clearEntity.patientId)
 		return EncryptedAccessLog(
 			id = clearEntity.id,
 			rev = clearEntity.rev,
@@ -145,14 +162,17 @@ private class AccessLogEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			objectId = if (objectId_e) null else clearEntity.objectId,
 			accessType = if (accessType_e) null else clearEntity.accessType,
 			user = if (user_e) null else clearEntity.user,
 			detail = if (detail_e) null else clearEntity.detail,
 			date = if (date_e) null else clearEntity.date,
+			patientId = if (patientId_e) null else clearEntity.patientId,
 			secretForeignKeys = clearEntity.secretForeignKeys,
 			cryptedForeignKeys = clearEntity.cryptedForeignKeys,
 			delegations = clearEntity.delegations,

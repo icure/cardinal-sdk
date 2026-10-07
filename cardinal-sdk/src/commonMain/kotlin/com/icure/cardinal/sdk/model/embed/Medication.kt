@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.model.embed
 import com.icure.cardinal.sdk.model.base.CodeStub
 import kotlinx.serialization.Serializable
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -108,6 +109,50 @@ data class Medication(
 	 * /
 	 */
 	public val posology: String? = null,
+	/**
+	 * The expiration date of the medication. Format: yyyyMMdd
+	 * /
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val options: Map<String, DecryptedContent>? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val agreements: Map<String, ParagraphAgreement>? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val medicationSchemeIdOnSafe: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val medicationSchemeSafeVersion: Int? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val medicationSchemeTimeStampOnSafe: Long? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val medicationSchemeDocumentId: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val safeIdName: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val idOnSafes: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val timestampOnSafe: Long? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val changeValidated: Boolean? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val newSafeMedication: Boolean? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val medicationUse: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val beginCondition: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endCondition: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val origin: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val medicationChanged: Boolean? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val posologyChanged: Boolean? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val suspension: List<Suspension>? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val prescriptionRID: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val status: Int? = null,
 	public val stockLocation: DecryptedAddress? = null,
 ) {
 	// region Medication-Medication

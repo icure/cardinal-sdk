@@ -108,6 +108,12 @@ private class PropertyStubDecryptor(
 						},
 						entityCustomisedModelVersion,
 					),
+				deletionDate =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["deletionDate"]?.also { usedEncryptedContent += "deletionDate" },
+						encryptedEntity.deletionDate,
+						entityCustomisedModelVersion,
+					),
 				encryptedSelf = encryptedEntity.encryptedSelf,
 			)
 		val hasUnexpectedDecryptedContent =

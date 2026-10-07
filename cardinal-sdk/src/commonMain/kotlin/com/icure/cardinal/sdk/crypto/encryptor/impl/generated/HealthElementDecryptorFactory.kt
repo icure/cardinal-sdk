@@ -190,6 +190,12 @@ private class HealthElementDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -274,6 +280,12 @@ private class HealthElementDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["idService"]?.also { usedEncryptedContent += "idService" },
 						encryptedEntity.idService,
+						entityCustomisedModelVersion,
+					),
+				status =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["status"]?.also { usedEncryptedContent += "status" },
+						encryptedEntity.status,
 						entityCustomisedModelVersion,
 					),
 				laterality =

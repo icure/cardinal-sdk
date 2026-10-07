@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
@@ -38,6 +39,8 @@ data class CryptoActorStub(
 	override val publicKey: SpkiHexString? = null,
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
+	@Deprecated("Use dataOwnerGroups with a DataOwnerGroupLinkTypeDto.parent link instead")
+	override val parentId: String? = null,
 	@param:DefaultValue("emptyList()")
 	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
 	override val groupLinkType: DataOwnerGroupLinkType? = null,

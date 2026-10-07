@@ -132,6 +132,12 @@ private class PlanOfActionDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -205,6 +211,24 @@ private class PlanOfActionDecryptor(
 						encryptedEntity.idClosingContact,
 						entityCustomisedModelVersion,
 					),
+				status =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["status"]?.also { usedEncryptedContent += "status" },
+						encryptedEntity.status,
+						entityCustomisedModelVersion,
+					),
+				documentIds =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["documentIds"]?.also { usedEncryptedContent += "documentIds" },
+						encryptedEntity.documentIds,
+						entityCustomisedModelVersion,
+					),
+				numberOfCares =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["numberOfCares"]?.also { usedEncryptedContent += "numberOfCares" },
+						encryptedEntity.numberOfCares,
+						entityCustomisedModelVersion,
+					),
 				careTeamMemberships =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["careTeamMemberships"]?.also { usedEncryptedContent += "careTeamMemberships" },
@@ -215,6 +239,12 @@ private class PlanOfActionDecryptor(
 								customisedModelVersion = customisedModelVersion,
 							)
 						},
+						entityCustomisedModelVersion,
+					),
+				relevant =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["relevant"]?.also { usedEncryptedContent += "relevant" },
+						encryptedEntity.relevant,
 						entityCustomisedModelVersion,
 					),
 				encryptedSelf = encryptedEntity.encryptedSelf,

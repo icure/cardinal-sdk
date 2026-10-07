@@ -6,6 +6,7 @@ import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -25,6 +26,11 @@ data class ContactByHcPartyPatientTagCodeDateFilter(
 	 * The identifier of the healthcare party.
 	 */
 	public val healthcarePartyId: String? = null,
+	/**
+	 * Deprecated. Use patientSecretForeignKeys instead.
+	 */
+	@Deprecated("Use patientSecretForeignKeys instead")
+	public val patientSecretForeignKey: String? = null,
 	/**
 	 * The list of secret foreign keys for patient matching.
 	 */

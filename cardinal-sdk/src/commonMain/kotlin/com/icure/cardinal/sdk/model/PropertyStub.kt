@@ -8,9 +8,9 @@ import com.icure.cardinal.sdk.model.embed.EncryptedTypedValue
 import com.icure.cardinal.sdk.model.embed.TypedValue
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
-import kotlin.String
 import kotlin.Deprecated
 import kotlin.Long
+import kotlin.String
 
 /**
  * Lightweight stub representation of a property, used when the full stored property is not needed.
@@ -32,6 +32,12 @@ sealed interface PropertyStub : Encryptable {
 	 * The typed value held by this property.
 	 */
 	public val typedValue: TypedValue?
+
+	/**
+	 * The soft-delete timestamp in epoch milliseconds. Deprecated: remove from list instead.
+	 */
+	@Deprecated("Remove from list instead")
+	public val deletionDate: Long?
 
 	/**
 	 * The encrypted content of this property, encoded as a Base64 string.
@@ -61,6 +67,11 @@ data class DecryptedPropertyStub(
 	 */
 	override val typedValue: DecryptedTypedValue? = null,
 	/**
+	 * The soft-delete timestamp in epoch milliseconds. Deprecated: remove from list instead.
+	 */
+	@Deprecated("Remove from list instead")
+	override val deletionDate: Long? = null,
+	/**
 	 * The encrypted content of this property, encoded as a Base64 string.
 	 */
 	override val encryptedSelf: Base64String? = null,
@@ -88,6 +99,11 @@ data class EncryptedPropertyStub(
 	 * The typed value held by this property.
 	 */
 	override val typedValue: EncryptedTypedValue? = null,
+	/**
+	 * The soft-delete timestamp in epoch milliseconds. Deprecated: remove from list instead.
+	 */
+	@Deprecated("Remove from list instead")
+	override val deletionDate: Long? = null,
 	/**
 	 * The encrypted content of this property, encoded as a Base64 string.
 	 */

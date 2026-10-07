@@ -133,6 +133,12 @@ private class MessageDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -143,6 +149,12 @@ private class MessageDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
 						encryptedEntity.codes,
+						entityCustomisedModelVersion,
+					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
 						entityCustomisedModelVersion,
 					),
 				deletionDate = encryptedEntity.deletionDate,
@@ -156,6 +168,24 @@ private class MessageDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["fromHealthcarePartyId"]?.also { usedEncryptedContent += "fromHealthcarePartyId" },
 						encryptedEntity.fromHealthcarePartyId,
+						entityCustomisedModelVersion,
+					),
+				formId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["formId"]?.also { usedEncryptedContent += "formId" },
+						encryptedEntity.formId,
+						entityCustomisedModelVersion,
+					),
+				status =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["status"]?.also { usedEncryptedContent += "status" },
+						encryptedEntity.status,
+						entityCustomisedModelVersion,
+					),
+				recipientsType =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["recipientsType"]?.also { usedEncryptedContent += "recipientsType" },
+						encryptedEntity.recipientsType,
 						entityCustomisedModelVersion,
 					),
 				recipients =
@@ -194,6 +224,12 @@ private class MessageDecryptor(
 						encryptedEntity.readStatus,
 						entityCustomisedModelVersion,
 					),
+				messageAttachments =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["messageAttachments"]?.also { usedEncryptedContent += "messageAttachments" },
+						encryptedEntity.messageAttachments,
+						entityCustomisedModelVersion,
+					),
 				transportGuid =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["transportGuid"]?.also { usedEncryptedContent += "transportGuid" },
@@ -228,6 +264,30 @@ private class MessageDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["parentId"]?.also { usedEncryptedContent += "parentId" },
 						encryptedEntity.parentId,
+						entityCustomisedModelVersion,
+					),
+				externalRef =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["externalRef"]?.also { usedEncryptedContent += "externalRef" },
+						encryptedEntity.externalRef,
+						entityCustomisedModelVersion,
+					),
+				unassignedResults =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["unassignedResults"]?.also { usedEncryptedContent += "unassignedResults" },
+						encryptedEntity.unassignedResults,
+						entityCustomisedModelVersion,
+					),
+				assignedResults =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["assignedResults"]?.also { usedEncryptedContent += "assignedResults" },
+						encryptedEntity.assignedResults,
+						entityCustomisedModelVersion,
+					),
+				senderReferences =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["senderReferences"]?.also { usedEncryptedContent += "senderReferences" },
+						encryptedEntity.senderReferences,
 						entityCustomisedModelVersion,
 					),
 				properties =

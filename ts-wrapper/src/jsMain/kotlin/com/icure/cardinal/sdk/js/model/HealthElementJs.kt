@@ -65,6 +65,8 @@ public sealed external interface HealthElementJs : StoredDocumentJs, ICureDocume
 
 	public val idService: String?
 
+	public val status: Double
+
 	public val laterality: String?
 
 	public val plansOfAction: Array<out PlanOfActionJs>
@@ -98,6 +100,8 @@ public external class DecryptedHealthElementJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -127,6 +131,8 @@ public external class DecryptedHealthElementJs(
 	override val idClosingContact: String?
 
 	override val idService: String?
+
+	override val status: Double
 
 	override val laterality: String?
 
@@ -177,6 +183,8 @@ public external class EncryptedHealthElementJs(
 
 	override val responsible: String?
 
+	override val medicalLocationId: String?
+
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
@@ -206,6 +214,8 @@ public external class EncryptedHealthElementJs(
 	override val idClosingContact: String?
 
 	override val idService: String?
+
+	override val status: Double
 
 	override val laterality: String?
 

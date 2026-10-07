@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.String
 
 /**
@@ -31,6 +32,18 @@ sealed interface Partnership : Encryptable {
 	 * The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	public val partnerType: PartnerType?
+
+	/**
+	 * Deprecated. Description of the relationship from this patient to the other person.
+	 */
+	@Deprecated("use type instead")
+	public val meToOtherRelationshipDescription: String?
+
+	/**
+	 * Deprecated. Description of the relationship from the other person to this patient.
+	 */
+	@Deprecated("use type instead")
+	public val otherToMeRelationshipDescription: String?
 
 	/**
 	 * Deprecated. Description of the relationship from the other person to this patient.
@@ -64,6 +77,16 @@ data class DecryptedPartnership(
 	 */
 	override val partnerType: PartnerType? = null,
 	/**
+	 * Deprecated. Description of the relationship from this patient to the other person.
+	 */
+	@Deprecated("use type instead")
+	override val meToOtherRelationshipDescription: String? = null,
+	/**
+	 * Deprecated. Description of the relationship from the other person to this patient.
+	 */
+	@Deprecated("use type instead")
+	override val otherToMeRelationshipDescription: String? = null,
+	/**
 	 * Deprecated. Description of the relationship from the other person to this patient.
 	 */
 	override val encryptedSelf: Base64String? = null,
@@ -95,6 +118,16 @@ data class EncryptedPartnership(
 	 * The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	override val partnerType: PartnerType? = null,
+	/**
+	 * Deprecated. Description of the relationship from this patient to the other person.
+	 */
+	@Deprecated("use type instead")
+	override val meToOtherRelationshipDescription: String? = null,
+	/**
+	 * Deprecated. Description of the relationship from the other person to this patient.
+	 */
+	@Deprecated("use type instead")
+	override val otherToMeRelationshipDescription: String? = null,
 	/**
 	 * Deprecated. Description of the relationship from the other person to this patient.
 	 */

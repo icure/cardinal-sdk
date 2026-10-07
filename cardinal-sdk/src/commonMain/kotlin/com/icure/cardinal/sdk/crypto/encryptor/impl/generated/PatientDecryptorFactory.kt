@@ -16,24 +16,30 @@ import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
+import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
+import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
+import com.icure.cardinal.sdk.model.embed.EncryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.EncryptedPartnership
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
+import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
 import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.UnexpectedEncryptedContentException
 import com.icure.kryptom.crypto.AesAlgorithm
 import com.icure.kryptom.crypto.AesKey
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
+import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.Lazy
@@ -166,6 +172,32 @@ internal object PatientDecryptorFactory : EntityDecryptorFactory<EncryptedPatien
 				encryptedClass = EncryptedPropertyStub::class,
 				decryptedClass = DecryptedPropertyStub::class,
 			)
+		val schoolingInfosDecryptor =
+			manifest?.recursiveEncryption?.get("schoolingInfos")?.let { nestedManifestName ->
+				val pairLazy =
+					encryptorsFactoryContext.getEntityEncryptorsProvider(
+						entityManifestName = nestedManifestName,
+						encryptedClass = EncryptedSchoolingInfo::class,
+						decryptedClass = DecryptedSchoolingInfo::class,
+					)
+				lazy { pairLazy.value.decryptor }
+			} ?: encryptorsFactoryContext.getEmptyEntityDecryptorProvider(
+				encryptedClass = EncryptedSchoolingInfo::class,
+				decryptedClass = DecryptedSchoolingInfo::class,
+			)
+		val employementInfosDecryptor =
+			manifest?.recursiveEncryption?.get("employementInfos")?.let { nestedManifestName ->
+				val pairLazy =
+					encryptorsFactoryContext.getEntityEncryptorsProvider(
+						entityManifestName = nestedManifestName,
+						encryptedClass = EncryptedEmploymentInfo::class,
+						decryptedClass = DecryptedEmploymentInfo::class,
+					)
+				lazy { pairLazy.value.decryptor }
+			} ?: encryptorsFactoryContext.getEmptyEntityDecryptorProvider(
+				encryptedClass = EncryptedEmploymentInfo::class,
+				decryptedClass = DecryptedEmploymentInfo::class,
+			)
 		return PatientDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			addressesDecryptor = addressesDecryptor,
@@ -176,6 +208,8 @@ internal object PatientDecryptorFactory : EntityDecryptorFactory<EncryptedPatien
 			financialInstitutionInformationDecryptor = financialInstitutionInformationDecryptor,
 			medicalHouseContractsDecryptor = medicalHouseContractsDecryptor,
 			propertiesDecryptor = propertiesDecryptor,
+			schoolingInfosDecryptor = schoolingInfosDecryptor,
+			employementInfosDecryptor = employementInfosDecryptor,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,
 			cryptoService = cryptoService,
@@ -196,6 +230,8 @@ private class PatientDecryptor(
 		Lazy<EntityDecryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation>>,
 	private val medicalHouseContractsDecryptor: Lazy<EntityDecryptor<EncryptedMedicalHouseContract, DecryptedMedicalHouseContract>>,
 	private val propertiesDecryptor: Lazy<EntityDecryptor<EncryptedPropertyStub, DecryptedPropertyStub>>,
+	private val schoolingInfosDecryptor: Lazy<EntityDecryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo>>,
+	private val employementInfosDecryptor: Lazy<EntityDecryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo>>,
 	private val extensionsDecryptorsByVersion: Map<CustomisedModelVersion, Lazy<ExtensionsEncryptors>>,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
@@ -269,6 +305,12 @@ private class PatientDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
 						encryptedEntity.codes,
+						entityCustomisedModelVersion,
+					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
 						entityCustomisedModelVersion,
 					),
 				deletionDate = encryptedEntity.deletionDate,
@@ -478,6 +520,25 @@ private class PatientDecryptor(
 						encryptedEntity.ethnicity,
 						entityCustomisedModelVersion,
 					),
+				preferredUserId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["preferredUserId"]?.also { usedEncryptedContent += "preferredUserId" },
+						encryptedEntity.preferredUserId,
+						entityCustomisedModelVersion,
+					),
+				picture =
+					encryptedContentDecoder.decodeDecrypted(
+						ByteArraySerializer.nullable,
+						decryptedContent["picture"]?.also { usedEncryptedContent += "picture" },
+						encryptedEntity.picture,
+						entityCustomisedModelVersion,
+					),
+				externalId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["externalId"]?.also { usedEncryptedContent += "externalId" },
+						encryptedEntity.externalId,
+						entityCustomisedModelVersion,
+					),
 				insurabilities =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["insurabilities"]?.also { usedEncryptedContent += "insurabilities" },
@@ -575,6 +636,91 @@ private class PatientDecryptor(
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
 				cryptoActorProperties = encryptedEntity.cryptoActorProperties,
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
+				nonDuplicateIds =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["nonDuplicateIds"]?.also { usedEncryptedContent += "nonDuplicateIds" },
+						encryptedEntity.nonDuplicateIds,
+						entityCustomisedModelVersion,
+					),
+				encryptedAdministrativesDocuments =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["encryptedAdministrativesDocuments"]?.also { usedEncryptedContent += "encryptedAdministrativesDocuments" },
+						encryptedEntity.encryptedAdministrativesDocuments,
+						entityCustomisedModelVersion,
+					),
+				comment =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["comment"]?.also { usedEncryptedContent += "comment" },
+						encryptedEntity.comment,
+						entityCustomisedModelVersion,
+					),
+				warning =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["warning"]?.also { usedEncryptedContent += "warning" },
+						encryptedEntity.warning,
+						entityCustomisedModelVersion,
+					),
+				fatherBirthCountry =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["fatherBirthCountry"]?.also { usedEncryptedContent += "fatherBirthCountry" },
+						encryptedEntity.fatherBirthCountry,
+						entityCustomisedModelVersion,
+					),
+				birthCountry =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["birthCountry"]?.also { usedEncryptedContent += "birthCountry" },
+						encryptedEntity.birthCountry,
+						entityCustomisedModelVersion,
+					),
+				nativeCountry =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["nativeCountry"]?.also { usedEncryptedContent += "nativeCountry" },
+						encryptedEntity.nativeCountry,
+						entityCustomisedModelVersion,
+					),
+				socialStatus =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["socialStatus"]?.also { usedEncryptedContent += "socialStatus" },
+						encryptedEntity.socialStatus,
+						entityCustomisedModelVersion,
+					),
+				mainSourceOfIncome =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["mainSourceOfIncome"]?.also { usedEncryptedContent += "mainSourceOfIncome" },
+						encryptedEntity.mainSourceOfIncome,
+						entityCustomisedModelVersion,
+					),
+				schoolingInfos =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["schoolingInfos"]?.also { usedEncryptedContent += "schoolingInfos" },
+						encryptedEntity.schoolingInfos.map { x0 ->
+							schoolingInfosDecryptor.value.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								customisedModelVersion = customisedModelVersion,
+							)
+						},
+						entityCustomisedModelVersion,
+					),
+				employementInfos =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["employementInfos"]?.also { usedEncryptedContent += "employementInfos" },
+						encryptedEntity.employementInfos.map { x0 ->
+							employementInfosDecryptor.value.decrypt(
+								decryptionKeys = decryptionKeys,
+								encryptedEntity = x0,
+								customisedModelVersion = customisedModelVersion,
+							)
+						},
+						entityCustomisedModelVersion,
+					),
+				parentId = encryptedEntity.parentId,
 				dataOwnerGroups = encryptedEntity.dataOwnerGroups,
 				groupLinkType = encryptedEntity.groupLinkType,
 				extensions = extensions,

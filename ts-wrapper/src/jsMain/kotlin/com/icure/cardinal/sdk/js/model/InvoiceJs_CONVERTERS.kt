@@ -43,6 +43,9 @@ import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode
+import com.icure.cardinal.sdk.model.embed.InvoiceInterventionType
+import com.icure.cardinal.sdk.model.embed.InvoiceType
+import com.icure.cardinal.sdk.model.embed.MediumType
 import com.icure.cardinal.sdk.model.embed.Payment
 import com.icure.cardinal.sdk.model.embed.PaymentType
 import kotlin.Array
@@ -74,6 +77,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -85,6 +91,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
+	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -113,6 +122,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 			x1
 		},
 	)
+	val recipientType = nullToUndefined(
+		obj.recipientType
+	)
 	val recipientId = nullToUndefined(
 		obj.recipientId
 	)
@@ -134,6 +146,21 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 	val reason = nullToUndefined(
 		obj.reason
 	)
+	val invoiceType = nullToUndefined(
+		obj.invoiceType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
+	val sentMediumType = nullToUndefined(
+		obj.sentMediumType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
+	val interventionType = nullToUndefined(
+		obj.interventionType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
 	val groupId = nullToUndefined(
 		obj.groupId
 	)
@@ -153,6 +180,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 			},
 		)
 	)
+	val gnotionNihii = nullToUndefined(
+		obj.gnotionNihii
+	)
 	val gnotionSsin = nullToUndefined(
 		obj.gnotionSsin
 	)
@@ -171,6 +201,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 	val careProviderType = nullToUndefined(
 		obj.careProviderType
 	)
+	val internshipNihii = nullToUndefined(
+		obj.internshipNihii
+	)
 	val internshipSsin = nullToUndefined(
 		obj.internshipSsin
 	)
@@ -185,6 +218,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 	)
 	val internshipCbe = nullToUndefined(
 		obj.internshipCbe
+	)
+	val supervisorNihii = nullToUndefined(
+		obj.supervisorNihii
 	)
 	val supervisorSsin = nullToUndefined(
 		obj.supervisorSsin
@@ -206,6 +242,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 	)
 	val encounterLocationName = nullToUndefined(
 		obj.encounterLocationName
+	)
+	val encounterLocationNihii = nullToUndefined(
+		obj.encounterLocationNihii
 	)
 	val encounterLocationNorm = nullToUndefined(
 		intToNumber(obj.encounterLocationNorm)
@@ -232,6 +271,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 	)
 	val admissionDate = nullToUndefined(
 		longToNumber(obj.admissionDate)
+	)
+	val locationNihii = nullToUndefined(
+		obj.locationNihii
 	)
 	val locationService = nullToUndefined(
 		intToNumber(obj.locationService)
@@ -317,14 +359,17 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"invoiceDate:invoiceDate," +
 		"sentDate:sentDate," +
 		"printedDate:printedDate," +
 		"invoicingCodes:invoicingCodes," +
 		"receipts:receipts," +
+		"recipientType:recipientType," +
 		"recipientId:recipientId," +
 		"invoiceReference:invoiceReference," +
 		"decisionReference:decisionReference," +
@@ -332,21 +377,27 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 		"thirdPartyPaymentJustification:thirdPartyPaymentJustification," +
 		"thirdPartyPaymentReason:thirdPartyPaymentReason," +
 		"reason:reason," +
+		"invoiceType:invoiceType," +
+		"sentMediumType:sentMediumType," +
+		"interventionType:interventionType," +
 		"groupId:groupId," +
 		"paymentType:paymentType," +
 		"paid:paid," +
 		"payments:payments," +
+		"gnotionNihii:gnotionNihii," +
 		"gnotionSsin:gnotionSsin," +
 		"gnotionLastName:gnotionLastName," +
 		"gnotionFirstName:gnotionFirstName," +
 		"gnotionCdHcParty:gnotionCdHcParty," +
 		"invoicePeriod:invoicePeriod," +
 		"careProviderType:careProviderType," +
+		"internshipNihii:internshipNihii," +
 		"internshipSsin:internshipSsin," +
 		"internshipLastName:internshipLastName," +
 		"internshipFirstName:internshipFirstName," +
 		"internshipCdHcParty:internshipCdHcParty," +
 		"internshipCbe:internshipCbe," +
+		"supervisorNihii:supervisorNihii," +
 		"supervisorSsin:supervisorSsin," +
 		"supervisorLastName:supervisorLastName," +
 		"supervisorFirstName:supervisorFirstName," +
@@ -354,6 +405,7 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 		"supervisorCbe:supervisorCbe," +
 		"error:error," +
 		"encounterLocationName:encounterLocationName," +
+		"encounterLocationNihii:encounterLocationNihii," +
 		"encounterLocationNorm:encounterLocationNorm," +
 		"longDelayJustification:longDelayJustification," +
 		"correctiveInvoiceId:correctiveInvoiceId," +
@@ -362,6 +414,7 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 		"creditNoteRelatedInvoiceId:creditNoteRelatedInvoiceId," +
 		"idDocument:idDocument," +
 		"admissionDate:admissionDate," +
+		"locationNihii:locationNihii," +
 		"locationService:locationService," +
 		"cancelReason:cancelReason," +
 		"cancelDate:cancelDate," +
@@ -389,6 +442,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -403,6 +457,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val invoiceDate = numberToLong(obj.invoiceDate, "obj.invoiceDate")
 	val sentDate = numberToLong(obj.sentDate, "obj.sentDate")
@@ -424,6 +479,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 			x1
 		},
 	)
+	val recipientType = undefinedToNull(obj.recipientType)
 	val recipientId = undefinedToNull(obj.recipientId)
 	val invoiceReference = undefinedToNull(obj.invoiceReference)
 	val decisionReference = undefinedToNull(obj.decisionReference)
@@ -431,6 +487,15 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 	val thirdPartyPaymentJustification = undefinedToNull(obj.thirdPartyPaymentJustification)
 	val thirdPartyPaymentReason = undefinedToNull(obj.thirdPartyPaymentReason)
 	val reason = undefinedToNull(obj.reason)
+	val invoiceType = obj.invoiceType?.let { nonNull1 ->
+		InvoiceType.valueOf(nonNull1)
+	}
+	val sentMediumType = obj.sentMediumType?.let { nonNull1 ->
+		MediumType.valueOf(nonNull1)
+	}
+	val interventionType = obj.interventionType?.let { nonNull1 ->
+		InvoiceInterventionType.valueOf(nonNull1)
+	}
 	val groupId = undefinedToNull(obj.groupId)
 	val paymentType = obj.paymentType?.let { nonNull1 ->
 		PaymentType.valueOf(nonNull1)
@@ -443,17 +508,20 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 			payment_fromJs(x1)
 		},
 	)
+	val gnotionNihii = undefinedToNull(obj.gnotionNihii)
 	val gnotionSsin = undefinedToNull(obj.gnotionSsin)
 	val gnotionLastName = undefinedToNull(obj.gnotionLastName)
 	val gnotionFirstName = undefinedToNull(obj.gnotionFirstName)
 	val gnotionCdHcParty = undefinedToNull(obj.gnotionCdHcParty)
 	val invoicePeriod = numberToInt(obj.invoicePeriod, "obj.invoicePeriod")
 	val careProviderType = undefinedToNull(obj.careProviderType)
+	val internshipNihii = undefinedToNull(obj.internshipNihii)
 	val internshipSsin = undefinedToNull(obj.internshipSsin)
 	val internshipLastName = undefinedToNull(obj.internshipLastName)
 	val internshipFirstName = undefinedToNull(obj.internshipFirstName)
 	val internshipCdHcParty = undefinedToNull(obj.internshipCdHcParty)
 	val internshipCbe = undefinedToNull(obj.internshipCbe)
+	val supervisorNihii = undefinedToNull(obj.supervisorNihii)
 	val supervisorSsin = undefinedToNull(obj.supervisorSsin)
 	val supervisorLastName = undefinedToNull(obj.supervisorLastName)
 	val supervisorFirstName = undefinedToNull(obj.supervisorFirstName)
@@ -461,6 +529,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 	val supervisorCbe = undefinedToNull(obj.supervisorCbe)
 	val error = undefinedToNull(obj.error)
 	val encounterLocationName = undefinedToNull(obj.encounterLocationName)
+	val encounterLocationNihii = undefinedToNull(obj.encounterLocationNihii)
 	val encounterLocationNorm = numberToInt(obj.encounterLocationNorm, "obj.encounterLocationNorm")
 	val longDelayJustification = numberToInt(obj.longDelayJustification, "obj.longDelayJustification")
 	val correctiveInvoiceId = undefinedToNull(obj.correctiveInvoiceId)
@@ -471,6 +540,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		identityDocumentReader_fromJs(nonNull1)
 	}
 	val admissionDate = numberToLong(obj.admissionDate, "obj.admissionDate")
+	val locationNihii = undefinedToNull(obj.locationNihii)
 	val locationService = numberToInt(obj.locationService, "obj.locationService")
 	val cancelReason = undefinedToNull(obj.cancelReason)
 	val cancelDate = numberToLong(obj.cancelDate, "obj.cancelDate")
@@ -553,14 +623,17 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		invoiceDate = invoiceDate,
 		sentDate = sentDate,
 		printedDate = printedDate,
 		invoicingCodes = invoicingCodes,
 		receipts = receipts,
+		recipientType = recipientType,
 		recipientId = recipientId,
 		invoiceReference = invoiceReference,
 		decisionReference = decisionReference,
@@ -568,21 +641,27 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		thirdPartyPaymentJustification = thirdPartyPaymentJustification,
 		thirdPartyPaymentReason = thirdPartyPaymentReason,
 		reason = reason,
+		invoiceType = invoiceType,
+		sentMediumType = sentMediumType,
+		interventionType = interventionType,
 		groupId = groupId,
 		paymentType = paymentType,
 		paid = paid,
 		payments = payments,
+		gnotionNihii = gnotionNihii,
 		gnotionSsin = gnotionSsin,
 		gnotionLastName = gnotionLastName,
 		gnotionFirstName = gnotionFirstName,
 		gnotionCdHcParty = gnotionCdHcParty,
 		invoicePeriod = invoicePeriod,
 		careProviderType = careProviderType,
+		internshipNihii = internshipNihii,
 		internshipSsin = internshipSsin,
 		internshipLastName = internshipLastName,
 		internshipFirstName = internshipFirstName,
 		internshipCdHcParty = internshipCdHcParty,
 		internshipCbe = internshipCbe,
+		supervisorNihii = supervisorNihii,
 		supervisorSsin = supervisorSsin,
 		supervisorLastName = supervisorLastName,
 		supervisorFirstName = supervisorFirstName,
@@ -590,6 +669,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		supervisorCbe = supervisorCbe,
 		error = error,
 		encounterLocationName = encounterLocationName,
+		encounterLocationNihii = encounterLocationNihii,
 		encounterLocationNorm = encounterLocationNorm,
 		longDelayJustification = longDelayJustification,
 		correctiveInvoiceId = correctiveInvoiceId,
@@ -598,6 +678,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		creditNoteRelatedInvoiceId = creditNoteRelatedInvoiceId,
 		idDocument = idDocument,
 		admissionDate = admissionDate,
+		locationNihii = locationNihii,
 		locationService = locationService,
 		cancelReason = cancelReason,
 		cancelDate = cancelDate,
@@ -635,6 +716,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -646,6 +730,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 		{ x1: CodeStub ->
 			codeStub_toJs(x1)
 		},
+	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
 	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
@@ -674,6 +761,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 			x1
 		},
 	)
+	val recipientType = nullToUndefined(
+		obj.recipientType
+	)
 	val recipientId = nullToUndefined(
 		obj.recipientId
 	)
@@ -695,6 +785,21 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 	val reason = nullToUndefined(
 		obj.reason
 	)
+	val invoiceType = nullToUndefined(
+		obj.invoiceType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
+	val sentMediumType = nullToUndefined(
+		obj.sentMediumType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
+	val interventionType = nullToUndefined(
+		obj.interventionType?.let { nonNull1 ->
+			nonNull1.name
+		}
+	)
 	val groupId = nullToUndefined(
 		obj.groupId
 	)
@@ -714,6 +819,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 			},
 		)
 	)
+	val gnotionNihii = nullToUndefined(
+		obj.gnotionNihii
+	)
 	val gnotionSsin = nullToUndefined(
 		obj.gnotionSsin
 	)
@@ -732,6 +840,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 	val careProviderType = nullToUndefined(
 		obj.careProviderType
 	)
+	val internshipNihii = nullToUndefined(
+		obj.internshipNihii
+	)
 	val internshipSsin = nullToUndefined(
 		obj.internshipSsin
 	)
@@ -746,6 +857,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 	)
 	val internshipCbe = nullToUndefined(
 		obj.internshipCbe
+	)
+	val supervisorNihii = nullToUndefined(
+		obj.supervisorNihii
 	)
 	val supervisorSsin = nullToUndefined(
 		obj.supervisorSsin
@@ -767,6 +881,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 	)
 	val encounterLocationName = nullToUndefined(
 		obj.encounterLocationName
+	)
+	val encounterLocationNihii = nullToUndefined(
+		obj.encounterLocationNihii
 	)
 	val encounterLocationNorm = nullToUndefined(
 		intToNumber(obj.encounterLocationNorm)
@@ -793,6 +910,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 	)
 	val admissionDate = nullToUndefined(
 		longToNumber(obj.admissionDate)
+	)
+	val locationNihii = nullToUndefined(
+		obj.locationNihii
 	)
 	val locationService = nullToUndefined(
 		intToNumber(obj.locationService)
@@ -878,14 +998,17 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"invoiceDate:invoiceDate," +
 		"sentDate:sentDate," +
 		"printedDate:printedDate," +
 		"invoicingCodes:invoicingCodes," +
 		"receipts:receipts," +
+		"recipientType:recipientType," +
 		"recipientId:recipientId," +
 		"invoiceReference:invoiceReference," +
 		"decisionReference:decisionReference," +
@@ -893,21 +1016,27 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 		"thirdPartyPaymentJustification:thirdPartyPaymentJustification," +
 		"thirdPartyPaymentReason:thirdPartyPaymentReason," +
 		"reason:reason," +
+		"invoiceType:invoiceType," +
+		"sentMediumType:sentMediumType," +
+		"interventionType:interventionType," +
 		"groupId:groupId," +
 		"paymentType:paymentType," +
 		"paid:paid," +
 		"payments:payments," +
+		"gnotionNihii:gnotionNihii," +
 		"gnotionSsin:gnotionSsin," +
 		"gnotionLastName:gnotionLastName," +
 		"gnotionFirstName:gnotionFirstName," +
 		"gnotionCdHcParty:gnotionCdHcParty," +
 		"invoicePeriod:invoicePeriod," +
 		"careProviderType:careProviderType," +
+		"internshipNihii:internshipNihii," +
 		"internshipSsin:internshipSsin," +
 		"internshipLastName:internshipLastName," +
 		"internshipFirstName:internshipFirstName," +
 		"internshipCdHcParty:internshipCdHcParty," +
 		"internshipCbe:internshipCbe," +
+		"supervisorNihii:supervisorNihii," +
 		"supervisorSsin:supervisorSsin," +
 		"supervisorLastName:supervisorLastName," +
 		"supervisorFirstName:supervisorFirstName," +
@@ -915,6 +1044,7 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 		"supervisorCbe:supervisorCbe," +
 		"error:error," +
 		"encounterLocationName:encounterLocationName," +
+		"encounterLocationNihii:encounterLocationNihii," +
 		"encounterLocationNorm:encounterLocationNorm," +
 		"longDelayJustification:longDelayJustification," +
 		"correctiveInvoiceId:correctiveInvoiceId," +
@@ -923,6 +1053,7 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 		"creditNoteRelatedInvoiceId:creditNoteRelatedInvoiceId," +
 		"idDocument:idDocument," +
 		"admissionDate:admissionDate," +
+		"locationNihii:locationNihii," +
 		"locationService:locationService," +
 		"cancelReason:cancelReason," +
 		"cancelDate:cancelDate," +
@@ -950,6 +1081,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -964,6 +1096,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val invoiceDate = numberToLong(obj.invoiceDate, "obj.invoiceDate")
 	val sentDate = numberToLong(obj.sentDate, "obj.sentDate")
@@ -985,6 +1118,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 			x1
 		},
 	)
+	val recipientType = undefinedToNull(obj.recipientType)
 	val recipientId = undefinedToNull(obj.recipientId)
 	val invoiceReference = undefinedToNull(obj.invoiceReference)
 	val decisionReference = undefinedToNull(obj.decisionReference)
@@ -992,6 +1126,15 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 	val thirdPartyPaymentJustification = undefinedToNull(obj.thirdPartyPaymentJustification)
 	val thirdPartyPaymentReason = undefinedToNull(obj.thirdPartyPaymentReason)
 	val reason = undefinedToNull(obj.reason)
+	val invoiceType = obj.invoiceType?.let { nonNull1 ->
+		InvoiceType.valueOf(nonNull1)
+	}
+	val sentMediumType = obj.sentMediumType?.let { nonNull1 ->
+		MediumType.valueOf(nonNull1)
+	}
+	val interventionType = obj.interventionType?.let { nonNull1 ->
+		InvoiceInterventionType.valueOf(nonNull1)
+	}
 	val groupId = undefinedToNull(obj.groupId)
 	val paymentType = obj.paymentType?.let { nonNull1 ->
 		PaymentType.valueOf(nonNull1)
@@ -1004,17 +1147,20 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 			payment_fromJs(x1)
 		},
 	)
+	val gnotionNihii = undefinedToNull(obj.gnotionNihii)
 	val gnotionSsin = undefinedToNull(obj.gnotionSsin)
 	val gnotionLastName = undefinedToNull(obj.gnotionLastName)
 	val gnotionFirstName = undefinedToNull(obj.gnotionFirstName)
 	val gnotionCdHcParty = undefinedToNull(obj.gnotionCdHcParty)
 	val invoicePeriod = numberToInt(obj.invoicePeriod, "obj.invoicePeriod")
 	val careProviderType = undefinedToNull(obj.careProviderType)
+	val internshipNihii = undefinedToNull(obj.internshipNihii)
 	val internshipSsin = undefinedToNull(obj.internshipSsin)
 	val internshipLastName = undefinedToNull(obj.internshipLastName)
 	val internshipFirstName = undefinedToNull(obj.internshipFirstName)
 	val internshipCdHcParty = undefinedToNull(obj.internshipCdHcParty)
 	val internshipCbe = undefinedToNull(obj.internshipCbe)
+	val supervisorNihii = undefinedToNull(obj.supervisorNihii)
 	val supervisorSsin = undefinedToNull(obj.supervisorSsin)
 	val supervisorLastName = undefinedToNull(obj.supervisorLastName)
 	val supervisorFirstName = undefinedToNull(obj.supervisorFirstName)
@@ -1022,6 +1168,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 	val supervisorCbe = undefinedToNull(obj.supervisorCbe)
 	val error = undefinedToNull(obj.error)
 	val encounterLocationName = undefinedToNull(obj.encounterLocationName)
+	val encounterLocationNihii = undefinedToNull(obj.encounterLocationNihii)
 	val encounterLocationNorm = numberToInt(obj.encounterLocationNorm, "obj.encounterLocationNorm")
 	val longDelayJustification = numberToInt(obj.longDelayJustification, "obj.longDelayJustification")
 	val correctiveInvoiceId = undefinedToNull(obj.correctiveInvoiceId)
@@ -1032,6 +1179,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		identityDocumentReader_fromJs(nonNull1)
 	}
 	val admissionDate = numberToLong(obj.admissionDate, "obj.admissionDate")
+	val locationNihii = undefinedToNull(obj.locationNihii)
 	val locationService = numberToInt(obj.locationService, "obj.locationService")
 	val cancelReason = undefinedToNull(obj.cancelReason)
 	val cancelDate = numberToLong(obj.cancelDate, "obj.cancelDate")
@@ -1114,14 +1262,17 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		invoiceDate = invoiceDate,
 		sentDate = sentDate,
 		printedDate = printedDate,
 		invoicingCodes = invoicingCodes,
 		receipts = receipts,
+		recipientType = recipientType,
 		recipientId = recipientId,
 		invoiceReference = invoiceReference,
 		decisionReference = decisionReference,
@@ -1129,21 +1280,27 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		thirdPartyPaymentJustification = thirdPartyPaymentJustification,
 		thirdPartyPaymentReason = thirdPartyPaymentReason,
 		reason = reason,
+		invoiceType = invoiceType,
+		sentMediumType = sentMediumType,
+		interventionType = interventionType,
 		groupId = groupId,
 		paymentType = paymentType,
 		paid = paid,
 		payments = payments,
+		gnotionNihii = gnotionNihii,
 		gnotionSsin = gnotionSsin,
 		gnotionLastName = gnotionLastName,
 		gnotionFirstName = gnotionFirstName,
 		gnotionCdHcParty = gnotionCdHcParty,
 		invoicePeriod = invoicePeriod,
 		careProviderType = careProviderType,
+		internshipNihii = internshipNihii,
 		internshipSsin = internshipSsin,
 		internshipLastName = internshipLastName,
 		internshipFirstName = internshipFirstName,
 		internshipCdHcParty = internshipCdHcParty,
 		internshipCbe = internshipCbe,
+		supervisorNihii = supervisorNihii,
 		supervisorSsin = supervisorSsin,
 		supervisorLastName = supervisorLastName,
 		supervisorFirstName = supervisorFirstName,
@@ -1151,6 +1308,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		supervisorCbe = supervisorCbe,
 		error = error,
 		encounterLocationName = encounterLocationName,
+		encounterLocationNihii = encounterLocationNihii,
 		encounterLocationNorm = encounterLocationNorm,
 		longDelayJustification = longDelayJustification,
 		correctiveInvoiceId = correctiveInvoiceId,
@@ -1159,6 +1317,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		creditNoteRelatedInvoiceId = creditNoteRelatedInvoiceId,
 		idDocument = idDocument,
 		admissionDate = admissionDate,
+		locationNihii = locationNihii,
 		locationService = locationService,
 		cancelReason = cancelReason,
 		cancelDate = cancelDate,

@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
@@ -49,6 +50,11 @@ data class IcureStub(
 	 * The identifier of the data owner responsible for this entity.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The identifier of the medical location associated with this entity. Deprecated for use with Cardinal SDK.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * The set of tags associated with this entity.
 	 */

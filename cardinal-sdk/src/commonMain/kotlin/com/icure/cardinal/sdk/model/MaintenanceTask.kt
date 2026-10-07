@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.model.embed.TaskStatus
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
@@ -71,6 +72,12 @@ sealed interface MaintenanceTask :
 	 * The id of the HealthcareParty that is responsible for this maintenance task.
 	 */
 	override val responsible: String?
+
+	/**
+	 * The id of the medical location where this maintenance task was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
 
 	/**
 	 * Tags that qualify the maintenance task as being member of a certain class.
@@ -180,6 +187,11 @@ data class DecryptedMaintenanceTask(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this maintenance task was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the maintenance task as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -282,6 +294,11 @@ data class EncryptedMaintenanceTask(
 	 * The id of the HealthcareParty that is responsible for this maintenance task.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The id of the medical location where this maintenance task was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the maintenance task as being member of a certain class.
 	 */

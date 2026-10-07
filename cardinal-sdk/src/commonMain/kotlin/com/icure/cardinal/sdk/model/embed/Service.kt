@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -100,6 +101,9 @@ sealed interface Service :
 	 */
 	public val content: Map<String, Content>
 
+	@Deprecated("use encryptedSelf instead")
+	public val encryptedContent: String?
+
 	public val textIndexes: Map<String, String>
 
 	/**
@@ -116,6 +120,12 @@ sealed interface Service :
 	 * The date (YYYYMMDDhhmmss) marking the end of the Service
 	 */
 	public val closingDate: Long?
+
+	/**
+	 * Id of the form used during the Service
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val formId: String?
 
 	/**
 	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
@@ -139,10 +149,19 @@ sealed interface Service :
 	 */
 	override val responsible: String?
 
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
 	/**
 	 * Text, comments on the Service provided
 	 */
 	public val comment: String?
+
+	/**
+	 * Text, comments on the Service provided
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val status: Int?
 
 	/**
 	 * List of invoicing codes
@@ -245,6 +264,8 @@ data class DecryptedService(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val content: Map<String, DecryptedContent> = emptyMap(),
+	@Deprecated("use encryptedSelf instead")
+	override val encryptedContent: String? = null,
 	@param:DefaultValue("emptyMap()")
 	override val textIndexes: Map<String, String> = emptyMap(),
 	/**
@@ -259,6 +280,11 @@ data class DecryptedService(
 	 * The date (YYYYMMDDhhmmss) marking the end of the Service
 	 */
 	override val closingDate: Long? = null,
+	/**
+	 * Id of the form used during the Service
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val formId: String? = null,
 	/**
 	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
@@ -276,10 +302,17 @@ data class DecryptedService(
 	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the contact's responsible
 	 */
 	override val responsible: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Text, comments on the Service provided
 	 */
 	override val comment: String? = null,
+	/**
+	 * Text, comments on the Service provided
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int? = null,
 	/**
 	 * List of invoicing codes
 	 */
@@ -377,6 +410,8 @@ data class EncryptedService(
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val content: Map<String, EncryptedContent> = emptyMap(),
+	@Deprecated("use encryptedSelf instead")
+	override val encryptedContent: String? = null,
 	@param:DefaultValue("emptyMap()")
 	override val textIndexes: Map<String, String> = emptyMap(),
 	/**
@@ -391,6 +426,11 @@ data class EncryptedService(
 	 * The date (YYYYMMDDhhmmss) marking the end of the Service
 	 */
 	override val closingDate: Long? = null,
+	/**
+	 * Id of the form used during the Service
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val formId: String? = null,
 	/**
 	 * The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
@@ -408,10 +448,17 @@ data class EncryptedService(
 	 * The id of the HealthcareParty that is responsible for this service, if absent, falls back on the contact's responsible
 	 */
 	override val responsible: String? = null,
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Text, comments on the Service provided
 	 */
 	override val comment: String? = null,
+	/**
+	 * Text, comments on the Service provided
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int? = null,
 	/**
 	 * List of invoicing codes
 	 */

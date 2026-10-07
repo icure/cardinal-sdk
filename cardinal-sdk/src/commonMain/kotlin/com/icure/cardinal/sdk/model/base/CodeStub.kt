@@ -4,8 +4,8 @@ package com.icure.cardinal.sdk.model.base
 
 import com.icure.cardinal.sdk.utils.generation.RequireHashable
 import kotlinx.serialization.Serializable
-import kotlin.String
 import kotlin.Deprecated
+import kotlin.String
 import kotlin.collections.Map
 
 /**
@@ -40,6 +40,11 @@ data class CodeStub(
 	 * A human-readable label for the context.
 	 */
 	public val contextLabel: String? = null,
+	/**
+	 * A map of language codes to localized labels for this code.
+	 */
+	@Deprecated("label shouldn't be included in code stub but only in full codes")
+	public val label: Map<String, String>? = null,
 ) : CodeIdentification<String?> {
 	// region CodeStub-CodeStub
 

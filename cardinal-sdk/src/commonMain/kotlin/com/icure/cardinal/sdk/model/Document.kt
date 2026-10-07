@@ -12,23 +12,24 @@ import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.model.embed.DataAttachment
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.DeletedAttachment
+import com.icure.cardinal.sdk.model.embed.DocumentLocation
 import com.icure.cardinal.sdk.model.embed.DocumentStatus
 import com.icure.cardinal.sdk.model.embed.DocumentType
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.ByteArray
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DocumentLocation
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
 
 /**
  * Represents a document entity stored in CouchDB. Documents can have main and secondary data attachments,
@@ -75,6 +76,12 @@ sealed interface Document :
 	override val responsible: String?
 
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
 	 * Tags that qualify the document as being member of a certain class.
 	 */
 	override val tags: Set<CodeStub>
@@ -85,9 +92,21 @@ sealed interface Document :
 	override val codes: Set<CodeStub>
 
 	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
+
+	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long?
+
+	/**
+	 * The location of the document.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val documentLocation: DocumentLocation?
 
 	/**
 	 * The type of document (e.g., admission, clinical path, document report, invoice).
@@ -113,6 +132,18 @@ sealed interface Document :
 	 * The document version.
 	 */
 	public val version: String?
+
+	/**
+	 * The ICureDocument (Form, Contact, ...) used to generate this document.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val storedICureDocumentId: String?
+
+	/**
+	 * A unique external id from another external source.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val externalUuid: String?
 
 	/**
 	 * The size of the document file.
@@ -156,6 +187,18 @@ sealed interface Document :
 	 * Information on past attachments for this document.
 	 */
 	public val deletedAttachments: List<DeletedAttachment>
+
+	/**
+	 * The encrypted attachment content as bytes.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val encryptedAttachment: ByteArray?
+
+	/**
+	 * The decrypted attachment content as bytes.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val decryptedAttachment: ByteArray?
 
 	/**
 	 * The secret foreign keys, used for secure linking to patients.
@@ -234,6 +277,11 @@ data class DecryptedDocument(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the document as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -244,9 +292,19 @@ data class DecryptedDocument(
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
+	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long? = null,
+	/**
+	 * The location of the document.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val documentLocation: DocumentLocation? = null,
 	/**
 	 * The type of document (e.g., admission, clinical path, document report, invoice).
 	 */
@@ -267,6 +325,16 @@ data class DecryptedDocument(
 	 * The document version.
 	 */
 	override val version: String? = null,
+	/**
+	 * The ICureDocument (Form, Contact, ...) used to generate this document.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val storedICureDocumentId: String? = null,
+	/**
+	 * A unique external id from another external source.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalUuid: String? = null,
 	/**
 	 * The size of the document file.
 	 */
@@ -302,6 +370,18 @@ data class DecryptedDocument(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
+	/**
+	 * The encrypted attachment content as bytes.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val encryptedAttachment: ByteArray? = null,
+	/**
+	 * The decrypted attachment content as bytes.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val decryptedAttachment: ByteArray? = null,
 	/**
 	 * The secret foreign keys, used for secure linking to patients.
 	 */
@@ -371,6 +451,11 @@ data class EncryptedDocument(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the document as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -381,9 +466,19 @@ data class EncryptedDocument(
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
 	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
+	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long? = null,
+	/**
+	 * The location of the document.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val documentLocation: DocumentLocation? = null,
 	/**
 	 * The type of document (e.g., admission, clinical path, document report, invoice).
 	 */
@@ -404,6 +499,16 @@ data class EncryptedDocument(
 	 * The document version.
 	 */
 	override val version: String? = null,
+	/**
+	 * The ICureDocument (Form, Contact, ...) used to generate this document.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val storedICureDocumentId: String? = null,
+	/**
+	 * A unique external id from another external source.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalUuid: String? = null,
 	/**
 	 * The size of the document file.
 	 */
@@ -439,6 +544,18 @@ data class EncryptedDocument(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val deletedAttachments: List<DeletedAttachment> = emptyList(),
+	/**
+	 * The encrypted attachment content as bytes.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val encryptedAttachment: ByteArray? = null,
+	/**
+	 * The decrypted attachment content as bytes.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val decryptedAttachment: ByteArray? = null,
 	/**
 	 * The secret foreign keys, used for secure linking to patients.
 	 */

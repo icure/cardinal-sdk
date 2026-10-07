@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeyp
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import kotlin.Deprecated
 import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
@@ -32,6 +33,9 @@ interface CryptoActor : Versionable<String> {
 	public val publicKey: SpkiHexString?
 
 	public val publicKeysForOaepWithSha256: Set<SpkiHexString>
+
+	@Deprecated("Use dataOwnerGroups with a DataOwnerGroupLinkTypeDto.parent link instead")
+	public val parentId: String?
 
 	/**
 	 *

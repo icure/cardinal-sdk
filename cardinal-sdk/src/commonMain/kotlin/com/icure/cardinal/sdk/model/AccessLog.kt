@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.serialization.InstantSerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -68,6 +69,12 @@ sealed interface AccessLog :
 	override val responsible: String?
 
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
 	 * Tags that qualify the access log as being member of a certain class.
 	 */
 	override val tags: Set<CodeStub>
@@ -76,6 +83,12 @@ sealed interface AccessLog :
 	 * Codes that identify or qualify this particular access log.
 	 */
 	override val codes: Set<CodeStub>
+
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
@@ -106,6 +119,12 @@ sealed interface AccessLog :
 	 * The date of logging, filled instantaneously.
 	 */
 	public val date: Instant?
+
+	/**
+	 * The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	@Deprecated("Use cryptedForeignKeys instead")
+	public val patientId: String?
 
 	/**
 	 * The secret foreign keys of the access log, used for secure linking to patients.
@@ -176,6 +195,11 @@ data class DecryptedAccessLog(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the access log as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -185,6 +209,11 @@ data class DecryptedAccessLog(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -210,6 +239,11 @@ data class DecryptedAccessLog(
 	 */
 	@Serializable(with = InstantSerializer::class)
 	override val date: Instant? = null,
+	/**
+	 * The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	@Deprecated("Use cryptedForeignKeys instead")
+	override val patientId: String? = null,
 	/**
 	 * The secret foreign keys of the access log, used for secure linking to patients.
 	 */
@@ -278,6 +312,11 @@ data class EncryptedAccessLog(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the access log as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -287,6 +326,11 @@ data class EncryptedAccessLog(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -312,6 +356,11 @@ data class EncryptedAccessLog(
 	 */
 	@Serializable(with = InstantSerializer::class)
 	override val date: Instant? = null,
+	/**
+	 * The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	@Deprecated("Use cryptedForeignKeys instead")
+	override val patientId: String? = null,
 	/**
 	 * The secret foreign keys of the access log, used for secure linking to patients.
 	 */

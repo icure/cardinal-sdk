@@ -16,6 +16,7 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -90,6 +91,18 @@ sealed interface Topic :
 	 * The id of the HealthcareParty that is responsible for this topic.
 	 */
 	override val responsible: String?
+
+	/**
+	 * The id of the medical location where this topic was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
@@ -208,6 +221,16 @@ data class DecryptedTopic(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this topic was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
+	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
 	override val deletionDate: Long? = null,
@@ -319,6 +342,16 @@ data class EncryptedTopic(
 	 * The id of the HealthcareParty that is responsible for this topic.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The id of the medical location where this topic was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */

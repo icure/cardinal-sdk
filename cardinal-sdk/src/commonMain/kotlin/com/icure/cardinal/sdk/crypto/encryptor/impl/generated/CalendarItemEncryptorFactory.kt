@@ -46,12 +46,15 @@ internal object CalendarItemEncryptorFactory : EntityEncryptorFactory<EncryptedC
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					title = clearEntity.title,
 					calendarItemTypeId = clearEntity.calendarItemTypeId,
 					masterCalendarItemId = clearEntity.masterCalendarItemId,
+					patientId = clearEntity.patientId,
 					important = clearEntity.important,
 					homeVisit = clearEntity.homeVisit,
 					phoneNumber = clearEntity.phoneNumber,
@@ -79,6 +82,7 @@ internal object CalendarItemEncryptorFactory : EntityEncryptorFactory<EncryptedC
 						clearEntity.meetingTags.mapTo(mutableSetOf()) { x0 ->
 							CalendarItemTagEncryptorFactory.empty.encrypt(encryptionKey, x0)
 						},
+					flowItem = clearEntity.flowItem,
 					properties =
 						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
 							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
@@ -114,11 +118,14 @@ internal object CalendarItemEncryptorFactory : EntityEncryptorFactory<EncryptedC
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			title_e = "title" in manifest.fieldsToEncrypt,
 			calendarItemTypeId_e = "calendarItemTypeId" in manifest.fieldsToEncrypt,
 			masterCalendarItemId_e = "masterCalendarItemId" in manifest.fieldsToEncrypt,
+			patientId_e = "patientId" in manifest.fieldsToEncrypt,
 			important_e = "important" in manifest.fieldsToEncrypt,
 			homeVisit_e = "homeVisit" in manifest.fieldsToEncrypt,
 			phoneNumber_e = "phoneNumber" in manifest.fieldsToEncrypt,
@@ -165,6 +172,7 @@ internal object CalendarItemEncryptorFactory : EntityEncryptorFactory<EncryptedC
 						)
 					} ?: EncryptableFieldConfig.None(CalendarItemTagEncryptorFactory)
 				},
+			flowItem_e = "flowItem" in manifest.fieldsToEncrypt,
 			properties_e =
 				if ("properties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
@@ -192,11 +200,14 @@ private class CalendarItemEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val title_e: Boolean,
 	private val calendarItemTypeId_e: Boolean,
 	private val masterCalendarItemId_e: Boolean,
+	private val patientId_e: Boolean,
 	private val important_e: Boolean,
 	private val homeVisit_e: Boolean,
 	private val phoneNumber_e: Boolean,
@@ -217,6 +228,7 @@ private class CalendarItemEncryptor(
 	private val hcpId_e: Boolean,
 	private val recurrenceId_e: Boolean,
 	private val meetingTags_e: EncryptableFieldConfig<EncryptedCalendarItemTag, DecryptedCalendarItemTag>,
+	private val flowItem_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
@@ -236,8 +248,15 @@ private class CalendarItemEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (title_e && clearEntity.title != null) dataToEncrypt["title"] = encodingJson.encodeToJsonElement(clearEntity.title)
 		if (calendarItemTypeId_e && clearEntity.calendarItemTypeId != null) {
 			dataToEncrypt["calendarItemTypeId"] =
@@ -251,6 +270,7 @@ private class CalendarItemEncryptor(
 					clearEntity.masterCalendarItemId,
 				)
 		}
+		if (patientId_e && clearEntity.patientId != null) dataToEncrypt["patientId"] = encodingJson.encodeToJsonElement(clearEntity.patientId)
 		if (important_e && clearEntity.important != null) dataToEncrypt["important"] = encodingJson.encodeToJsonElement(clearEntity.important)
 		if (homeVisit_e && clearEntity.homeVisit != null) dataToEncrypt["homeVisit"] = encodingJson.encodeToJsonElement(clearEntity.homeVisit)
 		if (phoneNumber_e && clearEntity.phoneNumber != null) {
@@ -321,6 +341,7 @@ private class CalendarItemEncryptor(
 					clearEntity.meetingTags,
 				)
 		}
+		if (flowItem_e && clearEntity.flowItem != null) dataToEncrypt["flowItem"] = encodingJson.encodeToJsonElement(clearEntity.flowItem)
 		if (properties_e.fullEncryption && clearEntity.properties.isNotEmpty()) {
 			dataToEncrypt["properties"] =
 				encodingJson.encodeToJsonElement(
@@ -334,12 +355,15 @@ private class CalendarItemEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			title = if (title_e) null else clearEntity.title,
 			calendarItemTypeId = if (calendarItemTypeId_e) null else clearEntity.calendarItemTypeId,
 			masterCalendarItemId = if (masterCalendarItemId_e) null else clearEntity.masterCalendarItemId,
+			patientId = if (patientId_e) null else clearEntity.patientId,
 			important = if (important_e) null else clearEntity.important,
 			homeVisit = if (homeVisit_e) null else clearEntity.homeVisit,
 			phoneNumber = if (phoneNumber_e) null else clearEntity.phoneNumber,
@@ -379,6 +403,7 @@ private class CalendarItemEncryptor(
 						}
 					}
 				},
+			flowItem = if (flowItem_e) null else clearEntity.flowItem,
 			properties =
 				properties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {

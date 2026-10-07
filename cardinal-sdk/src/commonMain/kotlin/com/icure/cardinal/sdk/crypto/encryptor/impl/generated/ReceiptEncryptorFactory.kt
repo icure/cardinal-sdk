@@ -36,8 +36,10 @@ internal object ReceiptEncryptorFactory : EntityEncryptorFactory<EncryptedReceip
 					modified = clearEntity.modified,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					tags = clearEntity.tags,
 					codes = clearEntity.codes,
+					endOfLife = clearEntity.endOfLife,
 					deletionDate = clearEntity.deletionDate,
 					attachmentIds = clearEntity.attachmentIds,
 					attachmentInfos = clearEntity.attachmentInfos,
@@ -70,8 +72,10 @@ internal object ReceiptEncryptorFactory : EntityEncryptorFactory<EncryptedReceip
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			tags_e = "tags" in manifest.fieldsToEncrypt,
 			codes_e = "codes" in manifest.fieldsToEncrypt,
+			endOfLife_e = "endOfLife" in manifest.fieldsToEncrypt,
 			attachmentIds_e = "attachmentIds" in manifest.fieldsToEncrypt,
 			attachmentInfos_e = "attachmentInfos" in manifest.fieldsToEncrypt,
 			deletedAttachments_e = "deletedAttachments" in manifest.fieldsToEncrypt,
@@ -91,8 +95,10 @@ private class ReceiptEncryptor(
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val tags_e: Boolean,
 	private val codes_e: Boolean,
+	private val endOfLife_e: Boolean,
 	private val attachmentIds_e: Boolean,
 	private val attachmentInfos_e: Boolean,
 	private val deletedAttachments_e: Boolean,
@@ -117,8 +123,15 @@ private class ReceiptEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (tags_e && clearEntity.tags.isNotEmpty()) dataToEncrypt["tags"] = encodingJson.encodeToJsonElement(clearEntity.tags)
 		if (codes_e && clearEntity.codes.isNotEmpty()) dataToEncrypt["codes"] = encodingJson.encodeToJsonElement(clearEntity.codes)
+		if (endOfLife_e && clearEntity.endOfLife != null) dataToEncrypt["endOfLife"] = encodingJson.encodeToJsonElement(clearEntity.endOfLife)
 		if (attachmentIds_e && clearEntity.attachmentIds.isNotEmpty()) {
 			dataToEncrypt["attachmentIds"] =
 				encodingJson.encodeToJsonElement(
@@ -158,8 +171,10 @@ private class ReceiptEncryptor(
 			modified = if (modified_e) null else clearEntity.modified,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			tags = if (tags_e) emptySet() else clearEntity.tags,
 			codes = if (codes_e) emptySet() else clearEntity.codes,
+			endOfLife = if (endOfLife_e) null else clearEntity.endOfLife,
 			deletionDate = clearEntity.deletionDate,
 			attachmentIds = if (attachmentIds_e) emptyMap() else clearEntity.attachmentIds,
 			attachmentInfos = if (attachmentInfos_e) emptyMap() else clearEntity.attachmentInfos,

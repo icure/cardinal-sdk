@@ -115,6 +115,12 @@ private class SubContactDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -127,6 +133,12 @@ private class SubContactDecryptor(
 						encryptedEntity.codes,
 						entityCustomisedModelVersion,
 					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
+						entityCustomisedModelVersion,
+					),
 				descr =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["descr"]?.also { usedEncryptedContent += "descr" },
@@ -137,6 +149,12 @@ private class SubContactDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["protocol"]?.also { usedEncryptedContent += "protocol" },
 						encryptedEntity.protocol,
+						entityCustomisedModelVersion,
+					),
+				status =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["status"]?.also { usedEncryptedContent += "status" },
+						encryptedEntity.status,
 						entityCustomisedModelVersion,
 					),
 				formId =
@@ -155,6 +173,12 @@ private class SubContactDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["healthElementId"]?.also { usedEncryptedContent += "healthElementId" },
 						encryptedEntity.healthElementId,
+						entityCustomisedModelVersion,
+					),
+				classificationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["classificationId"]?.also { usedEncryptedContent += "classificationId" },
+						encryptedEntity.classificationId,
 						entityCustomisedModelVersion,
 					),
 				services =

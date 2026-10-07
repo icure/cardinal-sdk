@@ -9,6 +9,7 @@ import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Set
@@ -43,6 +44,11 @@ data class ClassificationTemplate(
 	 * The id of the data owner that is responsible for this classification template.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the classification template as being member of a certain class.
 	 */

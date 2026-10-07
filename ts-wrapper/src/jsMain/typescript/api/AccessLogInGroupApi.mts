@@ -1,6 +1,7 @@
 // auto-generated file
-import {FilterOptions, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {AccessLogDelegateOptions} from '../crypto/entities/AccessLogDelegateOptions.mjs';
+import {AccessLogShareOptions} from '../crypto/entities/AccessLogShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {AccessLog, DecryptedAccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -128,6 +129,34 @@ export interface AccessLogInGroupApi {
 	purgeAccessLog(accessLog: GroupScoped<AccessLog>): Promise<void>;
 
 	purgeAccessLogs(accessLogs: Array<GroupScoped<AccessLog>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.shareWith]
+	 */
+	shareWith(delegate: EntityReferenceInGroup, accessLog: GroupScoped<DecryptedAccessLog>,
+			options?: { options?: AccessLogShareOptions | undefined }): Promise<GroupScoped<DecryptedAccessLog>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.shareWithMany]
+	 */
+	shareWithMany(accessLog: GroupScoped<DecryptedAccessLog>,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, shareOptions: AccessLogShareOptions }, 'delegate'>): Promise<GroupScoped<DecryptedAccessLog>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.filterAccessLogsBy]
+	 */
+	filterAccessLogsBy(groupId: string,
+			filter: FilterOptions<AccessLog>): Promise<PaginatedListIterator<GroupScoped<DecryptedAccessLog>>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogFlavouredApi.filterAccessLogsBySorted]
+	 */
+	filterAccessLogsBySorted(groupId: string,
+			filter: SortableFilterOptions<AccessLog>): Promise<PaginatedListIterator<GroupScoped<DecryptedAccessLog>>>;
 
 	/**
 	 *

@@ -38,6 +38,18 @@ export interface Partnership extends Encryptable {
 	 */
 	partnerType: PartnerType | undefined;
 
+	/**
+	 *
+	 *  Deprecated. Description of the relationship from this patient to the other person.
+	 */
+	meToOtherRelationshipDescription: string | undefined;
+
+	/**
+	 *
+	 *  Deprecated. Description of the relationship from the other person to this patient.
+	 */
+	otherToMeRelationshipDescription: string | undefined;
+
 	readonly isEncrypted: boolean;
 
 	toJSON(): object;
@@ -77,6 +89,18 @@ export class DecryptedPartnership {
 
 	/**
 	 *
+	 *  Deprecated. Description of the relationship from this patient to the other person.
+	 */
+	meToOtherRelationshipDescription: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Deprecated. Description of the relationship from the other person to this patient.
+	 */
+	otherToMeRelationshipDescription: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Deprecated. Description of the relationship from the other person to this patient.
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
@@ -89,6 +113,8 @@ export class DecryptedPartnership {
 		if ('status' in partial) this.status = partial.status;
 		if ('partnerId' in partial) this.partnerId = partial.partnerId;
 		if ('partnerType' in partial) this.partnerType = partial.partnerType;
+		if ('meToOtherRelationshipDescription' in partial) this.meToOtherRelationshipDescription = partial.meToOtherRelationshipDescription;
+		if ('otherToMeRelationshipDescription' in partial) this.otherToMeRelationshipDescription = partial.otherToMeRelationshipDescription;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -98,6 +124,8 @@ export class DecryptedPartnership {
 		if (this.status != undefined) res['status'] = this.status
 		if (this.partnerId != undefined) res['partnerId'] = this.partnerId
 		if (this.partnerType != undefined) res['partnerType'] = this.partnerType
+		if (this.meToOtherRelationshipDescription != undefined) res['meToOtherRelationshipDescription'] = this.meToOtherRelationshipDescription
+		if (this.otherToMeRelationshipDescription != undefined) res['otherToMeRelationshipDescription'] = this.otherToMeRelationshipDescription
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = false
 		return res
@@ -113,6 +141,8 @@ export class DecryptedPartnership {
 			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
 			partnerId: expectString(extractEntry(jCpy, 'partnerId', false, path), true, [...path, ".partnerId"]),
 			partnerType: expectStringEnum(extractEntry(jCpy, 'partnerType', false, path), true, [...path, ".partnerType"], PartnerType, 'PartnerType'),
+			meToOtherRelationshipDescription: expectString(extractEntry(jCpy, 'meToOtherRelationshipDescription', false, path), true, [...path, ".meToOtherRelationshipDescription"]),
+			otherToMeRelationshipDescription: expectString(extractEntry(jCpy, 'otherToMeRelationshipDescription', false, path), true, [...path, ".otherToMeRelationshipDescription"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {
@@ -156,6 +186,18 @@ export class EncryptedPartnership {
 
 	/**
 	 *
+	 *  Deprecated. Description of the relationship from this patient to the other person.
+	 */
+	meToOtherRelationshipDescription: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Deprecated. Description of the relationship from the other person to this patient.
+	 */
+	otherToMeRelationshipDescription: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Deprecated. Description of the relationship from the other person to this patient.
 	 */
 	encryptedSelf: Base64String | undefined = undefined;
@@ -168,6 +210,8 @@ export class EncryptedPartnership {
 		if ('status' in partial) this.status = partial.status;
 		if ('partnerId' in partial) this.partnerId = partial.partnerId;
 		if ('partnerType' in partial) this.partnerType = partial.partnerType;
+		if ('meToOtherRelationshipDescription' in partial) this.meToOtherRelationshipDescription = partial.meToOtherRelationshipDescription;
+		if ('otherToMeRelationshipDescription' in partial) this.otherToMeRelationshipDescription = partial.otherToMeRelationshipDescription;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 	}
 
@@ -177,6 +221,8 @@ export class EncryptedPartnership {
 		if (this.status != undefined) res['status'] = this.status
 		if (this.partnerId != undefined) res['partnerId'] = this.partnerId
 		if (this.partnerType != undefined) res['partnerType'] = this.partnerType
+		if (this.meToOtherRelationshipDescription != undefined) res['meToOtherRelationshipDescription'] = this.meToOtherRelationshipDescription
+		if (this.otherToMeRelationshipDescription != undefined) res['otherToMeRelationshipDescription'] = this.otherToMeRelationshipDescription
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		res['isEncrypted'] = true
 		return res
@@ -192,6 +238,8 @@ export class EncryptedPartnership {
 			status: expectStringEnum(extractEntry(jCpy, 'status', false, path), true, [...path, ".status"], PartnershipStatus, 'PartnershipStatus'),
 			partnerId: expectString(extractEntry(jCpy, 'partnerId', false, path), true, [...path, ".partnerId"]),
 			partnerType: expectStringEnum(extractEntry(jCpy, 'partnerType', false, path), true, [...path, ".partnerType"], PartnerType, 'PartnerType'),
+			meToOtherRelationshipDescription: expectString(extractEntry(jCpy, 'meToOtherRelationshipDescription', false, path), true, [...path, ".meToOtherRelationshipDescription"]),
+			otherToMeRelationshipDescription: expectString(extractEntry(jCpy, 'otherToMeRelationshipDescription', false, path), true, [...path, ".otherToMeRelationshipDescription"]),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 		})
 		if (!ignoreUnknownKeys) {

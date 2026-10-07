@@ -56,16 +56,20 @@ internal object ServiceEncryptorFactory : EntityEncryptorFactory<EncryptedServic
 						clearEntity.content.mapValues { (_, x0) ->
 							ContentEncryptorFactory.empty.encrypt(encryptionKey, x0)
 						},
+					encryptedContent = clearEntity.encryptedContent,
 					textIndexes = clearEntity.textIndexes,
 					valueDate = clearEntity.valueDate,
 					openingDate = clearEntity.openingDate,
 					closingDate = clearEntity.closingDate,
+					formId = clearEntity.formId,
 					created = clearEntity.created,
 					modified = clearEntity.modified,
 					endOfLife = clearEntity.endOfLife,
 					author = clearEntity.author,
 					responsible = clearEntity.responsible,
+					medicalLocationId = clearEntity.medicalLocationId,
 					comment = clearEntity.comment,
+					status = clearEntity.status,
 					invoicingCodes = clearEntity.invoicingCodes,
 					notes =
 						clearEntity.notes.map { x0 ->
@@ -119,15 +123,19 @@ internal object ServiceEncryptorFactory : EntityEncryptorFactory<EncryptedServic
 						)
 					} ?: EncryptableFieldConfig.None(ContentEncryptorFactory)
 				},
+			encryptedContent_e = "encryptedContent" in manifest.fieldsToEncrypt,
 			textIndexes_e = "textIndexes" in manifest.fieldsToEncrypt,
 			valueDate_e = "valueDate" in manifest.fieldsToEncrypt,
 			openingDate_e = "openingDate" in manifest.fieldsToEncrypt,
 			closingDate_e = "closingDate" in manifest.fieldsToEncrypt,
+			formId_e = "formId" in manifest.fieldsToEncrypt,
 			created_e = "created" in manifest.fieldsToEncrypt,
 			modified_e = "modified" in manifest.fieldsToEncrypt,
 			author_e = "author" in manifest.fieldsToEncrypt,
 			responsible_e = "responsible" in manifest.fieldsToEncrypt,
+			medicalLocationId_e = "medicalLocationId" in manifest.fieldsToEncrypt,
 			comment_e = "comment" in manifest.fieldsToEncrypt,
+			status_e = "status" in manifest.fieldsToEncrypt,
 			invoicingCodes_e = "invoicingCodes" in manifest.fieldsToEncrypt,
 			notes_e =
 				if ("notes" in manifest.fieldsToEncrypt) {
@@ -164,15 +172,19 @@ private class ServiceEncryptor(
 	private val label_e: Boolean,
 	private val index_e: Boolean,
 	private val content_e: EncryptableFieldConfig<EncryptedContent, DecryptedContent>,
+	private val encryptedContent_e: Boolean,
 	private val textIndexes_e: Boolean,
 	private val valueDate_e: Boolean,
 	private val openingDate_e: Boolean,
 	private val closingDate_e: Boolean,
+	private val formId_e: Boolean,
 	private val created_e: Boolean,
 	private val modified_e: Boolean,
 	private val author_e: Boolean,
 	private val responsible_e: Boolean,
+	private val medicalLocationId_e: Boolean,
 	private val comment_e: Boolean,
+	private val status_e: Boolean,
 	private val invoicingCodes_e: Boolean,
 	private val notes_e: EncryptableFieldConfig<EncryptedAnnotation, DecryptedAnnotation>,
 	private val qualifiedLinks_e: Boolean,
@@ -226,6 +238,12 @@ private class ServiceEncryptor(
 					clearEntity.content,
 				)
 		}
+		if (encryptedContent_e && clearEntity.encryptedContent != null) {
+			dataToEncrypt["encryptedContent"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.encryptedContent,
+				)
+		}
 		if (textIndexes_e && clearEntity.textIndexes.isNotEmpty()) {
 			dataToEncrypt["textIndexes"] =
 				encodingJson.encodeToJsonElement(
@@ -245,6 +263,7 @@ private class ServiceEncryptor(
 					clearEntity.closingDate,
 				)
 		}
+		if (formId_e && clearEntity.formId != null) dataToEncrypt["formId"] = encodingJson.encodeToJsonElement(clearEntity.formId)
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
 		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
 		if (author_e && clearEntity.author != null) dataToEncrypt["author"] = encodingJson.encodeToJsonElement(clearEntity.author)
@@ -254,7 +273,14 @@ private class ServiceEncryptor(
 					clearEntity.responsible,
 				)
 		}
+		if (medicalLocationId_e && clearEntity.medicalLocationId != null) {
+			dataToEncrypt["medicalLocationId"] =
+				encodingJson.encodeToJsonElement(
+					clearEntity.medicalLocationId,
+				)
+		}
 		if (comment_e && clearEntity.comment != null) dataToEncrypt["comment"] = encodingJson.encodeToJsonElement(clearEntity.comment)
+		if (status_e && clearEntity.status != null) dataToEncrypt["status"] = encodingJson.encodeToJsonElement(clearEntity.status)
 		if (invoicingCodes_e && clearEntity.invoicingCodes.isNotEmpty()) {
 			dataToEncrypt["invoicingCodes"] =
 				encodingJson.encodeToJsonElement(
@@ -295,16 +321,20 @@ private class ServiceEncryptor(
 						}
 					}
 				},
+			encryptedContent = if (encryptedContent_e) null else clearEntity.encryptedContent,
 			textIndexes = if (textIndexes_e) emptyMap() else clearEntity.textIndexes,
 			valueDate = if (valueDate_e) null else clearEntity.valueDate,
 			openingDate = if (openingDate_e) null else clearEntity.openingDate,
 			closingDate = if (closingDate_e) null else clearEntity.closingDate,
+			formId = if (formId_e) null else clearEntity.formId,
 			created = if (created_e) null else clearEntity.created,
 			modified = if (modified_e) null else clearEntity.modified,
 			endOfLife = clearEntity.endOfLife,
 			author = if (author_e) null else clearEntity.author,
 			responsible = if (responsible_e) null else clearEntity.responsible,
+			medicalLocationId = if (medicalLocationId_e) null else clearEntity.medicalLocationId,
 			comment = if (comment_e) null else clearEntity.comment,
+			status = if (status_e) null else clearEntity.status,
 			invoicingCodes = if (invoicingCodes_e) emptySet() else clearEntity.invoicingCodes,
 			notes =
 				notes_e.encryptor.let { encryptor ->

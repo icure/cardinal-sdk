@@ -25,6 +25,8 @@ import com.icure.cardinal.sdk.js.model.embed.calendarItemTag_fromJs
 import com.icure.cardinal.sdk.js.model.embed.calendarItemTag_toJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_fromJs
 import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
+import com.icure.cardinal.sdk.js.model.embed.flowItem_fromJs
+import com.icure.cardinal.sdk.js.model.embed.flowItem_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_toJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
@@ -61,6 +63,9 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -73,6 +78,9 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 			codeStub_toJs(x1)
 		},
 	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
+	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
@@ -84,6 +92,9 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 	)
 	val masterCalendarItemId = nullToUndefined(
 		obj.masterCalendarItemId
+	)
+	val patientId = nullToUndefined(
+		obj.patientId
 	)
 	val important = nullToUndefined(
 		obj.important
@@ -156,6 +167,11 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		{ x1: DecryptedCalendarItemTag ->
 			calendarItemTag_toJs(x1)
 		},
+	)
+	val flowItem = nullToUndefined(
+		obj.flowItem?.let { nonNull1 ->
+			flowItem_toJs(nonNull1)
+		}
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -234,12 +250,15 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"title:title," +
 		"calendarItemTypeId:calendarItemTypeId," +
 		"masterCalendarItemId:masterCalendarItemId," +
+		"patientId:patientId," +
 		"important:important," +
 		"homeVisit:homeVisit," +
 		"phoneNumber:phoneNumber," +
@@ -261,6 +280,7 @@ public fun calendarItem_toJs(obj: DecryptedCalendarItem): DecryptedCalendarItemJ
 		"hcpId:hcpId," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
+		"flowItem:flowItem," +
 		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
@@ -280,6 +300,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -294,10 +315,12 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val title = undefinedToNull(obj.title)
 	val calendarItemTypeId = undefinedToNull(obj.calendarItemTypeId)
 	val masterCalendarItemId = undefinedToNull(obj.masterCalendarItemId)
+	val patientId = undefinedToNull(obj.patientId)
 	val important = undefinedToNull(obj.important)
 	val homeVisit = undefinedToNull(obj.homeVisit)
 	val phoneNumber = undefinedToNull(obj.phoneNumber)
@@ -331,6 +354,9 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 			calendarItemTag_fromJs(x1)
 		},
 	)
+	val flowItem = obj.flowItem?.let { nonNull1 ->
+		flowItem_fromJs(nonNull1)
+	}
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -408,12 +434,15 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		title = title,
 		calendarItemTypeId = calendarItemTypeId,
 		masterCalendarItemId = masterCalendarItemId,
+		patientId = patientId,
 		important = important,
 		homeVisit = homeVisit,
 		phoneNumber = phoneNumber,
@@ -435,6 +464,7 @@ public fun calendarItem_fromJs(obj: DecryptedCalendarItemJs): DecryptedCalendarI
 		hcpId = hcpId,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
+		flowItem = flowItem,
 		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,
@@ -465,6 +495,9 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	val responsible = nullToUndefined(
 		obj.responsible
 	)
+	val medicalLocationId = nullToUndefined(
+		obj.medicalLocationId
+	)
 	val tags = setToArray(
 		obj.tags,
 		{ x1: CodeStub ->
@@ -477,6 +510,9 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 			codeStub_toJs(x1)
 		},
 	)
+	val endOfLife = nullToUndefined(
+		longToNumber(obj.endOfLife)
+	)
 	val deletionDate = nullToUndefined(
 		longToNumber(obj.deletionDate)
 	)
@@ -488,6 +524,9 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 	)
 	val masterCalendarItemId = nullToUndefined(
 		obj.masterCalendarItemId
+	)
+	val patientId = nullToUndefined(
+		obj.patientId
 	)
 	val important = nullToUndefined(
 		obj.important
@@ -560,6 +599,11 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		{ x1: EncryptedCalendarItemTag ->
 			calendarItemTag_toJs(x1)
 		},
+	)
+	val flowItem = nullToUndefined(
+		obj.flowItem?.let { nonNull1 ->
+			flowItem_toJs(nonNull1)
+		}
 	)
 	val properties = setToArray(
 		obj.properties,
@@ -638,12 +682,15 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		"modified:modified," +
 		"author:author," +
 		"responsible:responsible," +
+		"medicalLocationId:medicalLocationId," +
 		"tags:tags," +
 		"codes:codes," +
+		"endOfLife:endOfLife," +
 		"deletionDate:deletionDate," +
 		"title:title," +
 		"calendarItemTypeId:calendarItemTypeId," +
 		"masterCalendarItemId:masterCalendarItemId," +
+		"patientId:patientId," +
 		"important:important," +
 		"homeVisit:homeVisit," +
 		"phoneNumber:phoneNumber," +
@@ -665,6 +712,7 @@ public fun calendarItem_toJs(obj: EncryptedCalendarItem): EncryptedCalendarItemJ
 		"hcpId:hcpId," +
 		"recurrenceId:recurrenceId," +
 		"meetingTags:meetingTags," +
+		"flowItem:flowItem," +
 		"properties:properties," +
 		"secretForeignKeys:secretForeignKeys," +
 		"cryptedForeignKeys:cryptedForeignKeys," +
@@ -684,6 +732,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 	val modified = numberToLong(obj.modified, "obj.modified")
 	val author = undefinedToNull(obj.author)
 	val responsible = undefinedToNull(obj.responsible)
+	val medicalLocationId = undefinedToNull(obj.medicalLocationId)
 	val tags = arrayToSet(
 		obj.tags,
 		"obj.tags",
@@ -698,10 +747,12 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 			codeStub_fromJs(x1)
 		},
 	)
+	val endOfLife = numberToLong(obj.endOfLife, "obj.endOfLife")
 	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val title = undefinedToNull(obj.title)
 	val calendarItemTypeId = undefinedToNull(obj.calendarItemTypeId)
 	val masterCalendarItemId = undefinedToNull(obj.masterCalendarItemId)
+	val patientId = undefinedToNull(obj.patientId)
 	val important = undefinedToNull(obj.important)
 	val homeVisit = undefinedToNull(obj.homeVisit)
 	val phoneNumber = undefinedToNull(obj.phoneNumber)
@@ -735,6 +786,9 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 			calendarItemTag_fromJs(x1)
 		},
 	)
+	val flowItem = obj.flowItem?.let { nonNull1 ->
+		flowItem_fromJs(nonNull1)
+	}
 	val properties = arrayToSet(
 		obj.properties,
 		"obj.properties",
@@ -812,12 +866,15 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		modified = modified,
 		author = author,
 		responsible = responsible,
+		medicalLocationId = medicalLocationId,
 		tags = tags,
 		codes = codes,
+		endOfLife = endOfLife,
 		deletionDate = deletionDate,
 		title = title,
 		calendarItemTypeId = calendarItemTypeId,
 		masterCalendarItemId = masterCalendarItemId,
+		patientId = patientId,
 		important = important,
 		homeVisit = homeVisit,
 		phoneNumber = phoneNumber,
@@ -839,6 +896,7 @@ public fun calendarItem_fromJs(obj: EncryptedCalendarItemJs): EncryptedCalendarI
 		hcpId = hcpId,
 		recurrenceId = recurrenceId,
 		meetingTags = meetingTags,
+		flowItem = flowItem,
 		properties = properties,
 		secretForeignKeys = secretForeignKeys,
 		cryptedForeignKeys = cryptedForeignKeys,

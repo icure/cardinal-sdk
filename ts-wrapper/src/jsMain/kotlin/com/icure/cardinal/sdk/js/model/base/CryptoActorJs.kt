@@ -24,6 +24,8 @@ public external interface CryptoActorJs : VersionableJs<String> {
 
 	public val publicKeysForOaepWithSha256: Array<out String>
 
+	public val parentId: String?
+
 	public val dataOwnerGroups: Array<out DataOwnerGroupLinkJs>
 
 	public val groupLinkType: String?

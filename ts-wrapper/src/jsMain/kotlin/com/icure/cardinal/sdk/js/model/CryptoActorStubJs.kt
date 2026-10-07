@@ -33,6 +33,8 @@ public external class CryptoActorStubJs(
 
 	override val publicKeysForOaepWithSha256: Array<String>
 
+	override val parentId: String?
+
 	override val dataOwnerGroups: Array<DataOwnerGroupLinkJs>
 
 	override val groupLinkType: String?

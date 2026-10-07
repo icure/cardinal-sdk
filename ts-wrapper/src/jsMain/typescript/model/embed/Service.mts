@@ -93,6 +93,8 @@ export interface Service extends Encryptable, ICureDocument<string>, HasMedicalL
 	 */
 	content: { [ key: string ]: Content };
 
+	encryptedContent: string | undefined;
+
 	textIndexes: { [ key: string ]: string };
 
 	/**
@@ -115,9 +117,21 @@ export interface Service extends Encryptable, ICureDocument<string>, HasMedicalL
 
 	/**
 	 *
+	 *  Id of the form used during the Service
+	 */
+	formId: string | undefined;
+
+	/**
+	 *
 	 *  Text, comments on the Service provided
 	 */
 	comment: string | undefined;
+
+	/**
+	 *
+	 *  Text, comments on the Service provided
+	 */
+	status: number | undefined;
 
 	/**
 	 *
@@ -235,6 +249,8 @@ export class DecryptedService {
 	 */
 	content: { [ key: string ]: DecryptedContent } = {};
 
+	encryptedContent: string | undefined = undefined;
+
 	textIndexes: { [ key: string ]: string } = {};
 
 	/**
@@ -254,6 +270,12 @@ export class DecryptedService {
 	 *  The date (YYYYMMDDhhmmss) marking the end of the Service
 	 */
 	closingDate: number | undefined = undefined;
+
+	/**
+	 *
+	 *  Id of the form used during the Service
+	 */
+	formId: string | undefined = undefined;
 
 	/**
 	 *
@@ -281,11 +303,19 @@ export class DecryptedService {
 	 */
 	responsible: string | undefined = undefined;
 
+	medicalLocationId: string | undefined = undefined;
+
 	/**
 	 *
 	 *  Text, comments on the Service provided
 	 */
 	comment: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Text, comments on the Service provided
+	 */
+	status: number | undefined = undefined;
 
 	/**
 	 *
@@ -340,16 +370,20 @@ export class DecryptedService {
 		if ('label' in partial) this.label = partial.label;
 		if ('index' in partial) this.index = partial.index;
 		if ('content' in partial && partial.content !== undefined) this.content = partial.content;
+		if ('encryptedContent' in partial) this.encryptedContent = partial.encryptedContent;
 		if ('textIndexes' in partial && partial.textIndexes !== undefined) this.textIndexes = partial.textIndexes;
 		if ('valueDate' in partial) this.valueDate = partial.valueDate;
 		if ('openingDate' in partial) this.openingDate = partial.openingDate;
 		if ('closingDate' in partial) this.closingDate = partial.closingDate;
+		if ('formId' in partial) this.formId = partial.formId;
 		if ('created' in partial) this.created = partial.created;
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('comment' in partial) this.comment = partial.comment;
+		if ('status' in partial) this.status = partial.status;
 		if ('invoicingCodes' in partial && partial.invoicingCodes !== undefined) this.invoicingCodes = partial.invoicingCodes;
 		if ('notes' in partial && partial.notes !== undefined) this.notes = partial.notes;
 		if ('qualifiedLinks' in partial && partial.qualifiedLinks !== undefined) this.qualifiedLinks = partial.qualifiedLinks;
@@ -378,16 +412,20 @@ export class DecryptedService {
 		if (this.label != undefined) res['label'] = this.label
 		if (this.index != undefined) res['index'] = this.index
 		res['content'] = Object.fromEntries(Object.entries(this.content).map(([k0, v0]) => [k0, v0.toJSON()]))
+		if (this.encryptedContent != undefined) res['encryptedContent'] = this.encryptedContent
 		res['textIndexes'] = Object.fromEntries(Object.entries(this.textIndexes).map(([k0, v0]) => [k0, v0]))
 		if (this.valueDate != undefined) res['valueDate'] = this.valueDate
 		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
 		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
+		if (this.formId != undefined) res['formId'] = this.formId
 		if (this.created != undefined) res['created'] = this.created
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.status != undefined) res['status'] = this.status
 		res['invoicingCodes'] = this.invoicingCodes.map((x0) => x0 )
 		res['notes'] = this.notes.map((x0) => x0.toJSON() )
 		res['qualifiedLinks'] = Object.fromEntries(Object.entries(this.qualifiedLinks).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
@@ -446,6 +484,7 @@ export class DecryptedService {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, DecryptedContent.fromJSON)
 			),
+			encryptedContent: expectString(extractEntry(jCpy, 'encryptedContent', false, path), true, [...path, ".encryptedContent"]),
 			textIndexes: expectMap(
 				extractEntry(jCpy, 'textIndexes', false, path),
 				false,
@@ -456,12 +495,15 @@ export class DecryptedService {
 			valueDate: expectNumber(extractEntry(jCpy, 'valueDate', false, path), true, true, [...path, ".valueDate"]),
 			openingDate: expectNumber(extractEntry(jCpy, 'openingDate', false, path), true, true, [...path, ".openingDate"]),
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),
+			formId: expectString(extractEntry(jCpy, 'formId', false, path), true, [...path, ".formId"]),
 			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
 			invoicingCodes: expectArray(extractEntry(jCpy, 'invoicingCodes', false, path), false, [...path, ".invoicingCodes"], (x0, p0) => expectString(x0, false, p0)),
 			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedAnnotation.fromJSON)),
 			qualifiedLinks: expectMap(
@@ -580,6 +622,8 @@ export class EncryptedService {
 	 */
 	content: { [ key: string ]: EncryptedContent } = {};
 
+	encryptedContent: string | undefined = undefined;
+
 	textIndexes: { [ key: string ]: string } = {};
 
 	/**
@@ -599,6 +643,12 @@ export class EncryptedService {
 	 *  The date (YYYYMMDDhhmmss) marking the end of the Service
 	 */
 	closingDate: number | undefined = undefined;
+
+	/**
+	 *
+	 *  Id of the form used during the Service
+	 */
+	formId: string | undefined = undefined;
 
 	/**
 	 *
@@ -626,11 +676,19 @@ export class EncryptedService {
 	 */
 	responsible: string | undefined = undefined;
 
+	medicalLocationId: string | undefined = undefined;
+
 	/**
 	 *
 	 *  Text, comments on the Service provided
 	 */
 	comment: string | undefined = undefined;
+
+	/**
+	 *
+	 *  Text, comments on the Service provided
+	 */
+	status: number | undefined = undefined;
 
 	/**
 	 *
@@ -685,16 +743,20 @@ export class EncryptedService {
 		if ('label' in partial) this.label = partial.label;
 		if ('index' in partial) this.index = partial.index;
 		if ('content' in partial && partial.content !== undefined) this.content = partial.content;
+		if ('encryptedContent' in partial) this.encryptedContent = partial.encryptedContent;
 		if ('textIndexes' in partial && partial.textIndexes !== undefined) this.textIndexes = partial.textIndexes;
 		if ('valueDate' in partial) this.valueDate = partial.valueDate;
 		if ('openingDate' in partial) this.openingDate = partial.openingDate;
 		if ('closingDate' in partial) this.closingDate = partial.closingDate;
+		if ('formId' in partial) this.formId = partial.formId;
 		if ('created' in partial) this.created = partial.created;
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('comment' in partial) this.comment = partial.comment;
+		if ('status' in partial) this.status = partial.status;
 		if ('invoicingCodes' in partial && partial.invoicingCodes !== undefined) this.invoicingCodes = partial.invoicingCodes;
 		if ('notes' in partial && partial.notes !== undefined) this.notes = partial.notes;
 		if ('qualifiedLinks' in partial && partial.qualifiedLinks !== undefined) this.qualifiedLinks = partial.qualifiedLinks;
@@ -723,16 +785,20 @@ export class EncryptedService {
 		if (this.label != undefined) res['label'] = this.label
 		if (this.index != undefined) res['index'] = this.index
 		res['content'] = Object.fromEntries(Object.entries(this.content).map(([k0, v0]) => [k0, v0.toJSON()]))
+		if (this.encryptedContent != undefined) res['encryptedContent'] = this.encryptedContent
 		res['textIndexes'] = Object.fromEntries(Object.entries(this.textIndexes).map(([k0, v0]) => [k0, v0]))
 		if (this.valueDate != undefined) res['valueDate'] = this.valueDate
 		if (this.openingDate != undefined) res['openingDate'] = this.openingDate
 		if (this.closingDate != undefined) res['closingDate'] = this.closingDate
+		if (this.formId != undefined) res['formId'] = this.formId
 		if (this.created != undefined) res['created'] = this.created
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		if (this.comment != undefined) res['comment'] = this.comment
+		if (this.status != undefined) res['status'] = this.status
 		res['invoicingCodes'] = this.invoicingCodes.map((x0) => x0 )
 		res['notes'] = this.notes.map((x0) => x0.toJSON() )
 		res['qualifiedLinks'] = Object.fromEntries(Object.entries(this.qualifiedLinks).map(([k0, v0]) => [k0, Object.fromEntries(Object.entries(v0).map(([k1, v1]) => [k1, v1]))]))
@@ -791,6 +857,7 @@ export class EncryptedService {
 				(k0, p0) => expectString(k0, false, p0),
 				(v0, p0) => expectObject(v0, false, ignoreUnknownKeys, p0, EncryptedContent.fromJSON)
 			),
+			encryptedContent: expectString(extractEntry(jCpy, 'encryptedContent', false, path), true, [...path, ".encryptedContent"]),
 			textIndexes: expectMap(
 				extractEntry(jCpy, 'textIndexes', false, path),
 				false,
@@ -801,12 +868,15 @@ export class EncryptedService {
 			valueDate: expectNumber(extractEntry(jCpy, 'valueDate', false, path), true, true, [...path, ".valueDate"]),
 			openingDate: expectNumber(extractEntry(jCpy, 'openingDate', false, path), true, true, [...path, ".openingDate"]),
 			closingDate: expectNumber(extractEntry(jCpy, 'closingDate', false, path), true, true, [...path, ".closingDate"]),
+			formId: expectString(extractEntry(jCpy, 'formId', false, path), true, [...path, ".formId"]),
 			created: expectNumber(extractEntry(jCpy, 'created', false, path), true, true, [...path, ".created"]),
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			comment: expectString(extractEntry(jCpy, 'comment', false, path), true, [...path, ".comment"]),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), true, true, [...path, ".status"]),
 			invoicingCodes: expectArray(extractEntry(jCpy, 'invoicingCodes', false, path), false, [...path, ".invoicingCodes"], (x0, p0) => expectString(x0, false, p0)),
 			notes: expectArray(extractEntry(jCpy, 'notes', false, path), false, [...path, ".notes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedAnnotation.fromJSON)),
 			qualifiedLinks: expectMap(

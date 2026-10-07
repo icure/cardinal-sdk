@@ -38,6 +38,7 @@ internal object PatientHealthCarePartyEncryptorFactory : EntityEncryptorFactory<
 					healthcarePartyId = clearEntity.healthcarePartyId,
 					sendFormats = clearEntity.sendFormats,
 					referralPeriods = clearEntity.referralPeriods,
+					referral = clearEntity.referral,
 					properties =
 						clearEntity.properties?.let {
 							it.mapTo(mutableSetOf()) { x0 ->
@@ -63,6 +64,7 @@ internal object PatientHealthCarePartyEncryptorFactory : EntityEncryptorFactory<
 			healthcarePartyId_e = "healthcarePartyId" in manifest.fieldsToEncrypt,
 			sendFormats_e = "sendFormats" in manifest.fieldsToEncrypt,
 			referralPeriods_e = "referralPeriods" in manifest.fieldsToEncrypt,
+			referral_e = "referral" in manifest.fieldsToEncrypt,
 			properties_e =
 				if ("properties" in manifest.fieldsToEncrypt) {
 					EncryptableFieldConfig.Full()
@@ -89,6 +91,7 @@ private class PatientHealthCarePartyEncryptor(
 	private val healthcarePartyId_e: Boolean,
 	private val sendFormats_e: Boolean,
 	private val referralPeriods_e: Boolean,
+	private val referral_e: Boolean,
 	private val properties_e: EncryptableFieldConfig<EncryptedPropertyStub, DecryptedPropertyStub>,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
@@ -117,6 +120,7 @@ private class PatientHealthCarePartyEncryptor(
 					clearEntity.referralPeriods,
 				)
 		}
+		if (referral_e && clearEntity.referral != false) dataToEncrypt["referral"] = encodingJson.encodeToJsonElement(clearEntity.referral)
 		if (properties_e.fullEncryption && clearEntity.properties != null) {
 			dataToEncrypt["properties"] =
 				encodingJson.encodeToJsonElement(
@@ -128,6 +132,7 @@ private class PatientHealthCarePartyEncryptor(
 			healthcarePartyId = if (healthcarePartyId_e) null else clearEntity.healthcarePartyId,
 			sendFormats = if (sendFormats_e) emptyMap() else clearEntity.sendFormats,
 			referralPeriods = if (referralPeriods_e) emptyList() else clearEntity.referralPeriods,
+			referral = if (referral_e) false else clearEntity.referral,
 			properties =
 				properties_e.encryptor.let { encryptor ->
 					if (encryptor == null) {

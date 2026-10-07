@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.js.model.embed.EncryptableJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedTypedValueJs
 import com.icure.cardinal.sdk.js.model.embed.TypedValueJs
 import kotlin.Boolean
+import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
@@ -19,6 +20,8 @@ public sealed external interface PropertyStubJs : EncryptableJs {
 	public val type: PropertyTypeStubJs?
 
 	public val typedValue: TypedValueJs?
+
+	public val deletionDate: Double?
 
 	public val isEncrypted: Boolean
 }
@@ -32,6 +35,8 @@ public external class DecryptedPropertyStubJs(
 	override val type: PropertyTypeStubJs?
 
 	override val typedValue: DecryptedTypedValueJs?
+
+	override val deletionDate: Double?
 
 	override val encryptedSelf: String?
 
@@ -47,6 +52,8 @@ public external class EncryptedPropertyStubJs(
 	override val type: PropertyTypeStubJs?
 
 	override val typedValue: EncryptedTypedValueJs?
+
+	override val deletionDate: Double?
 
 	override val encryptedSelf: String?
 

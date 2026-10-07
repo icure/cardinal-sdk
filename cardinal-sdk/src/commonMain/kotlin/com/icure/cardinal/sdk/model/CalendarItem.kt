@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag
+import com.icure.cardinal.sdk.model.embed.FlowItem
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -30,7 +31,6 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.FlowItem
 
 /**
  *
@@ -77,6 +77,12 @@ sealed interface CalendarItem :
 	override val responsible: String?
 
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
 	 * Tags that qualify the calendar item as being member of a certain class.
 	 */
 	override val tags: Set<CodeStub>
@@ -85,6 +91,12 @@ sealed interface CalendarItem :
 	 * Codes that identify or qualify this particular calendar item.
 	 */
 	override val codes: Set<CodeStub>
+
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
@@ -105,6 +117,12 @@ sealed interface CalendarItem :
 	 * The id of the master calendar item if this is a recurring instance.
 	 */
 	public val masterCalendarItemId: String?
+
+	/**
+	 * The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	@Deprecated("Use crypedForeignKeys instead")
+	public val patientId: String?
 
 	/**
 	 * Whether this calendar item is marked as important.
@@ -217,6 +235,12 @@ sealed interface CalendarItem :
 	public val meetingTags: Set<CalendarItemTag>
 
 	/**
+	 * Flow item information associated with this calendar item.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val flowItem: FlowItem?
+
+	/**
 	 * Custom properties of this calendar item.
 	 */
 	public val properties: Set<PropertyStub>
@@ -305,6 +329,11 @@ data class DecryptedCalendarItem(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the calendar item as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -314,6 +343,11 @@ data class DecryptedCalendarItem(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -330,6 +364,11 @@ data class DecryptedCalendarItem(
 	 * The id of the master calendar item if this is a recurring instance.
 	 */
 	override val masterCalendarItemId: String? = null,
+	/**
+	 * The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	@Deprecated("Use crypedForeignKeys instead")
+	override val patientId: String? = null,
 	/**
 	 * Whether this calendar item is marked as important.
 	 */
@@ -421,6 +460,11 @@ data class DecryptedCalendarItem(
 	@param:DefaultValue("emptySet()")
 	override val meetingTags: Set<DecryptedCalendarItemTag> = emptySet(),
 	/**
+	 * Flow item information associated with this calendar item.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val flowItem: FlowItem? = null,
+	/**
 	 * Custom properties of this calendar item.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -508,6 +552,11 @@ data class EncryptedCalendarItem(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the calendar item as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -517,6 +566,11 @@ data class EncryptedCalendarItem(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -533,6 +587,11 @@ data class EncryptedCalendarItem(
 	 * The id of the master calendar item if this is a recurring instance.
 	 */
 	override val masterCalendarItemId: String? = null,
+	/**
+	 * The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	@Deprecated("Use crypedForeignKeys instead")
+	override val patientId: String? = null,
 	/**
 	 * Whether this calendar item is marked as important.
 	 */
@@ -623,6 +682,11 @@ data class EncryptedCalendarItem(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val meetingTags: Set<EncryptedCalendarItemTag> = emptySet(),
+	/**
+	 * Flow item information associated with this calendar item.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val flowItem: FlowItem? = null,
 	/**
 	 * Custom properties of this calendar item.
 	 */

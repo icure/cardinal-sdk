@@ -92,6 +92,12 @@ private class FormDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				tags =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["tags"]?.also { usedEncryptedContent += "tags" },
@@ -102,6 +108,12 @@ private class FormDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["codes"]?.also { usedEncryptedContent += "codes" },
 						encryptedEntity.codes,
+						entityCustomisedModelVersion,
+					),
+				endOfLife =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["endOfLife"]?.also { usedEncryptedContent += "endOfLife" },
+						encryptedEntity.endOfLife,
 						entityCustomisedModelVersion,
 					),
 				deletionDate = encryptedEntity.deletionDate,
@@ -121,6 +133,12 @@ private class FormDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["version"]?.also { usedEncryptedContent += "version" },
 						encryptedEntity.version,
+						entityCustomisedModelVersion,
+					),
+				logicalUuid =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["logicalUuid"]?.also { usedEncryptedContent += "logicalUuid" },
+						encryptedEntity.logicalUuid,
 						entityCustomisedModelVersion,
 					),
 				descr =

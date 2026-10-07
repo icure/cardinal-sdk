@@ -34,6 +34,7 @@ import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
@@ -91,6 +92,12 @@ sealed interface HealthElement :
 	 * The id of the HealthcareParty that is responsible for this healthcare element.
 	 */
 	override val responsible: String?
+
+	/**
+	 * The id of the medical location where this healthcare element was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
 
 	/**
 	 * Tags that qualify the healthcare element as being member of a certain class.
@@ -166,6 +173,12 @@ sealed interface HealthElement :
 	 * Id of the service when a service is used to create a healthcare element.
 	 */
 	public val idService: String?
+
+	/**
+	 * Bit field representing active/inactive, relevant/irrelevant, present/absent states.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val status: Int
 
 	/**
 	 * Left or right dominance/preference.
@@ -276,6 +289,11 @@ data class DecryptedHealthElement(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this healthcare element was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the healthcare element as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -339,6 +357,12 @@ data class DecryptedHealthElement(
 	 * Id of the service when a service is used to create a healthcare element.
 	 */
 	override val idService: String? = null,
+	/**
+	 * Bit field representing active/inactive, relevant/irrelevant, present/absent states.
+	 */
+	@param:DefaultValue("0")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int = 0,
 	/**
 	 * Left or right dominance/preference.
 	 */
@@ -443,6 +467,11 @@ data class EncryptedHealthElement(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The id of the medical location where this healthcare element was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the healthcare element as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -506,6 +535,12 @@ data class EncryptedHealthElement(
 	 * Id of the service when a service is used to create a healthcare element.
 	 */
 	override val idService: String? = null,
+	/**
+	 * Bit field representing active/inactive, relevant/irrelevant, present/absent states.
+	 */
+	@param:DefaultValue("0")
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val status: Int = 0,
 	/**
 	 * Left or right dominance/preference.
 	 */

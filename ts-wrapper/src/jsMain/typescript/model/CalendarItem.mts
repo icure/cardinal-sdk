@@ -14,6 +14,7 @@ import {Address, DecryptedAddress, EncryptedAddress} from './embed/Address.mjs';
 import {CalendarItemTag, DecryptedCalendarItemTag, EncryptedCalendarItemTag} from './embed/CalendarItemTag.mjs';
 import {Delegation} from './embed/Delegation.mjs';
 import {Encryptable} from './embed/Encryptable.mjs';
+import {FlowItem} from './embed/FlowItem.mjs';
 import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
@@ -25,6 +26,12 @@ import {Base64String} from './specializations/Base64String.mjs';
  *   availabilities for scheduling purposes.
  */
 export interface CalendarItem extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined;
 
 	/**
 	 *
@@ -43,6 +50,12 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 	 *  The id of the master calendar item if this is a recurring instance.
 	 */
 	masterCalendarItemId: string | undefined;
+
+	/**
+	 *
+	 *  The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	patientId: string | undefined;
 
 	/**
 	 *
@@ -172,6 +185,12 @@ export interface CalendarItem extends StoredDocument, ICureDocument<string>, Has
 
 	/**
 	 *
+	 *  Flow item information associated with this calendar item.
+	 */
+	flowItem: FlowItem | undefined;
+
+	/**
+	 *
 	 *  Custom properties of this calendar item.
 	 */
 	properties: Array<PropertyStub>;
@@ -228,6 +247,12 @@ export class DecryptedCalendarItem {
 
 	/**
 	 *
+	 *  The medical location where this entity was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the calendar item as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -237,6 +262,12 @@ export class DecryptedCalendarItem {
 	 *  Codes that identify or qualify this particular calendar item.
 	 */
 	codes: Array<CodeStub> = [];
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
 
 	/**
 	 *
@@ -261,6 +292,12 @@ export class DecryptedCalendarItem {
 	 *  The id of the master calendar item if this is a recurring instance.
 	 */
 	masterCalendarItemId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	patientId: string | undefined = undefined;
 
 	/**
 	 *
@@ -390,6 +427,12 @@ export class DecryptedCalendarItem {
 
 	/**
 	 *
+	 *  Flow item information associated with this calendar item.
+	 */
+	flowItem: FlowItem | undefined = undefined;
+
+	/**
+	 *
 	 *  Custom properties of this calendar item.
 	 */
 	properties: Array<DecryptedPropertyStub> = [];
@@ -444,12 +487,15 @@ export class DecryptedCalendarItem {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('title' in partial) this.title = partial.title;
 		if ('calendarItemTypeId' in partial) this.calendarItemTypeId = partial.calendarItemTypeId;
 		if ('masterCalendarItemId' in partial) this.masterCalendarItemId = partial.masterCalendarItemId;
+		if ('patientId' in partial) this.patientId = partial.patientId;
 		if ('important' in partial) this.important = partial.important;
 		if ('homeVisit' in partial) this.homeVisit = partial.homeVisit;
 		if ('phoneNumber' in partial) this.phoneNumber = partial.phoneNumber;
@@ -471,6 +517,7 @@ export class DecryptedCalendarItem {
 		if ('hcpId' in partial) this.hcpId = partial.hcpId;
 		if ('recurrenceId' in partial) this.recurrenceId = partial.recurrenceId;
 		if ('meetingTags' in partial && partial.meetingTags !== undefined) this.meetingTags = partial.meetingTags;
+		if ('flowItem' in partial) this.flowItem = partial.flowItem;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
@@ -490,12 +537,15 @@ export class DecryptedCalendarItem {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.title != undefined) res['title'] = this.title
 		if (this.calendarItemTypeId != undefined) res['calendarItemTypeId'] = this.calendarItemTypeId
 		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
+		if (this.patientId != undefined) res['patientId'] = this.patientId
 		if (this.important != undefined) res['important'] = this.important
 		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
 		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
@@ -517,6 +567,7 @@ export class DecryptedCalendarItem {
 		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
 		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
 		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		if (this.flowItem != undefined) res['flowItem'] = this.flowItem.toJSON()
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -542,12 +593,15 @@ export class DecryptedCalendarItem {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			title: expectString(extractEntry(jCpy, 'title', false, path), true, [...path, ".title"]),
 			calendarItemTypeId: expectString(extractEntry(jCpy, 'calendarItemTypeId', false, path), true, [...path, ".calendarItemTypeId"]),
 			masterCalendarItemId: expectString(extractEntry(jCpy, 'masterCalendarItemId', false, path), true, [...path, ".masterCalendarItemId"]),
+			patientId: expectString(extractEntry(jCpy, 'patientId', false, path), true, [...path, ".patientId"]),
 			important: expectBoolean(extractEntry(jCpy, 'important', false, path), true, [...path, ".important"]),
 			homeVisit: expectBoolean(extractEntry(jCpy, 'homeVisit', false, path), true, [...path, ".homeVisit"]),
 			phoneNumber: expectString(extractEntry(jCpy, 'phoneNumber', false, path), true, [...path, ".phoneNumber"]),
@@ -569,6 +623,7 @@ export class DecryptedCalendarItem {
 			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
 			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
 			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedCalendarItemTag.fromJSON)),
+			flowItem: expectObject(extractEntry(jCpy, 'flowItem', false, path), true, ignoreUnknownKeys, [...path, ".flowItem"], FlowItem.fromJSON),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(
@@ -651,6 +706,12 @@ export class EncryptedCalendarItem {
 
 	/**
 	 *
+	 *  The medical location where this entity was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the calendar item as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -660,6 +721,12 @@ export class EncryptedCalendarItem {
 	 *  Codes that identify or qualify this particular calendar item.
 	 */
 	codes: Array<CodeStub> = [];
+
+	/**
+	 *
+	 *  Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	endOfLife: number | undefined = undefined;
 
 	/**
 	 *
@@ -684,6 +751,12 @@ export class EncryptedCalendarItem {
 	 *  The id of the master calendar item if this is a recurring instance.
 	 */
 	masterCalendarItemId: string | undefined = undefined;
+
+	/**
+	 *
+	 *  The patient id. Deprecated: use cryptedForeignKeys instead.
+	 */
+	patientId: string | undefined = undefined;
 
 	/**
 	 *
@@ -813,6 +886,12 @@ export class EncryptedCalendarItem {
 
 	/**
 	 *
+	 *  Flow item information associated with this calendar item.
+	 */
+	flowItem: FlowItem | undefined = undefined;
+
+	/**
+	 *
 	 *  Custom properties of this calendar item.
 	 */
 	properties: Array<EncryptedPropertyStub> = [];
@@ -867,12 +946,15 @@ export class EncryptedCalendarItem {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
+		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
 		if ('deletionDate' in partial) this.deletionDate = partial.deletionDate;
 		if ('title' in partial) this.title = partial.title;
 		if ('calendarItemTypeId' in partial) this.calendarItemTypeId = partial.calendarItemTypeId;
 		if ('masterCalendarItemId' in partial) this.masterCalendarItemId = partial.masterCalendarItemId;
+		if ('patientId' in partial) this.patientId = partial.patientId;
 		if ('important' in partial) this.important = partial.important;
 		if ('homeVisit' in partial) this.homeVisit = partial.homeVisit;
 		if ('phoneNumber' in partial) this.phoneNumber = partial.phoneNumber;
@@ -894,6 +976,7 @@ export class EncryptedCalendarItem {
 		if ('hcpId' in partial) this.hcpId = partial.hcpId;
 		if ('recurrenceId' in partial) this.recurrenceId = partial.recurrenceId;
 		if ('meetingTags' in partial && partial.meetingTags !== undefined) this.meetingTags = partial.meetingTags;
+		if ('flowItem' in partial) this.flowItem = partial.flowItem;
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('secretForeignKeys' in partial && partial.secretForeignKeys !== undefined) this.secretForeignKeys = partial.secretForeignKeys;
 		if ('cryptedForeignKeys' in partial && partial.cryptedForeignKeys !== undefined) this.cryptedForeignKeys = partial.cryptedForeignKeys;
@@ -913,12 +996,15 @@ export class EncryptedCalendarItem {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
+		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
 		if (this.deletionDate != undefined) res['deletionDate'] = this.deletionDate
 		if (this.title != undefined) res['title'] = this.title
 		if (this.calendarItemTypeId != undefined) res['calendarItemTypeId'] = this.calendarItemTypeId
 		if (this.masterCalendarItemId != undefined) res['masterCalendarItemId'] = this.masterCalendarItemId
+		if (this.patientId != undefined) res['patientId'] = this.patientId
 		if (this.important != undefined) res['important'] = this.important
 		if (this.homeVisit != undefined) res['homeVisit'] = this.homeVisit
 		if (this.phoneNumber != undefined) res['phoneNumber'] = this.phoneNumber
@@ -940,6 +1026,7 @@ export class EncryptedCalendarItem {
 		if (this.hcpId != undefined) res['hcpId'] = this.hcpId
 		if (this.recurrenceId != undefined) res['recurrenceId'] = this.recurrenceId
 		res['meetingTags'] = this.meetingTags.map((x0) => x0.toJSON() )
+		if (this.flowItem != undefined) res['flowItem'] = this.flowItem.toJSON()
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['secretForeignKeys'] = this.secretForeignKeys.map((x0) => x0 )
 		res['cryptedForeignKeys'] = Object.fromEntries(Object.entries(this.cryptedForeignKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
@@ -965,12 +1052,15 @@ export class EncryptedCalendarItem {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
+			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
 			deletionDate: expectNumber(extractEntry(jCpy, 'deletionDate', false, path), true, true, [...path, ".deletionDate"]),
 			title: expectString(extractEntry(jCpy, 'title', false, path), true, [...path, ".title"]),
 			calendarItemTypeId: expectString(extractEntry(jCpy, 'calendarItemTypeId', false, path), true, [...path, ".calendarItemTypeId"]),
 			masterCalendarItemId: expectString(extractEntry(jCpy, 'masterCalendarItemId', false, path), true, [...path, ".masterCalendarItemId"]),
+			patientId: expectString(extractEntry(jCpy, 'patientId', false, path), true, [...path, ".patientId"]),
 			important: expectBoolean(extractEntry(jCpy, 'important', false, path), true, [...path, ".important"]),
 			homeVisit: expectBoolean(extractEntry(jCpy, 'homeVisit', false, path), true, [...path, ".homeVisit"]),
 			phoneNumber: expectString(extractEntry(jCpy, 'phoneNumber', false, path), true, [...path, ".phoneNumber"]),
@@ -992,6 +1082,7 @@ export class EncryptedCalendarItem {
 			hcpId: expectString(extractEntry(jCpy, 'hcpId', false, path), true, [...path, ".hcpId"]),
 			recurrenceId: expectString(extractEntry(jCpy, 'recurrenceId', false, path), true, [...path, ".recurrenceId"]),
 			meetingTags: expectArray(extractEntry(jCpy, 'meetingTags', false, path), false, [...path, ".meetingTags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedCalendarItemTag.fromJSON)),
+			flowItem: expectObject(extractEntry(jCpy, 'flowItem', false, path), true, ignoreUnknownKeys, [...path, ".flowItem"], FlowItem.fromJSON),
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPropertyStub.fromJSON)),
 			secretForeignKeys: expectArray(extractEntry(jCpy, 'secretForeignKeys', false, path), false, [...path, ".secretForeignKeys"], (x0, p0) => expectString(x0, false, p0)),
 			cryptedForeignKeys: expectMap(

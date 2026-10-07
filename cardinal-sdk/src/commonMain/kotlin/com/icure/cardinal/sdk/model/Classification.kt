@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlin.Deprecated
 import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
@@ -61,6 +62,12 @@ sealed interface Classification :
 	 * The id of the data owner that is responsible for this classification.
 	 */
 	override val responsible: String?
+
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
 
 	/**
 	 * Tags that qualify the classification as being member of a certain class.
@@ -163,6 +170,11 @@ data class DecryptedClassification(
 	 */
 	override val responsible: String? = null,
 	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
 	 * Tags that qualify the classification as being member of a certain class.
 	 */
 	@param:DefaultValue("emptySet()")
@@ -259,6 +271,11 @@ data class EncryptedClassification(
 	 * The id of the data owner that is responsible for this classification.
 	 */
 	override val responsible: String? = null,
+	/**
+	 * The medical location where this entity was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
 	/**
 	 * Tags that qualify the classification as being member of a certain class.
 	 */

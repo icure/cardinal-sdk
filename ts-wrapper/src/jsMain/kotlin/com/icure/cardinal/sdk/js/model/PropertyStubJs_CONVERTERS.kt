@@ -1,7 +1,9 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.embed.typedValue_fromJs
 import com.icure.cardinal.sdk.js.model.embed.typedValue_toJs
@@ -27,6 +29,9 @@ public fun propertyStub_toJs(obj: DecryptedPropertyStub): DecryptedPropertyStubJ
 			typedValue_toJs(nonNull1)
 		}
 	)
+	val deletionDate = nullToUndefined(
+		longToNumber(obj.deletionDate)
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -36,6 +41,7 @@ public fun propertyStub_toJs(obj: DecryptedPropertyStub): DecryptedPropertyStubJ
 		"id:id," +
 		"type:type," +
 		"typedValue:typedValue," +
+		"deletionDate:deletionDate," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -48,6 +54,7 @@ public fun propertyStub_fromJs(obj: DecryptedPropertyStubJs): DecryptedPropertyS
 	val typedValue = obj.typedValue?.let { nonNull1 ->
 		typedValue_fromJs(nonNull1)
 	}
+	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -55,6 +62,7 @@ public fun propertyStub_fromJs(obj: DecryptedPropertyStubJs): DecryptedPropertyS
 		id = id,
 		type = type,
 		typedValue = typedValue,
+		deletionDate = deletionDate,
 		encryptedSelf = encryptedSelf,
 	)
 }
@@ -74,6 +82,9 @@ public fun propertyStub_toJs(obj: EncryptedPropertyStub): EncryptedPropertyStubJ
 			typedValue_toJs(nonNull1)
 		}
 	)
+	val deletionDate = nullToUndefined(
+		longToNumber(obj.deletionDate)
+	)
 	val encryptedSelf = nullToUndefined(
 		obj.encryptedSelf?.let { nonNull1 ->
 			base64String_toJs(nonNull1)
@@ -83,6 +94,7 @@ public fun propertyStub_toJs(obj: EncryptedPropertyStub): EncryptedPropertyStubJ
 		"id:id," +
 		"type:type," +
 		"typedValue:typedValue," +
+		"deletionDate:deletionDate," +
 		"encryptedSelf:encryptedSelf" +
 	"}"))
 }
@@ -95,6 +107,7 @@ public fun propertyStub_fromJs(obj: EncryptedPropertyStubJs): EncryptedPropertyS
 	val typedValue = obj.typedValue?.let { nonNull1 ->
 		typedValue_fromJs(nonNull1)
 	}
+	val deletionDate = numberToLong(obj.deletionDate, "obj.deletionDate")
 	val encryptedSelf = obj.encryptedSelf?.let { nonNull1 ->
 		base64String_fromJs(nonNull1)
 	}
@@ -102,6 +115,7 @@ public fun propertyStub_fromJs(obj: EncryptedPropertyStubJs): EncryptedPropertyS
 		id = id,
 		type = type,
 		typedValue = typedValue,
+		deletionDate = deletionDate,
 		encryptedSelf = encryptedSelf,
 	)
 }

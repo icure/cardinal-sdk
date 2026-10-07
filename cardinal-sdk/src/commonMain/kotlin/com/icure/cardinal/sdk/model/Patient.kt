@@ -17,20 +17,25 @@ import com.icure.cardinal.sdk.model.embed.Address
 import com.icure.cardinal.sdk.model.embed.Annotation
 import com.icure.cardinal.sdk.model.embed.DecryptedAddress
 import com.icure.cardinal.sdk.model.embed.DecryptedAnnotation
+import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.DecryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.DecryptedInsurability
 import com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.DecryptedPartnership
 import com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty
+import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.cardinal.sdk.model.embed.EmploymentInfo
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedAddress
 import com.icure.cardinal.sdk.model.embed.EncryptedAnnotation
+import com.icure.cardinal.sdk.model.embed.EncryptedEmploymentInfo
 import com.icure.cardinal.sdk.model.embed.EncryptedFinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.EncryptedInsurability
 import com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract
 import com.icure.cardinal.sdk.model.embed.EncryptedPartnership
 import com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty
+import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
 import com.icure.cardinal.sdk.model.embed.FinancialInstitutionInformation
 import com.icure.cardinal.sdk.model.embed.Gender
 import com.icure.cardinal.sdk.model.embed.Insurability
@@ -39,16 +44,20 @@ import com.icure.cardinal.sdk.model.embed.Partnership
 import com.icure.cardinal.sdk.model.embed.PatientHealthCareParty
 import com.icure.cardinal.sdk.model.embed.PersonName
 import com.icure.cardinal.sdk.model.embed.PersonalStatus
+import com.icure.cardinal.sdk.model.embed.SchoolingInfo
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
+import com.icure.cardinal.sdk.serialization.ByteArraySerializer
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
+import kotlin.ByteArray
+import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
 import kotlin.Nothing
@@ -56,14 +65,6 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.embed.DecryptedEmploymentInfo
-import com.icure.cardinal.sdk.model.embed.DecryptedSchoolingInfo
-import com.icure.cardinal.sdk.model.embed.EmploymentInfo
-import com.icure.cardinal.sdk.model.embed.EncryptedEmploymentInfo
-import com.icure.cardinal.sdk.model.embed.EncryptedSchoolingInfo
-import com.icure.cardinal.sdk.model.embed.SchoolingInfo
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
 import com.icure.cardinal.sdk.model.embed.DeactivationReason
 
 /**
@@ -128,6 +129,12 @@ sealed interface Patient :
 	 * Codes that identify or qualify this particular patient.
 	 */
 	override val codes: Set<CodeStub>
+
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val endOfLife: Long?
 
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
@@ -284,6 +291,24 @@ sealed interface Patient :
 	public val ethnicity: String?
 
 	/**
+	 * The id of the user that usually handles this patient.
+	 */
+	@Deprecated("Discouraged, use custom property if you really want them")
+	public val preferredUserId: String?
+
+	/**
+	 * A picture usually saved in JPEG format.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val picture: ByteArray?
+
+	/**
+	 * An external (from another source) id with no guarantee of unicity.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	public val externalId: String?
+
+	/**
 	 * List of insurance coverages.
 	 */
 	public val insurabilities: List<Insurability>
@@ -391,6 +416,84 @@ sealed interface Patient :
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>
 
 	/**
+	 * The id of the medical location where this patient was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String?
+
+	/**
+	 * Set of patient ids that are not duplicates of this patient.
+	 */
+	@Deprecated("Do not use")
+	public val nonDuplicateIds: Set<String>
+
+	/**
+	 * Set of encrypted administrative documents.
+	 */
+	@Deprecated("Do not use")
+	public val encryptedAdministrativesDocuments: Set<String>
+
+	/**
+	 * A comment on the patient (deprecated, use note or administrativeNote).
+	 */
+	@Deprecated("Use note or administrativeNote")
+	public val comment: String?
+
+	/**
+	 * A warning on the patient (deprecated, use note or administrativeNote).
+	 */
+	@Deprecated("Use note or administrativeNote")
+	public val warning: String?
+
+	/**
+	 * The father's birth country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	public val fatherBirthCountry: CodeStub?
+
+	/**
+	 * The patient's birth country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	public val birthCountry: CodeStub?
+
+	/**
+	 * The patient's native country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	public val nativeCountry: CodeStub?
+
+	/**
+	 * The social status of the patient (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	public val socialStatus: CodeStub?
+
+	/**
+	 * The main source of income (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	public val mainSourceOfIncome: CodeStub?
+
+	/**
+	 * Schooling information (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	public val schoolingInfos: List<SchoolingInfo>
+
+	/**
+	 * Employment information (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	public val employementInfos: List<EmploymentInfo>
+
+	/**
+	 * Always null for patients.
+	 */
+	@Deprecated("Use dataOwnerGroups with a DataOwnerGroupLinkTypeDto.parent link instead")
+	override val parentId: Nothing?
+
+	/**
 	 * The links to the data owners representing the groups this patient belongs to.
 	 */
 	override val dataOwnerGroups: List<Nothing>
@@ -454,6 +557,11 @@ data class DecryptedPatient(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -584,6 +692,22 @@ data class DecryptedPatient(
 	 */
 	override val ethnicity: String? = null,
 	/**
+	 * The id of the user that usually handles this patient.
+	 */
+	@Deprecated("Discouraged, use custom property if you really want them")
+	override val preferredUserId: String? = null,
+	/**
+	 * A picture usually saved in JPEG format.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val picture: ByteArray? = null,
+	/**
+	 * An external (from another source) id with no guarantee of unicity.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalId: String? = null,
+	/**
 	 * List of insurance coverages.
 	 */
 	@param:DefaultValue("emptyList()")
@@ -687,6 +811,75 @@ data class DecryptedPatient(
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
 	/**
+	 * The id of the medical location where this patient was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
+	 * Set of patient ids that are not duplicates of this patient.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("Do not use")
+	override val nonDuplicateIds: Set<String> = emptySet(),
+	/**
+	 * Set of encrypted administrative documents.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("Do not use")
+	override val encryptedAdministrativesDocuments: Set<String> = emptySet(),
+	/**
+	 * A comment on the patient (deprecated, use note or administrativeNote).
+	 */
+	@Deprecated("Use note or administrativeNote")
+	override val comment: String? = null,
+	/**
+	 * A warning on the patient (deprecated, use note or administrativeNote).
+	 */
+	@Deprecated("Use note or administrativeNote")
+	override val warning: String? = null,
+	/**
+	 * The father's birth country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val fatherBirthCountry: CodeStub? = null,
+	/**
+	 * The patient's birth country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val birthCountry: CodeStub? = null,
+	/**
+	 * The patient's native country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val nativeCountry: CodeStub? = null,
+	/**
+	 * The social status of the patient (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val socialStatus: CodeStub? = null,
+	/**
+	 * The main source of income (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val mainSourceOfIncome: CodeStub? = null,
+	/**
+	 * Schooling information (deprecated, use properties instead).
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("Use properties instead")
+	override val schoolingInfos: List<DecryptedSchoolingInfo> = emptyList(),
+	/**
+	 * Employment information (deprecated, use properties instead).
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("Use properties instead")
+	override val employementInfos: List<DecryptedEmploymentInfo> = emptyList(),
+	/**
+	 * Always null for patients.
+	 */
+	@Deprecated("Use dataOwnerGroups with a DataOwnerGroupLinkTypeDto.parent link instead")
+	override val parentId: Nothing? = null,
+	/**
 	 * The links to the data owners representing the groups this patient belongs to.
 	 */
 	@param:DefaultValue("emptyList()")
@@ -748,6 +941,11 @@ data class EncryptedPatient(
 	 */
 	@param:DefaultValue("emptySet()")
 	override val codes: Set<CodeStub> = emptySet(),
+	/**
+	 * Soft delete (unix epoch in ms) timestamp of the object.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val endOfLife: Long? = null,
 	/**
 	 * Hard delete (unix epoch in ms) timestamp of the object.
 	 */
@@ -878,6 +1076,22 @@ data class EncryptedPatient(
 	 */
 	override val ethnicity: String? = null,
 	/**
+	 * The id of the user that usually handles this patient.
+	 */
+	@Deprecated("Discouraged, use custom property if you really want them")
+	override val preferredUserId: String? = null,
+	/**
+	 * A picture usually saved in JPEG format.
+	 */
+	@Serializable(with = ByteArraySerializer::class)
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val picture: ByteArray? = null,
+	/**
+	 * An external (from another source) id with no guarantee of unicity.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val externalId: String? = null,
+	/**
 	 * List of insurance coverages.
 	 */
 	@param:DefaultValue("emptyList()")
@@ -980,6 +1194,75 @@ data class EncryptedPatient(
 	 * Properties related to crypto actor functionality.
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
+	/**
+	 * The id of the medical location where this patient was created.
+	 */
+	@Deprecated("This field is deprecated for the use with Cardinal SDK")
+	override val medicalLocationId: String? = null,
+	/**
+	 * Set of patient ids that are not duplicates of this patient.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("Do not use")
+	override val nonDuplicateIds: Set<String> = emptySet(),
+	/**
+	 * Set of encrypted administrative documents.
+	 */
+	@param:DefaultValue("emptySet()")
+	@Deprecated("Do not use")
+	override val encryptedAdministrativesDocuments: Set<String> = emptySet(),
+	/**
+	 * A comment on the patient (deprecated, use note or administrativeNote).
+	 */
+	@Deprecated("Use note or administrativeNote")
+	override val comment: String? = null,
+	/**
+	 * A warning on the patient (deprecated, use note or administrativeNote).
+	 */
+	@Deprecated("Use note or administrativeNote")
+	override val warning: String? = null,
+	/**
+	 * The father's birth country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val fatherBirthCountry: CodeStub? = null,
+	/**
+	 * The patient's birth country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val birthCountry: CodeStub? = null,
+	/**
+	 * The patient's native country (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val nativeCountry: CodeStub? = null,
+	/**
+	 * The social status of the patient (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val socialStatus: CodeStub? = null,
+	/**
+	 * The main source of income (deprecated, use properties instead).
+	 */
+	@Deprecated("Use properties instead")
+	override val mainSourceOfIncome: CodeStub? = null,
+	/**
+	 * Schooling information (deprecated, use properties instead).
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("Use properties instead")
+	override val schoolingInfos: List<EncryptedSchoolingInfo> = emptyList(),
+	/**
+	 * Employment information (deprecated, use properties instead).
+	 */
+	@param:DefaultValue("emptyList()")
+	@Deprecated("Use properties instead")
+	override val employementInfos: List<EncryptedEmploymentInfo> = emptyList(),
+	/**
+	 * Always null for patients.
+	 */
+	@Deprecated("Use dataOwnerGroups with a DataOwnerGroupLinkTypeDto.parent link instead")
+	override val parentId: Nothing? = null,
 	/**
 	 * The links to the data owners representing the groups this patient belongs to.
 	 */

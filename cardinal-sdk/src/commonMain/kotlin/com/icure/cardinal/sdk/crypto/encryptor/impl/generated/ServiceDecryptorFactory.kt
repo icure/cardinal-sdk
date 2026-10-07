@@ -190,6 +190,12 @@ private class ServiceDecryptor(
 						},
 						entityCustomisedModelVersion,
 					),
+				encryptedContent =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["encryptedContent"]?.also { usedEncryptedContent += "encryptedContent" },
+						encryptedEntity.encryptedContent,
+						entityCustomisedModelVersion,
+					),
 				textIndexes =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["textIndexes"]?.also { usedEncryptedContent += "textIndexes" },
@@ -212,6 +218,12 @@ private class ServiceDecryptor(
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["closingDate"]?.also { usedEncryptedContent += "closingDate" },
 						encryptedEntity.closingDate,
+						entityCustomisedModelVersion,
+					),
+				formId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["formId"]?.also { usedEncryptedContent += "formId" },
+						encryptedEntity.formId,
 						entityCustomisedModelVersion,
 					),
 				created =
@@ -239,10 +251,22 @@ private class ServiceDecryptor(
 						encryptedEntity.responsible,
 						entityCustomisedModelVersion,
 					),
+				medicalLocationId =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["medicalLocationId"]?.also { usedEncryptedContent += "medicalLocationId" },
+						encryptedEntity.medicalLocationId,
+						entityCustomisedModelVersion,
+					),
 				comment =
 					encryptedContentDecoder.decodeDecrypted(
 						decryptedContent["comment"]?.also { usedEncryptedContent += "comment" },
 						encryptedEntity.comment,
+						entityCustomisedModelVersion,
+					),
+				status =
+					encryptedContentDecoder.decodeDecrypted(
+						decryptedContent["status"]?.also { usedEncryptedContent += "status" },
+						encryptedEntity.status,
 						entityCustomisedModelVersion,
 					),
 				invoicingCodes =

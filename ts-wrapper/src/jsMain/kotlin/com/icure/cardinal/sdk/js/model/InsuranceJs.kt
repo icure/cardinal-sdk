@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.js.model.base.StoredDocumentJs
 import com.icure.cardinal.sdk.js.model.embed.DecryptedAddressJs
 import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
+import kotlin.Boolean
 import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
@@ -37,6 +38,12 @@ public external class InsuranceJs(
 	override val tags: Array<CodeStubJs>
 
 	override val codes: Array<CodeStubJs>
+
+	public val privateInsurance: Boolean
+
+	public val hospitalisationInsurance: Boolean
+
+	public val ambulatoryInsurance: Boolean
 
 	public val code: String?
 

@@ -106,6 +106,12 @@ export interface HealthElement extends StoredDocument, ICureDocument<string>, Ha
 
 	/**
 	 *
+	 *  Bit field representing active/inactive, relevant/irrelevant, present/absent states.
+	 */
+	status: number;
+
+	/**
+	 *
 	 *  Left or right dominance/preference.
 	 */
 	laterality: Laterality | undefined;
@@ -199,6 +205,12 @@ export class DecryptedHealthElement {
 
 	/**
 	 *
+	 *  The id of the medical location where this healthcare element was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the healthcare element as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -289,6 +301,12 @@ export class DecryptedHealthElement {
 
 	/**
 	 *
+	 *  Bit field representing active/inactive, relevant/irrelevant, present/absent states.
+	 */
+	status: number = 0;
+
+	/**
+	 *
 	 *  Left or right dominance/preference.
 	 */
 	laterality: Laterality | undefined = undefined;
@@ -374,6 +392,7 @@ export class DecryptedHealthElement {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
@@ -389,6 +408,7 @@ export class DecryptedHealthElement {
 		if ('idOpeningContact' in partial) this.idOpeningContact = partial.idOpeningContact;
 		if ('idClosingContact' in partial) this.idClosingContact = partial.idClosingContact;
 		if ('idService' in partial) this.idService = partial.idService;
+		if ('status' in partial && partial.status !== undefined) this.status = partial.status;
 		if ('laterality' in partial) this.laterality = partial.laterality;
 		if ('plansOfAction' in partial && partial.plansOfAction !== undefined) this.plansOfAction = partial.plansOfAction;
 		if ('episodes' in partial && partial.episodes !== undefined) this.episodes = partial.episodes;
@@ -414,6 +434,7 @@ export class DecryptedHealthElement {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
@@ -429,6 +450,7 @@ export class DecryptedHealthElement {
 		if (this.idOpeningContact != undefined) res['idOpeningContact'] = this.idOpeningContact
 		if (this.idClosingContact != undefined) res['idClosingContact'] = this.idClosingContact
 		if (this.idService != undefined) res['idService'] = this.idService
+		res['status'] = this.status
 		if (this.laterality != undefined) res['laterality'] = this.laterality
 		res['plansOfAction'] = this.plansOfAction.map((x0) => x0.toJSON() )
 		res['episodes'] = this.episodes.map((x0) => x0.toJSON() )
@@ -460,6 +482,7 @@ export class DecryptedHealthElement {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
@@ -475,6 +498,7 @@ export class DecryptedHealthElement {
 			idOpeningContact: expectString(extractEntry(jCpy, 'idOpeningContact', false, path), true, [...path, ".idOpeningContact"]),
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),
 			idService: expectString(extractEntry(jCpy, 'idService', false, path), true, [...path, ".idService"]),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), false, true, [...path, ".status"]),
 			laterality: expectStringEnum(extractEntry(jCpy, 'laterality', false, path), true, [...path, ".laterality"], Laterality, 'Laterality'),
 			plansOfAction: expectArray(extractEntry(jCpy, 'plansOfAction', false, path), false, [...path, ".plansOfAction"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPlanOfAction.fromJSON)),
 			episodes: expectArray(extractEntry(jCpy, 'episodes', false, path), false, [...path, ".episodes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedEpisode.fromJSON)),
@@ -569,6 +593,12 @@ export class EncryptedHealthElement {
 
 	/**
 	 *
+	 *  The id of the medical location where this healthcare element was created.
+	 */
+	medicalLocationId: string | undefined = undefined;
+
+	/**
+	 *
 	 *  Tags that qualify the healthcare element as being member of a certain class.
 	 */
 	tags: Array<CodeStub> = [];
@@ -659,6 +689,12 @@ export class EncryptedHealthElement {
 
 	/**
 	 *
+	 *  Bit field representing active/inactive, relevant/irrelevant, present/absent states.
+	 */
+	status: number = 0;
+
+	/**
+	 *
 	 *  Left or right dominance/preference.
 	 */
 	laterality: Laterality | undefined = undefined;
@@ -744,6 +780,7 @@ export class EncryptedHealthElement {
 		if ('modified' in partial) this.modified = partial.modified;
 		if ('author' in partial) this.author = partial.author;
 		if ('responsible' in partial) this.responsible = partial.responsible;
+		if ('medicalLocationId' in partial) this.medicalLocationId = partial.medicalLocationId;
 		if ('tags' in partial && partial.tags !== undefined) this.tags = partial.tags;
 		if ('codes' in partial && partial.codes !== undefined) this.codes = partial.codes;
 		if ('endOfLife' in partial) this.endOfLife = partial.endOfLife;
@@ -759,6 +796,7 @@ export class EncryptedHealthElement {
 		if ('idOpeningContact' in partial) this.idOpeningContact = partial.idOpeningContact;
 		if ('idClosingContact' in partial) this.idClosingContact = partial.idClosingContact;
 		if ('idService' in partial) this.idService = partial.idService;
+		if ('status' in partial && partial.status !== undefined) this.status = partial.status;
 		if ('laterality' in partial) this.laterality = partial.laterality;
 		if ('plansOfAction' in partial && partial.plansOfAction !== undefined) this.plansOfAction = partial.plansOfAction;
 		if ('episodes' in partial && partial.episodes !== undefined) this.episodes = partial.episodes;
@@ -784,6 +822,7 @@ export class EncryptedHealthElement {
 		if (this.modified != undefined) res['modified'] = this.modified
 		if (this.author != undefined) res['author'] = this.author
 		if (this.responsible != undefined) res['responsible'] = this.responsible
+		if (this.medicalLocationId != undefined) res['medicalLocationId'] = this.medicalLocationId
 		res['tags'] = this.tags.map((x0) => x0.toJSON() )
 		res['codes'] = this.codes.map((x0) => x0.toJSON() )
 		if (this.endOfLife != undefined) res['endOfLife'] = this.endOfLife
@@ -799,6 +838,7 @@ export class EncryptedHealthElement {
 		if (this.idOpeningContact != undefined) res['idOpeningContact'] = this.idOpeningContact
 		if (this.idClosingContact != undefined) res['idClosingContact'] = this.idClosingContact
 		if (this.idService != undefined) res['idService'] = this.idService
+		res['status'] = this.status
 		if (this.laterality != undefined) res['laterality'] = this.laterality
 		res['plansOfAction'] = this.plansOfAction.map((x0) => x0.toJSON() )
 		res['episodes'] = this.episodes.map((x0) => x0.toJSON() )
@@ -830,6 +870,7 @@ export class EncryptedHealthElement {
 			modified: expectNumber(extractEntry(jCpy, 'modified', false, path), true, true, [...path, ".modified"]),
 			author: expectString(extractEntry(jCpy, 'author', false, path), true, [...path, ".author"]),
 			responsible: expectString(extractEntry(jCpy, 'responsible', false, path), true, [...path, ".responsible"]),
+			medicalLocationId: expectString(extractEntry(jCpy, 'medicalLocationId', false, path), true, [...path, ".medicalLocationId"]),
 			tags: expectArray(extractEntry(jCpy, 'tags', false, path), false, [...path, ".tags"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			codes: expectArray(extractEntry(jCpy, 'codes', false, path), false, [...path, ".codes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, CodeStub.fromJSON)),
 			endOfLife: expectNumber(extractEntry(jCpy, 'endOfLife', false, path), true, true, [...path, ".endOfLife"]),
@@ -845,6 +886,7 @@ export class EncryptedHealthElement {
 			idOpeningContact: expectString(extractEntry(jCpy, 'idOpeningContact', false, path), true, [...path, ".idOpeningContact"]),
 			idClosingContact: expectString(extractEntry(jCpy, 'idClosingContact', false, path), true, [...path, ".idClosingContact"]),
 			idService: expectString(extractEntry(jCpy, 'idService', false, path), true, [...path, ".idService"]),
+			status: expectNumber(extractEntry(jCpy, 'status', false, path), false, true, [...path, ".status"]),
 			laterality: expectStringEnum(extractEntry(jCpy, 'laterality', false, path), true, [...path, ".laterality"], Laterality, 'Laterality'),
 			plansOfAction: expectArray(extractEntry(jCpy, 'plansOfAction', false, path), false, [...path, ".plansOfAction"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedPlanOfAction.fromJSON)),
 			episodes: expectArray(extractEntry(jCpy, 'episodes', false, path), false, [...path, ".episodes"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, EncryptedEpisode.fromJSON)),
