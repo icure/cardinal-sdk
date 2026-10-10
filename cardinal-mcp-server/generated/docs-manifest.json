@@ -18987,6 +18987,11 @@
           "description": "The version of the custom design doc schema to apply by default children groups on creation."
         },
         {
+          "name": "status",
+          "type": "GroupStatus | undefined",
+          "description": "The commercial status of the group, derived from the group hierarchy when not explicitly set on the group. This field is read-only: it is ignored when creating or modifying a group."
+        },
+        {
           "name": "partial",
           "type": "Partial<Group> & Pick<Group, \"minimumAuthenticationClassForElevatedPrivileges\">)",
           "description": ""
@@ -25901,6 +25906,23 @@
         }
       ]
     },
+    "GroupStatus": {
+      "name": "GroupStatus",
+      "description": "Enumeration.",
+      "isEnum": true,
+      "fields": [
+        {
+          "name": "Paying",
+          "type": "\"Paying\"",
+          "description": "enum constant"
+        },
+        {
+          "name": "Free",
+          "type": "\"Free\"",
+          "description": "enum constant"
+        }
+      ]
+    },
     "GroupType": {
       "name": "GroupType",
       "description": "Enumeration.",
@@ -26504,6 +26526,11 @@
           "description": "The insurance justification code."
         },
         {
+          "name": "agreementNumber",
+          "type": "string | undefined",
+          "description": "The reimbursement agreement number obtained during a pre-authorization."
+        },
+        {
           "name": "cancelPatientInterventionReason",
           "type": "number | undefined",
           "description": "The reason for canceling patient intervention."
@@ -26802,6 +26829,11 @@
           "name": "insuranceJustification",
           "type": "number | undefined",
           "description": "The insurance justification code."
+        },
+        {
+          "name": "agreementNumber",
+          "type": "string | undefined",
+          "description": "The reimbursement agreement number obtained during a pre-authorization."
         },
         {
           "name": "cancelPatientInterventionReason",
