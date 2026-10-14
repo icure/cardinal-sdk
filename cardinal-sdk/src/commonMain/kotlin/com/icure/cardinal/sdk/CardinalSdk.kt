@@ -504,12 +504,13 @@ internal suspend fun initializeApiCrypto(
 		retryConfiguration = options.requestRetryConfiguration,
 		entityListDecodingStrategy = options.entityListDecodingStrategy,
 	)
+	val rawDataOwnerApi = RawDataOwnerApiImpl(
+		apiUrl,
+		authProvider,
+		rawApiConfig
+	)
 	val dataOwnerApi = DataOwnerApiImpl(
-		RawDataOwnerApiImpl(
-			apiUrl,
-			authProvider,
-			rawApiConfig
-		),
+		rawDataOwnerApi,
 		boundGroup
 	)
 	val self = dataOwnerApi.getCurrentDataOwner()
@@ -537,6 +538,7 @@ internal suspend fun initializeApiCrypto(
 	val baseExchangeKeysManager = BaseExchangeKeysManagerImpl(
 		cryptoService,
 		dataOwnerApi,
+		rawDataOwnerApi,
 		rawPatientApiNoAccessKeys,
 		rawDeviceApi,
 		rawHealthcarePartyApi,

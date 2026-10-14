@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.crypto.impl
 
 import com.icure.cardinal.sdk.api.DataOwnerApi
+import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
 import com.icure.cardinal.sdk.api.raw.RawDeviceApi
 import com.icure.cardinal.sdk.api.raw.RawHealthcarePartyApi
 import com.icure.cardinal.sdk.api.raw.RawPatientApi
@@ -10,6 +11,7 @@ import com.icure.cardinal.sdk.crypto.entities.DecryptionResult
 import com.icure.cardinal.sdk.crypto.entities.RsaDecryptionKeysSet
 import com.icure.cardinal.sdk.model.CryptoActorStubWithType
 import com.icure.cardinal.sdk.model.DataOwnerType
+import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.extensions.asStub
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
@@ -36,6 +38,7 @@ import kotlinx.coroutines.sync.withLock
 class BaseExchangeKeysManagerImpl(
 	private val cryptoService: CryptoService,
 	private val dataOwnerApi: DataOwnerApi,
+	private val rawDataOwnerApi: RawDataOwnerApi,
 	private val rawPatientApi: RawPatientApi,
 	private val rawDeviceApi: RawDeviceApi,
 	private val rawHealthcarePartyApi: RawHealthcarePartyApi
@@ -100,12 +103,18 @@ class BaseExchangeKeysManagerImpl(
 			acc + retrievedData
 		}
 		val dataOwner = dataOwnerApi.getCryptoActorStub(dataOwnerId)
-		val allDataOwnerKeys = combineDataOwnerAesExchangeKeysWithHcpartyKeys(dataOwner, emptyList())
-		val acceptedDelegates = allDataOwnerKeys.flatMap { it.value.keys }.distinct().filter {
-			dataOwnerApi.getCryptoActorStub(it).type in otherOwnerTypes
-		}.toSet()
+		// The type of the delegates is only needed if we are not accepting all types of data owners
+		val filterByType = !otherOwnerTypes.containsAll(DataOwnerType.entries)
+		val delegateStubs = if (filterByType) {
+			val delegateIds = dataOwner.stub.aesExchangeKeys.values.flatMapTo(mutableSetOf()) { it.keys } + dataOwner.stub.hcPartyKeys.keys
+			getCryptoActorStubsById(delegateIds - dataOwnerId) + (dataOwnerId to dataOwner)
+		} else emptyMap()
+		val allDataOwnerKeys = combineDataOwnerAesExchangeKeysWithHcpartyKeys(dataOwner, delegateStubs.values)
 		val filteredKeysFromOwner = allDataOwnerKeys.flatMap { (_, dataByDelegate) ->
-			dataByDelegate.toList().filter { it.first in acceptedDelegates }
+			if (filterByType) dataByDelegate.toList().filter { (delegateId, _) ->
+				// Delegates that could not be retrieved (e.g. deleted) are excluded, since we can't verify their type
+				delegateStubs[delegateId]?.type in otherOwnerTypes
+			} else dataByDelegate.toList()
 		}.groupBy { it.first }.mapValues { (_, v) -> v.map { it.second } }.filterValues { it.isNotEmpty() }
 		DataOwnerExchangeKeys(
 			dataOwnerId,
@@ -215,9 +224,9 @@ class BaseExchangeKeysManagerImpl(
 				val hcPartyKeys = delegator.stub.hcPartyKeys
 				val delegatorLegacyPublicKeyFp = AesExchangeKeyEncryptionKeypairIdentifier(legacyPubKey.fingerprintV1().s)
 				val availableDataOwnersById = availableDataOwners.associateBy { it.stub.id }
-				val delegatesById = (hcPartyKeys.keys - delegator.stub.id).let { delegates ->
-					delegates.associateWith { id -> availableDataOwnersById[id] ?: dataOwnerApi.getCryptoActorStub(id) }
-				} + (delegator.stub.id to delegator)
+				val delegatesById = availableDataOwnersById +
+					getCryptoActorStubsById(hcPartyKeys.keys - delegator.stub.id - availableDataOwnersById.keys) +
+					(delegator.stub.id to delegator)
 				val aesExchangeKeys = delegator.stub.aesExchangeKeys.toMutableMap()
 				aesExchangeKeys + (AesExchangeKeyEntryKeyString(legacyPubKey.s) to hcPartyKeys.mapValues { (delegateId, encryptedKey) ->
 					val delegateKey = AesExchangeKeyEncryptionKeypairIdentifier(delegatesById[delegateId]?.stub?.publicKey?.fingerprintV1()?.s ?: "")
@@ -228,6 +237,17 @@ class BaseExchangeKeysManagerImpl(
 				})
 			}
 		} ?: delegator.stub.aesExchangeKeys
+
+	/**
+	 * Gets the stubs of multiple data owners in a single request. Data owners that could not be retrieved (e.g.
+	 * because they were deleted) are not included in the result.
+	 */
+	private suspend fun getCryptoActorStubsById(ids: Set<String>): Map<String, CryptoActorStubWithType> =
+		if (ids.isEmpty()) emptyMap() else rawDataOwnerApi.getDataOwnerStubs(ListOfIds(ids.toList())).successBody().associateBy {
+			it.stub.id
+		}.also { retrieved ->
+			if (retrieved.size < ids.size) log.w { "Could not retrieve stubs of data owners ${ids - retrieved.keys}" }
+		}
 
 	private suspend fun encryptExchangeKey(
 		exchangeKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
