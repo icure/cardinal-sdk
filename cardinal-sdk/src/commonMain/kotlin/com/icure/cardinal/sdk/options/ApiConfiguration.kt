@@ -20,6 +20,7 @@ internal interface BasicApiConfiguration {
 	val webSocketAuthProvider: JwtBasedAuthProvider?
 	val crypto: BasicInternalCryptoApi
 	val rawApiConfig: RawApiConfig
+	val customViewsOptions: CustomViewsOptions?
 
 	fun requireWebSocketAuthProvider(): JwtBasedAuthProvider =
 		webSocketAuthProvider ?: throw UnsupportedOperationException("Your chosen authentication method does not support websocket subscriptions")
@@ -47,6 +48,7 @@ internal data class ApiConfigurationImpl(
 	val boundGroup: SdkBoundGroup?,
 	override val encryptors: RootEntitiesEncryptors,
 	override val encryptedContentJson: Json,
+	override val customViewsOptions: CustomViewsOptions?
 ) : ApiConfiguration {
 	override fun getBoundGroup(coroutineContext: CoroutineContext): SdkBoundGroup? =
 		boundGroup
@@ -59,6 +61,7 @@ internal data class BasicApiConfigurationImpl(
 	override val crypto: BasicInternalCryptoApi,
 	override val rawApiConfig: RawApiConfig,
 	val boundGroup: SdkBoundGroup?,
+	override val customViewsOptions: CustomViewsOptions?
 ) : BasicApiConfiguration {
 	override fun getBoundGroup(coroutineContext: CoroutineContext): SdkBoundGroup? =
 		boundGroup
@@ -70,7 +73,8 @@ internal data class UnboundBasicApiConfigurationImpl(
 	override val webSocketAuthProvider: JwtBasedAuthProvider?,
 	override val crypto: BasicInternalCryptoApi,
 	override val rawApiConfig: RawApiConfig,
-	val boundGroupProvider: (CoroutineContext) -> SdkBoundGroup?
+	val boundGroupProvider: (CoroutineContext) -> SdkBoundGroup?,
+	override val customViewsOptions: CustomViewsOptions?
 ) : BasicApiConfiguration {
 	override fun getBoundGroup(coroutineContext: CoroutineContext): SdkBoundGroup? =
 		boundGroupProvider(coroutineContext)

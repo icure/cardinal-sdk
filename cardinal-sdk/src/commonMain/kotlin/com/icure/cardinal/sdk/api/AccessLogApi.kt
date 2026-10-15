@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.AccessLog
@@ -554,6 +556,8 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	 * @return a list of access log ids
 	 */
 	suspend fun matchAccessLogsBySorted(filter: SortableFilterOptions<AccessLog>): List<String>
+
+	suspend fun matchAccessLogsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBasicFlavouredInGroupApi<DecryptedAccessLog> {
@@ -641,6 +645,8 @@ interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogBa
 	 * In-group version of [AccessLogApi.matchAccessLogsBySorted]
 	 */
 	suspend fun matchAccessLogsBySorted(groupId: String, filter: SortableFilterOptions<AccessLog>): List<String>
+
+	suspend fun matchAccessLogsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface AccessLogBasicApi : AccessLogBasicFlavourlessApi, AccessLogBasicFlavouredApi<EncryptedAccessLog> {
@@ -675,6 +681,8 @@ interface AccessLogBasicApi : AccessLogBasicFlavourlessApi, AccessLogBasicFlavou
 	 * @return a list of access log ids
 	 */
 	suspend fun matchAccessLogsBySorted(filter: BaseSortableFilterOptions<AccessLog>): List<String>
+
+	suspend fun matchAccessLogsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 
 	/**
 	 * Get an iterator that iterates through all access logs matching the provided filter, executing multiple requests to
@@ -717,6 +725,8 @@ interface AccessLogBasicInGroupApi : AccessLogBasicFlavourlessInGroupApi, Access
 	 * In-group version of [AccessLogBasicApi.matchAccessLogsBySorted]
 	 */
 	suspend fun matchAccessLogsBySorted(groupId: String, filter: BaseSortableFilterOptions<AccessLog>): List<String>
+
+	suspend fun matchAccessLogsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 
 	/**
 	 * In-group version of [AccessLogBasicApi.filterAccessLogsBy]

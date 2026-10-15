@@ -33,7 +33,6 @@ import com.icure.cardinal.sdk.api.impl.initDocumentBasicApi
 import com.icure.cardinal.sdk.api.impl.initFormBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceBasicApi
-import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskApi
 import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskBasicApi
 import com.icure.cardinal.sdk.api.impl.initMessageBasicApi
 import com.icure.cardinal.sdk.api.impl.initPatientBasicApi
@@ -171,7 +170,8 @@ interface CardinalUnboundBaseSdk : CardinalBaseApis {
 					entityAccessInformationProvider = BasicEntityAccessInformationProvider(boundGroupProvider)
 				),
 				rawApiConfig = rawApiConfig,
-				boundGroupProvider = boundGroupProvider
+				boundGroupProvider = boundGroupProvider,
+				customViewsOptions = customisedSdkOptions.customViewsOptions
 			)
 			return object : CardinalUnboundBaseSdk, CardinalBaseApis by CardinalBaseApisImpl(authProvider, config) {}
 		}
@@ -282,7 +282,8 @@ interface CardinalBaseSdk : CardinalBaseApis {
 					entityAccessInformationProvider = BasicEntityAccessInformationProvider { boundGroup }
 				),
 				rawApiConfig = rawApiConfig,
-				boundGroup = boundGroup
+				boundGroup = boundGroup,
+				customViewsOptions = customisedSdkOptions.customViewsOptions
 			)
 			return CardinalBaseSdkImpl(
 				authProvider,
@@ -707,14 +708,15 @@ private class CardinalBaseSdkImpl(
 	): CardinalSdk {
 		val initializedSdkOptions = makeInitializedSdkOptions(this.options, options, baseStorage)
 		val (initializedCrypto, newKey, scope) = initializeApiCrypto(
-			config.apiUrl,
-			authProvider,
-			config.rawApiConfig.httpClient,
-			config.rawApiConfig.json,
-			options.cryptoStrategies,
-			config.crypto.primitives,
-			boundGroupId,
-			initializedSdkOptions,
+			apiUrl = config.apiUrl,
+			authProvider = authProvider,
+			client = config.rawApiConfig.httpClient,
+			json = config.rawApiConfig.json,
+			providedCryptoStrategies = options.cryptoStrategies,
+			cryptoService = config.crypto.primitives,
+			groupId = boundGroupId,
+			options = initializedSdkOptions,
+			customViewsOptions = config.customViewsOptions
 		)
 		return CardinalSdkImpl(
 			this.authProvider,

@@ -599,11 +599,11 @@ internal suspend fun mapHealthElementFilterOptions(
 ): AbstractFilter<HealthElement> {
 	val nonBasicConfig = config as? ApiConfiguration
 	return mapHealthElementFilterOptions(
-		filterOptions,
-		nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
-		nonBasicConfig?.crypto?.entity,
-		config.getBoundGroup(currentCoroutineContext()),
-		requestGroup
+		filterOptions = filterOptions,
+		selfDataOwner = nonBasicConfig?.crypto?.dataOwnerApi?.getCurrentDataOwnerReference(),
+		entityEncryptionService = nonBasicConfig?.crypto?.entity,
+		boundGroup = config.getBoundGroup(currentCoroutineContext()),
+		requestGroup = requestGroup
 	)
 }
 

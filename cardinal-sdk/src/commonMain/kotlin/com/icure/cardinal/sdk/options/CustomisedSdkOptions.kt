@@ -8,5 +8,7 @@ data class CustomisedSdkOptions(
 	/**
 	 * Specifies which fields should be encrypted for each entity, root or embedded.
 	 */
-	val encryptedFieldsOptions: EncryptedFieldsOptions? = null
+	val encryptedFieldsOptions: EncryptedFieldsOptions? = null,
+
+	val customViewsOptions: CustomViewsOptions? = null,
 )

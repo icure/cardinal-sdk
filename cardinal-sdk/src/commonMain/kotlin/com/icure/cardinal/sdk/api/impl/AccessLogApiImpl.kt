@@ -22,9 +22,12 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.filters.mapAccessLogFilterOptions
+import com.icure.cardinal.sdk.filters.mapCustomFilterOptions
 import com.icure.cardinal.sdk.model.AccessLog
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
@@ -32,20 +35,25 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.CollectingSortingCustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.CustomViewPageIterator
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -76,6 +84,45 @@ private fun tryAndRecoverApiFlavour(
 	encryptors = config.encryptors.accessLog,
 	getRootModelVersion = EncryptedAccessLog::customisedModelVersion,
 )
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawAccessLogApi.doMatchAccessLogsByCustomFilter(
+	groupId: String?,
+	filter: CustomFilterOption,
+	config: BasicApiConfiguration,
+): PaginatedListIterator<String> {
+	val (mappedFilter, manifest) = mapCustomFilterOptions(
+		filterOption = filter,
+		viewManifests = requireNotNull(config.customViewsOptions?.accessLogManifest)  {
+			"SDK was not configured for custom views"
+		},
+		config = config,
+		requestGroup = groupId,
+		encryptedEntityType = EntityWithEncryptionMetadataTypeName.AccessLog,
+	)
+	val filterLambda: suspend (filter: CustomFilter) -> PaginatedList<IdWithValue> = if (groupId == null) {
+		{
+			matchAccessLogsByCustomFilter(it).successBody()
+		}
+	} else {
+		{
+			matchAccessLogsByCustomFilterInGroup(groupId = groupId, it).successBody()
+		}
+	}
+	return if (manifest.keyFieldsComparatorOrder.isEmpty()) {
+		CustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	} else {
+		CollectingSortingCustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	}
+}
 
 @InternalIcureApi
 private abstract class AbstractAccessLogBasicFlavouredApi<E : AccessLog>(
@@ -443,13 +490,13 @@ private class AccessLogBasicFlavourlessInGroupApiImpl(rawApi: RawAccessLogApi) :
 @InternalIcureApi
 internal fun initAccessLogApi(
 	rawApi: RawAccessLogApi,
-	config: ApiConfiguration
+	config: ApiConfiguration,
 ): AccessLogApi = AccessLogApiImpl(
-		rawApi,
-		config,
-		encryptedApiFlavour(config),
-		decryptedApiFlavour(config),
-		tryAndRecoverApiFlavour(config)
+		rawApi = rawApi,
+		config = config,
+		encryptedFlavour = encryptedApiFlavour(config),
+		decryptedFlavour = decryptedApiFlavour(config),
+		tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
 	)
 
 @InternalIcureApi
@@ -552,6 +599,13 @@ private class AccessLogApiImpl(
 
 		override suspend fun matchAccessLogsBy(groupId: String, filter: FilterOptions<AccessLog>): List<String> =
 			doMatchAccessLogsBy(groupId, filter)
+
+		override suspend fun matchAccessLogsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchAccessLogsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 
 		override suspend fun matchAccessLogsBySorted(
 			groupId: String,
@@ -698,6 +752,13 @@ private class AccessLogApiImpl(
 	override suspend fun matchAccessLogsBySorted(filter: SortableFilterOptions<AccessLog>): List<String> =
 		matchAccessLogsBy(filter)
 
+	override suspend fun matchAccessLogsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchAccessLogsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
+
 	private suspend fun doMatchAccessLogsBySorted(
 		groupId: String?,
 		filter: SortableFilterOptions<AccessLog>
@@ -727,11 +788,11 @@ private class AccessLogApiImpl(
 @InternalIcureApi
 internal fun initAccessLogBasicApi(
 	rawApi: RawAccessLogApi,
-	config: BasicApiConfiguration
+	config: BasicApiConfiguration,
 ): AccessLogBasicApi = AccessLogBasicApiImpl(
-	rawApi,
-	config,
-	encryptedApiFlavour(config)
+	rawApi = rawApi,
+	config = config,
+	encryptedFlavour = encryptedApiFlavour(config),
 )
 
 @InternalIcureApi
@@ -771,6 +832,16 @@ private class AccessLogBasicApiImpl(
 			filter: BaseSortableFilterOptions<AccessLog>
 		): PaginatedListIterator<GroupScoped<EncryptedAccessLog>> =
 			filterAccessLogsBy(groupId, filter)
+
+		override suspend fun matchAccessLogsByCustomFilter(
+			groupId: String,
+			filter: BasicCustomFilterOption
+		): PaginatedListIterator<String> =
+			rawApi.doMatchAccessLogsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	private suspend fun doMatchAccessLogsBy(groupId: String?, filter: BaseFilterOptions<AccessLog>): List<String> =
@@ -804,4 +875,11 @@ private class AccessLogBasicApiImpl(
 
 	override suspend fun filterAccessLogsBySorted(filter: BaseSortableFilterOptions<AccessLog>): PaginatedListIterator<EncryptedAccessLog> =
 		filterAccessLogsBy(filter)
+
+	override suspend fun matchAccessLogsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchAccessLogsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }

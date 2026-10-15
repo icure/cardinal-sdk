@@ -144,6 +144,7 @@ import com.icure.cardinal.sdk.model.extensions.type
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.ApiConfigurationImpl
 import com.icure.cardinal.sdk.options.AuthenticationMethod
+import com.icure.cardinal.sdk.options.CustomViewsOptions
 import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.options.EntityListDecodingStrategy
@@ -323,16 +324,21 @@ interface CardinalSdk : CardinalApis {
 					entityListDecodingStrategy = options.entityListDecodingStrategy,
 				)
 			)
-			val initializedSdkOptions = buildInitializedOptions(baseStorage, options, customisedSdkOptions)
+			val initializedSdkOptions = buildInitializedOptions(
+				baseStorage = baseStorage,
+				sdkOptions = options,
+				customisedSdkOptions = customisedSdkOptions
+			)
 			val (initializedCrypto, newKey, scope) = initializeApiCrypto(
-				baseUrl,
-				authProvider,
-				client,
-				json,
-				options.cryptoStrategies,
-				cryptoService,
-				chosenGroupId,
-				initializedSdkOptions,
+				apiUrl = baseUrl,
+				authProvider = authProvider,
+				client = client,
+				json = json,
+				providedCryptoStrategies = options.cryptoStrategies,
+				cryptoService = cryptoService,
+				groupId = chosenGroupId,
+				options = initializedSdkOptions,
+				customViewsOptions = customisedSdkOptions.customViewsOptions
 			)
 			return CardinalSdkImpl(
 				authProvider,
@@ -510,7 +516,8 @@ internal suspend fun initializeApiCrypto(
 	providedCryptoStrategies: CryptoStrategies?,
 	cryptoService: CryptoService,
 	groupId: String?,
-	options: InitializedSdkOptions
+	options: InitializedSdkOptions,
+	customViewsOptions: CustomViewsOptions?
 ): Triple<ApiConfiguration, RsaKeypair<RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256>?, CoroutineScope> {
 	val cryptoStrategies = providedCryptoStrategies ?: BasicCryptoStrategies
 	val keysStorage = options.keyStorage ?: JsonAndBase64KeyStorage(options.baseStorage)
@@ -723,6 +730,7 @@ internal suspend fun initializeApiCrypto(
 			boundGroup = boundGroup,
 			encryptors = encryptors,
 			encryptedContentJson = encryptorsJson,
+			customViewsOptions = customViewsOptions,
 		),
 		userEncryptionKeysInitInfo.newKey?.key,
 		sdkScope
@@ -1096,24 +1104,25 @@ internal class CardinalSdkImpl(
 
 	private suspend fun withSwitchedProvider(
 		switchedProvider: AuthProvider,
-		boundGroupId: String?
+		boundGroupId: String?,
 	): CardinalSdk {
 		val (switchedCryptoConfigs, newKey, scope) = initializeApiCrypto(
-			config.apiUrl,
-			switchedProvider,
-			config.rawApiConfig.httpClient,
-			config.rawApiConfig.json,
-			config.crypto.strategies,
-			config.crypto.primitives,
-			boundGroupId,
-			options
+			apiUrl = config.apiUrl,
+			authProvider = switchedProvider,
+			client = config.rawApiConfig.httpClient,
+			json = config.rawApiConfig.json,
+			providedCryptoStrategies = config.crypto.strategies,
+			cryptoService = config.crypto.primitives,
+			groupId = boundGroupId,
+			options = options,
+			customViewsOptions = config.customViewsOptions
 		)
 		return CardinalSdkImpl(
-			switchedProvider,
-			switchedCryptoConfigs,
-			options,
-			boundGroupId,
-			scope
+			authProvider = switchedProvider,
+			config = switchedCryptoConfigs,
+			options = options,
+			boundGroupId = boundGroupId,
+			scope = scope
 		).also { switchedCryptoConfigs.notifyNewKeyIfAny(it, newKey) }
 	}
 }
