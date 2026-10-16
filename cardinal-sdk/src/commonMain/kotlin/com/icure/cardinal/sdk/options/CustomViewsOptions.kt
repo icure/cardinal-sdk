@@ -13,7 +13,6 @@ data class CustomViewsOptions(
 	val documentManifest: Map<String, ViewManifest> = emptyMap(),
 	val formManifest: Map<String, ViewManifest> = emptyMap(),
 	val receiptManifest: Map<String, ViewManifest> = emptyMap(),
-	val classificationManifest: Map<String, ViewManifest> = emptyMap(),
 	val invoiceManifest: Map<String, ViewManifest> = emptyMap(),
 	val relatedPersonManifest: Map<String, ViewManifest> = emptyMap(),
 )

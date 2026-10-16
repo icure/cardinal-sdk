@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Document
@@ -855,6 +857,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * @return a list of document ids
 	 */
 	suspend fun matchDocumentsBySorted(filter: SortableFilterOptions<Document>): List<String>
+
+	suspend fun matchDocumentsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavouredInGroupApi<DecryptedDocument> { // TODO subscribable?
@@ -1000,6 +1004,8 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 	 * In-group version of [DocumentApi.matchDocumentsBySorted]
 	 */
 	suspend fun matchDocumentsBySorted(groupId: String, filter: SortableFilterOptions<Document>): List<String>
+
+	suspend fun matchDocumentsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface DocumentBasicApi : DocumentBasicFlavourlessApi, DocumentBasicFlavouredApi<EncryptedDocument> {
@@ -1064,6 +1070,8 @@ interface DocumentBasicApi : DocumentBasicFlavourlessApi, DocumentBasicFlavoured
 	suspend fun filterDocumentsBySorted(
 		filter: BaseSortableFilterOptions<Document>
 	): PaginatedListIterator<EncryptedDocument>
+
+	suspend fun matchDocumentsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface DocumentBasicInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentBasicFlavouredInGroupApi<EncryptedDocument> { // TODO subscribable
@@ -1086,4 +1094,6 @@ interface DocumentBasicInGroupApi : DocumentBasicFlavourlessInGroupApi, Document
 	 * In-group version of [DocumentBasicApi.filterDocumentsBySorted]
 	 */
 	suspend fun filterDocumentsBySorted(groupId: String, filter: BaseSortableFilterOptions<Document>): PaginatedListIterator<GroupScoped<EncryptedDocument>>
+
+	suspend fun matchDocumentsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }

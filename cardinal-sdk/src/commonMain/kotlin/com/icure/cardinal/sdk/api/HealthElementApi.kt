@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
@@ -596,6 +598,8 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 		healthElementIds: List<String>,
 		delegates: Map<String, HealthElementShareOptions>
 	): BulkShareByIdsResult
+
+	suspend fun matchHealthElementsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, HealthElementFlavouredInGroupApi<DecryptedHealthElement> { // TODO subscribable
@@ -689,6 +693,8 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 	 * In-group version of [HealthElementApi.matchHealthElementsBySorted]
 	 */
 	suspend fun matchHealthElementsBySorted(groupId: String, filter: SortableFilterOptions<HealthElement>): List<String>
+
+	suspend fun matchHealthElementsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface HealthElementBasicApi : HealthElementBasicFlavourlessApi, HealthElementBasicFlavouredApi<EncryptedHealthElement>, Subscribable<HealthElement, EncryptedHealthElement, BaseFilterOptions<HealthElement>> {
@@ -752,6 +758,8 @@ interface HealthElementBasicApi : HealthElementBasicFlavourlessApi, HealthElemen
 	suspend fun filterHealthElementsBySorted(
 		filter: BaseSortableFilterOptions<HealthElement>
 	): PaginatedListIterator<EncryptedHealthElement>
+
+	suspend fun matchHealthElementsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface HealthElementBasicInGroupApi : HealthElementBasicFlavourlessInGroupApi, HealthElementBasicFlavouredInGroupApi<EncryptedHealthElement> { // TODO subscribable
@@ -774,4 +782,6 @@ interface HealthElementBasicInGroupApi : HealthElementBasicFlavourlessInGroupApi
 	 * In-group version of [HealthElementApi.filterHealthElementsBySorted]
 	 */
 	suspend fun filterHealthElementsBySorted(groupId: String, filter: BaseSortableFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<EncryptedHealthElement>>
+
+	suspend fun matchHealthElementsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }

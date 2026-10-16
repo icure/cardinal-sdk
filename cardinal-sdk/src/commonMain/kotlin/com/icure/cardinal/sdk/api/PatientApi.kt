@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedPatient
@@ -723,6 +725,8 @@ interface PatientApi : PatientBasicFlavourlessApi, PatientFlavouredApi<Decrypted
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): EncryptedPatient
+
+	suspend fun matchPatientsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface PatientInGroupApi : PatientBasicFlavourlessInGroupApi, PatientFlavouredInGroupApi<DecryptedPatient> { // TODO subscribable?
@@ -817,6 +821,8 @@ interface PatientInGroupApi : PatientBasicFlavourlessInGroupApi, PatientFlavoure
 	 * In-group version of [PatientApi.forceInitializeExchangeDataToNewlyInvitedPatient]
 	 */
 	// TODO? suspend fun forceInitializeExchangeDataToNewlyInvitedPatient(groupId: String, patientId: String): Boolean
+
+	suspend fun matchPatientsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface PatientBasicApi : PatientBasicFlavourlessApi, PatientBasicFlavouredApi<EncryptedPatient>,
@@ -880,6 +886,8 @@ interface PatientBasicApi : PatientBasicFlavourlessApi, PatientBasicFlavouredApi
 	suspend fun filterPatientsBySorted(
 		filter: BaseSortableFilterOptions<Patient>
 	): PaginatedListIterator<EncryptedPatient>
+
+	suspend fun matchPatientsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface PatientBasicInGroupApi : PatientBasicFlavourlessInGroupApi, PatientBasicFlavouredInGroupApi<EncryptedPatient> { // TODO subscribable?
@@ -902,4 +910,6 @@ interface PatientBasicInGroupApi : PatientBasicFlavourlessInGroupApi, PatientBas
 	 * In-group version of [PatientBasicApi.filterPatientsBySorted]
 	 */
 	suspend fun filterPatientsBySorted(groupId: String, filter: BaseSortableFilterOptions<Patient>): PaginatedListIterator<GroupScoped<EncryptedPatient>>
+
+	suspend fun matchPatientsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }

@@ -5,6 +5,8 @@ import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.ShareMetadataBehaviour
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.model.DecryptedReceipt
 import com.icure.cardinal.sdk.model.EncryptedReceipt
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -18,6 +20,7 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
 interface ReceiptBasicFlavourlessApi {
@@ -416,6 +419,8 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 	val encrypted: ReceiptFlavouredApi<EncryptedReceipt>
 	val tryAndRecover: ReceiptFlavouredApi<Receipt>
 	val inGroup: ReceiptInGroupApi
+
+	suspend fun matchReceiptsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 @Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
@@ -486,13 +491,18 @@ interface ReceiptInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptFlavoure
 	 * In-group version of [ReceiptApi.tryDecrypt]
 	 */
 	suspend fun tryDecrypt(receipts: List<GroupScoped<EncryptedReceipt>>): List<GroupScoped<Receipt>>
+
+	suspend fun matchReceiptsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 @Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
 interface ReceiptBasicApi : ReceiptBasicFlavourlessApi, ReceiptBasicFlavouredApi<EncryptedReceipt> {
 	val inGroup: ReceiptBasicInGroupApi
+
+	suspend fun matchReceiptsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 @Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
-interface ReceiptBasicInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptBasicFlavouredInGroupApi<EncryptedReceipt>
-
+interface ReceiptBasicInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptBasicFlavouredInGroupApi<EncryptedReceipt> {
+	suspend fun matchReceiptsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
+}

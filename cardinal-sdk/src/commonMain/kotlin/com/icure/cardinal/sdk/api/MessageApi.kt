@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedMessage
@@ -623,6 +625,8 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	 * @return a list of message ids
 	 */
 	suspend fun matchMessagesBySorted(filter: SortableFilterOptions<Message>): List<String>
+
+	suspend fun matchMessagesByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface MessageInGroupApi : MessageBasicFlavourlessInGroupApi, MessageFlavouredInGroupApi<DecryptedMessage> { // TODO subscribable
@@ -711,6 +715,8 @@ interface MessageInGroupApi : MessageBasicFlavourlessInGroupApi, MessageFlavoure
 	 * In-group version of [MessageApi.matchMessagesBySorted]
 	 */
 	suspend fun matchMessagesBySorted(groupId: String, filter: SortableFilterOptions<Message>): List<String>
+
+	suspend fun matchMessagesByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface MessageBasicApi : MessageBasicFlavourlessApi, MessageBasicFlavouredApi<EncryptedMessage>, Subscribable<Message, EncryptedMessage, BaseFilterOptions<Message>> {
@@ -773,6 +779,8 @@ interface MessageBasicApi : MessageBasicFlavourlessApi, MessageBasicFlavouredApi
 	suspend fun filterMessagesBySorted(
 		filter: BaseSortableFilterOptions<Message>
 	): PaginatedListIterator<EncryptedMessage>
+
+	suspend fun matchMessagesByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface MessageBasicInGroupApi : MessageBasicFlavourlessInGroupApi, MessageBasicFlavouredInGroupApi<EncryptedMessage> { // TODO subscribable
@@ -795,4 +803,6 @@ interface MessageBasicInGroupApi : MessageBasicFlavourlessInGroupApi, MessageBas
 	 * In-group version of [MessageApi.filterMessagesBySorted]
 	 */
 	suspend fun filterMessagesBySorted(groupId: String, filter: BaseSortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>>
+
+	suspend fun matchMessagesByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }

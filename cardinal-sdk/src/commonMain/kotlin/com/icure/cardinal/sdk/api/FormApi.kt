@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Form
@@ -596,6 +598,8 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 		formIds: List<String>,
 		delegates: Map<String, FormShareOptions>
 	): BulkShareByIdsResult
+
+	suspend fun matchFormsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupApi<DecryptedForm> { // TODO subscribable?
@@ -684,6 +688,8 @@ interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupA
 	 * In-group version of [FormApi.matchFormsBySorted]
 	 */
 	suspend fun matchFormsBySorted(groupId: String, filter: SortableFilterOptions<Form>): List<String>
+
+	suspend fun matchFormsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface FormBasicApi : FormBasicFlavourlessApi, FormBasicFlavouredApi<EncryptedForm> {
@@ -748,6 +754,8 @@ interface FormBasicApi : FormBasicFlavourlessApi, FormBasicFlavouredApi<Encrypte
 	suspend fun filterFormsBySorted(
 		filter: BaseSortableFilterOptions<Form>
 	): PaginatedListIterator<EncryptedForm>
+
+	suspend fun matchFormsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface FormBasicInGroupApi : FormBasicFlavourlessInGroupApi, FormBasicFlavouredInGroupApi<EncryptedForm> {
@@ -770,6 +778,8 @@ interface FormBasicInGroupApi : FormBasicFlavourlessInGroupApi, FormBasicFlavour
 	 * In-group version of [FormBasicApi.filterFormsBySorted]
 	 */
 	suspend fun filterFormsBySorted(groupId: String, filter: BaseSortableFilterOptions<Form>): PaginatedListIterator<GroupScoped<EncryptedForm>>
+
+	suspend fun matchFormsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface FormTemplateApi {

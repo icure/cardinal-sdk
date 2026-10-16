@@ -22,13 +22,17 @@ import com.icure.cardinal.sdk.crypto.entities.TopicShareOptions
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
+import com.icure.cardinal.sdk.filters.mapCustomFilterOptions
 import com.icure.cardinal.sdk.filters.mapTopicFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
@@ -36,11 +40,13 @@ import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.TopicRole
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.requests.topic.AddParticipant
 import com.icure.cardinal.sdk.model.requests.topic.RemoveParticipant
 import com.icure.cardinal.sdk.model.specializations.HexString
@@ -56,6 +62,8 @@ import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.CollectingSortingCustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.CustomViewPageIterator
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -118,6 +126,45 @@ private suspend fun RawTopicApi.doMatchTopicsBySorted(
 	groupId: String?,
 	filter: SortableFilterOptions<Topic>
 ): List<String> = doMatchTopicsBy(config = config, groupId = groupId, filter = filter)
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawTopicApi.doMatchTopicsByCustomFilter(
+	groupId: String?,
+	filter: CustomFilterOption,
+	config: BasicApiConfiguration,
+): PaginatedListIterator<String> {
+	val (mappedFilter, manifest) = mapCustomFilterOptions(
+		filterOption = filter,
+		viewManifests = requireNotNull(config.customViewsOptions?.topicManifest) {
+			"SDK was not configured for custom views"
+		},
+		config = config,
+		requestGroup = groupId,
+		encryptedEntityType = EntityWithEncryptionMetadataTypeName.Topic,
+	)
+	val filterLambda: suspend (filter: CustomFilter) -> PaginatedList<IdWithValue> = if (groupId == null) {
+		{
+			matchTopicsByCustomFilter(it).successBody()
+		}
+	} else {
+		{
+			matchTopicsByCustomFilterInGroup(groupId = groupId, it).successBody()
+		}
+	}
+	return if (manifest.keyFieldsComparatorOrder.isEmpty()) {
+		CustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	} else {
+		CollectingSortingCustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	}
+}
 
 @InternalIcureApi
 private abstract class AbstractTopicBasicFlavouredApi<E : Topic>(
@@ -581,6 +628,13 @@ private class TopicApiImpl(
 
 		override suspend fun matchTopicsBySorted(groupId: String, filter: SortableFilterOptions<Topic>): List<String> =
 			rawApi.doMatchTopicsBySorted(config = config, groupId = groupId, filter = filter)
+
+		override suspend fun matchTopicsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchTopicsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun withEncryptionMetadata(
@@ -753,6 +807,13 @@ private class TopicApiImpl(
 			config = subscriptionConfig
 		)
 	}
+
+	override suspend fun matchTopicsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchTopicsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }
 
 @InternalIcureApi
@@ -790,6 +851,13 @@ private class TopicBasicApiImpl(
 
 		override suspend fun filterTopicsBySorted(groupId: String, filter: BaseSortableFilterOptions<Topic>): PaginatedListIterator<GroupScoped<EncryptedTopic>> =
 			filterTopicsBy(groupId, filter)
+
+		override suspend fun matchTopicsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchTopicsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun matchTopicsBy(filter: BaseFilterOptions<Topic>): List<String> =
@@ -828,4 +896,11 @@ private class TopicBasicApiImpl(
 			config = subscriptionConfig
 		)
 	}
+
+	override suspend fun matchTopicsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchTopicsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }

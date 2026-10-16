@@ -26,9 +26,12 @@ import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.filters.mapContactFilterOptions
+import com.icure.cardinal.sdk.filters.mapCustomFilterOptions
 import com.icure.cardinal.sdk.filters.mapServiceFilterOptions
 import com.icure.cardinal.sdk.model.Contact
 import com.icure.cardinal.sdk.model.DecryptedContact
@@ -38,10 +41,12 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.data.LabelledOccurence
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DecryptedService
@@ -51,6 +56,7 @@ import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -69,6 +75,8 @@ import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.currentFuzzyDateTime
 import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.CollectingSortingCustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.CustomViewPageIterator
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -200,6 +208,45 @@ private fun tryAndRecoverApiFlavour(
 				entities.map { decryptedServices[it.id] ?: it }
 			}
 	}
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawContactApi.doMatchContactsByCustomFilter(
+	groupId: String?,
+	filter: CustomFilterOption,
+	config: BasicApiConfiguration,
+): PaginatedListIterator<String> {
+	val (mappedFilter, manifest) = mapCustomFilterOptions(
+		filterOption = filter,
+		viewManifests = requireNotNull(config.customViewsOptions?.contactManifest) {
+			"SDK was not configured for custom views"
+		},
+		config = config,
+		requestGroup = groupId,
+		encryptedEntityType = EntityWithEncryptionMetadataTypeName.Contact,
+	)
+	val filterLambda: suspend (filter: CustomFilter) -> PaginatedList<IdWithValue> = if (groupId == null) {
+		{
+			matchContactsByCustomFilter(it).successBody()
+		}
+	} else {
+		{
+			matchContactsByCustomFilterInGroup(groupId = groupId, it).successBody()
+		}
+	}
+	return if (manifest.keyFieldsComparatorOrder.isEmpty()) {
+		CustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	} else {
+		CollectingSortingCustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	}
+}
 
 @InternalIcureApi
 private abstract class AbstractContactBasicFlavouredApi<E : Contact, S : Service>(
@@ -752,6 +799,13 @@ private class ContactApiImpl(
 			groupId: String,
 			filter: SortableFilterOptions<Service>,
 		): List<String> = doMatchServicesBySorted(groupId, filter)
+
+		override suspend fun matchContactsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchContactsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun withEncryptionMetadata(
@@ -1045,6 +1099,13 @@ private class ContactApiImpl(
 			config = subscriptionConfig
 		)
 	}
+
+	override suspend fun matchContactsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchContactsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }
 
 @InternalIcureApi
@@ -1116,6 +1177,13 @@ private class ContactBasicApiImpl(
 			matchServicesBySorted(groupId, filter)
 		) { ids -> getServices(groupId = groupId, entityIds = ids) }
 
+
+		override suspend fun matchContactsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchContactsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun subscribeToServiceCreateOrUpdateEvents(
@@ -1244,4 +1312,11 @@ private class ContactBasicApiImpl(
 
 	override suspend fun filterServicesBySorted(filter: BaseSortableFilterOptions<Service>): PaginatedListIterator<EncryptedService> =
 		filterServicesBy(filter)
+
+	override suspend fun matchContactsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchContactsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }

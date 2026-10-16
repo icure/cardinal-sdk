@@ -20,21 +20,27 @@ import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
+import com.icure.cardinal.sdk.filters.mapCustomFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedReceipt
 import com.icure.cardinal.sdk.model.EncryptedReceipt
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.Receipt
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -43,6 +49,9 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.CollectingSortingCustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.CustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
 
 @InternalIcureApi
@@ -71,6 +80,45 @@ private fun tryAndRecoverApiFlavour(
 	encryptors = config.encryptors.receipt,
 	getRootModelVersion = { null },
 )
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawReceiptApi.doMatchReceiptsByCustomFilter(
+	groupId: String?,
+	filter: CustomFilterOption,
+	config: BasicApiConfiguration,
+): PaginatedListIterator<String> {
+	val (mappedFilter, manifest) = mapCustomFilterOptions(
+		filterOption = filter,
+		viewManifests = requireNotNull(config.customViewsOptions?.receiptManifest) {
+			"SDK was not configured for custom views"
+		},
+		config = config,
+		requestGroup = groupId,
+		encryptedEntityType = EntityWithEncryptionMetadataTypeName.Receipt,
+	)
+	val filterLambda: suspend (filter: CustomFilter) -> PaginatedList<IdWithValue> = if (groupId == null) {
+		{
+			matchReceiptsByCustomFilter(it).successBody()
+		}
+	} else {
+		{
+			matchReceiptsByCustomFilterInGroup(groupId = groupId, it).successBody()
+		}
+	}
+	return if (manifest.keyFieldsComparatorOrder.isEmpty()) {
+		CustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	} else {
+		CollectingSortingCustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	}
+}
 
 @InternalIcureApi
 private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
@@ -528,6 +576,13 @@ private class ReceiptApiImpl(
 				tryAndRecoverFlavour.maybeDecrypt(groupId, entities)
 			}
 
+
+		override suspend fun matchReceiptsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchReceiptsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun withEncryptionMetadata(
@@ -713,6 +768,13 @@ private class ReceiptApiImpl(
 
 	override suspend fun tryDecrypt(receipt: EncryptedReceipt): Receipt =
 		tryAndRecoverFlavour.maybeDecrypt(null, receipt)
+
+	override suspend fun matchReceiptsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchReceiptsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }
 
 @InternalIcureApi
@@ -735,5 +797,19 @@ private class ReceiptBasicApiImpl(
 	ReceiptBasicFlavourlessApi by ReceiptBasicFlavourlessApiImpl(rawApi) {
 	override val inGroup: ReceiptBasicInGroupApi = object : ReceiptBasicInGroupApi,
 		ReceiptBasicFlavouredInGroupApi<EncryptedReceipt> by ReceiptBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi) {}
+		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi) {
+		override suspend fun matchReceiptsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchReceiptsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
+	}
+
+	override suspend fun matchReceiptsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchReceiptsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }

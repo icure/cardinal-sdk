@@ -26,8 +26,11 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
+import com.icure.cardinal.sdk.filters.mapCustomFilterOptions
 import com.icure.cardinal.sdk.filters.mapHealthElementFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
 import com.icure.cardinal.sdk.model.EncryptedHealthElement
@@ -36,14 +39,17 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -57,6 +63,8 @@ import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.CollectingSortingCustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.CustomViewPageIterator
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -119,6 +127,45 @@ private suspend fun RawHealthElementApi.doMatchHealthElementsBySorted(
 	groupId: String?,
 	filter: SortableFilterOptions<HealthElement>
 ): List<String> = doMatchHealthElementsBy(config = config, groupId = groupId, filter = filter)
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawHealthElementApi.doMatchHealthElementsByCustomFilter(
+	groupId: String?,
+	filter: CustomFilterOption,
+	config: BasicApiConfiguration,
+): PaginatedListIterator<String> {
+	val (mappedFilter, manifest) = mapCustomFilterOptions(
+		filterOption = filter,
+		viewManifests = requireNotNull(config.customViewsOptions?.healthElementManifest) {
+			"SDK was not configured for custom views"
+		},
+		config = config,
+		requestGroup = groupId,
+		encryptedEntityType = EntityWithEncryptionMetadataTypeName.HealthElement,
+	)
+	val filterLambda: suspend (filter: CustomFilter) -> PaginatedList<IdWithValue> = if (groupId == null) {
+		{
+			matchHealthElementsByCustomFilter(it).successBody()
+		}
+	} else {
+		{
+			matchHealthElementsByCustomFilterInGroup(groupId = groupId, it).successBody()
+		}
+	}
+	return if (manifest.keyFieldsComparatorOrder.isEmpty()) {
+		CustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	} else {
+		CollectingSortingCustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	}
+}
 
 @InternalIcureApi
 private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>(
@@ -585,6 +632,13 @@ private class HealthElementApiImpl(
 			delegates: Set<EntityReferenceInGroup>
 		) =
 			doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
+
+		override suspend fun matchHealthElementsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchHealthElementsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun withEncryptionMetadata(
@@ -779,6 +833,13 @@ private class HealthElementApiImpl(
 
 	override suspend fun encryptOrValidate(healthElements: List<HealthElement>): List<EncryptedHealthElement> =
 		tryAndRecoverFlavour.validateAndMaybeEncrypt(null, healthElements)
+
+	override suspend fun matchHealthElementsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchHealthElementsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }
 
 
@@ -817,6 +878,13 @@ private class HealthElementBasicApiImpl(
 
 		override suspend fun filterHealthElementsBySorted(groupId: String, filter: BaseSortableFilterOptions<HealthElement>): PaginatedListIterator<GroupScoped<EncryptedHealthElement>> =
 			filterHealthElementsBy(groupId, filter)
+
+		override suspend fun matchHealthElementsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchHealthElementsByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun matchHealthElementsBy(filter: BaseFilterOptions<HealthElement>): List<String> =
@@ -852,4 +920,11 @@ private class HealthElementBasicApiImpl(
 			config = subscriptionConfig
 		)
 	}
+
+	override suspend fun matchHealthElementsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchHealthElementsByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }

@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Contact
@@ -707,6 +709,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		contactIds: List<String>,
 		delegates: Map<String, ContactShareOptions>
 	): BulkShareByIdsResult
+
+	suspend fun matchContactsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavouredInGroupApi<DecryptedContact, DecryptedService> {
@@ -817,6 +821,8 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 	 * In-group version of [ContactApi.matchServicesBySorted]
 	 */
 	suspend fun matchServicesBySorted(groupId: String, filter: SortableFilterOptions<Service>): List<String>
+
+	suspend fun matchContactsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface ContactBasicApi : ContactBasicFlavourlessApi, ContactBasicFlavouredApi<EncryptedContact, EncryptedService>, Subscribable<Contact, EncryptedContact, BaseFilterOptions<Contact>> {
@@ -941,6 +947,8 @@ interface ContactBasicApi : ContactBasicFlavourlessApi, ContactBasicFlavouredApi
 		@DefaultValue("null")
 		subscriptionConfig: EntitySubscriptionConfiguration? = null
 	): EntitySubscription<EncryptedService>
+
+	suspend fun matchContactsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface ContactBasicInGroupApi : ContactBasicFlavourlessInGroupApi, ContactBasicFlavouredInGroupApi<EncryptedContact, EncryptedService> { // TODO subscribable
@@ -983,4 +991,6 @@ interface ContactBasicInGroupApi : ContactBasicFlavourlessInGroupApi, ContactBas
 	 * In-group version of [ContactBasicApi.filterServicesBySorted]
 	 */
 	suspend fun filterServicesBySorted(groupId: String, filter: BaseSortableFilterOptions<Service>): PaginatedListIterator<GroupScoped<EncryptedService>>
+
+	suspend fun matchContactsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }

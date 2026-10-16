@@ -22,8 +22,11 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
+import com.icure.cardinal.sdk.filters.mapCustomFilterOptions
 import com.icure.cardinal.sdk.filters.mapMessageFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.EncryptedMessage
@@ -33,14 +36,17 @@ import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.MessagesReadStatusUpdate
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -55,6 +61,8 @@ import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.CollectingSortingCustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.CustomViewPageIterator
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -117,6 +125,45 @@ private suspend fun RawMessageApi.doMatchMessagesBySorted(
 	groupId: String?,
 	filter: SortableFilterOptions<Message>
 ): List<String> = doMatchMessagesBy(config = config, groupId = groupId, filter = filter)
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawMessageApi.doMatchMessagesByCustomFilter(
+	groupId: String?,
+	filter: CustomFilterOption,
+	config: BasicApiConfiguration,
+): PaginatedListIterator<String> {
+	val (mappedFilter, manifest) = mapCustomFilterOptions(
+		filterOption = filter,
+		viewManifests = requireNotNull(config.customViewsOptions?.messageManifest) {
+			"SDK was not configured for custom views"
+		},
+		config = config,
+		requestGroup = groupId,
+		encryptedEntityType = EntityWithEncryptionMetadataTypeName.Message,
+	)
+	val filterLambda: suspend (filter: CustomFilter) -> PaginatedList<IdWithValue> = if (groupId == null) {
+		{
+			matchMessagesByCustomFilter(it).successBody()
+		}
+	} else {
+		{
+			matchMessagesByCustomFilterInGroup(groupId = groupId, it).successBody()
+		}
+	}
+	return if (manifest.keyFieldsComparatorOrder.isEmpty()) {
+		CustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	} else {
+		CollectingSortingCustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	}
+}
 
 @InternalIcureApi
 private abstract class AbstractMessageBasicFlavouredApi<E : Message>(
@@ -598,6 +645,13 @@ private class MessageApiImpl(
 			delegates: Set<EntityReferenceInGroup>
 		) =
 			doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
+
+		override suspend fun matchMessagesByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchMessagesByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun withEncryptionMetadata(
@@ -779,6 +833,13 @@ private class MessageApiImpl(
 		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(message), EntityWithEncryptionMetadataTypeName.Patient).values.singleOrNull()) {
 			"Method secretIdsWithDataOwnersInfo should have returned single item for single message"
 		}
+
+	override suspend fun matchMessagesByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchMessagesByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }
 
 @InternalIcureApi
@@ -816,6 +877,13 @@ private class MessageBasicApiImpl(
 
 		override suspend fun filterMessagesBySorted(groupId: String, filter: BaseSortableFilterOptions<Message>): PaginatedListIterator<GroupScoped<EncryptedMessage>> =
 			filterMessagesBy(groupId, filter)
+
+		override suspend fun matchMessagesByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchMessagesByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun matchMessagesBy(filter: BaseFilterOptions<Message>): List<String> =
@@ -851,4 +919,11 @@ private class MessageBasicApiImpl(
 			config = subscriptionConfig
 		)
 	}
+
+	override suspend fun matchMessagesByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchMessagesByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }

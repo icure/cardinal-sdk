@@ -5,6 +5,8 @@ import com.icure.cardinal.sdk.crypto.entities.RelatedPersonShareOptions
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedRelatedPerson
@@ -550,6 +552,8 @@ interface RelatedPersonApi : RelatedPersonBasicFlavourlessApi, RelatedPersonFlav
 	 * @return a list of related person ids
 	 */
 	suspend fun matchRelatedPersonsBySorted(filter: SortableFilterOptions<RelatedPerson>): List<String>
+
+	suspend fun matchRelatedPersonsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface RelatedPersonInGroupApi : RelatedPersonBasicFlavourlessInGroupApi, RelatedPersonFlavouredInGroupApi<DecryptedRelatedPerson> { // TODO subscribable
@@ -637,6 +641,8 @@ interface RelatedPersonInGroupApi : RelatedPersonBasicFlavourlessInGroupApi, Rel
 	 * In-group version of [RelatedPersonApi.matchRelatedPersonsBySorted]
 	 */
 	suspend fun matchRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptions<RelatedPerson>): List<String>
+
+	suspend fun matchRelatedPersonsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface RelatedPersonBasicApi : RelatedPersonBasicFlavourlessApi, RelatedPersonBasicFlavouredApi<EncryptedRelatedPerson> {
@@ -700,6 +706,8 @@ interface RelatedPersonBasicApi : RelatedPersonBasicFlavourlessApi, RelatedPerso
 	suspend fun filterRelatedPersonsBySorted(
 		filter: BaseSortableFilterOptions<RelatedPerson>
 	): PaginatedListIterator<EncryptedRelatedPerson>
+
+	suspend fun matchRelatedPersonsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface RelatedPersonBasicInGroupApi : RelatedPersonBasicFlavourlessInGroupApi, RelatedPersonBasicFlavouredInGroupApi<EncryptedRelatedPerson> { // TODO subscribable
@@ -722,4 +730,6 @@ interface RelatedPersonBasicInGroupApi : RelatedPersonBasicFlavourlessInGroupApi
 	 * In-group version of [RelatedPersonBasicApi.filterRelatedPersonsBySorted]
 	 */
 	suspend fun filterRelatedPersonsBySorted(groupId: String, filter: BaseSortableFilterOptions<RelatedPerson>): PaginatedListIterator<GroupScoped<EncryptedRelatedPerson>>
+
+	suspend fun matchRelatedPersonsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }

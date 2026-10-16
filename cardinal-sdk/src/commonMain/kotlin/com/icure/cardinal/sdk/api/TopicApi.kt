@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.crypto.entities.TopicShareOptions
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedTopic
@@ -588,6 +590,8 @@ interface TopicApi : TopicBasicFlavourlessApi, TopicFlavouredApi<DecryptedTopic>
 	 * @return a list of topic ids
 	 */
 	suspend fun matchTopicsBySorted(filter: SortableFilterOptions<Topic>): List<String>
+
+	suspend fun matchTopicsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface TopicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicFlavouredInGroupApi<DecryptedTopic> {
@@ -666,6 +670,8 @@ interface TopicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicFlavouredInGro
 
 	val encrypted: TopicFlavouredInGroupApi<EncryptedTopic>
 	val tryAndRecover: TopicFlavouredInGroupApi<Topic>
+
+	suspend fun matchTopicsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface TopicBasicApi : TopicBasicFlavourlessApi, TopicBasicFlavouredApi<EncryptedTopic>, Subscribable<Topic, EncryptedTopic, BaseFilterOptions<Topic>> {
@@ -728,6 +734,8 @@ interface TopicBasicApi : TopicBasicFlavourlessApi, TopicBasicFlavouredApi<Encry
 	suspend fun filterTopicsBySorted(
 		filter: BaseSortableFilterOptions<Topic>
 	): PaginatedListIterator<EncryptedTopic>
+
+	suspend fun matchTopicsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface TopicBasicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicBasicFlavouredInGroupApi<EncryptedTopic> {
@@ -756,5 +764,7 @@ interface TopicBasicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicBasicFlav
 		groupId: String,
 		filter: BaseSortableFilterOptions<Topic>
 	): PaginatedListIterator<GroupScoped<EncryptedTopic>>
+
+	suspend fun matchTopicsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 

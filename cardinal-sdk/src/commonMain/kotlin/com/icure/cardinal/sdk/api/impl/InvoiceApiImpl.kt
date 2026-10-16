@@ -23,6 +23,9 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.asIcureStub
 import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.exceptions.NotFoundException
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
+import com.icure.cardinal.sdk.filters.mapCustomFilterOptions
 import com.icure.cardinal.sdk.model.DecryptedInvoice
 import com.icure.cardinal.sdk.model.EncryptedInvoice
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -30,9 +33,11 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Invoice
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
+import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.dao.IdWithValue
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode
@@ -41,6 +46,7 @@ import com.icure.cardinal.sdk.model.embed.MediumType
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
 import com.icure.cardinal.sdk.model.extensions.dataOwnerId
 import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
+import com.icure.cardinal.sdk.model.filter.CustomFilter
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
@@ -48,6 +54,8 @@ import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.currentFuzzyDateTime
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
+import com.icure.cardinal.sdk.utils.pagination.CollectingSortingCustomViewPageIterator
+import com.icure.cardinal.sdk.utils.pagination.CustomViewPageIterator
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.cardinal.sdk.utils.pagination.encodeStartKey
@@ -81,6 +89,45 @@ private fun tryAndRecoverApiFlavour(
 	encryptors = config.encryptors.invoice,
 	getRootModelVersion = { null },
 )
+
+@OptIn(InternalIcureApi::class)
+private suspend fun RawInvoiceApi.doMatchInvoicesByCustomFilter(
+	groupId: String?,
+	filter: CustomFilterOption,
+	config: BasicApiConfiguration,
+): PaginatedListIterator<String> {
+	val (mappedFilter, manifest) = mapCustomFilterOptions(
+		filterOption = filter,
+		viewManifests = requireNotNull(config.customViewsOptions?.invoiceManifest) {
+			"SDK was not configured for custom views"
+		},
+		config = config,
+		requestGroup = groupId,
+		encryptedEntityType = EntityWithEncryptionMetadataTypeName.Invoice,
+	)
+	val filterLambda: suspend (filter: CustomFilter) -> PaginatedList<IdWithValue> = if (groupId == null) {
+		{
+			matchInvoiceByCustomFilter(it).successBody()
+		}
+	} else {
+		{
+			matchInvoicesByCustomFilterInGroup(groupId = groupId, it).successBody()
+		}
+	}
+	return if (manifest.keyFieldsComparatorOrder.isEmpty()) {
+		CustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	} else {
+		CollectingSortingCustomViewPageIterator(
+			initialFilter = mappedFilter,
+			manifest = manifest,
+			doFilter = filterLambda,
+		)
+	}
+}
 
 @InternalIcureApi
 private abstract class AbstractInvoiceBasicFlavouredApi<E : Invoice>(
@@ -661,6 +708,13 @@ private class InvoiceApiImpl(
 			entity: GroupScoped<Invoice>,
 			delegates: Set<EntityReferenceInGroup>
 		) = doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
+
+		override suspend fun matchInvoicesByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchInvoicesByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
 	}
 
 	override suspend fun getEncryptionKeysOf(invoice: Invoice): Set<HexString> =
@@ -829,6 +883,13 @@ private class InvoiceApiImpl(
 
 	override suspend fun tryDecrypt(invoice: EncryptedInvoice): Invoice =
 		tryAndRecoverFlavour.maybeDecrypt(null, invoice)
+
+	override suspend fun matchInvoicesByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchInvoicesByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }
 
 @InternalIcureApi
@@ -843,7 +904,7 @@ internal fun initInvoiceBasicApi(
 
 @InternalIcureApi
 private class InvoiceBasicApiImpl(
-	rawApi: RawInvoiceApi,
+	private val rawApi: RawInvoiceApi,
 	private val config: BasicApiConfiguration,
 	private val encryptedFlavour: FlavouredApi<EncryptedInvoice, EncryptedInvoice>,
 ) : InvoiceBasicApi,
@@ -852,5 +913,19 @@ private class InvoiceBasicApiImpl(
 
 	override val inGroup: InvoiceBasicInGroupApi = object : InvoiceBasicInGroupApi,
 		InvoiceBasicFlavouredInGroupApi<EncryptedInvoice> by InvoiceBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi) {}
+		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi) {
+		override suspend fun matchInvoicesByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+			rawApi.doMatchInvoicesByCustomFilter(
+				groupId = groupId,
+				filter = filter,
+				config = config,
+			)
+	}
+
+	override suspend fun matchInvoicesByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String> =
+		rawApi.doMatchInvoicesByCustomFilter(
+			groupId = null,
+			filter = filter,
+			config = config,
+		)
 }

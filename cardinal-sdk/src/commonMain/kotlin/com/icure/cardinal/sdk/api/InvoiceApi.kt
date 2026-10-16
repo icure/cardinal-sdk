@@ -5,6 +5,8 @@ import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.model.DecryptedInvoice
 import com.icure.cardinal.sdk.model.EncryptedInvoice
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
@@ -633,6 +635,8 @@ interface InvoiceApi : InvoiceBasicFlavourlessApi, InvoiceFlavouredApi<Decrypted
 		invoiceIds: List<String>,
 		delegates: Map<String, InvoiceShareOptions>
 	): BulkShareByIdsResult
+
+	suspend fun matchInvoicesByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavouredInGroupApi<DecryptedInvoice> { // TODO subscribable
@@ -712,6 +716,8 @@ interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavoure
 	 */
 	suspend fun tryDecrypt(invoices: List<GroupScoped<EncryptedInvoice>>): List<GroupScoped<Invoice>>
 
+
+	suspend fun matchInvoicesByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 @Deprecated("The invoice API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
@@ -722,7 +728,10 @@ interface InvoiceBasicApi : InvoiceBasicFlavourlessApi, InvoiceBasicFlavouredApi
 	 * These methods aren't available when connected to a kraken-lite instance.
 	 */
 	val inGroup: InvoiceBasicInGroupApi
+
+	suspend fun matchInvoicesByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
-interface InvoiceBasicInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceBasicFlavouredInGroupApi<EncryptedInvoice>
-
+interface InvoiceBasicInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceBasicFlavouredInGroupApi<EncryptedInvoice> {
+	suspend fun matchInvoicesByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
+}

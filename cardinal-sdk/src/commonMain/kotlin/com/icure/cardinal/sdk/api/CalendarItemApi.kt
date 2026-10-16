@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
+import com.icure.cardinal.sdk.filters.BasicCustomFilterOption
+import com.icure.cardinal.sdk.filters.CustomFilterOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.CalendarItem
@@ -715,6 +717,8 @@ interface CalendarItemApi : CalendarItemBasicFlavourlessApi, CalendarItemFlavour
 		calendarItemIds: List<String>,
 		delegates: Map<String, CalendarItemShareOptions>
 	): BulkShareByIdsResult
+
+	suspend fun matchCalendarItemsByCustomFilter(filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface CalendarItemInGroupApi : CalendarItemBasicFlavourlessInGroupApi, CalendarItemFlavouredInGroupApi<DecryptedCalendarItem> { // TODO subscribable?
@@ -836,6 +840,8 @@ interface CalendarItemInGroupApi : CalendarItemBasicFlavourlessInGroupApi, Calen
 		agendaId: String,
 		extensionInDays: Int? = null,
 	): List<CalendarItemOccupancy>
+
+	suspend fun matchCalendarItemsByCustomFilter(groupId: String, filter: CustomFilterOption): PaginatedListIterator<String>
 }
 
 interface CalendarItemBasicApi : CalendarItemBasicFlavourlessApi, CalendarItemBasicFlavouredApi<EncryptedCalendarItem>,
@@ -950,6 +956,8 @@ interface CalendarItemBasicApi : CalendarItemBasicFlavourlessApi, CalendarItemBa
 		agendaId: String,
 		extensionInDays: Int? = null,
 	): List<CalendarItemOccupancy>
+
+	suspend fun matchCalendarItemsByCustomFilter(filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
 
 interface CalendarItemBasicInGroupApi : CalendarItemBasicFlavourlessInGroupApi, CalendarItemBasicFlavouredInGroupApi<EncryptedCalendarItem> { // TODO subscribable
@@ -1004,4 +1012,6 @@ interface CalendarItemBasicInGroupApi : CalendarItemBasicFlavourlessInGroupApi, 
 		agendaId: String,
 		extensionInDays: Int? = null,
 	): List<CalendarItemOccupancy>
+
+	suspend fun matchCalendarItemsByCustomFilter(groupId: String, filter: BasicCustomFilterOption): PaginatedListIterator<String>
 }
