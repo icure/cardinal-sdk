@@ -38,6 +38,8 @@ import com.icure.cardinal.sdk.test.baseUrl
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.uuid
+import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeIn
@@ -57,7 +59,21 @@ class EntityAccessInformationApisTest : StringSpec({
 
 	beforeSpec {
 		initializeTestEnvironment()
-		delegatorDetails = createHcpUser()
+		// Creating topics requires the TOPIC_MANAGER role, which can only be given to users created locally.
+		delegatorDetails = createHcpUser(
+			roles = if (LOCAL_ENV_ONLY) {
+				setOf(
+					"BASIC_USER",
+					"BASIC_DATA_OWNER",
+					"PATIENT_USER_MANAGER",
+					"LEGACY_MESSAGE_MANAGER",
+					"HIERARCHICAL_DATA_OWNER",
+					"TOPIC_MANAGER",
+				)
+			} else {
+				null
+			}
+		)
 		delegateDetails = createHcpUser()
 		delegatorApi = delegatorDetails.api(specJob)
 		delegatorBaseApi = CardinalBaseSdk.initialize(
@@ -87,7 +103,9 @@ class EntityAccessInformationApisTest : StringSpec({
 	)
 
 	fun <T : HasEncryptionMetadata> doTest(case: EntityCase<T>) {
-		"Can get the data owners with access to a ${case.entityName}" {
+		val enabled = DEFAULT_ENABLED && (!case.localOnly || LOCAL_ENV_ONLY)
+
+		"Can get the data owners with access to a ${case.entityName}".config(enabled = enabled) {
 			val created = case.create(delegatorApi, patient, mapOf(delegateDetails.dataOwnerId to AccessLevel.Read))
 			case.getDataOwnersWithAccessTo(delegatorApi, created).apply {
 				permissionsByDataOwnerId shouldBe expectedPermissions().keyAsLocalDataOwnerReferences()
@@ -95,7 +113,7 @@ class EntityAccessInformationApisTest : StringSpec({
 			}
 		}
 
-		"Can get the data owners with access to an encrypted ${case.entityName}" {
+		"Can get the data owners with access to an encrypted ${case.entityName}".config(enabled = enabled) {
 			val created = case.create(delegatorApi, patient, mapOf(delegateDetails.dataOwnerId to AccessLevel.Read))
 			val encrypted = case.getEncrypted(delegatorApi, created.id).shouldNotBeNull()
 			case.getDataOwnersWithAccessTo(delegatorApi, encrypted).apply {
@@ -104,7 +122,7 @@ class EntityAccessInformationApisTest : StringSpec({
 			}
 		}
 
-		"Can get the data owners with access to a ${case.entityName} in group" {
+		"Can get the data owners with access to a ${case.entityName} in group".config(enabled = enabled) {
 			val created = case.create(delegatorApi, patient, mapOf(delegateDetails.dataOwnerId to AccessLevel.Read))
 			case.getDataOwnersWithAccessToInGroup(delegatorApi, GroupScoped(created, delegatorDetails.groupId)).apply {
 				localPermissions() shouldBe expectedPermissions()
@@ -112,7 +130,7 @@ class EntityAccessInformationApisTest : StringSpec({
 			}
 		}
 
-		"Can get the data owners with access to a ${case.entityName} from the base sdk" {
+		"Can get the data owners with access to a ${case.entityName} from the base sdk".config(enabled = enabled) {
 			val created = case.create(delegatorApi, patient, mapOf(delegateDetails.dataOwnerId to AccessLevel.Read))
 			val encrypted = case.getEncrypted(delegatorApi, created.id).shouldNotBeNull()
 			case.getDataOwnersWithAccessToFromBase(delegatorBaseApi, encrypted).apply {
@@ -162,6 +180,10 @@ private class EntityCase<T : HasEncryptionMetadata>(
 	val getDataOwnersWithAccessTo: suspend (api: CardinalSdk, entity: T) -> EntityAccessInformation,
 	val getDataOwnersWithAccessToInGroup: suspend (api: CardinalSdk, entity: GroupScoped<T>) -> EntityAccessInformation,
 	val getDataOwnersWithAccessToFromBase: suspend (api: CardinalBaseSdk, entity: T) -> EntityAccessInformation,
+	/**
+	 * The entity can only be created by users with roles that can only be assigned in the local test environment.
+	 */
+	val localOnly: Boolean = false,
 )
 
 private val accessLogCase = EntityCase<AccessLog>(
@@ -294,4 +316,5 @@ private val topicCase = EntityCase<Topic>(
 	getDataOwnersWithAccessTo = { api, entity -> api.topic.getDataOwnersWithAccessTo(entity) },
 	getDataOwnersWithAccessToInGroup = { api, entity -> api.topic.inGroup.getDataOwnersWithAccessTo(entity) },
 	getDataOwnersWithAccessToFromBase = { api, entity -> api.topic.getDataOwnersWithAccessTo(entity) },
+	localOnly = true,
 )
