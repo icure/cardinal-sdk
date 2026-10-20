@@ -292,6 +292,21 @@ class RawUserApiImpl(
 			setBody(properties)
 		}.wrap()
 
+	override suspend fun deleteProperties(
+		userId: String,
+		propertyTypeIdentifiers: List<String>,
+	): HttpResponse<User> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "properties")
+				propertyTypeIdentifiers.forEach {
+					parameter("propertyTypeIdentifiers", it)
+				}
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun getToken(
 		userId: String,
 		key: String,
