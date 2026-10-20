@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -472,7 +473,8 @@ private class InvoiceFlavouredInGroupApiImpl<E : Invoice>(
 
 @InternalIcureApi
 private abstract class AbstractInvoiceBasicFlavourless(
-	protected val rawApi: RawInvoiceApi
+	protected val rawApi: RawInvoiceApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteInvoice(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -508,10 +510,19 @@ private abstract class AbstractInvoiceBasicFlavourless(
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, invoice: Invoice): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			invoice,
+			EntityWithEncryptionMetadataTypeName.Invoice,
+		)
 }
 
 @InternalIcureApi
-private class InvoiceBasicFlavourlessApiImpl(rawApi: RawInvoiceApi) : AbstractInvoiceBasicFlavourless(rawApi), InvoiceBasicFlavourlessApi {
+private class InvoiceBasicFlavourlessApiImpl(
+	rawApi: RawInvoiceApi,
+	config: BasicApiConfiguration
+) : AbstractInvoiceBasicFlavourless(rawApi, config), InvoiceBasicFlavourlessApi {
 
 	override suspend fun deleteInvoiceById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteInvoice(groupId = null, entityId, rev)
@@ -530,12 +541,16 @@ private class InvoiceBasicFlavourlessApiImpl(rawApi: RawInvoiceApi) : AbstractIn
 	override suspend fun getTarificationsCodesOccurrences(
 		minOccurrence: Int,
 	) = rawApi.getTarificationsCodesOccurrences(minOccurrence.toLong()).successBody()
+
+	override suspend fun getDataOwnersWithAccessTo(invoice: Invoice): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, invoice = invoice)
 }
 
 @InternalIcureApi
 private class InvoiceBasicFlavourlessInGroupApiImpl(
-	rawApi: RawInvoiceApi
-) : AbstractInvoiceBasicFlavourless(rawApi), InvoiceBasicFlavourlessInGroupApi {
+	rawApi: RawInvoiceApi,
+	config: BasicApiConfiguration
+) : AbstractInvoiceBasicFlavourless(rawApi, config), InvoiceBasicFlavourlessInGroupApi {
 	override suspend fun deleteInvoiceById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, it ->
 			doDeleteInvoice(groupId, it.id, it.rev)
@@ -554,6 +569,9 @@ private class InvoiceBasicFlavourlessInGroupApiImpl(
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeInvoices(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(invoice: GroupScoped<Invoice>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = invoice.groupId, invoice = invoice.entity)
 }
 
 @InternalIcureApi
@@ -582,14 +600,14 @@ private class InvoiceApiImpl(
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedInvoice, Invoice>,
 ) : InvoiceApi,
 	InvoiceFlavouredApi<DecryptedInvoice> by InvoiceFlavouredApiImpl(rawApi, config, decryptedFlavour),
-	InvoiceBasicFlavourlessApi by InvoiceBasicFlavourlessApiImpl(rawApi) {
+	InvoiceBasicFlavourlessApi by InvoiceBasicFlavourlessApiImpl(rawApi, config) {
 
 	override val encrypted: InvoiceFlavouredApi<EncryptedInvoice> = InvoiceFlavouredApiImpl(rawApi, config, encryptedFlavour)
 	override val tryAndRecover: InvoiceFlavouredApi<Invoice> = InvoiceFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: InvoiceInGroupApi = object : InvoiceInGroupApi,
 		InvoiceFlavouredInGroupApi<DecryptedInvoice> by InvoiceFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
-		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi) {
+		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi, config) {
 
 		override val encrypted: InvoiceFlavouredInGroupApi<EncryptedInvoice> =
 			InvoiceFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
@@ -845,9 +863,9 @@ private class InvoiceBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedInvoice, EncryptedInvoice>,
 ) : InvoiceBasicApi,
 	InvoiceBasicFlavouredApi<EncryptedInvoice> by InvoiceBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	InvoiceBasicFlavourlessApi by InvoiceBasicFlavourlessApiImpl(rawApi) {
+	InvoiceBasicFlavourlessApi by InvoiceBasicFlavourlessApiImpl(rawApi, config) {
 
 	override val inGroup: InvoiceBasicInGroupApi = object : InvoiceBasicInGroupApi,
 		InvoiceBasicFlavouredInGroupApi<EncryptedInvoice> by InvoiceBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi) {}
+		InvoiceBasicFlavourlessInGroupApi by InvoiceBasicFlavourlessInGroupApiImpl(rawApi, config) {}
 }

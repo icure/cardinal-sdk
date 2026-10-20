@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -97,6 +98,16 @@ interface FormBasicFlavourlessApi : FormTemplateApi {
 	 */
 	suspend fun purgeForms(forms: List<Form>): List<StoredDocumentIdentifier> =
 		purgeFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * Get all data owners with access to the provided form, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param form a form
+	 * @return information on users with access to the provided form
+	 */
+	suspend fun getDataOwnersWithAccessTo(form: Form): EntityAccessInformation
 }
 
 interface FormBasicFlavourlessInGroupApi : FormTemplateInGroupApi {
@@ -144,6 +155,11 @@ interface FormBasicFlavourlessInGroupApi : FormTemplateInGroupApi {
 	 */
 	suspend fun purgeForms(forms: List<GroupScoped<Form>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(form: GroupScoped<Form>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */

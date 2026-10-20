@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -507,6 +508,13 @@ private abstract class AbstractFormBasicFlavourless(
 		} else {
 			rawApi.matchFormTemplatesInGroupBy(groupId = groupId, filter = mapFormTemplateFilterOptions(filter, config, groupId))
 		}.successBody()
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, form: Form): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			form,
+			EntityWithEncryptionMetadataTypeName.Form,
+		)
 }
 
 @InternalIcureApi
@@ -579,6 +587,8 @@ private class FormBasicFlavourlessApiImpl(
 	override suspend fun matchFormTemplateBy(filter: BaseFilterOptions<FormTemplate>): List<String> =
 		doMatchFormTemplatesBy(groupId = null, filter = filter)
 
+	override suspend fun getDataOwnersWithAccessTo(form: Form): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, form = form)
 }
 
 @InternalIcureApi
@@ -667,6 +677,9 @@ private class FormBasicFlavourlessInGroupApiImpl(
 
 	override suspend fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptions<FormTemplate>): List<String> =
 		doMatchFormTemplatesBy(groupId, filter)
+
+	override suspend fun getDataOwnersWithAccessTo(form: GroupScoped<Form>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = form.groupId, form = form.entity)
 }
 
 @InternalIcureApi
