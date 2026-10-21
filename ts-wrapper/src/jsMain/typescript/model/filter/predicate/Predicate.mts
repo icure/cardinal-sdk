@@ -8,22 +8,21 @@ import {OrPredicate} from './OrPredicate.mjs';
 
 /**
  *
- *  Sealed interface for filter predicates that can be used to post-filter results from a filter
- *  chain.
+ *  Sealed interface for filter predicates that can be used to post-filter results from a filter chain.
  *  /
  */
-export type Predicate = KeyValuePredicate | OrPredicate | NotPredicate | AlwaysPredicate | AndPredicate;
+export type Predicate = NotPredicate | AndPredicate | AlwaysPredicate | OrPredicate | KeyValuePredicate;
 
 export namespace Predicate {
 
 	export function fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['Predicate']): Predicate {
 		switch ((json as Predicate).$ktClass) {
-			case 'com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate': return KeyValuePredicate.fromJSON(json, ignoreUnknownKeys)
-			case 'com.icure.cardinal.sdk.model.filter.predicate.OrPredicate': return OrPredicate.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.filter.predicate.NotPredicate': return NotPredicate.fromJSON(json, ignoreUnknownKeys)
-			case 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate': return AlwaysPredicate.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.filter.predicate.AndPredicate': return AndPredicate.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.filter.predicate.AlwaysPredicate': return AlwaysPredicate.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.filter.predicate.OrPredicate': return OrPredicate.fromJSON(json, ignoreUnknownKeys)
+			case 'com.icure.cardinal.sdk.model.filter.predicate.KeyValuePredicate': return KeyValuePredicate.fromJSON(json, ignoreUnknownKeys)
 			default: throw new Error('Unexpected discriminator for Predicate: ' + json.$ktClass)
 		}
 	}

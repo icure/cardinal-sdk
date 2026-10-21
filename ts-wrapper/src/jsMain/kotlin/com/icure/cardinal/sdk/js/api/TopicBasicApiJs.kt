@@ -23,24 +23,19 @@ public external interface TopicBasicApiJs {
 
 	public fun matchTopicsBy(filter: BaseFilterOptionsJs<TopicJs>): Promise<Array<String>>
 
-	public fun matchTopicsBySorted(filter: BaseSortableFilterOptionsJs<TopicJs>):
-			Promise<Array<String>>
+	public fun matchTopicsBySorted(filter: BaseSortableFilterOptionsJs<TopicJs>): Promise<Array<String>>
 
-	public fun filterTopicsBy(filter: BaseFilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<EncryptedTopicJs>>
+	public fun filterTopicsBy(filter: BaseFilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<EncryptedTopicJs>>
 
-	public fun filterTopicsBySorted(filter: BaseSortableFilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<EncryptedTopicJs>>
+	public fun filterTopicsBySorted(filter: BaseSortableFilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<EncryptedTopicJs>>
 
 	public fun deleteTopicById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeTopicById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteTopic(topic: TopicJs): Promise<StoredDocumentIdentifierJs>
 
@@ -56,8 +51,7 @@ public external interface TopicBasicApiJs {
 
 	public fun undeleteTopicById(id: String, rev: String): Promise<EncryptedTopicJs>
 
-	public fun undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedTopicJs>>
+	public fun undeleteTopicsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedTopicJs>>
 
 	public fun undeleteTopic(topic: TopicJs): Promise<EncryptedTopicJs>
 

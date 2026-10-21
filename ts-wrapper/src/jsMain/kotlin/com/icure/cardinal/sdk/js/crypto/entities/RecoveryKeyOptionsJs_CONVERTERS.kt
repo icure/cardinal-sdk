@@ -12,27 +12,20 @@ public fun recoveryKeyOptions_toJs(obj: RecoveryKeyOptions): RecoveryKeyOptionsJ
 }
 
 public fun recoveryKeyOptions_fromJs(obj: RecoveryKeyOptionsJs): RecoveryKeyOptions = when {
-	obj is RecoveryKeyOptionsJs_GenerateJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Generate" ->recoveryKeyOptions_Generate_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.RecoveryKeyOptionsJs_GenerateJs)
-	obj is RecoveryKeyOptionsJs_UseJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Use" ->recoveryKeyOptions_Use_fromJs(obj
-			as com.icure.cardinal.sdk.js.crypto.entities.RecoveryKeyOptionsJs_UseJs)
-	else -> throw
-			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions: $obj""")
+	obj is RecoveryKeyOptionsJs_GenerateJs || obj.ktClass == "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Generate" ->recoveryKeyOptions_Generate_fromJs(obj as com.icure.cardinal.sdk.js.crypto.entities.RecoveryKeyOptionsJs_GenerateJs)
+	obj is RecoveryKeyOptionsJs_UseJs || obj.ktClass == "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Use" ->recoveryKeyOptions_Use_fromJs(obj as com.icure.cardinal.sdk.js.crypto.entities.RecoveryKeyOptionsJs_UseJs)
+	else -> throw IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions: $obj""")
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun recoveryKeyOptions_Generate_toJs(obj: RecoveryKeyOptions.Generate):
-		RecoveryKeyOptionsJs_GenerateJs {
+public fun recoveryKeyOptions_Generate_toJs(obj: RecoveryKeyOptions.Generate): RecoveryKeyOptionsJs_GenerateJs {
 	val recoveryKeySize = obj.recoveryKeySize.name
 	return RecoveryKeyOptionsJs_GenerateJs(js("{" +
 		"recoveryKeySize:recoveryKeySize" +
 	"}"))
 }
 
-public fun recoveryKeyOptions_Generate_fromJs(obj: RecoveryKeyOptionsJs_GenerateJs):
-		RecoveryKeyOptions.Generate {
+public fun recoveryKeyOptions_Generate_fromJs(obj: RecoveryKeyOptionsJs_GenerateJs): RecoveryKeyOptions.Generate {
 	val recoveryKeySize = RecoveryKeySize.valueOf(obj.recoveryKeySize)
 	return RecoveryKeyOptions.Generate(
 		recoveryKeySize = recoveryKeySize,

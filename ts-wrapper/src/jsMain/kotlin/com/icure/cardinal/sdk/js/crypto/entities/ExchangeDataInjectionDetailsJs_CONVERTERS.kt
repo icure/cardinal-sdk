@@ -5,8 +5,7 @@ import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun exchangeDataInjectionDetails_toJs(obj: ExchangeDataInjectionDetails):
-		ExchangeDataInjectionDetailsJs {
+public fun exchangeDataInjectionDetails_toJs(obj: ExchangeDataInjectionDetails): ExchangeDataInjectionDetailsJs {
 	val exchangeDataId = obj.exchangeDataId
 	val accessControlSecret = obj.accessControlSecret
 	val exchangeKey = obj.exchangeKey
@@ -21,8 +20,7 @@ public fun exchangeDataInjectionDetails_toJs(obj: ExchangeDataInjectionDetails):
 	"}"))
 }
 
-public fun exchangeDataInjectionDetails_fromJs(obj: ExchangeDataInjectionDetailsJs):
-		ExchangeDataInjectionDetails {
+public fun exchangeDataInjectionDetails_fromJs(obj: ExchangeDataInjectionDetailsJs): ExchangeDataInjectionDetails {
 	val exchangeDataId = obj.exchangeDataId
 	val accessControlSecret = obj.accessControlSecret
 	val exchangeKey = obj.exchangeKey

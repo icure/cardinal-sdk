@@ -28,8 +28,7 @@ public external interface TopicFlavouredApiJs<E : TopicJs> {
 
 	public fun filterTopicsBy(filter: FilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterTopicsBySorted(filter: SortableFilterOptionsJs<TopicJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterTopicsBySorted(filter: SortableFilterOptionsJs<TopicJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createTopic(entity: E): Promise<E>
 

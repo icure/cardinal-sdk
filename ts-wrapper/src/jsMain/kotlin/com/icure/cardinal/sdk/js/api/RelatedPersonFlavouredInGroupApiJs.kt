@@ -25,42 +25,29 @@ public external interface RelatedPersonFlavouredInGroupApiJs<E : RelatedPersonJs
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(relatedPerson: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(relatedPerson: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterRelatedPersonsBySorted(groupId: String,
-			filter: SortableFilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createRelatedPerson(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
-	public fun createRelatedPersons(entities: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun createRelatedPersons(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public
-			fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun modifyRelatedPerson(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
-	public fun modifyRelatedPersons(entities: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun modifyRelatedPersons(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun getRelatedPerson(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 
-	public fun getRelatedPersons(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun getRelatedPersons(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<E>>>
 }

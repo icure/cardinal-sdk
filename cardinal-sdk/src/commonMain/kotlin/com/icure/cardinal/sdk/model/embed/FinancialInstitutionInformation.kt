@@ -9,8 +9,7 @@ import kotlin.String
 import kotlin.collections.Set
 
 /**
- * Represents information about a financial institution, including bank account details and proxy
- * account configuration.
+ * Represents information about a financial institution, including bank account details and proxy account configuration.
  * /
  */
 
@@ -60,8 +59,7 @@ sealed interface FinancialInstitutionInformation : Encryptable {
 }
 
 /**
- * Represents information about a financial institution, including bank account details and proxy
- * account configuration.
+ * Represents information about a financial institution, including bank account details and proxy account configuration.
  * /
  */
 @Serializable
@@ -106,8 +104,7 @@ data class DecryptedFinancialInstitutionInformation(
 }
 
 /**
- * Represents information about a financial institution, including bank account details and proxy
- * account configuration.
+ * Represents information about a financial institution, including bank account details and proxy account configuration.
  * /
  */
 @Serializable

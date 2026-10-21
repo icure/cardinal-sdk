@@ -6,8 +6,7 @@ import {Trigger} from './Trigger.mjs';
 /**
  *
  *
- *   Represents a launcher that triggers an action in a form template based on a specific trigger
- *  event.
+ *   Represents a launcher that triggers an action in a form template based on a specific trigger event.
  */
 export class Launcher {
 

@@ -8,8 +8,7 @@ import {FrontEndMigrationStatus} from './embed/FrontEndMigrationStatus.mjs';
 
 /**
  *
- *  Represents a front-end migration task. A front-end migration tracks the progress of data
- *  migration operations
+ *  Represents a front-end migration task. A front-end migration tracks the progress of data migration operations
  *  initiated from the front-end application.
  *  /
  */
@@ -23,8 +22,7 @@ export class FrontEndMigration implements StoredDocument {
 
 	/**
 	 *
-	 *  The revision of the front-end migration in the database, used for conflict management /
-	 *  optimistic locking.
+	 *  The revision of the front-end migration in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 

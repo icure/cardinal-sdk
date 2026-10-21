@@ -7,8 +7,7 @@ import {View} from './View.mjs';
 /**
  *
  *
- *   Data transfer object representing a CouchDB design document, which contains views, lists, shows,
- *  filters,
+ *   Data transfer object representing a CouchDB design document, which contains views, lists, shows, filters,
  *   and update handlers used for querying and transforming data.
  */
 export class DesignDocument {

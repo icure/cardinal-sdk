@@ -24,8 +24,7 @@ public object InternalHealthcarePartyFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiers(identifiers: Array<IdentifierJs>):
-			BaseFilterOptionsJs<HealthcarePartyJs> {
+	public fun byIdentifiers(identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<HealthcarePartyJs> {
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
 			"identifiers",
@@ -39,8 +38,7 @@ public object InternalHealthcarePartyFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byCode(codeType: String, options: dynamic):
-			BaseSortableFilterOptionsJs<HealthcarePartyJs> {
+	public fun byCode(codeType: String, options: dynamic): BaseSortableFilterOptionsJs<HealthcarePartyJs> {
 		val _options = options ?: js("{}")
 		val codeTypeConverted: String = codeType
 		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -57,8 +55,7 @@ public object InternalHealthcarePartyFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byTag(tagType: String, options: dynamic):
-			BaseSortableFilterOptionsJs<HealthcarePartyJs> {
+	public fun byTag(tagType: String, options: dynamic): BaseSortableFilterOptionsJs<HealthcarePartyJs> {
 		val _options = options ?: js("{}")
 		val tagTypeConverted: String = tagType
 		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -89,8 +86,7 @@ public object InternalHealthcarePartyFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byName(searchString: String, options: dynamic):
-			BaseSortableFilterOptionsJs<HealthcarePartyJs> {
+	public fun byName(searchString: String, options: dynamic): BaseSortableFilterOptionsJs<HealthcarePartyJs> {
 		val _options = options ?: js("{}")
 		val searchStringConverted: String = searchString
 		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(
@@ -107,8 +103,7 @@ public object InternalHealthcarePartyFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byNationalIdentifier(searchString: String, options: dynamic):
-			BaseSortableFilterOptionsJs<HealthcarePartyJs> {
+	public fun byNationalIdentifier(searchString: String, options: dynamic): BaseSortableFilterOptionsJs<HealthcarePartyJs> {
 		val _options = options ?: js("{}")
 		val searchStringConverted: String = searchString
 		val descendingConverted: Boolean = convertingOptionOrDefaultNonNull(

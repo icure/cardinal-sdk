@@ -22,32 +22,24 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
- *  in the underlying
+ *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved in the underlying
  *  icure-contact CouchDB database.
  *
- *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
- *  happens between one
- *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible
- *  of the contact),
+ *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact happens between one
+ *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible of the contact),
  *  at one place during one (fairly short) period of time.
- *  A contact contains a series of services (acts, observations, exchanges) performed on the patient.
- *  These services
+ *  A contact contains a series of services (acts, observations, exchanges) performed on the patient. These services
  *  can be linked to healthcare elements.
  *
- *  A contact can occur with or without direct interaction between the patient and the healthcare
- *  party. For example,
- *  when a healthcare party encodes data received from laboratory's test result, this is done in the
- *  absence of a patient.
+ *  A contact can occur with or without direct interaction between the patient and the healthcare party. For example,
+ *  when a healthcare party encodes data received from laboratory's test result, this is done in the absence of a patient.
  *  /
  */
 export interface Contact extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasEndOfLife, HasIdentifier {
 
 	/**
 	 *
-	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a
-	 *  contact must be split to selectively assign rights to healthcare parties, the split contacts all
-	 *  share the same groupId.
+	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a contact must be split to selectively assign rights to healthcare parties, the split contacts all share the same groupId.
 	 */
 	groupId: string | undefined;
 
@@ -89,8 +81,7 @@ export interface Contact extends StoredDocument, ICureDocument<string>, HasMedic
 
 	/**
 	 *
-	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
-	 *  services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
 	 */
 	subContacts: Array<SubContact>;
 
@@ -120,23 +111,17 @@ export interface Contact extends StoredDocument, ICureDocument<string>, HasMedic
 
 /**
  *
- *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
- *  in the underlying
+ *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved in the underlying
  *  icure-contact CouchDB database.
  *
- *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
- *  happens between one
- *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible
- *  of the contact),
+ *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact happens between one
+ *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible of the contact),
  *  at one place during one (fairly short) period of time.
- *  A contact contains a series of services (acts, observations, exchanges) performed on the patient.
- *  These services
+ *  A contact contains a series of services (acts, observations, exchanges) performed on the patient. These services
  *  can be linked to healthcare elements.
  *
- *  A contact can occur with or without direct interaction between the patient and the healthcare
- *  party. For example,
- *  when a healthcare party encodes data received from laboratory's test result, this is done in the
- *  absence of a patient.
+ *  A contact can occur with or without direct interaction between the patient and the healthcare party. For example,
+ *  when a healthcare party encodes data received from laboratory's test result, this is done in the absence of a patient.
  *  /
  */
 export class DecryptedContact {
@@ -155,29 +140,25 @@ export class DecryptedContact {
 
 	/**
 	 *
-	 *  The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if
-	 *  missing. Not enforced by the application server.
+	 *  The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	created: number | undefined = undefined;
 
 	/**
 	 *
-	 *  The date (unix epoch in ms) of the latest modification of the contact, will be filled
-	 *  automatically if missing. Not enforced by the application server.
+	 *  The date (unix epoch in ms) of the latest modification of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	modified: number | undefined = undefined;
 
 	/**
 	 *
-	 *  The id of the User that has created this contact, will be filled automatically if missing. Not
-	 *  enforced by the application server.
+	 *  The id of the User that has created this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	author: string | undefined = undefined;
 
 	/**
 	 *
-	 *  The id of the HealthcareParty that is responsible for this contact, will be filled automatically
-	 *  if missing. Not enforced by the application server.
+	 *  The id of the HealthcareParty that is responsible for this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	responsible: string | undefined = undefined;
 
@@ -213,9 +194,7 @@ export class DecryptedContact {
 
 	/**
 	 *
-	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a
-	 *  contact must be split to selectively assign rights to healthcare parties, the split contacts all
-	 *  share the same groupId.
+	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a contact must be split to selectively assign rights to healthcare parties, the split contacts all share the same groupId.
 	 */
 	groupId: string | undefined = undefined;
 
@@ -257,8 +236,7 @@ export class DecryptedContact {
 
 	/**
 	 *
-	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
-	 *  services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
 	 */
 	subContacts: Array<DecryptedSubContact> = [];
 
@@ -294,8 +272,7 @@ export class DecryptedContact {
 
 	/**
 	 *
-	 *  The contact secret encryption key used to encrypt the secured properties (like services for
-	 *  example), encrypted for separate Crypto Actors.
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
@@ -448,23 +425,17 @@ export class DecryptedContact {
 
 /**
  *
- *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved
- *  in the underlying
+ *  This entity is a root-level object. It represents a contact. It is serialized in JSON and saved in the underlying
  *  icure-contact CouchDB database.
  *
- *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact
- *  happens between one
- *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible
- *  of the contact),
+ *  A contact is an entry in the day-to-day journal of the medical file of a patient. A contact happens between one
+ *  patient, one or several healthcare parties (with one healthcare party promoted as the responsible of the contact),
  *  at one place during one (fairly short) period of time.
- *  A contact contains a series of services (acts, observations, exchanges) performed on the patient.
- *  These services
+ *  A contact contains a series of services (acts, observations, exchanges) performed on the patient. These services
  *  can be linked to healthcare elements.
  *
- *  A contact can occur with or without direct interaction between the patient and the healthcare
- *  party. For example,
- *  when a healthcare party encodes data received from laboratory's test result, this is done in the
- *  absence of a patient.
+ *  A contact can occur with or without direct interaction between the patient and the healthcare party. For example,
+ *  when a healthcare party encodes data received from laboratory's test result, this is done in the absence of a patient.
  *  /
  */
 export class EncryptedContact {
@@ -483,29 +454,25 @@ export class EncryptedContact {
 
 	/**
 	 *
-	 *  The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if
-	 *  missing. Not enforced by the application server.
+	 *  The timestamp (unix epoch in ms) of creation of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	created: number | undefined = undefined;
 
 	/**
 	 *
-	 *  The date (unix epoch in ms) of the latest modification of the contact, will be filled
-	 *  automatically if missing. Not enforced by the application server.
+	 *  The date (unix epoch in ms) of the latest modification of the contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	modified: number | undefined = undefined;
 
 	/**
 	 *
-	 *  The id of the User that has created this contact, will be filled automatically if missing. Not
-	 *  enforced by the application server.
+	 *  The id of the User that has created this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	author: string | undefined = undefined;
 
 	/**
 	 *
-	 *  The id of the HealthcareParty that is responsible for this contact, will be filled automatically
-	 *  if missing. Not enforced by the application server.
+	 *  The id of the HealthcareParty that is responsible for this contact, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	responsible: string | undefined = undefined;
 
@@ -541,9 +508,7 @@ export class EncryptedContact {
 
 	/**
 	 *
-	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a
-	 *  contact must be split to selectively assign rights to healthcare parties, the split contacts all
-	 *  share the same groupId.
+	 *  Separate contacts can be merged in one logical contact if they share the same groupId. When a contact must be split to selectively assign rights to healthcare parties, the split contacts all share the same groupId.
 	 */
 	groupId: string | undefined = undefined;
 
@@ -585,8 +550,7 @@ export class EncryptedContact {
 
 	/**
 	 *
-	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link
-	 *  services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
+	 *  Set of all sub-contacts recorded during the given contact. Sub-contacts are used to link services embedded inside this contact to healthcare elements, healthcare approaches and/or forms.
 	 */
 	subContacts: Array<EncryptedSubContact> = [];
 
@@ -622,8 +586,7 @@ export class EncryptedContact {
 
 	/**
 	 *
-	 *  The contact secret encryption key used to encrypt the secured properties (like services for
-	 *  example), encrypted for separate Crypto Actors.
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 

@@ -14,8 +14,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a medical location such as a clinic, office, or hospital ward where healthcare
- * services are provided.
+ * Represents a medical location such as a clinic, office, or hospital ward where healthcare services are provided.
  * /
  */
 @Serializable
@@ -25,8 +24,7 @@ data class MedicalLocation(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the medical location in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the medical location in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -88,7 +86,8 @@ data class MedicalLocation(
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val publicInformations: Map<String, String> = emptyMap(),
-) : StoredDocument, Named {
+) : StoredDocument,
+	Named {
 	// region MedicalLocation-MedicalLocation
 
 	// endregion

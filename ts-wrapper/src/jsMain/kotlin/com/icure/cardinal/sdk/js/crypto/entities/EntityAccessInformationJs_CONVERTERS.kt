@@ -8,8 +8,7 @@ import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
 public fun entityAccessInformation_toJs(obj: EntityAccessInformation): EntityAccessInformationJs {
-	val permissionsByDataOwnerId =
-			EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_toJs(obj.permissionsByDataOwnerId)
+	val permissionsByDataOwnerId = EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_toJs(obj.permissionsByDataOwnerId)
 	val hasUnknownAnonymousDataOwners = obj.hasUnknownAnonymousDataOwners
 	return EntityAccessInformationJs(js("{" +
 		"permissionsByDataOwnerId:permissionsByDataOwnerId," +
@@ -18,8 +17,7 @@ public fun entityAccessInformation_toJs(obj: EntityAccessInformation): EntityAcc
 }
 
 public fun entityAccessInformation_fromJs(obj: EntityAccessInformationJs): EntityAccessInformation {
-	val permissionsByDataOwnerId =
-			EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(obj.permissionsByDataOwnerId)
+	val permissionsByDataOwnerId = EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(obj.permissionsByDataOwnerId)
 	val hasUnknownAnonymousDataOwners = obj.hasUnknownAnonymousDataOwners
 	return EntityAccessInformation(
 		permissionsByDataOwnerId = permissionsByDataOwnerId,

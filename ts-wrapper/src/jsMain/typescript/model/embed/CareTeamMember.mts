@@ -10,8 +10,7 @@ import {Encryptable} from './Encryptable.mjs';
 
 /**
  *
- *  Represents a member of a care team involved in a patient's care, linking a healthcare party with
- *  their role.
+ *  Represents a member of a care team involved in a patient's care, linking a healthcare party with their role.
  *  /
  */
 export interface CareTeamMember extends Encryptable, Identifiable<string> {
@@ -42,8 +41,7 @@ export interface CareTeamMember extends Encryptable, Identifiable<string> {
 
 /**
  *
- *  Represents a member of a care team involved in a patient's care, linking a healthcare party with
- *  their role.
+ *  Represents a member of a care team involved in a patient's care, linking a healthcare party with their role.
  *  /
  */
 export class DecryptedCareTeamMember {
@@ -122,8 +120,7 @@ export class DecryptedCareTeamMember {
 
 /**
  *
- *  Represents a member of a care team involved in a patient's care, linking a healthcare party with
- *  their role.
+ *  Represents a member of a care team involved in a patient's care, linking a healthcare party with their role.
  *  /
  */
 export class EncryptedCareTeamMember {

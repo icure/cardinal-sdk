@@ -4,8 +4,7 @@ import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecod
 
 /**
  *
- *  Represents metadata about an attachment that has been deleted, preserving its former storage
- *  identifiers and deletion time.
+ *  Represents metadata about an attachment that has been deleted, preserving its former storage identifiers and deletion time.
  *  /
  */
 export class DeletedAttachment {
@@ -18,8 +17,7 @@ export class DeletedAttachment {
 
 	/**
 	 *
-	 *  The former object storage identifier, if the attachment was stored using the object storage
-	 *  service.
+	 *  The former object storage identifier, if the attachment was stored using the object storage service.
 	 */
 	objectStoreAttachmentId: string | undefined = undefined;
 

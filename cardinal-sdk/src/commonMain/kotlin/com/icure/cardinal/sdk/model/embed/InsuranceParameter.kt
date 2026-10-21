@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumerates the parameters that can be associated with an insurance record, such as status codes
- * and approval information.
+ *  Enumerates the parameters that can be associated with an insurance record, such as status codes and approval information.
  */
 @Serializable
 enum class InsuranceParameter(

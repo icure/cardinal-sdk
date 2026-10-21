@@ -8,8 +8,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Represents an action in a form template, combining launchers, a conditional expression, and
- * target states.
+ * Represents an action in a form template, combining launchers, a conditional expression, and target states.
  * /
  */
 @Serializable

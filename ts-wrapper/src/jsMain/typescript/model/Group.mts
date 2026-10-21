@@ -15,8 +15,7 @@ import {OperationToken} from './security/OperationToken.mjs';
 /**
  *
  *
- *   Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
- *  organization
+ *   Represents a group in the iCure platform. A group corresponds to a practice, hospital, or organization
  *   that contains its own set of databases and users.
  */
 export class Group implements StoredDocument, HasTags {
@@ -152,8 +151,7 @@ export class Group implements StoredDocument, HasTags {
 	/**
 	 *
 	 *
-	 *   The commercial status of the group, derived from the group hierarchy when not explicitly set on
-	 *  the group.
+	 *   The commercial status of the group, derived from the group hierarchy when not explicitly set on the group.
 	 *   This field is read-only: it is ignored when creating or modifying a group.
 	 */
 	status: GroupStatus | undefined = undefined;

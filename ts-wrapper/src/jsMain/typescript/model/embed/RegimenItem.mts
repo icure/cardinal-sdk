@@ -7,10 +7,8 @@ import {Weekday} from './Weekday.mjs';
 
 /**
  *
- *  Represents a single item in a medication regimen, defining when and how much medication should be
- *  administered.
- *  The day can be specified as a specific date, day number in treatment, or weekday. The time can be
- *  a day period or exact time.
+ *  Represents a single item in a medication regimen, defining when and how much medication should be administered.
+ *  The day can be specified as a specific date, day number in treatment, or weekday. The time can be a day period or exact time.
  *  /
  */
 export class RegimenItem {

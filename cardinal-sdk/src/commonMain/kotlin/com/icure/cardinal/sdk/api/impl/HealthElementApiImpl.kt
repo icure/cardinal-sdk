@@ -14,10 +14,14 @@ import com.icure.cardinal.sdk.api.impl.keyAsLocalDataOwnerReferences
 import com.icure.cardinal.sdk.api.raw.RawHealthElementApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
+import com.icure.cardinal.sdk.crypto.entities.asIcureStub
+import com.icure.cardinal.sdk.crypto.entities.toBulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -391,7 +395,8 @@ private class HealthElementFlavouredInGroupApiImpl<E : HealthElement>(
 
 @InternalIcureApi
 private abstract class AbstractHealthElementBasicFlavourless(
-	protected val rawApi: RawHealthElementApi
+	protected val rawApi: RawHealthElementApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteHealthElement(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -426,10 +431,20 @@ private abstract class AbstractHealthElementBasicFlavourless(
 				rawApi.purgeHealthElementsInGroup(groupId = groupId, healthElementIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, healthElement: HealthElement): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			healthElement,
+			EntityWithEncryptionMetadataTypeName.HealthElement,
+		)
 }
 
 @InternalIcureApi
-private class HealthElementBasicFlavourlessApiImpl(rawApi: RawHealthElementApi) : AbstractHealthElementBasicFlavourless(rawApi), HealthElementBasicFlavourlessApi {
+private class HealthElementBasicFlavourlessApiImpl(
+	rawApi: RawHealthElementApi,
+	config: BasicApiConfiguration
+) : AbstractHealthElementBasicFlavourless(rawApi, config), HealthElementBasicFlavourlessApi {
 
 	override suspend fun deleteHealthElementById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteHealthElement(groupId = null, entityId, rev)
@@ -443,10 +458,16 @@ private class HealthElementBasicFlavourlessApiImpl(rawApi: RawHealthElementApi) 
 
 	override suspend fun purgeHealthElementsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		doPurgeHealthElements(groupId = null, entityIds = entityIds)
+
+	override suspend fun getDataOwnersWithAccessTo(healthElement: HealthElement): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, healthElement = healthElement)
 }
 
 @InternalIcureApi
-private class HealthElementBasicFlavourlessInGroupApiImpl(rawApi: RawHealthElementApi) : AbstractHealthElementBasicFlavourless(rawApi), HealthElementBasicFlavourlessInGroupApi {
+private class HealthElementBasicFlavourlessInGroupApiImpl(
+	rawApi: RawHealthElementApi,
+	config: BasicApiConfiguration
+) : AbstractHealthElementBasicFlavourless(rawApi, config), HealthElementBasicFlavourlessInGroupApi {
 	override suspend fun deleteHealthElementById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, it ->
 			doDeleteHealthElement(groupId, it.id, it.rev)
@@ -465,6 +486,9 @@ private class HealthElementBasicFlavourlessInGroupApiImpl(rawApi: RawHealthEleme
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeHealthElements(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(healthElement: GroupScoped<HealthElement>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = healthElement.groupId, healthElement = healthElement.entity)
 }
 
 @InternalIcureApi
@@ -493,14 +517,14 @@ private class HealthElementApiImpl(
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedHealthElement, HealthElement>,
 ) : HealthElementApi,
 	HealthElementFlavouredApi<DecryptedHealthElement> by HealthElementFlavouredApiImpl(rawApi, config, decryptedFlavour),
-	HealthElementBasicFlavourlessApi by HealthElementBasicFlavourlessApiImpl(rawApi) {
+	HealthElementBasicFlavourlessApi by HealthElementBasicFlavourlessApiImpl(rawApi, config) {
 
 	override val encrypted: HealthElementFlavouredApi<EncryptedHealthElement> = HealthElementFlavouredApiImpl(rawApi, config, encryptedFlavour)
 	override val tryAndRecover: HealthElementFlavouredApi<HealthElement> = HealthElementFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: HealthElementInGroupApi = object : HealthElementInGroupApi,
 		HealthElementFlavouredInGroupApi<DecryptedHealthElement> by HealthElementFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
-		HealthElementBasicFlavourlessInGroupApi by HealthElementBasicFlavourlessInGroupApiImpl(rawApi) {
+		HealthElementBasicFlavourlessInGroupApi by HealthElementBasicFlavourlessInGroupApiImpl(rawApi, config) {
 		override val encrypted: HealthElementFlavouredInGroupApi<EncryptedHealthElement> =
 			HealthElementFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
 		override val tryAndRecover: HealthElementFlavouredInGroupApi<HealthElement> =
@@ -730,6 +754,27 @@ private class HealthElementApiImpl(
 	override suspend fun matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): List<String> =
 		rawApi.doMatchHealthElementsBySorted(config = config, groupId = null, filter = filter)
 
+	override suspend fun shareHealthElementsByIds(
+		healthElementIds: List<String>,
+		delegates: Map<String, HealthElementShareOptions>
+	): BulkShareByIdsResult {
+		val distinctIds = healthElementIds.toSet()
+		if (distinctIds.isEmpty() || delegates.isEmpty()) {
+			return BulkShareByIdsResult(emptySet(), emptyMap(), emptyMap(), emptyList())
+		}
+		val normalizedDelegates = delegates.mapKeys { EntityReferenceInGroup(it.key) }
+		val stubs = rawApi.listHealthElementsDelegationsStubById(healthElementIds = ListOfIds(distinctIds.toList())).successBody()
+		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
+			entities = stubs,
+			entitiesType = EntityWithEncryptionMetadataTypeName.HealthElement,
+			delegates = normalizedDelegates,
+			autoRetry = true,
+			getUpdatedEntity = { rawApi.getHealthElement(healthElementId = it).successBody().asIcureStub() },
+			doRequestBulkShareOrUpdate = { params -> rawApi.bulkShareMinimal(request = params).successBody() }
+		)
+		return result.toBulkShareByIdsResult(distinctIds, stubs.mapTo(mutableSetOf()) { it.id }, normalizedDelegates.keys)
+	}
+
 	override suspend fun subscribeToEvents(
 		events: Set<SubscriptionEventType>,
 		filter: FilterOptions<HealthElement>,
@@ -784,10 +829,10 @@ private class HealthElementBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedHealthElement, EncryptedHealthElement>,
 ) : HealthElementBasicApi,
 	HealthElementBasicFlavouredApi<EncryptedHealthElement> by HealthElementBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	HealthElementBasicFlavourlessApi by HealthElementBasicFlavourlessApiImpl(rawApi) {
+	HealthElementBasicFlavourlessApi by HealthElementBasicFlavourlessApiImpl(rawApi, config) {
 	override val inGroup: HealthElementBasicInGroupApi = object : HealthElementBasicInGroupApi,
 		HealthElementBasicFlavouredInGroupApi<EncryptedHealthElement> by HealthElementBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		HealthElementBasicFlavourlessInGroupApi by HealthElementBasicFlavourlessInGroupApiImpl(rawApi) {
+		HealthElementBasicFlavourlessInGroupApi by HealthElementBasicFlavourlessInGroupApiImpl(rawApi, config) {
 
 		override suspend fun matchHealthElementsBy(groupId: String, filter: BaseFilterOptions<HealthElement>): List<String> =
 			rawApi.doMatchHealthElementsBy(config = config, groupId = groupId, filter = filter)

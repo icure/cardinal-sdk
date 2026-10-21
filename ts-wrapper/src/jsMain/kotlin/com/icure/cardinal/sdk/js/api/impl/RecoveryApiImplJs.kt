@@ -85,8 +85,7 @@ internal class RecoveryApiImplJs(
 		}
 	}
 
-	override fun createRecoveryInfoForAvailableParentKeyPairs(parentId: String, options: dynamic):
-			Promise<RecoveryDataKeyJs> {
+	override fun createRecoveryInfoForAvailableParentKeyPairs(parentId: String, options: dynamic): Promise<RecoveryDataKeyJs> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val parentIdConverted: String = parentId
@@ -123,8 +122,7 @@ internal class RecoveryApiImplJs(
 		}
 	}
 
-	override fun recoverKeyPairs(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean):
-			Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>> = GlobalScope.promise {
+	override fun recoverKeyPairs(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean): Promise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>> = GlobalScope.promise {
 		val recoveryKeyConverted: RecoveryDataKey = recoveryDataKey_fromJs(recoveryKey)
 		val autoDeleteConverted: Boolean = autoDelete
 		val result = recoveryApi.recoverKeyPairs(
@@ -159,8 +157,7 @@ internal class RecoveryApiImplJs(
 		recoveryKey: RecoveryDataKeyJs,
 		autoDelete: Boolean,
 		waitSeconds: Double,
-	): CancellablePromise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>> =
-			GlobalScope.cancellablePromise {
+	): CancellablePromise<RecoveryResultJs<Record<String, Record<String, XRsaKeypair>>>> = GlobalScope.cancellablePromise {
 		val recoveryKeyConverted: RecoveryDataKey = recoveryDataKey_fromJs(recoveryKey)
 		val autoDeleteConverted: Boolean = autoDelete
 		val waitSecondsConverted: Int = numberToInt(waitSeconds, "waitSeconds")
@@ -193,8 +190,7 @@ internal class RecoveryApiImplJs(
 		)
 	}
 
-	override fun createExchangeDataRecoveryInfo(delegateId: String, options: dynamic):
-			Promise<RecoveryDataKeyJs?> {
+	override fun createExchangeDataRecoveryInfo(delegateId: String, options: dynamic): Promise<RecoveryDataKeyJs?> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val delegateIdConverted: String = delegateId
@@ -243,8 +239,7 @@ internal class RecoveryApiImplJs(
 		}
 	}
 
-	override fun recoverExchangeData(recoveryKey: RecoveryDataKeyJs): Promise<String?> =
-			GlobalScope.promise {
+	override fun recoverExchangeData(recoveryKey: RecoveryDataKeyJs): Promise<String?> = GlobalScope.promise {
 		val recoveryKeyConverted: RecoveryDataKey = recoveryDataKey_fromJs(recoveryKey)
 		val result = recoveryApi.recoverExchangeData(
 			recoveryKeyConverted,
@@ -256,8 +251,7 @@ internal class RecoveryApiImplJs(
 		)
 	}
 
-	override fun getRecoveryExchangeData(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean):
-			Promise<RecoveryResultJs<Array<RawDecryptedExchangeDataJs>>> = GlobalScope.promise {
+	override fun getRecoveryExchangeData(recoveryKey: RecoveryDataKeyJs, autoDelete: Boolean): Promise<RecoveryResultJs<Array<RawDecryptedExchangeDataJs>>> = GlobalScope.promise {
 		val recoveryKeyConverted: RecoveryDataKey = recoveryDataKey_fromJs(recoveryKey)
 		val autoDeleteConverted: Boolean = autoDelete
 		val result = recoveryApi.getRecoveryExchangeData(
@@ -277,8 +271,7 @@ internal class RecoveryApiImplJs(
 		)
 	}
 
-	override fun purgeRecoveryInfo(recoveryKey: RecoveryDataKeyJs): Promise<Unit> =
-			GlobalScope.promise {
+	override fun purgeRecoveryInfo(recoveryKey: RecoveryDataKeyJs): Promise<Unit> = GlobalScope.promise {
 		val recoveryKeyConverted: RecoveryDataKey = recoveryDataKey_fromJs(recoveryKey)
 		recoveryApi.purgeRecoveryInfo(
 			recoveryKeyConverted,
@@ -294,8 +287,7 @@ internal class RecoveryApiImplJs(
 		intToNumber(result)
 	}
 
-	override fun purgeAllKeyPairRecoveryInfoFor(dataOwnerId: String): Promise<Double> =
-			GlobalScope.promise {
+	override fun purgeAllKeyPairRecoveryInfoFor(dataOwnerId: String): Promise<Double> = GlobalScope.promise {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val result = recoveryApi.purgeAllKeyPairRecoveryInfoFor(
 			dataOwnerIdConverted,
@@ -303,8 +295,7 @@ internal class RecoveryApiImplJs(
 		intToNumber(result)
 	}
 
-	override fun purgeAllExchangeDataRecoveryInfoFor(dataOwnerId: String): Promise<Double> =
-			GlobalScope.promise {
+	override fun purgeAllExchangeDataRecoveryInfoFor(dataOwnerId: String): Promise<Double> = GlobalScope.promise {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val result = recoveryApi.purgeAllExchangeDataRecoveryInfoFor(
 			dataOwnerIdConverted,
@@ -312,8 +303,7 @@ internal class RecoveryApiImplJs(
 		intToNumber(result)
 	}
 
-	override fun preGenerateRecoveryKey(keySize: String): Promise<RecoveryDataKeyJs> =
-			GlobalScope.promise {
+	override fun preGenerateRecoveryKey(keySize: String): Promise<RecoveryDataKeyJs> = GlobalScope.promise {
 		val keySizeConverted: RecoveryKeySize = RecoveryKeySize.valueOf(keySize)
 		val result = recoveryApi.preGenerateRecoveryKey(
 			keySizeConverted,

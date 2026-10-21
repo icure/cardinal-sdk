@@ -6,8 +6,7 @@ import com.icure.cardinal.sdk.model.embed.AccessLevel
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun healthElementDelegateOptions_toJs(obj: HealthElementDelegateOptions):
-		HealthElementDelegateOptionsJs {
+public fun healthElementDelegateOptions_toJs(obj: HealthElementDelegateOptions): HealthElementDelegateOptionsJs {
 	val accessLevel = obj.accessLevel.name
 	val shareEncryptionKey = obj.shareEncryptionKey
 	val shareSecretId = obj.shareSecretId
@@ -20,8 +19,7 @@ public fun healthElementDelegateOptions_toJs(obj: HealthElementDelegateOptions):
 	"}"))
 }
 
-public fun healthElementDelegateOptions_fromJs(obj: HealthElementDelegateOptionsJs):
-		HealthElementDelegateOptions {
+public fun healthElementDelegateOptions_fromJs(obj: HealthElementDelegateOptionsJs): HealthElementDelegateOptions {
 	val accessLevel = AccessLevel.valueOf(obj.accessLevel)
 	val shareEncryptionKey = obj.shareEncryptionKey
 	val shareSecretId = obj.shareSecretId

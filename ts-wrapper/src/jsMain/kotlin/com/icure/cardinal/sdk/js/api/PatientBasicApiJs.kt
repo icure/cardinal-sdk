@@ -25,24 +25,19 @@ public external interface PatientBasicApiJs {
 
 	public fun matchPatientsBy(filter: BaseFilterOptionsJs<PatientJs>): Promise<Array<String>>
 
-	public fun matchPatientsBySorted(filter: BaseSortableFilterOptionsJs<PatientJs>):
-			Promise<Array<String>>
+	public fun matchPatientsBySorted(filter: BaseSortableFilterOptionsJs<PatientJs>): Promise<Array<String>>
 
-	public fun filterPatientsBy(filter: BaseFilterOptionsJs<PatientJs>):
-			Promise<PaginatedListIteratorJs<EncryptedPatientJs>>
+	public fun filterPatientsBy(filter: BaseFilterOptionsJs<PatientJs>): Promise<PaginatedListIteratorJs<EncryptedPatientJs>>
 
-	public fun filterPatientsBySorted(filter: BaseSortableFilterOptionsJs<PatientJs>):
-			Promise<PaginatedListIteratorJs<EncryptedPatientJs>>
+	public fun filterPatientsBySorted(filter: BaseSortableFilterOptionsJs<PatientJs>): Promise<PaginatedListIteratorJs<EncryptedPatientJs>>
 
 	public fun deletePatientById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deletePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deletePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgePatientById(id: String, rev: String): Promise<Unit>
 
-	public fun purgePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgePatientsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deletePatient(patient: PatientJs): Promise<StoredDocumentIdentifierJs>
 
@@ -66,20 +61,17 @@ public external interface PatientBasicApiJs {
 
 	public fun undeletePatientById(id: String, rev: String): Promise<EncryptedPatientJs>
 
-	public fun undeletePatientsByIds(ids: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedPatientJs>>
+	public fun undeletePatientsByIds(ids: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedPatientJs>>
 
 	public fun getPatient(entityId: String): Promise<EncryptedPatientJs?>
 
-	public fun getPatientResolvingMerges(patientId: String, maxMergeDepth: Double?):
-			Promise<EncryptedPatientJs>
+	public fun getPatientResolvingMerges(patientId: String, maxMergeDepth: Double?): Promise<EncryptedPatientJs>
 
 	public fun getPatients(patientIds: Array<String>): Promise<Array<EncryptedPatientJs>>
 
 	public fun modifyPatients(patients: Array<EncryptedPatientJs>): Promise<Array<EncryptedPatientJs>>
 
-	public fun mergePatients(from: PatientJs, mergedInto: EncryptedPatientJs):
-			Promise<EncryptedPatientJs>
+	public fun mergePatients(from: PatientJs, mergedInto: EncryptedPatientJs): Promise<EncryptedPatientJs>
 
 	public fun subscribeToEvents(
 		events: Array<String>,

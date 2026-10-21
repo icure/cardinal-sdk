@@ -29,7 +29,8 @@ class RawTarificationApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawTarificationApi {
+) : BaseRawApi(rawApiConfig),
+	RawTarificationApi {
 	// region common endpoints
 
 	override suspend fun findTarificationsByLabel(

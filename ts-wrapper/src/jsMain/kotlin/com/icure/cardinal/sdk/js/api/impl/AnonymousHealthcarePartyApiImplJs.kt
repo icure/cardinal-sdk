@@ -19,8 +19,7 @@ import kotlinx.coroutines.promise
 internal class AnonymousHealthcarePartyApiImplJs(
 	private val anonymousHealthcarePartyApi: AnonymousHealthcarePartyApi,
 ) : AnonymousHealthcarePartyApiJs {
-	override fun getPublicHealthcarePartiesInGroup(groupId: String): Promise<Array<HealthcarePartyJs>>
-			= GlobalScope.promise {
+	override fun getPublicHealthcarePartiesInGroup(groupId: String): Promise<Array<HealthcarePartyJs>> = GlobalScope.promise {
 		val groupIdConverted: String = groupId
 		val result = anonymousHealthcarePartyApi.getPublicHealthcarePartiesInGroup(
 			groupIdConverted,

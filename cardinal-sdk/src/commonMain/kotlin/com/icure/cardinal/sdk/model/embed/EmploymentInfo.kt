@@ -9,8 +9,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents employment information for a patient, including the period, profession type, and
- * employer details.
+ * Represents employment information for a patient, including the period, profession type, and employer details.
  * /
  */
 
@@ -45,8 +44,7 @@ sealed interface EmploymentInfo : Encryptable {
 }
 
 /**
- * Represents employment information for a patient, including the period, profession type, and
- * employer details.
+ * Represents employment information for a patient, including the period, profession type, and employer details.
  * /
  */
 @Serializable
@@ -78,8 +76,7 @@ data class DecryptedEmploymentInfo(
 }
 
 /**
- * Represents employment information for a patient, including the period, profession type, and
- * employer details.
+ * Represents employment information for a patient, including the period, profession type, and employer details.
  * /
  */
 @Serializable

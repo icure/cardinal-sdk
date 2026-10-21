@@ -5,8 +5,7 @@ import {StructureElement} from './StructureElement.mjs';
 
 /**
  *
- *  Represents a group of structure elements within a form template section, used to organize fields
- *  logically.
+ *  Represents a group of structure elements within a form template section, used to organize fields logically.
  *  /
  */
 export class FieldsGroup {

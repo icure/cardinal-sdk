@@ -8,8 +8,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Data transfer object aggregating database information for all databases belonging to a specific
- * group,
+ * Data transfer object aggregating database information for all databases belonging to a specific group,
  * including their storage sizes and GCP storage usage.
  * /
  */

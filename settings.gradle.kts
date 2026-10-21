@@ -16,17 +16,6 @@ includeBuild("ksp-json-processor") {
 	}
 }
 
-val localPropertiesFile = file("local.properties")
-val properties = Properties()
-
-if (localPropertiesFile.exists()) {
-	localPropertiesFile.inputStream().use { properties.load(it) }
-}
-
-// Now you can read the properties
-val githubUsername = properties.getProperty("githubUsername")
-val githubPassword = properties.getProperty("githubPassword")
-
 pluginManagement {
 	repositories {
 		google()
@@ -41,13 +30,6 @@ dependencyResolutionManagement {
 		google()
 		mavenCentral()
 		maven { url = uri("https://maven.taktik.be/content/groups/public") }
-		maven {
-			url = uri("https://maven.pkg.github.com/icure/charix")
-			credentials {
-				username = githubUsername
-				password = githubPassword
-			}
-		}
 		mavenLocal()
 	}
 }

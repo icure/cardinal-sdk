@@ -27,7 +27,8 @@ class RawPricingApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawPricingApi {
+) : BaseRawApi(rawApiConfig),
+	RawPricingApi {
 	// region cloud endpoints
 
 	override suspend fun createCodesInGroup(

@@ -25,7 +25,8 @@ data class DeviceByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Device>, Filter.IdsFilter<String, Device> {
+) : AbstractFilter<Device>,
+	Filter.IdsFilter<String, Device> {
 	// region DeviceByIdsFilter-DeviceByIdsFilter
 
 	// endregion

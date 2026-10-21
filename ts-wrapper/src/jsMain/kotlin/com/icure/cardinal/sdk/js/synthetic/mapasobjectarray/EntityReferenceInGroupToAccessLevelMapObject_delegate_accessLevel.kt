@@ -16,9 +16,7 @@ public external interface EntityReferenceInGroupToAccessLevelMapObject_delegate_
   public val accessLevel: String
 }
 
-public
-    fun EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_toJs(ktMap: Map<EntityReferenceInGroup, AccessLevel>):
-    Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel> = ktMap.map { entry ->
+public fun EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_toJs(ktMap: Map<EntityReferenceInGroup, AccessLevel>): Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel> = ktMap.map { entry ->
   val delegateKt = entry.key
   val delegate: EntityReferenceInGroupJs = entityReferenceInGroup_toJs(delegateKt)
   val accessLevelKt = entry.value
@@ -26,9 +24,7 @@ public
   js("{delegate: delegate, accessLevel: accessLevel}")
 }.toTypedArray()
 
-public
-    fun EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(jsArray: Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel>):
-    Map<EntityReferenceInGroup, AccessLevel> = CheckedConverters.objectArrayToMap(
+public fun EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(jsArray: Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel>): Map<EntityReferenceInGroup, AccessLevel> = CheckedConverters.objectArrayToMap(
   jsArray,
   { entry ->
     val key = entry.delegate

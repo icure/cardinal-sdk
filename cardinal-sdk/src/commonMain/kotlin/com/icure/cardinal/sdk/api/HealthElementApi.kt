@@ -1,5 +1,7 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -99,6 +101,16 @@ interface HealthElementBasicFlavourlessApi  {
 	 */
 	suspend fun purgeHealthElements(healthElements: List<HealthElement>): List<StoredDocumentIdentifier> =
 		purgeHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * Get all data owners with access to the provided health element, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param healthElement a health element
+	 * @return information on users with access to the provided health element
+	 */
+	suspend fun getDataOwnersWithAccessTo(healthElement: HealthElement): EntityAccessInformation
 }
 
 interface HealthElementBasicFlavourlessInGroupApi  {
@@ -146,6 +158,11 @@ interface HealthElementBasicFlavourlessInGroupApi  {
 	 */
 	suspend fun purgeHealthElements(healthElements: List<GroupScoped<HealthElement>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [HealthElementBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(healthElement: GroupScoped<HealthElement>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -428,8 +445,8 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedHealthElement
@@ -454,8 +471,8 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 		delegates: Map<String, HealthElementDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedHealthElement
@@ -571,6 +588,30 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * @return a list of health element ids
 	 */
 	suspend fun matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): List<String>
+
+	/**
+	 * Share many already-existing health elements with one or more delegates at once, retrieving them by id instead
+	 * of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per health element when you already know the ids of many health elements to share and don't otherwise need
+	 * their decrypted content, since only lightweight metadata (not the full content of each health element) is ever
+	 * retrieved, and no content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found health element. Unlike [shareWithMany], if
+	 * the share fails for some (health element, delegate) pairs this method reports the failure for those specific
+	 * pairs in the returned result instead of throwing, so sharing proceeds normally for every other health element
+	 * and delegate in the batch.
+	 *
+	 * @param healthElementIds ids of the health elements to share. Ids that don't exist, or exist but for which the
+	 * current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each health element, and the options for sharing
+	 * with each of them (see [HealthElementShareOptions]). The exact same options are applied to every health element
+	 * in [healthElementIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareHealthElementsByIds(
+		healthElementIds: List<String>,
+		delegates: Map<String, HealthElementShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, HealthElementFlavouredInGroupApi<DecryptedHealthElement> { // TODO subscribable
@@ -595,8 +636,8 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedHealthElement>
@@ -614,8 +655,8 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 		) Map<EntityReferenceInGroup, HealthElementDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedHealthElement>

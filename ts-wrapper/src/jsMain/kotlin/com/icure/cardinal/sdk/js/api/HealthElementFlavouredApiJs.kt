@@ -24,14 +24,11 @@ public external interface HealthElementFlavouredApiJs<E : HealthElementJs> {
 		options: dynamic,
 	): Promise<E>
 
-	public fun shareWithMany(healthElement: E, delegates: Record<String, HealthElementShareOptionsJs>):
-			Promise<E>
+	public fun shareWithMany(healthElement: E, delegates: Record<String, HealthElementShareOptionsJs>): Promise<E>
 
-	public fun filterHealthElementsBy(filter: FilterOptionsJs<HealthElementJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterHealthElementsBy(filter: FilterOptionsJs<HealthElementJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterHealthElementsBySorted(filter: SortableFilterOptionsJs<HealthElementJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterHealthElementsBySorted(filter: SortableFilterOptionsJs<HealthElementJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createHealthElement(entity: E): Promise<E>
 
@@ -39,8 +36,7 @@ public external interface HealthElementFlavouredApiJs<E : HealthElementJs> {
 
 	public fun undeleteHealthElementById(id: String, rev: String): Promise<E>
 
-	public fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<E>>
+	public fun undeleteHealthElementsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<E>>
 
 	public fun undeleteHealthElement(healthElement: HealthElementJs): Promise<E>
 

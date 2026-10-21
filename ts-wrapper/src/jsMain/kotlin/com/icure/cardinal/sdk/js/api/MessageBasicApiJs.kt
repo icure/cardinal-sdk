@@ -25,24 +25,19 @@ public external interface MessageBasicApiJs {
 
 	public fun matchMessagesBy(filter: BaseFilterOptionsJs<MessageJs>): Promise<Array<String>>
 
-	public fun matchMessagesBySorted(filter: BaseSortableFilterOptionsJs<MessageJs>):
-			Promise<Array<String>>
+	public fun matchMessagesBySorted(filter: BaseSortableFilterOptionsJs<MessageJs>): Promise<Array<String>>
 
-	public fun filterMessagesBy(filter: BaseFilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<EncryptedMessageJs>>
+	public fun filterMessagesBy(filter: BaseFilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<EncryptedMessageJs>>
 
-	public fun filterMessagesBySorted(filter: BaseSortableFilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<EncryptedMessageJs>>
+	public fun filterMessagesBySorted(filter: BaseSortableFilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<EncryptedMessageJs>>
 
 	public fun deleteMessageById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeMessageById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteMessage(message: MessageJs): Promise<StoredDocumentIdentifierJs>
 
@@ -60,8 +55,7 @@ public external interface MessageBasicApiJs {
 
 	public fun undeleteMessageById(id: String, rev: String): Promise<EncryptedMessageJs>
 
-	public fun undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedMessageJs>>
+	public fun undeleteMessagesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedMessageJs>>
 
 	public fun undeleteMessage(message: MessageJs): Promise<EncryptedMessageJs>
 

@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DocumentDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DocumentShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -372,7 +373,8 @@ private class DocumentFlavouredInGroupApiImpl<E : Document>(
 
 @InternalIcureApi
 private abstract class AbstractDocumentBasicFlavourless(
-	protected val rawApi: RawDocumentApi
+	protected val rawApi: RawDocumentApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteDocument(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -407,10 +409,20 @@ private abstract class AbstractDocumentBasicFlavourless(
 				rawApi.purgeDocumentsInGroup(groupId = groupId, documentIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, document: Document): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			document,
+			EntityWithEncryptionMetadataTypeName.Document,
+		)
 }
 
 @InternalIcureApi
-private class DocumentBasicFlavourlessApiImpl(rawApi: RawDocumentApi) : AbstractDocumentBasicFlavourless(rawApi), DocumentBasicFlavourlessApi {
+private class DocumentBasicFlavourlessApiImpl(
+	rawApi: RawDocumentApi,
+	config: BasicApiConfiguration
+) : AbstractDocumentBasicFlavourless(rawApi, config), DocumentBasicFlavourlessApi {
 
 	override suspend fun deleteDocumentById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteDocument(groupId = null, entityId = entityId, rev = rev)
@@ -470,10 +482,16 @@ private class DocumentBasicFlavourlessApiImpl(rawApi: RawDocumentApi) : Abstract
 
 	override suspend fun deleteSecondaryAttachment(documentId: String, key: String, rev: String) =
 		rawApi.deleteSecondaryAttachment(documentId = documentId, key = key, rev = rev).successBody()
+
+	override suspend fun getDataOwnersWithAccessTo(document: Document): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, document = document)
 }
 
 @InternalIcureApi
-private class DocumentBasicFlavourlessInGroupApiImpl(rawApi: RawDocumentApi) : AbstractDocumentBasicFlavourless(rawApi), DocumentBasicFlavourlessInGroupApi {
+private class DocumentBasicFlavourlessInGroupApiImpl(
+	rawApi: RawDocumentApi,
+	config: BasicApiConfiguration
+) : AbstractDocumentBasicFlavourless(rawApi, config), DocumentBasicFlavourlessInGroupApi {
 	override suspend fun deleteDocumentById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, it ->
 			doDeleteDocument(groupId = groupId, entityId = it.id, rev = it.rev)
@@ -492,6 +510,9 @@ private class DocumentBasicFlavourlessInGroupApiImpl(rawApi: RawDocumentApi) : A
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeDocuments(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(document: GroupScoped<Document>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = document.groupId, document = document.entity)
 }
 
 @InternalIcureApi
@@ -519,7 +540,7 @@ private class DocumentApiImpl(
 	private val decryptedFlavour: FlavouredApi<EncryptedDocument, DecryptedDocument>,
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedDocument, Document>
 ) : DocumentApi,
-	DocumentBasicFlavourlessApi by DocumentBasicFlavourlessApiImpl(rawApi),
+	DocumentBasicFlavourlessApi by DocumentBasicFlavourlessApiImpl(rawApi, config),
 	DocumentFlavouredApi<DecryptedDocument> by DocumentFlavouredApiImpl(rawApi, config, decryptedFlavour) {
 	override val encrypted: DocumentFlavouredApi<EncryptedDocument> = DocumentFlavouredApiImpl(rawApi, config, encryptedFlavour)
 
@@ -528,7 +549,7 @@ private class DocumentApiImpl(
 	private val crypto get() = config.crypto
 
 	override val inGroup: DocumentInGroupApi = object : DocumentInGroupApi,
-		DocumentBasicFlavourlessInGroupApi by DocumentBasicFlavourlessInGroupApiImpl(rawApi),
+		DocumentBasicFlavourlessInGroupApi by DocumentBasicFlavourlessInGroupApiImpl(rawApi, config),
 		DocumentFlavouredInGroupApi<DecryptedDocument> by DocumentFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
 		override val encrypted: DocumentFlavouredInGroupApi<EncryptedDocument> =
 			DocumentFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
@@ -993,10 +1014,10 @@ private class DocumentBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedDocument, EncryptedDocument>
 ) : DocumentBasicApi,
 	DocumentBasicFlavouredApi<EncryptedDocument> by DocumentBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	DocumentBasicFlavourlessApi by DocumentBasicFlavourlessApiImpl(rawApi) {
+	DocumentBasicFlavourlessApi by DocumentBasicFlavourlessApiImpl(rawApi, config) {
 
 	override val inGroup: DocumentBasicInGroupApi = object : DocumentBasicInGroupApi,
-		DocumentBasicFlavourlessInGroupApi by DocumentBasicFlavourlessInGroupApiImpl(rawApi),
+		DocumentBasicFlavourlessInGroupApi by DocumentBasicFlavourlessInGroupApiImpl(rawApi, config),
 		DocumentBasicFlavouredInGroupApi<EncryptedDocument> by DocumentBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchDocumentsBy(

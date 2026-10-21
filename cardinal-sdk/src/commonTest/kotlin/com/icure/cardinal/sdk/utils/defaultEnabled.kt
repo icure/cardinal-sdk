@@ -11,6 +11,11 @@ import com.icure.cardinal.sdk.test.isLocalTestMode
 const val DEFAULT_ENABLED = true
 
 /**
+ * Flag used to enable long-running tests.
+ */
+const val HEAVY_ENABLED = false
+
+/**
  * Tests that can only run against the local docker environment, because it is the only disposable one:
  * everywhere else the tests run against a shared, long-lived environment with a fixed set of users (see
  * `preConfiguredHcpUsers`), which they must not modify.

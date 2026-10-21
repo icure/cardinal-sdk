@@ -43,7 +43,8 @@ class RawRelatedPersonApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawRelatedPersonApi {
+) : BaseRawApi(rawApiConfig),
+	RawRelatedPersonApi {
 	// region common endpoints
 
 	override suspend fun createRelatedPerson(c: EncryptedRelatedPerson): HttpResponse<EncryptedRelatedPerson> =

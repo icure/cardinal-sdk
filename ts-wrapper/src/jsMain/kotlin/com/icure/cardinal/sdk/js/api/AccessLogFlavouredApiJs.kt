@@ -24,14 +24,11 @@ public external interface AccessLogFlavouredApiJs<E : AccessLogJs> {
 		options: dynamic,
 	): Promise<E>
 
-	public fun shareWithMany(accessLog: E, delegates: Record<String, AccessLogShareOptionsJs>):
-			Promise<E>
+	public fun shareWithMany(accessLog: E, delegates: Record<String, AccessLogShareOptionsJs>): Promise<E>
 
-	public fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createAccessLog(entity: E): Promise<E>
 

@@ -8,8 +8,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 /**
- * A permission item whose predicate always evaluates to true, unconditionally granting or revoking
- * the specified permission type.
+ * A permission item whose predicate always evaluates to true, unconditionally granting or revoking the specified permission type.
  * /
  */
 @SerialName("AlwaysPermissionItemDto")

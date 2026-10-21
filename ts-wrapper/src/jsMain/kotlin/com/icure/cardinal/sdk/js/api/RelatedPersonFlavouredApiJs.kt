@@ -24,14 +24,11 @@ public external interface RelatedPersonFlavouredApiJs<E : RelatedPersonJs> {
 		options: dynamic,
 	): Promise<E>
 
-	public fun shareWithMany(relatedPerson: E, delegates: Record<String, RelatedPersonShareOptionsJs>):
-			Promise<E>
+	public fun shareWithMany(relatedPerson: E, delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<E>
 
-	public fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createRelatedPerson(entity: E): Promise<E>
 
@@ -39,8 +36,7 @@ public external interface RelatedPersonFlavouredApiJs<E : RelatedPersonJs> {
 
 	public fun undeleteRelatedPersonById(id: String, rev: String): Promise<E>
 
-	public fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<E>>
+	public fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<E>>
 
 	public fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<E>
 

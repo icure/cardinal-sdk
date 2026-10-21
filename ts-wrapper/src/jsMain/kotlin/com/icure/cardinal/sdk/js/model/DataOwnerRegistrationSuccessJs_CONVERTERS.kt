@@ -5,8 +5,7 @@ import com.icure.cardinal.sdk.model.DataOwnerRegistrationSuccess
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun dataOwnerRegistrationSuccess_toJs(obj: DataOwnerRegistrationSuccess):
-		DataOwnerRegistrationSuccessJs {
+public fun dataOwnerRegistrationSuccess_toJs(obj: DataOwnerRegistrationSuccess): DataOwnerRegistrationSuccessJs {
 	val userLogin = obj.userLogin
 	val userId = obj.userId
 	val token = obj.token
@@ -17,8 +16,7 @@ public fun dataOwnerRegistrationSuccess_toJs(obj: DataOwnerRegistrationSuccess):
 	"}"))
 }
 
-public fun dataOwnerRegistrationSuccess_fromJs(obj: DataOwnerRegistrationSuccessJs):
-		DataOwnerRegistrationSuccess {
+public fun dataOwnerRegistrationSuccess_fromJs(obj: DataOwnerRegistrationSuccessJs): DataOwnerRegistrationSuccess {
 	val userLogin = obj.userLogin
 	val userId = obj.userId
 	val token = obj.token

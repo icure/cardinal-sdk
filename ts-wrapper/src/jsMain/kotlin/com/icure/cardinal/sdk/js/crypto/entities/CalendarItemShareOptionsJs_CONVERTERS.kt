@@ -7,8 +7,7 @@ import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun calendarItemShareOptions_toJs(obj: CalendarItemShareOptions):
-		CalendarItemShareOptionsJs {
+public fun calendarItemShareOptions_toJs(obj: CalendarItemShareOptions): CalendarItemShareOptionsJs {
 	val requestedPermissions = obj.requestedPermissions.name
 	val shareEncryptionKey = obj.shareEncryptionKey.name
 	val sharePatientId = obj.sharePatientId.name
@@ -21,8 +20,7 @@ public fun calendarItemShareOptions_toJs(obj: CalendarItemShareOptions):
 	"}"))
 }
 
-public fun calendarItemShareOptions_fromJs(obj: CalendarItemShareOptionsJs):
-		CalendarItemShareOptions {
+public fun calendarItemShareOptions_fromJs(obj: CalendarItemShareOptionsJs): CalendarItemShareOptions {
 	val requestedPermissions = RequestedPermission.valueOf(obj.requestedPermissions)
 	val shareEncryptionKey = ShareMetadataBehaviour.valueOf(obj.shareEncryptionKey)
 	val sharePatientId = ShareMetadataBehaviour.valueOf(obj.sharePatientId)

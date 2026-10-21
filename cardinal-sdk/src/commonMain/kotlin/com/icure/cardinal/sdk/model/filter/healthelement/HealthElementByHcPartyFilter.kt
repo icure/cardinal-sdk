@@ -24,7 +24,8 @@ data class HealthElementByHcPartyFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthElement>, Filter.ByHcpartyFilter<HealthElement> {
+) : AbstractFilter<HealthElement>,
+	Filter.ByHcpartyFilter<HealthElement> {
 	// region HealthElementByHcPartyFilter-HealthElementByHcPartyFilter
 
 	// endregion

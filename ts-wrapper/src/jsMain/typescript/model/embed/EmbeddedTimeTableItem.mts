@@ -5,8 +5,7 @@ import {EmbeddedTimeTableHour} from './EmbeddedTimeTableHour.mjs';
 
 /**
  *
- *  Represents a recurring time table item with scheduling rules, availability slots, and access
- *  control.
+ *  Represents a recurring time table item with scheduling rules, availability slots, and access control.
  *  /
  */
 export class EmbeddedTimeTableItem {

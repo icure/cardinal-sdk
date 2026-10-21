@@ -1,5 +1,7 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -112,6 +114,15 @@ interface InvoiceBasicFlavourlessApi {
 	 */
 	suspend fun getTarificationsCodesOccurrences(minOccurrence: Int): List<LabelledOccurence>
 
+	/**
+	 * Get all data owners with access to the provided invoice, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param invoice an invoice
+	 * @return information on users with access to the provided invoice
+	 */
+	suspend fun getDataOwnersWithAccessTo(invoice: Invoice): EntityAccessInformation
 }
 
 interface InvoiceBasicFlavourlessInGroupApi  {
@@ -159,6 +170,11 @@ interface InvoiceBasicFlavourlessInGroupApi  {
 	 */
 	suspend fun purgeInvoices(invoices: List<GroupScoped<Invoice>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeInvoicesByIds(invoices.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [InvoiceBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(invoice: GroupScoped<Invoice>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -482,8 +498,8 @@ interface InvoiceApi : InvoiceBasicFlavourlessApi, InvoiceFlavouredApi<Decrypted
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedInvoice
@@ -508,8 +524,8 @@ interface InvoiceApi : InvoiceBasicFlavourlessApi, InvoiceFlavouredApi<Decrypted
 		delegates: Map<String, InvoiceDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedInvoice
@@ -609,6 +625,29 @@ interface InvoiceApi : InvoiceBasicFlavourlessApi, InvoiceFlavouredApi<Decrypted
 	 * These methods aren't available when connected to a kraken-lite instance.
 	 */
 	val inGroup: InvoiceInGroupApi
+
+	/**
+	 * Share many already-existing invoices with one or more delegates at once, retrieving them by id instead of
+	 * requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per invoice when you already know the ids of many invoices to share and don't otherwise need their decrypted
+	 * content, since only lightweight metadata (not the full content of each invoice) is ever retrieved, and no
+	 * content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found invoice. Unlike [shareWithMany], if the
+	 * share fails for some (invoice, delegate) pairs this method reports the failure for those specific pairs in the
+	 * returned result instead of throwing, so sharing proceeds normally for every other invoice and delegate in the
+	 * batch.
+	 *
+	 * @param invoiceIds ids of the invoices to share. Ids that don't exist, or exist but for which the current user
+	 * has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each invoice, and the options for sharing with each
+	 * of them (see [InvoiceShareOptions]). The exact same options are applied to every invoice in [invoiceIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareInvoicesByIds(
+		invoiceIds: List<String>,
+		delegates: Map<String, InvoiceShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavouredInGroupApi<DecryptedInvoice> { // TODO subscribable
@@ -633,8 +672,8 @@ interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedInvoice>
@@ -652,8 +691,8 @@ interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavoure
 		) Map<EntityReferenceInGroup, InvoiceDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedInvoice>

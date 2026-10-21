@@ -25,7 +25,8 @@ data class UserByIdsFilter(
 	 * Optional human-readable description of this filter instance.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<User>, Filter.IdsFilter<String, User> {
+) : AbstractFilter<User>,
+	Filter.IdsFilter<String, User> {
 	// region UserByIdsFilter-UserByIdsFilter
 
 	// endregion

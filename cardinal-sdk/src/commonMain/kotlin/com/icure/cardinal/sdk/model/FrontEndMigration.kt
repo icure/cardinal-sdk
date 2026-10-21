@@ -11,8 +11,7 @@ import kotlin.String
 import kotlin.collections.Set
 
 /**
- * Represents a front-end migration task. A front-end migration tracks the progress of data
- * migration operations
+ * Represents a front-end migration task. A front-end migration tracks the progress of data migration operations
  * initiated from the front-end application.
  * /
  */
@@ -23,8 +22,7 @@ data class FrontEndMigration(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the front-end migration in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the front-end migration in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

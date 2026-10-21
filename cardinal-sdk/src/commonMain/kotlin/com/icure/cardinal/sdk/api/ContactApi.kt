@@ -1,7 +1,9 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -116,6 +118,27 @@ interface ContactBasicFlavourlessApi {
 	 * @return the occurrences for codes of type [codeType] in services.
 	 */
 	suspend fun getServiceCodesOccurrences(codeType: String, minOccurrences: Long): List<LabelledOccurence>
+
+	/**
+	 * Get all data owners with access to the provided contact, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param contact a contact
+	 * @return information on users with access to the provided contact
+	 */
+	suspend fun getDataOwnersWithAccessTo(contact: Contact): EntityAccessInformation
+
+	/**
+	 * Get all data owners with access to the provided service, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata. Services share the security metadata of the contact containing them,
+	 * so this reflects the access to that contact.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param service a service
+	 * @return information on users with access to the provided service
+	 */
+	suspend fun getDataOwnersWithAccessToService(service: Service): EntityAccessInformation
 }
 
 interface ContactBasicFlavourlessInGroupApi {
@@ -163,6 +186,16 @@ interface ContactBasicFlavourlessInGroupApi {
 	 */
 	suspend fun purgeContacts(contacts: List<GroupScoped<Contact>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeContactsByIds(contacts.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(contact: GroupScoped<Contact>): EntityAccessInformation
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessToService].
+	 */
+	suspend fun getDataOwnersWithAccessToService(service: GroupScoped<Service>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -528,8 +561,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedContact
@@ -554,8 +587,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		delegates: Map<String, ContactDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedContact
@@ -683,6 +716,29 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		@DefaultValue("null")
 		subscriptionConfig: EntitySubscriptionConfiguration? = null
 	): EntitySubscription<EncryptedService>
+
+	/**
+	 * Share many already-existing contacts with one or more delegates at once, retrieving them by id instead of
+	 * requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per contact when you already know the ids of many contacts to share and don't otherwise need their decrypted
+	 * content, since only lightweight metadata (not the full content of each contact) is ever retrieved, and no
+	 * content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found contact. Unlike [shareWithMany], if the
+	 * share fails for some (contact, delegate) pairs this method reports the failure for those specific pairs in the
+	 * returned result instead of throwing, so sharing proceeds normally for every other contact and delegate in the
+	 * batch.
+	 *
+	 * @param contactIds ids of the contacts to share. Ids that don't exist, or exist but for which the current user
+	 * has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each contact, and the options for sharing with each
+	 * of them (see [ContactShareOptions]). The exact same options are applied to every contact in [contactIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareContactsByIds(
+		contactIds: List<String>,
+		delegates: Map<String, ContactShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavouredInGroupApi<DecryptedContact, DecryptedService> {
@@ -707,8 +763,8 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedContact>
@@ -723,8 +779,8 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, ContactDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedContact>

@@ -43,8 +43,7 @@ internal class ReceiptBasicApiImplJs(
 	private val receiptBasicApi: ReceiptBasicApi,
 ) : ReceiptBasicApiJs {
 	override val inGroup: ReceiptBasicInGroupApiJs = object : ReceiptBasicInGroupApiJs {
-		override fun deleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -62,8 +61,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun deleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -92,8 +90,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun purgeReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
-				= GlobalScope.promise {
+		override fun purgeReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -106,8 +103,7 @@ internal class ReceiptBasicApiImplJs(
 
 		}
 
-		override fun purgeReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -136,8 +132,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun deleteReceipt(receipt: GroupScopedJs<ReceiptJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
 				receipt,
 				{ x1: ReceiptJs ->
@@ -155,8 +150,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun deleteReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val receiptsConverted: List<GroupScoped<Receipt>> = arrayToList(
 				receipts,
 				"receipts",
@@ -185,8 +179,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun purgeReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<Unit> = GlobalScope.promise {
 			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
 				receipt,
 				{ x1: ReceiptJs ->
@@ -199,8 +192,7 @@ internal class ReceiptBasicApiImplJs(
 
 		}
 
-		override fun purgeReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeReceipts(receipts: Array<GroupScopedJs<ReceiptJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val receiptsConverted: List<GroupScoped<Receipt>> = arrayToList(
 				receipts,
 				"receipts",
@@ -245,8 +237,7 @@ internal class ReceiptBasicApiImplJs(
 			result
 		}
 
-		override fun createReceipt(entity: GroupScopedJs<EncryptedReceiptJs>):
-				Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
+		override fun createReceipt(entity: GroupScopedJs<EncryptedReceiptJs>): Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedReceipt> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedReceiptJs ->
@@ -264,8 +255,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun createReceipts(entities: Array<GroupScopedJs<EncryptedReceiptJs>>):
-				Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
+		override fun createReceipts(entities: Array<GroupScopedJs<EncryptedReceiptJs>>): Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedReceipt>> = arrayToList(
 				entities,
 				"entities",
@@ -294,8 +284,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
+		override fun undeleteReceiptById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -313,8 +302,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
+		override fun undeleteReceiptsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -343,8 +331,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteReceipt(receipt: GroupScopedJs<ReceiptJs>):
-				Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
+		override fun undeleteReceipt(receipt: GroupScopedJs<ReceiptJs>): Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
 			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
 				receipt,
 				{ x1: ReceiptJs ->
@@ -362,8 +349,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteReceipts(receipts: Array<GroupScopedJs<EncryptedReceiptJs>>):
-				Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
+		override fun undeleteReceipts(receipts: Array<GroupScopedJs<EncryptedReceiptJs>>): Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
 			val receiptsConverted: List<GroupScoped<EncryptedReceipt>> = arrayToList(
 				receipts,
 				"receipts",
@@ -392,8 +378,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun modifyReceipt(entity: GroupScopedJs<EncryptedReceiptJs>):
-				Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
+		override fun modifyReceipt(entity: GroupScopedJs<EncryptedReceiptJs>): Promise<GroupScopedJs<EncryptedReceiptJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedReceipt> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedReceiptJs ->
@@ -411,8 +396,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun modifyReceipts(entities: Array<GroupScopedJs<EncryptedReceiptJs>>):
-				Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
+		override fun modifyReceipts(entities: Array<GroupScopedJs<EncryptedReceiptJs>>): Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedReceipt>> = arrayToList(
 				entities,
 				"entities",
@@ -441,8 +425,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun getReceipt(groupId: String, entityId: String):
-				Promise<GroupScopedJs<EncryptedReceiptJs>?> = GlobalScope.promise {
+		override fun getReceipt(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedReceiptJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = receiptBasicApi.inGroup.getReceipt(
@@ -461,8 +444,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun getReceipts(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
+		override fun getReceipts(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -488,8 +470,7 @@ internal class ReceiptBasicApiImplJs(
 			)
 		}
 
-		override fun listReceiptsBetweenDates(groupId: String, options: dynamic):
-				Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> {
+		override fun listReceiptsBetweenDates(groupId: String, options: dynamic): Promise<Array<GroupScopedJs<EncryptedReceiptJs>>> {
 			val _options = options ?: js("{}")
 			return GlobalScope.promise {
 				val groupIdConverted: String = groupId
@@ -535,8 +516,7 @@ internal class ReceiptBasicApiImplJs(
 		}
 	}
 
-	override fun deleteReceiptById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
-			= GlobalScope.promise {
+	override fun deleteReceiptById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = receiptBasicApi.deleteReceiptById(
@@ -546,8 +526,7 @@ internal class ReceiptBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -576,8 +555,7 @@ internal class ReceiptBasicApiImplJs(
 
 	}
 
-	override fun purgeReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -596,8 +574,7 @@ internal class ReceiptBasicApiImplJs(
 		)
 	}
 
-	override fun deleteReceipt(receipt: ReceiptJs): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteReceipt(receipt: ReceiptJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val receiptConverted: Receipt = receipt_fromJs(receipt)
 		val result = receiptBasicApi.deleteReceipt(
 			receiptConverted,
@@ -605,8 +582,7 @@ internal class ReceiptBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteReceipts(receipts: Array<ReceiptJs>): Promise<Array<StoredDocumentIdentifierJs>>
-			= GlobalScope.promise {
+	override fun deleteReceipts(receipts: Array<ReceiptJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val receiptsConverted: List<Receipt> = arrayToList(
 			receipts,
 			"receipts",
@@ -633,8 +609,7 @@ internal class ReceiptBasicApiImplJs(
 
 	}
 
-	override fun purgeReceipts(receipts: Array<ReceiptJs>): Promise<Array<StoredDocumentIdentifierJs>>
-			= GlobalScope.promise {
+	override fun purgeReceipts(receipts: Array<ReceiptJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val receiptsConverted: List<Receipt> = arrayToList(
 			receipts,
 			"receipts",
@@ -653,8 +628,7 @@ internal class ReceiptBasicApiImplJs(
 		)
 	}
 
-	override fun getRawReceiptAttachment(receiptId: String, attachmentId: String): Promise<ByteArray> =
-			GlobalScope.promise {
+	override fun getRawReceiptAttachment(receiptId: String, attachmentId: String): Promise<ByteArray> = GlobalScope.promise {
 		val receiptIdConverted: String = receiptId
 		val attachmentIdConverted: String = attachmentId
 		val result = receiptBasicApi.getRawReceiptAttachment(
@@ -683,8 +657,7 @@ internal class ReceiptBasicApiImplJs(
 		receipt_toJs(result)
 	}
 
-	override fun createReceipt(entity: EncryptedReceiptJs): Promise<EncryptedReceiptJs> =
-			GlobalScope.promise {
+	override fun createReceipt(entity: EncryptedReceiptJs): Promise<EncryptedReceiptJs> = GlobalScope.promise {
 		val entityConverted: EncryptedReceipt = receipt_fromJs(entity)
 		val result = receiptBasicApi.createReceipt(
 			entityConverted,
@@ -692,8 +665,7 @@ internal class ReceiptBasicApiImplJs(
 		receipt_toJs(result)
 	}
 
-	override fun createReceipts(entities: Array<EncryptedReceiptJs>):
-			Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
+	override fun createReceipts(entities: Array<EncryptedReceiptJs>): Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedReceipt> = arrayToList(
 			entities,
 			"entities",
@@ -712,8 +684,7 @@ internal class ReceiptBasicApiImplJs(
 		)
 	}
 
-	override fun undeleteReceiptById(id: String, rev: String): Promise<EncryptedReceiptJs> =
-			GlobalScope.promise {
+	override fun undeleteReceiptById(id: String, rev: String): Promise<EncryptedReceiptJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = receiptBasicApi.undeleteReceiptById(
@@ -723,8 +694,7 @@ internal class ReceiptBasicApiImplJs(
 		receipt_toJs(result)
 	}
 
-	override fun undeleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
+	override fun undeleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -743,8 +713,7 @@ internal class ReceiptBasicApiImplJs(
 		)
 	}
 
-	override fun undeleteReceipt(receipt: ReceiptJs): Promise<EncryptedReceiptJs> =
-			GlobalScope.promise {
+	override fun undeleteReceipt(receipt: ReceiptJs): Promise<EncryptedReceiptJs> = GlobalScope.promise {
 		val receiptConverted: Receipt = receipt_fromJs(receipt)
 		val result = receiptBasicApi.undeleteReceipt(
 			receiptConverted,
@@ -752,8 +721,7 @@ internal class ReceiptBasicApiImplJs(
 		receipt_toJs(result)
 	}
 
-	override fun undeleteReceipts(receipts: Array<ReceiptJs>): Promise<Array<EncryptedReceiptJs>> =
-			GlobalScope.promise {
+	override fun undeleteReceipts(receipts: Array<ReceiptJs>): Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
 		val receiptsConverted: List<Receipt> = arrayToList(
 			receipts,
 			"receipts",
@@ -772,8 +740,7 @@ internal class ReceiptBasicApiImplJs(
 		)
 	}
 
-	override fun modifyReceipt(entity: EncryptedReceiptJs): Promise<EncryptedReceiptJs> =
-			GlobalScope.promise {
+	override fun modifyReceipt(entity: EncryptedReceiptJs): Promise<EncryptedReceiptJs> = GlobalScope.promise {
 		val entityConverted: EncryptedReceipt = receipt_fromJs(entity)
 		val result = receiptBasicApi.modifyReceipt(
 			entityConverted,
@@ -781,8 +748,7 @@ internal class ReceiptBasicApiImplJs(
 		receipt_toJs(result)
 	}
 
-	override fun modifyReceipts(entities: Array<EncryptedReceiptJs>):
-			Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
+	override fun modifyReceipts(entities: Array<EncryptedReceiptJs>): Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedReceipt> = arrayToList(
 			entities,
 			"entities",
@@ -813,8 +779,7 @@ internal class ReceiptBasicApiImplJs(
 		)
 	}
 
-	override fun getReceipts(entityIds: Array<String>): Promise<Array<EncryptedReceiptJs>> =
-			GlobalScope.promise {
+	override fun getReceipts(entityIds: Array<String>): Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -833,8 +798,7 @@ internal class ReceiptBasicApiImplJs(
 		)
 	}
 
-	override fun listByReference(reference: String): Promise<Array<EncryptedReceiptJs>> =
-			GlobalScope.promise {
+	override fun listByReference(reference: String): Promise<Array<EncryptedReceiptJs>> = GlobalScope.promise {
 		val referenceConverted: String = reference
 		val result = receiptBasicApi.listByReference(
 			referenceConverted,

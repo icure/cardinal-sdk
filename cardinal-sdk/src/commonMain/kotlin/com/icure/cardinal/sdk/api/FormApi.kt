@@ -1,7 +1,9 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -97,6 +99,16 @@ interface FormBasicFlavourlessApi : FormTemplateApi {
 	 */
 	suspend fun purgeForms(forms: List<Form>): List<StoredDocumentIdentifier> =
 		purgeFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * Get all data owners with access to the provided form, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param form a form
+	 * @return information on users with access to the provided form
+	 */
+	suspend fun getDataOwnersWithAccessTo(form: Form): EntityAccessInformation
 }
 
 interface FormBasicFlavourlessInGroupApi : FormTemplateInGroupApi {
@@ -144,6 +156,11 @@ interface FormBasicFlavourlessInGroupApi : FormTemplateInGroupApi {
 	 */
 	suspend fun purgeForms(forms: List<GroupScoped<Form>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeFormsByIds(forms.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(form: GroupScoped<Form>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -422,8 +439,8 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedForm
@@ -448,8 +465,8 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 		delegates: Map<String, FormDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedForm
@@ -573,6 +590,28 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 	 * @return a list of form ids
 	 */
 	suspend fun matchFormsBySorted(filter: SortableFilterOptions<Form>): List<String>
+
+	/**
+	 * Share many already-existing forms with one or more delegates at once, retrieving them by id instead of
+	 * requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per form when you already know the ids of many forms to share and don't otherwise need their decrypted
+	 * content, since only lightweight metadata (not the full content of each form) is ever retrieved, and no content
+	 * flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found form. Unlike [shareWithMany], if the share
+	 * fails for some (form, delegate) pairs this method reports the failure for those specific pairs in the returned
+	 * result instead of throwing, so sharing proceeds normally for every other form and delegate in the batch.
+	 *
+	 * @param formIds ids of the forms to share. Ids that don't exist, or exist but for which the current user has no
+	 * read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each form, and the options for sharing with each of
+	 * them (see [FormShareOptions]). The exact same options are applied to every form in [formIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareFormsByIds(
+		formIds: List<String>,
+		delegates: Map<String, FormShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupApi<DecryptedForm> { // TODO subscribable?
@@ -597,8 +636,8 @@ interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupA
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedForm>
@@ -616,8 +655,8 @@ interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupA
 		) Map<EntityReferenceInGroup, FormDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedForm>

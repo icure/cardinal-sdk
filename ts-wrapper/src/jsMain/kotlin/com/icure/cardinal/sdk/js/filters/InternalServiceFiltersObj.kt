@@ -41,8 +41,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun allServicesForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun allServicesForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val result = ServiceFilters.allServicesForDataOwnerInGroup(
 			dataOwnerConverted,
@@ -56,8 +55,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -73,8 +71,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -246,8 +243,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsForDataOwner(dataOwnerId: String, patients: Array<PatientJs>):
-			FilterOptionsJs<ServiceJs> {
+	public fun byPatientsForDataOwner(dataOwnerId: String, patients: Array<PatientJs>): FilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -263,8 +259,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			patients: Array<PatientJs>): FilterOptionsJs<ServiceJs> {
+	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, patients: Array<PatientJs>): FilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -280,8 +275,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSecretIdsForDataOwner(dataOwnerId: String, secretIds: Array<String>):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun byPatientsSecretIdsForDataOwner(dataOwnerId: String, secretIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -297,8 +291,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			secretIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, secretIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -314,8 +307,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byHealthElementIdFromSubContactForDataOwner(dataOwnerId: String,
-			healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byHealthElementIdFromSubContactForDataOwner(dataOwnerId: String, healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val healthElementIdsConverted: List<String> = arrayToList(
 			healthElementIds,
@@ -331,8 +323,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byHealthElementIdFromSubContactForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byHealthElementIdFromSubContactForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val healthElementIdsConverted: List<String> = arrayToList(
 			healthElementIds,
@@ -362,8 +353,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byCodeAndValueDateForSelf(codeType: String, options: dynamic):
-			FilterOptionsJs<ServiceJs> {
+	public fun byCodeAndValueDateForSelf(codeType: String, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val codeTypeConverted: String = codeType
 		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -396,8 +386,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byTagAndValueDateForSelf(tagType: String, options: dynamic):
-			FilterOptionsJs<ServiceJs> {
+	public fun byTagAndValueDateForSelf(tagType: String, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val tagTypeConverted: String = tagType
 		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -458,8 +447,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byHealthElementIdFromSubContactForSelf(healthElementIds: Array<String>):
-			FilterOptionsJs<ServiceJs> {
+	public fun byHealthElementIdFromSubContactForSelf(healthElementIds: Array<String>): FilterOptionsJs<ServiceJs> {
 		val healthElementIdsConverted: List<String> = arrayToList(
 			healthElementIds,
 			"healthElementIds",
@@ -495,8 +483,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byQualifiedLink(linkValues: Array<String>, options: dynamic):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun byQualifiedLink(linkValues: Array<String>, options: dynamic): BaseFilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val linkValuesConverted: List<String> = arrayToList(
 			linkValues,
@@ -611,8 +598,7 @@ public object InternalServiceFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsDateForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<ServiceJs> {
+	public fun byPatientsDateForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -741,8 +727,7 @@ public object InternalServiceFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientSecretIdsDateForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<ServiceJs> {
+	public fun byPatientSecretIdsDateForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -873,8 +858,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byCodesAndValueDateForSelf(codeCodes: Record<String, Array<String>>, options: dynamic):
-			FilterOptionsJs<ServiceJs> {
+	public fun byCodesAndValueDateForSelf(codeCodes: Record<String, Array<String>>, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val codeCodesConverted: Map<String, Set<String>> = objectToMap(
 			codeCodes,
@@ -1105,8 +1089,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byTagCodesAndValueDateForSelf(tagCodes: Record<String, Array<String>>,
-			options: dynamic): FilterOptionsJs<ServiceJs> {
+	public fun byTagCodesAndValueDateForSelf(tagCodes: Record<String, Array<String>>, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val tagCodesConverted: Map<String, Set<String>> = objectToMap(
 			tagCodes,

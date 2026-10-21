@@ -46,8 +46,7 @@ internal class CodeApiImplJs(
 	private val codeApi: CodeApi,
 ) : CodeApiJs {
 	override val inGroup: CodeInGroupApiJs = object : CodeInGroupApiJs {
-		override fun createCode(code: GroupScopedJs<CodeJs>): Promise<GroupScopedJs<CodeJs>> =
-				GlobalScope.promise {
+		override fun createCode(code: GroupScopedJs<CodeJs>): Promise<GroupScopedJs<CodeJs>> = GlobalScope.promise {
 			val codeConverted: GroupScoped<Code> = groupScoped_fromJs(
 				code,
 				{ x1: CodeJs ->
@@ -65,8 +64,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun createCodes(codes: Array<GroupScopedJs<CodeJs>>):
-				Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
+		override fun createCodes(codes: Array<GroupScopedJs<CodeJs>>): Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
 			val codesConverted: List<GroupScoped<Code>> = arrayToList(
 				codes,
 				"codes",
@@ -95,8 +93,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun getCode(groupId: String, codeId: String): Promise<GroupScopedJs<CodeJs>?> =
-				GlobalScope.promise {
+		override fun getCode(groupId: String, codeId: String): Promise<GroupScopedJs<CodeJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val codeIdConverted: String = codeId
 			val result = codeApi.inGroup.getCode(
@@ -115,8 +112,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun getCodes(groupId: String, codesIds: Array<String>):
-				Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
+		override fun getCodes(groupId: String, codesIds: Array<String>): Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val codesIdsConverted: List<String> = arrayToList(
 				codesIds,
@@ -142,8 +138,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun modifyCode(code: GroupScopedJs<CodeJs>): Promise<GroupScopedJs<CodeJs>> =
-				GlobalScope.promise {
+		override fun modifyCode(code: GroupScopedJs<CodeJs>): Promise<GroupScopedJs<CodeJs>> = GlobalScope.promise {
 			val codeConverted: GroupScoped<Code> = groupScoped_fromJs(
 				code,
 				{ x1: CodeJs ->
@@ -161,8 +156,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun modifyCodes(codes: Array<GroupScopedJs<CodeJs>>):
-				Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
+		override fun modifyCodes(codes: Array<GroupScopedJs<CodeJs>>): Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
 			val codesConverted: List<GroupScoped<Code>> = arrayToList(
 				codes,
 				"codes",
@@ -191,8 +185,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun deleteCodeById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteCodeById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -210,8 +203,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun deleteCodeByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteCodeByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -240,8 +232,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun deleteCode(code: GroupScopedJs<CodeJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteCode(code: GroupScopedJs<CodeJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val codeConverted: GroupScoped<Code> = groupScoped_fromJs(
 				code,
 				{ x1: CodeJs ->
@@ -259,8 +250,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun deleteCodes(codes: Array<GroupScopedJs<CodeJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteCodes(codes: Array<GroupScopedJs<CodeJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val codesConverted: List<GroupScoped<Code>> = arrayToList(
 				codes,
 				"codes",
@@ -289,8 +279,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun undeleteCodeById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<CodeJs>> = GlobalScope.promise {
+		override fun undeleteCodeById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<CodeJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -308,8 +297,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun undeleteCodeByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
+		override fun undeleteCodeByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -338,8 +326,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun undeleteCode(code: GroupScopedJs<CodeJs>): Promise<GroupScopedJs<CodeJs>> =
-				GlobalScope.promise {
+		override fun undeleteCode(code: GroupScopedJs<CodeJs>): Promise<GroupScopedJs<CodeJs>> = GlobalScope.promise {
 			val codeConverted: GroupScoped<Code> = groupScoped_fromJs(
 				code,
 				{ x1: CodeJs ->
@@ -357,8 +344,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun undeleteCodes(codes: Array<GroupScopedJs<CodeJs>>):
-				Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
+		override fun undeleteCodes(codes: Array<GroupScopedJs<CodeJs>>): Promise<Array<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
 			val codesConverted: List<GroupScoped<Code>> = arrayToList(
 				codes,
 				"codes",
@@ -387,8 +373,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun purgeCodeById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeCodeById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -401,8 +386,7 @@ internal class CodeApiImplJs(
 
 		}
 
-		override fun purgeCodeByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeCodeByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -444,8 +428,7 @@ internal class CodeApiImplJs(
 
 		}
 
-		override fun purgeCodes(codes: Array<GroupScopedJs<CodeJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeCodes(codes: Array<GroupScopedJs<CodeJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val codesConverted: List<GroupScoped<Code>> = arrayToList(
 				codes,
 				"codes",
@@ -474,8 +457,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun filterCodesBy(groupId: String, filter: BaseFilterOptionsJs<CodeJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
+		override fun filterCodesBy(groupId: String, filter: BaseFilterOptionsJs<CodeJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Code> = baseFilterOptions_fromJs(filter)
 			val result = codeApi.inGroup.filterCodesBy(
@@ -495,8 +477,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun filterCodesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<CodeJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
+		override fun filterCodesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<CodeJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<CodeJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseSortableFilterOptions<Code> = baseSortableFilterOptions_fromJs(filter)
 			val result = codeApi.inGroup.filterCodesBySorted(
@@ -516,8 +497,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun matchCodesBy(groupId: String, filter: BaseFilterOptionsJs<CodeJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchCodesBy(groupId: String, filter: BaseFilterOptionsJs<CodeJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Code> = baseFilterOptions_fromJs(filter)
 			val result = codeApi.inGroup.matchCodesBy(
@@ -532,8 +512,7 @@ internal class CodeApiImplJs(
 			)
 		}
 
-		override fun matchCodesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<CodeJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchCodesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<CodeJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseSortableFilterOptions<Code> = baseSortableFilterOptions_fromJs(filter)
 			val result = codeApi.inGroup.matchCodesBySorted(
@@ -634,8 +613,7 @@ internal class CodeApiImplJs(
 		)
 	}
 
-	override fun deleteCodeById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteCodeById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = codeApi.deleteCodeById(
@@ -645,8 +623,7 @@ internal class CodeApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -673,8 +650,7 @@ internal class CodeApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteCodes(codes: Array<CodeJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deleteCodes(codes: Array<CodeJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val codesConverted: List<Code> = arrayToList(
 			codes,
 			"codes",
@@ -693,8 +669,7 @@ internal class CodeApiImplJs(
 		)
 	}
 
-	override fun undeleteCodeById(entityId: String, rev: String): Promise<CodeJs> =
-			GlobalScope.promise {
+	override fun undeleteCodeById(entityId: String, rev: String): Promise<CodeJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = codeApi.undeleteCodeById(
@@ -704,8 +679,7 @@ internal class CodeApiImplJs(
 		code_toJs(result)
 	}
 
-	override fun undeleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<CodeJs>> = GlobalScope.promise {
+	override fun undeleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<CodeJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -761,8 +735,7 @@ internal class CodeApiImplJs(
 
 	}
 
-	override fun purgeCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -789,8 +762,7 @@ internal class CodeApiImplJs(
 
 	}
 
-	override fun purgeCodes(codes: Array<CodeJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun purgeCodes(codes: Array<CodeJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val codesConverted: List<Code> = arrayToList(
 			codes,
 			"codes",
@@ -928,8 +900,7 @@ internal class CodeApiImplJs(
 		)
 	}
 
-	override fun filterCodesBy(filter: BaseFilterOptionsJs<CodeJs>):
-			Promise<PaginatedListIteratorJs<CodeJs>> = GlobalScope.promise {
+	override fun filterCodesBy(filter: BaseFilterOptionsJs<CodeJs>): Promise<PaginatedListIteratorJs<CodeJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Code> = baseFilterOptions_fromJs(filter)
 		val result = codeApi.filterCodesBy(
 			filterConverted,
@@ -942,8 +913,7 @@ internal class CodeApiImplJs(
 		)
 	}
 
-	override fun filterCodesBySorted(filter: BaseSortableFilterOptionsJs<CodeJs>):
-			Promise<PaginatedListIteratorJs<CodeJs>> = GlobalScope.promise {
+	override fun filterCodesBySorted(filter: BaseSortableFilterOptionsJs<CodeJs>): Promise<PaginatedListIteratorJs<CodeJs>> = GlobalScope.promise {
 		val filterConverted: BaseSortableFilterOptions<Code> = baseSortableFilterOptions_fromJs(filter)
 		val result = codeApi.filterCodesBySorted(
 			filterConverted,
@@ -956,8 +926,7 @@ internal class CodeApiImplJs(
 		)
 	}
 
-	override fun matchCodesBy(filter: BaseFilterOptionsJs<CodeJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchCodesBy(filter: BaseFilterOptionsJs<CodeJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Code> = baseFilterOptions_fromJs(filter)
 		val result = codeApi.matchCodesBy(
 			filterConverted,
@@ -970,8 +939,7 @@ internal class CodeApiImplJs(
 		)
 	}
 
-	override fun matchCodesBySorted(filter: BaseSortableFilterOptionsJs<CodeJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchCodesBySorted(filter: BaseSortableFilterOptionsJs<CodeJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseSortableFilterOptions<Code> = baseSortableFilterOptions_fromJs(filter)
 		val result = codeApi.matchCodesBySorted(
 			filterConverted,

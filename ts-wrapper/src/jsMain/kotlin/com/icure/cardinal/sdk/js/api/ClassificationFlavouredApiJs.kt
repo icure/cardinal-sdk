@@ -24,8 +24,7 @@ public external interface ClassificationFlavouredApiJs<E : ClassificationJs> {
 		options: dynamic,
 	): Promise<E>
 
-	public fun shareWithMany(classification: E,
-			delegates: Record<String, ClassificationShareOptionsJs>): Promise<E>
+	public fun shareWithMany(classification: E, delegates: Record<String, ClassificationShareOptionsJs>): Promise<E>
 
 	public fun findClassificationsByHcPartyPatient(
 		hcPartyId: String,
@@ -33,11 +32,9 @@ public external interface ClassificationFlavouredApiJs<E : ClassificationJs> {
 		options: dynamic,
 	): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterClassificationsBy(filter: FilterOptionsJs<ClassificationJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterClassificationsBy(filter: FilterOptionsJs<ClassificationJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterClassificationsBySorted(filter: SortableFilterOptionsJs<ClassificationJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterClassificationsBySorted(filter: SortableFilterOptionsJs<ClassificationJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createClassification(entity: E): Promise<E>
 

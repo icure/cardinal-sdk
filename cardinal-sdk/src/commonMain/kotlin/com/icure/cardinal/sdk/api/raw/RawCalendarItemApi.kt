@@ -153,7 +153,7 @@ public interface RawCalendarItemApi {
 
 	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<EncryptedCalendarItem>>
 
-	public suspend fun declareConflictWinner(
+	suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedCalendarItem>,
 	): HttpResponse<ConflictResolutionResult<EncryptedCalendarItem>>
 

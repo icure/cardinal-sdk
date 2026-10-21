@@ -49,7 +49,8 @@ class RawUserApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawUserApi {
+) : BaseRawApi(rawApiConfig),
+	RawUserApi {
 	// region common endpoints
 
 	override suspend fun getCurrentUser(includeMetadataFromGlobalUser: Boolean): HttpResponse<User> =
@@ -290,6 +291,21 @@ class RawUserApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(properties)
+		}.wrap()
+
+	override suspend fun deleteProperties(
+		userId: String,
+		propertyTypeIdentifiers: List<String>,
+	): HttpResponse<User> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "properties")
+				propertyTypeIdentifiers.forEach {
+					parameter("propertyTypeIdentifiers", it)
+				}
+			}
+			accept(Application.Json)
 		}.wrap()
 
 	override suspend fun getToken(

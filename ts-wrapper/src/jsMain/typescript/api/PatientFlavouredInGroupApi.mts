@@ -4,6 +4,7 @@ import {PatientShareOptions} from '../crypto/entities/PatientShareOptions.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {Patient} from '../model/Patient.mjs';
+import {SecretIdCreationResult} from '../model/SecretIdCreationResult.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {ArrayWithUniqueKeys} from '../utils/ArrayWithUniqueKeys.mjs';
 
@@ -26,9 +27,9 @@ export interface PatientFlavouredInGroupApi<E extends Patient> {
 
 	/**
 	 *
-	 *  In-group version of [PatientFlavouredApi.initializeConfidentialSecretId]
+	 *  In-group version of [PatientFlavouredApi.createNewSecretId]
 	 */
-	initializeConfidentialSecretId(patient: GroupScoped<E>): Promise<GroupScoped<E>>;
+	createNewSecretId(patient: GroupScoped<E>): Promise<GroupScoped<SecretIdCreationResult<E>>>;
 
 	/**
 	 *

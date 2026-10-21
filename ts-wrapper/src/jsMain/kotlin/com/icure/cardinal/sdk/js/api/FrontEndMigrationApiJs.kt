@@ -15,16 +15,13 @@ import kotlin.js.Promise
 public external interface FrontEndMigrationApiJs {
 	public fun getFrontEndMigration(frontEndMigrationId: String): Promise<FrontEndMigrationJs?>
 
-	public fun createFrontEndMigration(frontEndMigration: FrontEndMigrationJs):
-			Promise<FrontEndMigrationJs>
+	public fun createFrontEndMigration(frontEndMigration: FrontEndMigrationJs): Promise<FrontEndMigrationJs>
 
 	public fun getFrontEndMigrations(): Promise<Array<FrontEndMigrationJs>>
 
 	public fun deleteFrontEndMigration(frontEndMigrationId: String): Promise<DocIdentifierJs>
 
-	public fun getFrontEndMigrationByName(frontEndMigrationName: String):
-			Promise<Array<FrontEndMigrationJs>>
+	public fun getFrontEndMigrationByName(frontEndMigrationName: String): Promise<Array<FrontEndMigrationJs>>
 
-	public fun modifyFrontEndMigration(frontEndMigration: FrontEndMigrationJs):
-			Promise<FrontEndMigrationJs>
+	public fun modifyFrontEndMigration(frontEndMigration: FrontEndMigrationJs): Promise<FrontEndMigrationJs>
 }

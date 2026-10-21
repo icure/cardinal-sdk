@@ -9,8 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Filter that matches code identifiers within an interval defined by start and end type, code, and
- * version.
+ * Filter that matches code identifiers within an interval defined by start and end type, code, and version.
  * /
  */
 @SerialName("CodeIdsByTypeCodeVersionIntervalFilter")

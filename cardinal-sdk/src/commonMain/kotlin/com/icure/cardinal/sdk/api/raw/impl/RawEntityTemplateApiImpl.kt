@@ -30,7 +30,8 @@ class RawEntityTemplateApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawEntityTemplateApi {
+) : BaseRawApi(rawApiConfig),
+	RawEntityTemplateApi {
 	// region common endpoints
 
 	override suspend fun listEntityTemplatesBy(

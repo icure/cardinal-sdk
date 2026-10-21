@@ -6,8 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Data transfer object representing basic authentication credentials for a CouchDB remote
- * connection.
+ * Data transfer object representing basic authentication credentials for a CouchDB remote connection.
  * /
  */
 @Serializable

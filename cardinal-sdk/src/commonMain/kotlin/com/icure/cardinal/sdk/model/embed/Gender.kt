@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumerates the possible gender values for a patient, including original gender, changed gender,
- * and unknown.
+ *  Enumerates the possible gender values for a patient, including original gender, changed gender, and unknown.
  */
 @Serializable
 enum class Gender(

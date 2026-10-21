@@ -139,8 +139,7 @@ public interface RawHealthcarePartyApi {
 
 	suspend fun getHealthcarePartiesInGroup(
 		groupId: String,
-		healthcarePartyIds: ListOfIds? =
-			null,
+		healthcarePartyIds: ListOfIds? = null,
 	): HttpResponse<List<HealthcareParty>>
 
 	suspend fun deleteHealthcarePartiesInGroup(

@@ -8,8 +8,7 @@ import kotlin.Double
 import kotlin.String
 
 /**
- * Represents a quantity for medication administration, including the numeric amount and the unit of
- * administration.
+ * Represents a quantity for medication administration, including the numeric amount and the unit of administration.
  * /
  */
 @Serializable

@@ -7,8 +7,7 @@ import {TypedValuesType} from './TypedValuesType.mjs';
 
 /**
  *
- *  Represents a typed value that can hold one of several primitive types (boolean, integer, double,
- *  string, or date).
+ *  Represents a typed value that can hold one of several primitive types (boolean, integer, double, string, or date).
  *  The actual value is stored in the corresponding typed field based on the [type].
  *  /
  */
@@ -58,8 +57,7 @@ export interface TypedValue extends Encryptable {
 
 /**
  *
- *  Represents a typed value that can hold one of several primitive types (boolean, integer, double,
- *  string, or date).
+ *  Represents a typed value that can hold one of several primitive types (boolean, integer, double, string, or date).
  *  The actual value is stored in the corresponding typed field based on the [type].
  *  /
  */
@@ -157,8 +155,7 @@ export class DecryptedTypedValue {
 
 /**
  *
- *  Represents a typed value that can hold one of several primitive types (boolean, integer, double,
- *  string, or date).
+ *  Represents a typed value that can hold one of several primitive types (boolean, integer, double, string, or date).
  *  The actual value is stored in the corresponding typed field based on the [type].
  *  /
  */

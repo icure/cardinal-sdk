@@ -21,8 +21,7 @@ import kotlin.collections.Set
 import kotlin.time.Instant
 
 /**
- * Represents an access log entry that records access to medical data or resources within the
- * system.
+ * Represents an access log entry that records access to medical data or resources within the system.
  * /
  */
 
@@ -38,8 +37,7 @@ sealed interface AccessLog :
 	override val id: String
 
 	/**
-	 * The revision of the access log in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the access log in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String?
 
@@ -119,8 +117,7 @@ sealed interface AccessLog :
 	override val delegations: Map<String, Set<Delegation>>
 
 	/**
-	 * The encryption keys used to encrypt the secured properties, encrypted for separate Crypto
-	 * Actors.
+	 * The encryption keys used to encrypt the secured properties, encrypted for separate Crypto Actors.
 	 */
 	override val encryptionKeys: Map<String, Set<Delegation>>
 
@@ -139,8 +136,7 @@ sealed interface AccessLog :
 }
 
 /**
- * Represents an access log entry that records access to medical data or resources within the
- * system.
+ * Represents an access log entry that records access to medical data or resources within the system.
  * /
  */
 @Serializable
@@ -150,8 +146,7 @@ data class DecryptedAccessLog(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the access log in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the access log in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -221,8 +216,7 @@ data class DecryptedAccessLog(
 	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * The encryption keys used to encrypt the secured properties, encrypted for separate Crypto
-	 * Actors.
+	 * The encryption keys used to encrypt the secured properties, encrypted for separate Crypto Actors.
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
@@ -242,8 +236,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents an access log entry that records access to medical data or resources within the
- * system.
+ * Represents an access log entry that records access to medical data or resources within the system.
  * /
  */
 @Serializable
@@ -253,8 +246,7 @@ data class EncryptedAccessLog(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the access log in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the access log in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -324,8 +316,7 @@ data class EncryptedAccessLog(
 	@param:DefaultValue("emptyMap()")
 	override val delegations: Map<String, Set<Delegation>> = emptyMap(),
 	/**
-	 * The encryption keys used to encrypt the secured properties, encrypted for separate Crypto
-	 * Actors.
+	 * The encryption keys used to encrypt the secured properties, encrypted for separate Crypto Actors.
 	 */
 	@param:DefaultValue("emptyMap()")
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),

@@ -19,8 +19,7 @@ public object InternalTopicFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun allTopicsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<TopicJs> {
+	public fun allTopicsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs): BaseFilterOptionsJs<TopicJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val result = TopicFilters.allTopicsForDataOwnerInGroup(
 			dataOwnerConverted,

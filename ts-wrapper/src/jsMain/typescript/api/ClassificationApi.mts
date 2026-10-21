@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {ClassificationShareOptions} from '../crypto/entities/ClassificationShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {Classification, DecryptedClassification, EncryptedClassification} from '../model/Classification.mjs';
@@ -144,6 +145,29 @@ export interface ClassificationApi {
 	 *  @return a list of classification ids
 	 */
 	matchClassificationsBySorted(filter: SortableFilterOptions<Classification>): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  Share many already-existing classifications with one or more delegates at once, retrieving them by id instead
+	 *  of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per classification when you already know the ids of many classifications to share and don't otherwise need
+	 *  their decrypted content, since only lightweight metadata (not the full content of each classification) is
+	 *  ever retrieved, and no content flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found classification. Unlike [shareWithMany], if
+	 *  the share fails for some (classification, delegate) pairs this method reports the failure for those specific
+	 *  pairs in the returned result instead of throwing, so sharing proceeds normally for every other classification
+	 *  and delegate in the batch.
+	 *
+	 *  @param classificationIds ids of the classifications to share. Ids that don't exist, or exist but for which the
+	 *  current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each classification, and the options for sharing
+	 *  with each of them (see [ClassificationShareOptions]). The exact same options are applied to every
+	 *  classification in [classificationIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareClassificationsByIds(classificationIds: Array<string>,
+			delegates: { [ key: string ]: ClassificationShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *

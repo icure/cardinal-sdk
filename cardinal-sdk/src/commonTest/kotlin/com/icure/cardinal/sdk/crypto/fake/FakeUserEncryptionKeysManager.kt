@@ -6,9 +6,9 @@ import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.entities.CachedKeypairDetails
 import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.RsaDecryptionKeysSet
-import com.icure.cardinal.sdk.crypto.entities.UserKeyPairInformation
 import com.icure.cardinal.sdk.crypto.entities.toPrivateKeyInfo
 import com.icure.cardinal.sdk.model.CryptoActorStub
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
 import com.icure.utils.InternalIcureApi
@@ -24,7 +24,7 @@ class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : 
 		selfKeys[key.pubSpkiHexString.fingerprintV2()] = CachedKeypairDetails(key, verified, verified)
 	}
 
-	override fun getCurrentUserHierarchyAvailableKeypairs(): UserKeyPairInformation {
+	override fun getAvailableKeyPairs(): Map<String, List<CachedKeypairDetails>> {
 		TODO("Not yet implemented")
 	}
 
@@ -63,7 +63,11 @@ class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : 
 		} else TODO("Not yet implemented")
 	}
 
-	override fun delegatorActorHierarchy(from: String?): List<String> {
+	override fun delegatorActorParentHierarchy(from: String?): DataOwnerHierarchyInfo {
+		TODO("Not yet implemented")
+	}
+
+	override fun delegatorActorFullHierarchy(): DataOwnerHierarchyInfo {
 		TODO("Not yet implemented")
 	}
 }

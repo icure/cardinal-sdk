@@ -79,8 +79,7 @@ export namespace ExternalJwtConfig {
 
 			/**
 			 *
-			 *  The signature algorithm to use; defaults to the algorithm declared in the JWT header when
-			 *  null.
+			 *  The signature algorithm to use; defaults to the algorithm declared in the JWT header when null.
 			 */
 			signatureAlgorithm: string | undefined = undefined;
 
@@ -367,8 +366,7 @@ export namespace ExternalJwtConfig {
 		/**
 		 *
 		 *
-		 *   Selects users by matching a JWT field against a structured identifier with a specific
-		 *  assigner.
+		 *   Selects users by matching a JWT field against a structured identifier with a specific assigner.
 		 */
 		export class Identifier {
 
@@ -432,8 +430,7 @@ export namespace ExternalJwtConfig {
 
 	/**
 	 *
-	 *  Sealed interface representing the strategy used to extract the user-matching value from the
-	 *  external JWT claims.
+	 *  Sealed interface representing the strategy used to extract the user-matching value from the external JWT claims.
 	 *  /
 	 */
 	export type FieldSelector = FieldSelector.LocalId | FieldSelector.Email | FieldSelector.MobilePhone | FieldSelector.Username | FieldSelector.Identifier;

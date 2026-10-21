@@ -20,61 +20,45 @@ import kotlin.js.Promise
 public external interface AgendaInGroupApiJs {
 	public fun getAgenda(groupId: String, entityId: String): Promise<GroupScopedJs<AgendaJs>?>
 
-	public fun getAgendas(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<AgendaJs>>>
+	public fun getAgendas(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<AgendaJs>>>
 
 	public fun createAgenda(entity: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>>
 
-	public fun createAgendas(entities: Array<GroupScopedJs<AgendaJs>>):
-			Promise<Array<GroupScopedJs<AgendaJs>>>
+	public fun createAgendas(entities: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<AgendaJs>>>
 
 	public fun modifyAgenda(entity: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>>
 
-	public fun modifyAgendas(entities: Array<GroupScopedJs<AgendaJs>>):
-			Promise<Array<GroupScopedJs<AgendaJs>>>
+	public fun modifyAgendas(entities: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<AgendaJs>>>
 
-	public fun deleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteAgenda(agenda: GroupScopedJs<AgendaJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteAgenda(agenda: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun undeleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<AgendaJs>>>
+	public fun undeleteAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<AgendaJs>>>
 
-	public fun undeleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<AgendaJs>>
+	public fun undeleteAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<AgendaJs>>
 
-	public fun undeleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>):
-			Promise<Array<GroupScopedJs<AgendaJs>>>
+	public fun undeleteAgendas(agendas: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<AgendaJs>>>
 
 	public fun undeleteAgenda(agenda: GroupScopedJs<AgendaJs>): Promise<GroupScopedJs<AgendaJs>>
 
-	public fun purgeAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeAgendasByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeAgendaById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeAgendas(agendas: Array<GroupScopedJs<AgendaJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeAgendas(agendas: Array<GroupScopedJs<AgendaJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeAgenda(agenda: GroupScopedJs<AgendaJs>): Promise<Unit>
 
-	public fun matchAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>):
-			Promise<Array<String>>
+	public fun matchAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>): Promise<Array<String>>
 
-	public fun matchAgendasBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AgendaJs>):
-			Promise<Array<String>>
+	public fun matchAgendasBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<Array<String>>
 
-	public fun filterAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>>
+	public fun filterAgendasBy(groupId: String, filter: BaseFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>>
 
-	public fun filterAgendasBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AgendaJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>>
+	public fun filterAgendasBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<AgendaJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<AgendaJs>>>
 }

@@ -14,8 +14,7 @@ import kotlin.String
 import kotlin.collections.Set
 
 /**
- * Represents a template for classifications, defining a reusable structure that classifications can
- * be based on.
+ * Represents a template for classifications, defining a reusable structure that classifications can be based on.
  * /
  */
 @Serializable
@@ -25,8 +24,7 @@ data class ClassificationTemplate(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the classification template in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the classification template in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -71,7 +69,10 @@ data class ClassificationTemplate(
 	 * A human-readable label for this classification template.
 	 */
 	public val label: String,
-) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
+) : StoredDocument,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	HasEndOfLife {
 	// region ClassificationTemplate-ClassificationTemplate
 
 	// endregion

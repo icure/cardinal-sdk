@@ -51,60 +51,43 @@ public external interface ContactInGroupApiJs {
 
 	public fun hasWriteAccess(contact: GroupScopedJs<ContactJs>): Promise<Boolean>
 
-	public fun decryptPatientIdOf(contact: GroupScopedJs<ContactJs>):
-			Promise<Array<EntityReferenceInGroupJs>>
+	public fun decryptPatientIdOf(contact: GroupScopedJs<ContactJs>): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun decryptPatientIdOfService(service: GroupScopedJs<ServiceJs>):
-			Promise<Array<EntityReferenceInGroupJs>>
+	public fun decryptPatientIdOfService(service: GroupScopedJs<ServiceJs>): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<ContactJs>,
-			delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<ContactJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
 
-	public fun decrypt(contacts: Array<GroupScopedJs<EncryptedContactJs>>):
-			Promise<Array<GroupScopedJs<DecryptedContactJs>>>
+	public fun decrypt(contacts: Array<GroupScopedJs<EncryptedContactJs>>): Promise<Array<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun tryDecrypt(contacts: Array<GroupScopedJs<EncryptedContactJs>>):
-			Promise<Array<GroupScopedJs<ContactJs>>>
+	public fun tryDecrypt(contacts: Array<GroupScopedJs<EncryptedContactJs>>): Promise<Array<GroupScopedJs<ContactJs>>>
 
-	public fun decryptService(service: GroupScopedJs<EncryptedServiceJs>):
-			Promise<GroupScopedJs<DecryptedServiceJs>>
+	public fun decryptService(service: GroupScopedJs<EncryptedServiceJs>): Promise<GroupScopedJs<DecryptedServiceJs>>
 
-	public fun tryDecryptService(service: GroupScopedJs<EncryptedServiceJs>):
-			Promise<GroupScopedJs<ServiceJs>>
+	public fun tryDecryptService(service: GroupScopedJs<EncryptedServiceJs>): Promise<GroupScopedJs<ServiceJs>>
 
-	public fun matchContactsBy(groupId: String, filter: FilterOptionsJs<ContactJs>):
-			Promise<Array<String>>
+	public fun matchContactsBy(groupId: String, filter: FilterOptionsJs<ContactJs>): Promise<Array<String>>
 
-	public fun matchContactsBySorted(groupId: String, filter: SortableFilterOptionsJs<ContactJs>):
-			Promise<Array<String>>
+	public fun matchContactsBySorted(groupId: String, filter: SortableFilterOptionsJs<ContactJs>): Promise<Array<String>>
 
-	public fun matchServicesBy(groupId: String, filter: FilterOptionsJs<ServiceJs>):
-			Promise<Array<String>>
+	public fun matchServicesBy(groupId: String, filter: FilterOptionsJs<ServiceJs>): Promise<Array<String>>
 
-	public fun matchServicesBySorted(groupId: String, filter: SortableFilterOptionsJs<ServiceJs>):
-			Promise<Array<String>>
+	public fun matchServicesBySorted(groupId: String, filter: SortableFilterOptionsJs<ServiceJs>): Promise<Array<String>>
 
-	public fun deleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteContact(contact: GroupScopedJs<ContactJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteContact(contact: GroupScopedJs<ContactJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteContacts(contacts: Array<GroupScopedJs<ContactJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteContacts(contacts: Array<GroupScopedJs<ContactJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeContact(contact: GroupScopedJs<ContactJs>): Promise<Unit>
 
-	public fun purgeContacts(contacts: Array<GroupScopedJs<ContactJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeContacts(contacts: Array<GroupScopedJs<ContactJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
@@ -112,49 +95,33 @@ public external interface ContactInGroupApiJs {
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedContactJs>>
 
-	public fun shareWithMany(contact: GroupScopedJs<DecryptedContactJs>,
-			delegates: Array<EntityReferenceInGroupToContactShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<DecryptedContactJs>>
+	public fun shareWithMany(contact: GroupScopedJs<DecryptedContactJs>, delegates: Array<EntityReferenceInGroupToContactShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedContactJs>>
 
-	public fun filterContactsBy(groupId: String, filter: FilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedContactJs>>>
+	public fun filterContactsBy(groupId: String, filter: FilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun filterContactsBySorted(groupId: String, filter: SortableFilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedContactJs>>>
+	public fun filterContactsBySorted(groupId: String, filter: SortableFilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun createContact(entity: GroupScopedJs<DecryptedContactJs>):
-			Promise<GroupScopedJs<DecryptedContactJs>>
+	public fun createContact(entity: GroupScopedJs<DecryptedContactJs>): Promise<GroupScopedJs<DecryptedContactJs>>
 
-	public fun createContacts(entities: Array<GroupScopedJs<DecryptedContactJs>>):
-			Promise<Array<GroupScopedJs<DecryptedContactJs>>>
+	public fun createContacts(entities: Array<GroupScopedJs<DecryptedContactJs>>): Promise<Array<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun undeleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<DecryptedContactJs>>
+	public fun undeleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedContactJs>>
 
-	public fun undeleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<DecryptedContactJs>>>
+	public fun undeleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun undeleteContact(contact: GroupScopedJs<ContactJs>):
-			Promise<GroupScopedJs<DecryptedContactJs>>
+	public fun undeleteContact(contact: GroupScopedJs<ContactJs>): Promise<GroupScopedJs<DecryptedContactJs>>
 
-	public fun undeleteContacts(contacts: Array<GroupScopedJs<DecryptedContactJs>>):
-			Promise<Array<GroupScopedJs<DecryptedContactJs>>>
+	public fun undeleteContacts(contacts: Array<GroupScopedJs<DecryptedContactJs>>): Promise<Array<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun modifyContact(entity: GroupScopedJs<DecryptedContactJs>):
-			Promise<GroupScopedJs<DecryptedContactJs>>
+	public fun modifyContact(entity: GroupScopedJs<DecryptedContactJs>): Promise<GroupScopedJs<DecryptedContactJs>>
 
-	public fun modifyContacts(entities: Array<GroupScopedJs<DecryptedContactJs>>):
-			Promise<Array<GroupScopedJs<DecryptedContactJs>>>
+	public fun modifyContacts(entities: Array<GroupScopedJs<DecryptedContactJs>>): Promise<Array<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun getContact(groupId: String, entityId: String):
-			Promise<GroupScopedJs<DecryptedContactJs>?>
+	public fun getContact(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedContactJs>?>
 
-	public fun getContacts(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<DecryptedContactJs>>>
+	public fun getContacts(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedContactJs>>>
 
-	public fun getService(groupId: String, serviceId: String):
-			Promise<GroupScopedJs<DecryptedServiceJs>?>
+	public fun getService(groupId: String, serviceId: String): Promise<GroupScopedJs<DecryptedServiceJs>?>
 
-	public fun getServices(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<DecryptedServiceJs>>>
+	public fun getServices(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedServiceJs>>>
 }

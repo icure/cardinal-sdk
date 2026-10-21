@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumerates the categories of operations or data access that can be granted or revoked as
- * permissions in iCure.
+ *  Enumerates the categories of operations or data access that can be granted or revoked as permissions in iCure.
  */
 @Serializable
 enum class PermissionType(

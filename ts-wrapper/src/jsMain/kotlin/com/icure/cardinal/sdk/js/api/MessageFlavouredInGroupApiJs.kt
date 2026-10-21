@@ -25,25 +25,19 @@ public external interface MessageFlavouredInGroupApiJs<E : MessageJs> {
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(message: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToMessageShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(message: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToMessageShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterMessagesBy(groupId: String, filter: FilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterMessagesBy(groupId: String, filter: FilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterMessagesBySorted(groupId: String, filter: SortableFilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterMessagesBySorted(groupId: String, filter: SortableFilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createMessage(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createMessages(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteMessageById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteMessageById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteMessagesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteMessagesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteMessage(message: GroupScopedJs<MessageJs>): Promise<GroupScopedJs<E>>
 

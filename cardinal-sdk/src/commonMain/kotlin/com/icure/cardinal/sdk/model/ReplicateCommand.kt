@@ -7,8 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * DTO representing a command to set up database replication between a source and target CouchDB
- * instance.
+ * DTO representing a command to set up database replication between a source and target CouchDB instance.
  * /
  */
 @Serializable

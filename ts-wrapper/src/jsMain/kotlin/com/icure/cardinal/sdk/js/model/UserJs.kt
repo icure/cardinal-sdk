@@ -18,7 +18,8 @@ import kotlin.js.JsQualifier
 @JsName("User")
 public external class UserJs(
 	partial: dynamic,
-) : StoredDocumentJs, HasIdentifierJs {
+) : StoredDocumentJs,
+    HasIdentifierJs {
 	override val id: String
 
 	override val rev: String?

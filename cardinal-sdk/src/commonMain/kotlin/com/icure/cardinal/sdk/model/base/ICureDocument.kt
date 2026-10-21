@@ -8,8 +8,7 @@ import kotlin.String
 /**
  *
  *  Interface for iCure document entities that track creation and modification metadata.
- *  Extends [IdentifiableDto], [HasTagsDto], and [HasCodesDto] to provide a common base for all
- * medical documents.
+ *  Extends [IdentifiableDto], [HasTagsDto], and [HasCodesDto] to provide a common base for all medical documents.
  */
 
 interface ICureDocument<T> : Identifiable<T>, HasTags, HasCodes {

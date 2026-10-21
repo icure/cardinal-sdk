@@ -11,8 +11,7 @@ export class IndexingInfo {
 
 	/**
 	 *
-	 *  A map of indexing statuses, keyed by view name, where the value represents the indexing progress
-	 *  percentage.
+	 *  A map of indexing statuses, keyed by view name, where the value represents the indexing progress percentage.
 	 */
 	statuses: { [ key: string ]: number } | undefined = undefined;
 

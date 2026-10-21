@@ -18,8 +18,7 @@ import com.icure.cardinal.sdk.model.embed.ResourceGroupAllocationSchedule
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun resourceGroupAllocationSchedule_toJs(obj: ResourceGroupAllocationSchedule):
-		ResourceGroupAllocationScheduleJs {
+public fun resourceGroupAllocationSchedule_toJs(obj: ResourceGroupAllocationSchedule): ResourceGroupAllocationScheduleJs {
 	val resourceGroup = nullToUndefined(
 		obj.resourceGroup?.let { nonNull1 ->
 			codeStub_toJs(nonNull1)
@@ -63,8 +62,7 @@ public fun resourceGroupAllocationSchedule_toJs(obj: ResourceGroupAllocationSche
 	"}"))
 }
 
-public fun resourceGroupAllocationSchedule_fromJs(obj: ResourceGroupAllocationScheduleJs):
-		ResourceGroupAllocationSchedule {
+public fun resourceGroupAllocationSchedule_fromJs(obj: ResourceGroupAllocationScheduleJs): ResourceGroupAllocationSchedule {
 	val resourceGroup = obj.resourceGroup?.let { nonNull1 ->
 		codeStub_fromJs(nonNull1)
 	}

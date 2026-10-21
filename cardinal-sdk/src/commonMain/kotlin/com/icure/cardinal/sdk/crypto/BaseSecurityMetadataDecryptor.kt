@@ -146,8 +146,8 @@ interface BaseSecurityMetadataDecryptor {
 	): AccessLevel?
 
 	/**
-	 * Verifies if there is at least one (encrypted) encryption key in the metadata supported by this decryptor, even if it can't be decrypted by the
-	 * current data owner.
+	 * Verifies if there is at least one (encrypted) value of the given [metadataType] in the metadata supported by this decryptor, even if it can't
+	 * be decrypted by the current data owner.
 	 */
-	fun hasAnyEncryptionKeys(entity: HasEncryptionMetadata): Boolean
+	fun hasAnyValueOfType(entity: HasEncryptionMetadata, metadataType: SecurityMetadataType<*>): Boolean
 }

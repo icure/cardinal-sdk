@@ -187,6 +187,15 @@
       "java_type": "org.taktik.icure.entities.Role"
     },
     {
+      "_id": "OWN_GROUP_MANAGER",
+      "name": "OWN_GROUP_MANAGER",
+      "permissions": [
+        "DataOwner.ConditionalGroupManagement.OwnLinkedGroups"
+      ],
+      "rev_history": {},
+      "java_type": "org.taktik.icure.entities.Role"
+    },
+    {
       "_id": "LEGACY_HCP",
       "name": "LEGACY_HCP",
       "permissions": [

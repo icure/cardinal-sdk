@@ -18,8 +18,7 @@ import com.icure.cardinal.sdk.model.embed.Periodicity
 import kotlin.Int
 
 /**
- * Represents a medical code from a terminology system (e.g., ICD, SNOMED). The code id is composed
- * of
+ * Represents a medical code from a terminology system (e.g., ICD, SNOMED). The code id is composed of
  * type|code|version and must be unique.
  * /
  */
@@ -86,7 +85,8 @@ data class Code(
 	 */
 	@param:DefaultValue("false")
 	public val disabled: Boolean = false,
-) : StoredDocument, CodeIdentification<String> {
+) : StoredDocument,
+	CodeIdentification<String> {
 	// region Code-Code
 
 	// endregion

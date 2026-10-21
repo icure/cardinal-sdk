@@ -33,7 +33,8 @@ class RawICureApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawICureApi {
+) : BaseRawApi(rawApiConfig),
+	RawICureApi {
 	// region common endpoints
 
 	override suspend fun getVersion(): HttpResponse<String> =

@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {PatientShareOptions} from '../crypto/entities/PatientShareOptions.mjs';
 import {Patient} from '../model/Patient.mjs';
+import {SecretIdCreationResult} from '../model/SecretIdCreationResult.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 
 
@@ -37,26 +38,13 @@ export interface PatientFlavouredApi<E extends Patient> {
 
 	/**
 	 *
-	 *  Initializes a new "confidential" secret id for the provided patient if there is none, and saves it. Returns the
-	 *  updated patient if a new secret id was initialized, or the input if there was already a confidential secret id
-	 *  available.
-	 *
-	 *  A "confidential" secret id is a secret id that was not shared with any of the current data owner parents, at
-	 *  least to the extent of the knowledge of the current data owner. If the current data owner is missing access to
-	 *  some of the keys of his parents a secret id that is not confidential may be mistakenly identified as confidential.
-	 *  The confidential secret id may be shared in a second moment with a parent data owner, making it not confidential
-	 *  anymore. It may also be possible to share the secret id with another non-parent data owner, in which case the
-	 *  secret id will still be considered as confidential.
-	 *
-	 *  Confidential secret ids only make sense in environments where a hierarchical data owner structure is used. In
-	 *  other environments all secret ids are confidential by nature.
-	 *
-	 *  Note: this method only updates the security metadata. If the input entity has unsaved changes they may be lost.
-	 *
+	 *  Adds a new secret id to the patient, generated using a cryptographically secure generator.
+	 *  This secret id will initially be known only by the current delegator actor; if the current delegator actor is a
+	 *  group all the child data owners will also have access to it.
 	 *  @param patient a patient
-	 *  @return the input if there is already a secret id available for the patient, or the updated patient otherwise.
+	 *  @return the updated patient and generated secret id
 	 */
-	initializeConfidentialSecretId(patient: E): Promise<E>;
+	createNewSecretId(patient: E): Promise<SecretIdCreationResult<E>>;
 
 	/**
 	 *
@@ -212,6 +200,7 @@ export interface PatientFlavouredApi<E extends Patient> {
 	 *    Note that since the metadata is automatically updated by this method you must not change the metadata of the `mergedInto` patient
 	 *    (`delegations`, mergedInto`, ...): if there is any change between the metadata of the provided `mergedInto` patient and the stored patient this
 	 *    method will fail.
+	 *  - Encryption keys WILL NOT be merged
 	 *
 	 *  In case the revisions of [from] and/or [mergedInto] does not match the latest revisions for these patients in the database this
 	 *  method will fail without soft-deleting the `from` patient and without updating the `into` patient with the merged content and metadata. You will
@@ -227,6 +216,11 @@ export interface PatientFlavouredApi<E extends Patient> {
 	 *  - C has no access to the encryption key of the merged patient, and has access only to the secret id which was originally from the unmerged P''
 	 *
 	 *  Note that the user performing this operation must have write access to both patients.
+	 *
+	 *  # Merging encrypted patients
+	 *
+	 *  When merging encrypted patients make sure that you don't merge `encryptedSelf` values coming from different
+	 *  patients, as that will create an undecryptable patient
 	 *
 	 *  @param from the original, unmodified `from` patient. Its content will be unchanged and its metadata will be automatically updated by this method
 	 *  to reflect the merge.

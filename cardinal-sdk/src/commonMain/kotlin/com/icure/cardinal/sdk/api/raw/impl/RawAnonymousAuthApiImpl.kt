@@ -30,7 +30,8 @@ import kotlin.Unit
 class RawAnonymousAuthApiImpl(
 	internal val apiUrl: String,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawAnonymousAuthApi {
+) : BaseRawApi(rawApiConfig),
+	RawAnonymousAuthApi {
 	// region common endpoints
 
 	override suspend fun login(

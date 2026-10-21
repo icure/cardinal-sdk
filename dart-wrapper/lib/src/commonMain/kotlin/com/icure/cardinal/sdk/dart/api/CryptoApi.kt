@@ -77,7 +77,7 @@ public object CryptoApi {
       dartResultCallback,
       MapSerializer(String.serializer(), MapSerializer(KeypairFingerprintV1String.serializer(),
           Pkcs8BytesAsBase64Serializer))) {
-      NativeReferences.get<CardinalApis>(sdkId).crypto.currentDataOwnerKeys(
+      NativeReferences.get<CardinalApis>(sdkId).crypto.availableKeys(
         filterTrustedKeys,
       )
     }

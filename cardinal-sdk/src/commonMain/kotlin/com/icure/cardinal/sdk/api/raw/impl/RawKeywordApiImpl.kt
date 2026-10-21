@@ -30,7 +30,8 @@ class RawKeywordApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawKeywordApi {
+) : BaseRawApi(rawApiConfig),
+	RawKeywordApi {
 	// region common endpoints
 
 	override suspend fun createKeyword(c: Keyword): HttpResponse<Keyword> =

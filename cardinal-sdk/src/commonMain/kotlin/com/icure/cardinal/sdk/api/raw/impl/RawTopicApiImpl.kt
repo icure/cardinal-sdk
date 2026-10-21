@@ -46,7 +46,8 @@ class RawTopicApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawTopicApi {
+) : BaseRawApi(rawApiConfig),
+	RawTopicApi {
 	// region cloud endpoints
 
 	override suspend fun getTopic(topicId: String): HttpResponse<EncryptedTopic> =

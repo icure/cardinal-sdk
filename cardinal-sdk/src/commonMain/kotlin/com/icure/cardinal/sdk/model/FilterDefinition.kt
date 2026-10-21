@@ -12,10 +12,8 @@ import kotlin.collections.List
  *  Metadata describing a single filter exposed by the API.
  *
  *  @property filter the name of the concrete filter DTO type.
- *  @property entity the simple name of the entity owning the configuration view(s) this filter
- * relies on (null if none).
- *  @property views the design-doc configuration view(s) this filter relies on, all defined on
- * [entity] (empty if none).
+ *  @property entity the simple name of the entity owning the configuration view(s) this filter relies on (null if none).
+ *  @property views the design-doc configuration view(s) this filter relies on, all defined on [entity] (empty if none).
  */
 @Serializable
 data class FilterDefinition(

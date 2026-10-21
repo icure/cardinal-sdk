@@ -20,8 +20,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents application-level settings stored as key-value pairs. Settings can be stored in
- * plaintext or encrypted form.
+ * Represents application-level settings stored as key-value pairs. Settings can be stored in plaintext or encrypted form.
  * /
  */
 
@@ -38,8 +37,7 @@ sealed interface ApplicationSettings :
 	override val id: String
 
 	/**
-	 * The revision of the application settings in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the application settings in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String?
 
@@ -128,8 +126,7 @@ sealed interface ApplicationSettings :
 }
 
 /**
- * Represents application-level settings stored as key-value pairs. Settings can be stored in
- * plaintext or encrypted form.
+ * Represents application-level settings stored as key-value pairs. Settings can be stored in plaintext or encrypted form.
  * /
  */
 @Serializable
@@ -139,8 +136,7 @@ data class DecryptedApplicationSettings(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the application settings in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the application settings in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -223,8 +219,7 @@ data class DecryptedApplicationSettings(
 }
 
 /**
- * Represents application-level settings stored as key-value pairs. Settings can be stored in
- * plaintext or encrypted form.
+ * Represents application-level settings stored as key-value pairs. Settings can be stored in plaintext or encrypted form.
  * /
  */
 @Serializable
@@ -234,8 +229,7 @@ data class EncryptedApplicationSettings(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the application settings in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the application settings in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

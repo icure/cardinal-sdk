@@ -26,8 +26,7 @@ export class Insurance implements StoredDocument, HasTags, HasCodes, HasIdentifi
 
 	/**
 	 *
-	 *  The revision of the insurance in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the insurance in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 

@@ -8,8 +8,7 @@ import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun filterOptionGroupWithViews_toJs(obj: FilterOptionGroupWithViews):
-		FilterOptionGroupWithViewsJs {
+public fun filterOptionGroupWithViews_toJs(obj: FilterOptionGroupWithViews): FilterOptionGroupWithViewsJs {
 	val name = obj.name
 	val factoryMethods = listToArray(
 		obj.factoryMethods,
@@ -32,8 +31,7 @@ public fun filterOptionGroupWithViews_toJs(obj: FilterOptionGroupWithViews):
 	"}"))
 }
 
-public fun filterOptionGroupWithViews_fromJs(obj: FilterOptionGroupWithViewsJs):
-		FilterOptionGroupWithViews {
+public fun filterOptionGroupWithViews_fromJs(obj: FilterOptionGroupWithViewsJs): FilterOptionGroupWithViews {
 	val name = obj.name
 	val factoryMethods = arrayToList(
 		obj.factoryMethods,

@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  The type of entity a partnership's partnerId refers to. When null the partner is either a
- * patient or a healthcare
+ *  The type of entity a partnership's partnerId refers to. When null the partner is either a patient or a healthcare
  *  party (legacy behavior, the client has to resolve the ambiguity).
  */
 @Serializable
