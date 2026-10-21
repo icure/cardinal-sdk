@@ -115,6 +115,7 @@ import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.impl.AccessControlKeysHeadersProviderImpl
 import com.icure.cardinal.sdk.crypto.impl.BaseExchangeDataManagerImpl
@@ -479,6 +480,7 @@ private fun buildInitializedOptions(
 			sdkOptions.ignoreUnknownFieldsOrDefault()
 		),
 		entityListDecodingStrategy = sdkOptions.entityListDecodingStrategy,
+		knownEntityTypes = customisedSdkOptions.knownEntityTypes,
 	)
 }
 
@@ -493,7 +495,8 @@ internal data class InitializedSdkOptions(
 	val keyStorage: KeyStorageFacade?,
 	val baseStorage: StorageFacade,
 	val entityListDecodingStrategy: EntityListDecodingStrategy,
-	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness
+	val unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
+	val knownEntityTypes: Set<EntityWithEncryptionMetadataTypeName>
 )
 
 internal fun InitializedSdkOptions.decryptorOptions() = DecryptorOptions(
@@ -606,7 +609,8 @@ internal suspend fun initializeApiCrypto(
 			dataOwnerApi,
 			cryptoService,
 			sdkScope,
-			boundGroup
+			boundGroup,
+			options.knownEntityTypes,
 		).also {
 			it.clearOrRepopulateCache()
 		}
@@ -618,7 +622,8 @@ internal suspend fun initializeApiCrypto(
 			dataOwnerApi,
 			cryptoService,
 			sdkScope,
-			boundGroup
+			boundGroup,
+			options.knownEntityTypes,
 		)
 	val secureDelegationsEncryption = SecureDelegationsEncryptionImpl(
 		userEncryptionKeys,

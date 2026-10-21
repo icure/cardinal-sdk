@@ -160,7 +160,6 @@ internal class BaseSecurityMetadataDecryptorImpl(
 		val cachedByDelegationKey = exchangeDataManager.getCachedDecryptionDataKeyByAccessControlHash(
 			entitiesGroupId,
 			toSearchByDelegationKey,
-			entitiesType
 		)
 		return entities.associate { entity ->
 			entity.id to entity.securityMetadata?.secureDelegations?.flatMapTo(mutableSetOf()) { (delegationKey, delegation) ->

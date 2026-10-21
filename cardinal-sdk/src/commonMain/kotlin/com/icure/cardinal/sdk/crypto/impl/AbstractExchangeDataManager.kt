@@ -44,7 +44,8 @@ abstract class AbstractExchangeDataManager(
 	protected val dataOwnerApi: DataOwnerApi,
 	protected val cryptoService: CryptoService,
 	protected val sdkScope: CoroutineScope,
-	protected val sdkBoundGroup: SdkBoundGroup?
+	protected val sdkBoundGroup: SdkBoundGroup?,
+	protected val knownEntityTypes: Set<EntityWithEncryptionMetadataTypeName>,
 ) : ExchangeDataManager {
 	// TODO No limit to the amount of groupBoundManagers, currently should be fine for most applications
 	@Volatile
@@ -117,9 +118,8 @@ abstract class AbstractExchangeDataManager(
 	override suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		groupId: String?,
 		hashes: Set<SecureDelegationKeyString>,
-		entitiesType: EntityWithEncryptionMetadataTypeName
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent> =
-		getOrCreateManagerInGroup(groupId).getCachedDecryptionDataKeyByAccessControlHash(hashes, entitiesType)
+		getOrCreateManagerInGroup(groupId).getCachedDecryptionDataKeyByAccessControlHash(hashes)
 
 	override suspend fun getDecryptionDataByExchangeDataGroupIds(
 		groupId: String?,
@@ -214,7 +214,8 @@ abstract class AbstractExchangeDataManagerInGroup(
 	protected val dataOwnerApi: DataOwnerApi,
 	protected val cryptoService: CryptoService,
 	protected val sdkBoundGroup: SdkBoundGroup?,
-	protected val requestGroup: String?
+	protected val requestGroup: String?,
+	protected val knownEntityTypes: Set<EntityWithEncryptionMetadataTypeName>,
 ) {
 	private val log = getLogger("AbstractExchangeDataManager")
 
@@ -416,7 +417,6 @@ abstract class AbstractExchangeDataManagerInGroup(
 	): ExchangeDataWithUnencryptedContent
 	abstract suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		hashes: Set<SecureDelegationKeyString>,
-		entitiesType: EntityWithEncryptionMetadataTypeName
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent>
 	abstract suspend fun getDecryptionDataByExchangeDataGroupIds(
 		ids: Set<String>,

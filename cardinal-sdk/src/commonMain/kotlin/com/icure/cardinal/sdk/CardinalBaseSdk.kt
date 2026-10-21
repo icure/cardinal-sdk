@@ -80,6 +80,7 @@ import com.icure.cardinal.sdk.auth.JwtCredentials
 import com.icure.cardinal.sdk.auth.JwtRefresh
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.auth.services.JwtBasedAuthProvider
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.impl.BasicEntityAccessInformationProvider
 import com.icure.cardinal.sdk.crypto.impl.BasicInternalCryptoApiImpl
@@ -649,6 +650,7 @@ private fun initializedOptions(
 		requestRetryConfiguration = options.requestRetryConfiguration,
 		ignoreUnknownFields = options.ignoreUnknownFieldsOrDefault(),
 		entityListDecodingStrategy = options.entityListDecodingStrategy,
+		knownEntityTypes = customisedSdkOptions.knownEntityTypes,
 	)
 
 private data class InitializedBaseSdkOptions(
@@ -657,6 +659,7 @@ private data class InitializedBaseSdkOptions(
 	val requestRetryConfiguration: RequestRetryConfiguration,
 	val ignoreUnknownFields: Boolean,
 	val entityListDecodingStrategy: EntityListDecodingStrategy,
+	val knownEntityTypes: Set<EntityWithEncryptionMetadataTypeName>,
 )
 
 private fun makeInitializedSdkOptions(
@@ -677,7 +680,8 @@ private fun makeInitializedSdkOptions(
 	unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictnessOrDefault(
 		full.unversionedEntitiesDecryptedJsonStrictness,
 		base.ignoreUnknownFields
-	)
+	),
+	knownEntityTypes = base.knownEntityTypes
 )
 
 @InternalIcureApi
