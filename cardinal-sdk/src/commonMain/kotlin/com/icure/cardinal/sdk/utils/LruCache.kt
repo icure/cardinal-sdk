@@ -64,6 +64,13 @@ class LruCache<K : Any, V : Any>(
 	}
 
 	/**
+	 * Update all entries without changing usage info
+	 */
+	fun updateEntries(getUpdatedValue: (V) -> V) {
+
+	}
+
+	/**
 	 * Evict the oldest entry in the cache, returns null if there is no entry to evict
 	 */
 	fun evictOldest(): V? =

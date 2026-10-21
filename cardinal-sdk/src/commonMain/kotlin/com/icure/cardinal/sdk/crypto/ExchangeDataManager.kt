@@ -54,6 +54,7 @@ interface ExchangeDataManager {
 	suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		groupId: String?,
 		hashes: Set<SecureDelegationKeyString>,
+		entitiesType: EntityWithEncryptionMetadataTypeName
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent>
 
 	/**

@@ -1,19 +1,12 @@
 package com.icure.cardinal.sdk.crypto.entities
 
 import com.icure.cardinal.sdk.model.IcureStub
-import com.icure.cardinal.sdk.model.Topic
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.embed.Delegation
 import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.Serializable
-
-@Serializable
-data class EntityWithTypeInfo<T : HasEncryptionMetadata>(
-	val entity: T,
-	val type: EntityWithEncryptionMetadataTypeName
-)
 
 @InternalIcureApi
 @Serializable
@@ -44,8 +37,6 @@ fun <T:HasEncryptionMetadata> T.toEncryptionMetadataStub() = EntityWithEncryptio
 	encryptionKeys = encryptionKeys,
 	securityMetadata = securityMetadata
 )
-
-fun <T:Topic> T.withTypeInfo() = EntityWithTypeInfo(this, EntityWithEncryptionMetadataTypeName.Builtin.Topic)
 
 fun <T> T.asIcureStub(): IcureStub where T : HasEncryptionMetadata, T : ICureDocument<String> =
 	IcureStub(

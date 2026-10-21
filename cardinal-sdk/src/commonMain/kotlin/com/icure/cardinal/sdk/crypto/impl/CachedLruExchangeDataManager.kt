@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.crypto.entities.ExchangeDataWithUnencryptedContent
 import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.UndecryptableExchangeData
 import com.icure.cardinal.sdk.crypto.entities.UnencryptedExchangeDataContent
+import com.icure.cardinal.sdk.model.EntityReference
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.ExchangeData
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
@@ -110,6 +111,7 @@ private class CachedLruExchangeDataManagerInGroup(
 		.mapTo(mutableSetOf()) {
 			EntityReferenceInGroup(it, null).asReferenceStringInGroup(requestGroup, sdkBoundGroup)
 		}
+	private val knownEntityTypes = mutableSetOf<EntityWithEncryptionMetadataTypeName>()
 
 	/*
 	 * If the cache mutex becomes a bottleneck in services we can try to instead have the cache read be free of lock,
@@ -147,18 +149,30 @@ private class CachedLruExchangeDataManagerInGroup(
 	}
 
 	// Must cache exchangeDataByIdCache separately
-	private fun cacheAdditionalInfoMustHaveLock(
+	private suspend fun cacheAdditionalInfoMustHaveLock(
 		toCache: CachedExchangeDataDetails
 	) {
 		// Check no one has evicted this entry before the cache additional info method has been called, else don't cache
 		// additional info
 		if (exchangeDataByGroupIdCache.get(toCache.exchangeData.id) != null) {
-			exchangeDataByGroupIdCache.set(toCache.exchangeData.id, CompletableDeferred(toCache)) // No need to check cache size since we are only updating an existing key
-			if (toCache.decryptedDetails?.verified == true && delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate]?.isCompleted != true) {
-				delegateToVerifiedExchangeDataId[toCache.exchangeData.delegate] = CompletableDeferred(toCache.exchangeData.id)
+			val updatedToCache = if (toCache.decryptedDetails?.decryptedContent?.accessControlSecret != null) {
+				toCache.copy(
+					decryptedDetails = toCache.decryptedDetails.copy(
+						secureDelegationKeys = knownEntityTypes.mapTo(mutableSetOf()) {
+							toCache.decryptedDetails.decryptedContent.accessControlSecret.toSecureDelegationKeyFor(
+								it,
+								cryptoService
+							)
+						},
+					),
+				)
+			} else toCache
+			exchangeDataByGroupIdCache.set(updatedToCache.exchangeData.id, CompletableDeferred(updatedToCache)) // No need to check cache size since we are only updating an existing key
+			if (updatedToCache.decryptedDetails?.verified == true && delegateToVerifiedExchangeDataId[updatedToCache.exchangeData.delegate]?.isCompleted != true) {
+				delegateToVerifiedExchangeDataId[updatedToCache.exchangeData.delegate] = CompletableDeferred(updatedToCache.exchangeData.id)
 			}
-			if (toCache.decryptedDetails?.secureDelegationKeys?.isNotEmpty() == true) secureDelegationKeysToExchangeDataId.putAll(
-				toCache.decryptedDetails.secureDelegationKeys.map { it to toCache.exchangeData.id }
+			if (updatedToCache.decryptedDetails?.secureDelegationKeys?.isNotEmpty() == true) secureDelegationKeysToExchangeDataId.putAll(
+				updatedToCache.decryptedDetails.secureDelegationKeys.map { it to updatedToCache.exchangeData.id }
 			)
 		}
 	}
@@ -232,9 +246,14 @@ private class CachedLruExchangeDataManagerInGroup(
 	}
 
 	override suspend fun getCachedDecryptionDataKeyByAccessControlHash(
-		hashes: Set<SecureDelegationKeyString>
+		hashes: Set<SecureDelegationKeyString>,
+		entitiesType: EntityWithEncryptionMetadataTypeName,
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent> {
 		val allCachedValues = cacheMutex.withLock {
+			if (entitiesType !in knownEntityTypes) {
+				knownEntityTypes += entitiesType
+				exchangeDataByGroupIdCache.
+			}
 			hashes.mapNotNull { h ->
 				secureDelegationKeysToExchangeDataId[h]?.let {
 					exchangeDataByGroupIdCache.get(it)
@@ -341,16 +360,14 @@ private class CachedLruExchangeDataManagerInGroup(
 
 	private suspend fun prepareCachedDetails(
 		exchangeData: ExchangeData,
-		decryptedInfo: Pair<UnencryptedExchangeDataContent, Boolean>?
+		decryptedInfo: Pair<UnencryptedExchangeDataContent, Boolean>?,
 	) = CachedExchangeDataDetails(
 		exchangeData,
 		decryptedInfo?.let {
 			CachedDecryptedDetails(
 				it.first,
 				it.second,
-				it.first.accessControlSecret.allAccessControlKeys(cryptoService).mapTo(
-					mutableSetOf()
-				) { k -> k.toSecureDelegationKeyString(cryptoService) }
+				emptySet()
 			)
 		}
 	)

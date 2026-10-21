@@ -257,50 +257,6 @@ object CheckedConverters {
 	fun jsonToDynamic(obj: JsonElement?): dynamic =
 		obj?.let { jsonToDynamic(it) }
 
-	fun anyEntityWithTypeInfoToKt(obj: EntityWithTypeInfoJs<*>): EntityWithTypeInfo<*> =
-		EntityWithTypeInfo(
-			EntityWithEncryptionMetadataStub(
-				obj.entity.id,
-				obj.entity.rev,
-				arrayToSet(
-					obj.entity.secretForeignKeys,
-					"entity.secretForeignKeys"
-				) { it },
-				objectToMap(
-					obj.entity.cryptedForeignKeys,
-					"entity.cryptedForeignKeys",
-					{ it },
-					{
-						arrayToSet(it, "entity.cryptedForeignKeys value") { d: DelegationJs ->
-							delegation_fromJs(d)
-						}
-					}
-				),
-				objectToMap(
-					obj.entity.delegations,
-					"entity.delegations",
-					{ it },
-					{
-						arrayToSet(it, "entity.delegations value") { d: DelegationJs ->
-							delegation_fromJs(d)
-						}
-					}
-				),
-				objectToMap(
-					obj.entity.encryptionKeys,
-					"entity.encryptionKeys",
-					{ it },
-					{
-						arrayToSet(it, "entity.encryptionKeys value") { d: DelegationJs ->
-							delegation_fromJs(d)
-						}
-					}
-				),
-				obj.entity.securityMetadata?.let { securityMetadata_fromJs(it) }
-			),
-			EntityWithEncryptionMetadataTypeName.valueOf(obj.type)
-		)
-
 	fun durationToNumber(duration: kotlin.time.Duration): Double {
 		return longToNumber(duration.inWholeMilliseconds)
 	}

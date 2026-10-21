@@ -83,6 +83,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 		val dataById: Map<String, CachedExchangeDataDetails>,
 		val dataByDelegationKey: Map<SecureDelegationKeyString, CachedExchangeDataDetails>,
 		val verifiedDataByDelegateId: Map<String, CachedExchangeDataDetails>,
+		val cachedEntitiesType: Set<EntityWithEncryptionMetadataTypeName>,
 	) {
 		private val accessControlKeysCacheLock = Mutex()
 		@Volatile
@@ -123,7 +124,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 	private val cacheUpdateAndNewDataCreationScope = CoroutineScope(Dispatchers.Default + SupervisorJob(sdkScope.coroutineContext.job))
 
 	@Volatile
-	private var caches: Deferred<Caches> = cacheUpdateAndNewDataCreationScope.async { getAllKeysInfo() }
+	private var caches: Deferred<Caches> = cacheUpdateAndNewDataCreationScope.async { getAllKeysInfo(emptySet()) }
 	private val creationJobs = mutableMapOf<String, Deferred<ExchangeDataWithUnencryptedContent>>()
 
 	// No need to keep two different mutexes for creation job and reload of caches in case of error.
@@ -140,7 +141,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 				// If cache failed with an exception we have to reload
 				creationAndCachesErrorReloadMutex.withLock {
 					if (caches === currCache) { // Only start job if no one else started it yet.
-						cacheUpdateAndNewDataCreationScope.async { getAllKeysInfo() }.also { caches = it }
+						cacheUpdateAndNewDataCreationScope.async { getAllKeysInfo(emptySet()) }.also { caches = it }
 					} else caches// Else wait on the job the others have just started. Ok to fail if that fails.
 				}.let { Pair(it, it.await()) } // Important to await outside the lock
 			} else Pair(currCache, currCache.getCompleted())
@@ -248,9 +249,10 @@ private class FullyCachedExchangeDataManagerInGroup(
 			val prevCaches = caches
 			caches = cacheUpdateAndNewDataCreationScope.async {
 				val awaitedPrevCaches = prevCaches.await()
-				val secureDelegationKeys = created.unencryptedContent.accessControlSecret
-					.allAccessControlKeys(cryptoService)
-					.mapTo(mutableSetOf()) { it.toSecureDelegationKeyString(cryptoService) }
+				val secureDelegationKeys = awaitedPrevCaches.cachedEntitiesType.mapTo(mutableSetOf()) {
+					created.unencryptedContent.accessControlSecret
+						.toSecureDelegationKeyFor(it, cryptoService)
+				}
 				val cachedDetails = CachedExchangeDataDetails(
 					created.exchangeData,
 					CachedDecryptedDetails(
@@ -263,6 +265,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 					dataById = awaitedPrevCaches.dataById + (created.exchangeData.id to cachedDetails),
 					verifiedDataByDelegateId = awaitedPrevCaches.verifiedDataByDelegateId + (delegateReferenceString to cachedDetails),
 					dataByDelegationKey = awaitedPrevCaches.dataByDelegationKey + secureDelegationKeys.associateWith { cachedDetails },
+					cachedEntitiesType = awaitedPrevCaches.cachedEntitiesType
 				)
 			}
 			@Suppress("DeferredResultUnused")
@@ -272,19 +275,45 @@ private class FullyCachedExchangeDataManagerInGroup(
 
 	override suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		hashes: Set<SecureDelegationKeyString>,
-	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent> =
-		getCachesAndAwaited().second.let {
-			hashes.mapNotNull { hash ->
-				it.dataByDelegationKey[hash]?.let { data ->
-					hash to ExchangeDataWithUnencryptedContent(
-						data.exchangeData,
-						ensureNonNull(data.decryptedDetails) {
-							"Decrypted details of data cached by hash can't be null"
-						}.decryptedContent,
-					)
-				}
-			}.toMap()
+		entitiesType: EntityWithEncryptionMetadataTypeName
+	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent> {
+		var cacheWithType = getCachesAndAwaited().second
+		if (entitiesType !in cacheWithType.cachedEntitiesType) {
+			cacheWithType = ensureCacheContainsDelegationKeysForType(entitiesType)
 		}
+		return hashes.mapNotNull { hash ->
+			cacheWithType.dataByDelegationKey[hash]?.let { data ->
+				hash to ExchangeDataWithUnencryptedContent(
+					data.exchangeData,
+					ensureNonNull(data.decryptedDetails) {
+						"Decrypted details of data cached by hash can't be null"
+					}.decryptedContent,
+				)
+			}
+		}.toMap()
+	}
+
+	private suspend fun ensureCacheContainsDelegationKeysForType(
+		entitiesType: EntityWithEncryptionMetadataTypeName
+	): Caches = creationAndCachesErrorReloadMutex.withLock {
+		val currCaches = caches
+		cacheUpdateAndNewDataCreationScope.async {
+			val awaited = currCaches.await()
+			if (entitiesType in awaited.cachedEntitiesType) return@async awaited
+			cachesFrom(
+				dataById = awaited.dataById,
+				verifiedDataByDelegateId = awaited.verifiedDataByDelegateId,
+				dataByDelegationKey = awaited.dataByDelegationKey + awaited.dataById.values.mapNotNull { cachedDetails ->
+					cachedDetails.decryptedDetails
+						?.decryptedContent
+						?.accessControlSecret
+						?.toSecureDelegationKeyFor(entitiesType, cryptoService)
+						?.let { it to cachedDetails }
+				},
+				cachedEntitiesType = awaited.cachedEntitiesType + entitiesType,
+			)
+		}.also { caches = it }
+	}.await()
 
 	override suspend fun getDecryptionDataByExchangeDataGroupIds(
 		ids: Set<String>,
@@ -309,23 +338,23 @@ private class FullyCachedExchangeDataManagerInGroup(
 		getCachesAndAwaited().second.getAccessControlKeysValue(entityType, cryptoService)
 
 	override suspend fun cacheInjectedExchangeData(exchangeDataDetails: List<Pair<ExchangeDataWithUnencryptedContent, Boolean>>) {
-		val exchangeDataDetailsMap = exchangeDataDetails.associate { (data, isVerified) ->
-			val secureDelegationKeys = data.unencryptedContent.accessControlSecret.allAccessControlKeys(cryptoService)
-				.map { it.toSecureDelegationKeyString(cryptoService) }.toSet()
-
-			data.exchangeData.id to CachedExchangeDataDetails(
-				data.exchangeData,
-				CachedDecryptedDetails(
-					data.unencryptedContent, isVerified,
-					secureDelegationKeys,
-				),
-			)
-		}
-
 		creationAndCachesErrorReloadMutex.withLock {
 			val currCaches = caches
 			cacheUpdateAndNewDataCreationScope.async {
 				val awaited = currCaches.await()
+				val exchangeDataDetailsMap = exchangeDataDetails.associate { (data, isVerified) ->
+					val secureDelegationKeys = awaited.cachedEntitiesType.mapTo(mutableSetOf()) {
+						data.unencryptedContent.accessControlSecret.toSecureDelegationKeyFor(it, cryptoService)
+					}
+
+					data.exchangeData.id to CachedExchangeDataDetails(
+						data.exchangeData,
+						CachedDecryptedDetails(
+							data.unencryptedContent, isVerified,
+							secureDelegationKeys,
+						),
+					)
+				}
 				cachesFrom(
 					dataById = awaited.dataById + exchangeDataDetailsMap,
 					dataByDelegationKey = awaited.dataByDelegationKey + exchangeDataDetailsMap.values
@@ -336,6 +365,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 							it.exchangeData.delegator == userEncryptionKeys.delegatorActorReferenceString()
 						}
 						.associateBy { it.exchangeData.delegate },
+					cachedEntitiesType = awaited.cachedEntitiesType,
 				)
 			}.also { caches = it }
 		}.await()
@@ -345,16 +375,18 @@ private class FullyCachedExchangeDataManagerInGroup(
 		cacheUpdateAndNewDataCreationScope.cancel()
 	}
 
-	private suspend fun getAllKeysInfo(): Caches {
+	private suspend fun getAllKeysInfo(
+		knownEntityTypes: Set<EntityWithEncryptionMetadataTypeName>
+	): Caches {
 		val cacheById = mutableMapOf<String, CachedExchangeDataDetails>()
 		val cacheByHash = mutableMapOf<SecureDelegationKeyString, CachedExchangeDataDetails>()
 		val cacheByDelegateId = mutableMapOf<String, CachedExchangeDataDetails>()
 		base.getAllExchangeDataForDataOwner(userEncryptionKeys.delegatorActorId(), requestGroup).forEach { exchangeData ->
 			val decryptedInfo = decryptData(exchangeData)
 			if (decryptedInfo != null) {
-				val secureDelegationKeys = decryptedInfo.first.accessControlSecret
-					.allAccessControlKeys(cryptoService)
-					.mapTo(mutableSetOf()) { it.toSecureDelegationKeyString(cryptoService) }
+				val secureDelegationKeys = knownEntityTypes.mapTo(mutableSetOf()) {
+					decryptedInfo.first.accessControlSecret.toSecureDelegationKeyFor(it, cryptoService)
+				}
 				val cachedDetails = CachedExchangeDataDetails(
 					exchangeData,
 					CachedDecryptedDetails(
@@ -374,17 +406,19 @@ private class FullyCachedExchangeDataManagerInGroup(
 				cacheById[exchangeData.id] = CachedExchangeDataDetails(exchangeData, null)
 			}
 		}
-		return cachesFrom(cacheById, cacheByHash, cacheByDelegateId)
+		return cachesFrom(cacheById, cacheByHash, cacheByDelegateId, knownEntityTypes)
 	}
 
 	private suspend fun cachesFrom(
 		dataById: Map<String, CachedExchangeDataDetails>,
 		dataByDelegationKey: Map<SecureDelegationKeyString, CachedExchangeDataDetails>,
 		verifiedDataByDelegateId: Map<String, CachedExchangeDataDetails>,
+		cachedEntitiesType: Set<EntityWithEncryptionMetadataTypeName>
 	) = Caches(
 		dataById,
 		dataByDelegationKey,
 		verifiedDataByDelegateId,
+		cachedEntitiesType
 	)
 
 	private fun UserEncryptionKeysManager.delegatorActorReferenceString() =

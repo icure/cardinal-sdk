@@ -1,7 +1,9 @@
 package com.icure.cardinal.sdk.crypto.entities
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+@Serializable
 sealed interface EntityWithEncryptionMetadataTypeName {
 	/**
 	 * Uniquely identifies the entity type, it is included as a "salt" in the secure delegation key, to segregate the
@@ -17,6 +19,7 @@ sealed interface EntityWithEncryptionMetadataTypeName {
 	 * type of the related entity, and does not include services as they use the type of Contact.
 	 */
 	@Serializable
+	@SerialName("Builtin")
 	enum class Builtin(
 		override val id: String
 	) : EntityWithEncryptionMetadataTypeName {
@@ -39,8 +42,10 @@ sealed interface EntityWithEncryptionMetadataTypeName {
 		Topic("Topic")
 	}
 
-	class Custom(
-		entityTypeId: String,
+	@Serializable
+	@SerialName("Custom")
+	data class Custom(
+		val entityTypeId: String,
 	) : EntityWithEncryptionMetadataTypeName {
 		override val id: String = "custom:$entityTypeId"
 	}

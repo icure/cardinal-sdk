@@ -116,9 +116,10 @@ abstract class AbstractExchangeDataManager(
 
 	override suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		groupId: String?,
-		hashes: Set<SecureDelegationKeyString>
+		hashes: Set<SecureDelegationKeyString>,
+		entitiesType: EntityWithEncryptionMetadataTypeName
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent> =
-		getOrCreateManagerInGroup(groupId).getCachedDecryptionDataKeyByAccessControlHash(hashes)
+		getOrCreateManagerInGroup(groupId).getCachedDecryptionDataKeyByAccessControlHash(hashes, entitiesType)
 
 	override suspend fun getDecryptionDataByExchangeDataGroupIds(
 		groupId: String?,
@@ -415,6 +416,7 @@ abstract class AbstractExchangeDataManagerInGroup(
 	): ExchangeDataWithUnencryptedContent
 	abstract suspend fun getCachedDecryptionDataKeyByAccessControlHash(
 		hashes: Set<SecureDelegationKeyString>,
+		entitiesType: EntityWithEncryptionMetadataTypeName
 	): Map<SecureDelegationKeyString, ExchangeDataWithUnencryptedContent>
 	abstract suspend fun getDecryptionDataByExchangeDataGroupIds(
 		ids: Set<String>,
