@@ -52,7 +52,7 @@ class RawReceiptApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawReceiptApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Receipt)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.Receipt)
 
 	// region common endpoints
 

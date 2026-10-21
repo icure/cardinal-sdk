@@ -59,7 +59,7 @@ class RawContactApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawContactApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Contact)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.Contact)
 
 	// region common endpoints
 

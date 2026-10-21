@@ -34,7 +34,7 @@ class RawArticleApiImpl(
 	rawApiConfig: RawApiConfig,
 ) : BaseRawApi(rawApiConfig), RawArticleApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Article)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.Article)
 
 	// region common endpoints
 

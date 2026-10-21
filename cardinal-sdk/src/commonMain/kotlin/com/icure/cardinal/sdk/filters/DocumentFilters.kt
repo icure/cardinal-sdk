@@ -757,7 +757,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -770,7 +770,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.messages.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -783,7 +783,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -796,7 +796,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.messages.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -826,7 +826,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			documentType = filterOptions.type
 		)
@@ -837,7 +837,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.messages.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			documentType = filterOptions.type
 		)
@@ -848,7 +848,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			documentType = filterOptions.type
 		)
@@ -859,7 +859,7 @@ private suspend fun mapDocumentFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.messages.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			documentType = filterOptions.type
 		)

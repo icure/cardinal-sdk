@@ -66,7 +66,7 @@ private fun decryptedApiFlavour(
 	maintenanceTaskEncryptors: EntityEncryptors<EncryptedMaintenanceTask, DecryptedMaintenanceTask>
 ): FlavouredApi<EncryptedMaintenanceTask, DecryptedMaintenanceTask> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 	encryptors = maintenanceTaskEncryptors,
 	getRootModelVersion = { null },
 )
@@ -77,7 +77,7 @@ private fun tryAndRecoverApiFlavour(
 	maintenanceTaskEncryptors: EntityEncryptors<EncryptedMaintenanceTask, DecryptedMaintenanceTask>
 ): FlavouredApi<EncryptedMaintenanceTask, MaintenanceTask> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 	encryptors = maintenanceTaskEncryptors,
 	getRootModelVersion = { null },
 )
@@ -138,7 +138,7 @@ private class MaintenanceTaskFlavouredApiImpl<E : MaintenanceTask>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			null,
 			maintenanceTask,
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+			EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 			delegates.keyAsLocalDataOwnerReferences(),
 			true,
 			{ getMaintenanceTask(it) ?: throw NotFoundException("MaintenanceTask $it not found") },
@@ -245,18 +245,18 @@ private class MaintenanceTaskApiImpl(
 		config.crypto.entity.encryptionKeysOf(
 			null,
 			maintenanceTask,
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+			EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 			null
 		)
 
 	override suspend fun hasWriteAccess(maintenanceTask: MaintenanceTask): Boolean =
-		config.crypto.entity.hasWriteAccess(null, maintenanceTask, EntityWithEncryptionMetadataTypeName.MaintenanceTask)
+		config.crypto.entity.hasWriteAccess(null, maintenanceTask, EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask)
 
 	override suspend fun decryptPatientIdOf(maintenanceTask: MaintenanceTask): Set<String> =
 		config.crypto.entity.owningEntityIdsOf(
 			null,
 			maintenanceTask,
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+			EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 			null
 		)
 
@@ -264,7 +264,7 @@ private class MaintenanceTaskApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			null,
 			entity,
-			EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+			EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 			delegates.asLocalDataOwnerReferences()
 		)
 	}
@@ -283,7 +283,7 @@ private class MaintenanceTaskApiImpl(
 				responsible = maintenanceTask?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = maintenanceTask?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			entityType = EntityWithEncryptionMetadataTypeName.MaintenanceTask,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 			owningEntityDetails = null,
 			initializeEncryptionKey = true,
 			autoDelegations = (delegates.mapValues { it.value.toDefaultDelegateOptions() } + (user?.autoDelegationsFor(DelegationTag.All)

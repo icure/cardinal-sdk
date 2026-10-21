@@ -67,7 +67,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedInvoice, DecryptedInvoice> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Invoice,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 	encryptors = config.encryptors.invoice,
 	getRootModelVersion = { null },
 )
@@ -77,7 +77,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedInvoice, Invoice> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Invoice,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 	encryptors = config.encryptors.invoice,
 	getRootModelVersion = { null },
 )
@@ -369,7 +369,7 @@ private abstract class AbstractInvoiceFlavouredApi<E : Invoice>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId,
 			invoice,
-			EntityWithEncryptionMetadataTypeName.Invoice,
+			EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			delegates,
 			true,
 			{ doGetInvoice(entityGroupId, it) ?: throw NotFoundException("Invoice $it not found") },
@@ -422,7 +422,7 @@ private class InvoiceFlavouredApiImpl<E : Invoice>(
 				config.crypto.entity.secretIdsOf(
 					null,
 					patient,
-					EntityWithEncryptionMetadataTypeName.Patient,
+					EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 					null
 				).toList())
 		).successBody()
@@ -670,14 +670,14 @@ private class InvoiceApiImpl(
 		config.crypto.entity.encryptionKeysOf(
 			entityGroupId = groupId,
 			entity = invoice,
-			entityType = EntityWithEncryptionMetadataTypeName.Invoice,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			dataOwnerId = null
 		)
 
 	override suspend fun hasWriteAccess(invoice: Invoice): Boolean = doHasWriteAccess(groupId = null, invoice = invoice)
 
 	private suspend fun doHasWriteAccess(groupId: String?, invoice: Invoice): Boolean =
-		config.crypto.entity.hasWriteAccess(entityGroupId = groupId, entity = invoice, entityType = EntityWithEncryptionMetadataTypeName.Invoice)
+		config.crypto.entity.hasWriteAccess(entityGroupId = groupId, entity = invoice, entityType = EntityWithEncryptionMetadataTypeName.Builtin.Invoice)
 
 	override suspend fun decryptPatientIdOf(invoice: Invoice): Set<EntityReferenceInGroup> =
 		doDecryptPatientIdOf(groupId = null, invoice = invoice)
@@ -686,7 +686,7 @@ private class InvoiceApiImpl(
 		config.crypto.entity.owningEntityIdsOf(
 			entityGroupId = groupId,
 			entity = invoice,
-			entityType = EntityWithEncryptionMetadataTypeName.Invoice,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			dataOwnerId = null
 		).mapTo(mutableSetOf()) { config.crypto.entity.parseReference(groupId, it) }
 
@@ -694,7 +694,7 @@ private class InvoiceApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			null,
 			entity,
-			EntityWithEncryptionMetadataTypeName.Invoice,
+			EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			delegates.asLocalDataOwnerReferences()
 		)
 	}
@@ -703,7 +703,7 @@ private class InvoiceApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			entityGroupId = groupId,
 			entity,
-			EntityWithEncryptionMetadataTypeName.Invoice,
+			EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			delegates
 		)
 	}
@@ -784,7 +784,7 @@ private class InvoiceApiImpl(
 				groupId = base?.groupId ?: base?.id,
 				invoiceDate = base?.invoiceDate ?: currentFuzzyDateTime(TimeZone.currentSystemDefault()),
 			),
-			entityType = EntityWithEncryptionMetadataTypeName.Invoice,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			owningEntityDetails = patient?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					groupId = patientGroup,
@@ -792,7 +792,7 @@ private class InvoiceApiImpl(
 					secretIds = config.crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -815,7 +815,7 @@ private class InvoiceApiImpl(
 		val stubs = rawApi.listInvoicesDelegationsStubsByIds(invoiceIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
-			entitiesType = EntityWithEncryptionMetadataTypeName.Invoice,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getInvoice(invoiceId = it).successBody().asIcureStub() },

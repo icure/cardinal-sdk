@@ -77,7 +77,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedPatient, DecryptedPatient> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Patient,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 	encryptors = config.encryptors.patient,
 	getRootModelVersion = EncryptedPatient::customisedModelVersion,
 )
@@ -87,7 +87,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedPatient, Patient> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Patient,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 	encryptors = config.encryptors.patient,
 	getRootModelVersion = EncryptedPatient::customisedModelVersion,
 )
@@ -358,7 +358,7 @@ private abstract class AbstractPatientFlavouredApi<E : Patient>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			groupId,
 			patient,
-			EntityWithEncryptionMetadataTypeName.Patient,
+			EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 			delegates,
 			true,
 			{ doGetPatient(groupId, it) ?: throw NotFoundException("Patient $it not found") },
@@ -380,7 +380,7 @@ private abstract class AbstractPatientFlavouredApi<E : Patient>(
 		return config.crypto.entity.forceCreateNewSecretId(
 			groupId,
 			patient,
-			EntityWithEncryptionMetadataTypeName.Patient,
+			EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 			{ doGetPatient(groupId, it) ?: throw NotFoundException("Patient $it not found") },
 			{ maybeDecrypt(null, rawApi.bulkShare(request = it).successBody()) }
 		)
@@ -499,7 +499,7 @@ private abstract class AbstractPatientBasicFlavourless(
 		}
 
 	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, patient: Patient): EntityAccessInformation =
-		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(groupId, patient, EntityWithEncryptionMetadataTypeName.Patient)
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(groupId, patient, EntityWithEncryptionMetadataTypeName.Builtin.Patient)
 }
 
 @InternalIcureApi
@@ -724,7 +724,7 @@ private class PatientApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			EntityWithEncryptionMetadataTypeName.Patient,
+			EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 			null,
 			initializeEncryptionKey = true,
 			autoDelegations = delegates + user?.autoDelegationsFor(DelegationTag.AdministrativeData)
@@ -737,7 +737,7 @@ private class PatientApiImpl(
 		doHasWriteAccess(null, patient)
 
 	private suspend fun doHasWriteAccess(groupId: String?, patient: Patient): Boolean =
-		config.crypto.entity.hasWriteAccess(groupId, patient, EntityWithEncryptionMetadataTypeName.Patient)
+		config.crypto.entity.hasWriteAccess(groupId, patient, EntityWithEncryptionMetadataTypeName.Builtin.Patient)
 
 	override suspend fun createDelegationDeAnonymizationMetadata(entity: Patient, delegates: Set<String>) =
 		doCreateDelegationDeAnonymizationMetadata(null, entity, delegates.asLocalDataOwnerReferences())
@@ -746,7 +746,7 @@ private class PatientApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			groupId,
 			entity,
-			EntityWithEncryptionMetadataTypeName.Patient,
+			EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 			delegates
 		)
 	}
@@ -755,7 +755,7 @@ private class PatientApiImpl(
 		doGetSecretIdsOf(null, patient)
 
 	private suspend fun doGetSecretIdsOf(groupId: String?, patient: Patient): Map<String, Set<EntityReferenceInGroup>> =
-		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(patient), EntityWithEncryptionMetadataTypeName.Patient).values.singleOrNull()) {
+		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(patient), EntityWithEncryptionMetadataTypeName.Builtin.Patient).values.singleOrNull()) {
 			"Method secretIdsWithDataOwnersInfo should have returned single item for single patient"
 		}
 
@@ -764,7 +764,7 @@ private class PatientApiImpl(
 		doGetEncryptionKeysOf(null, patient)
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, patient: Patient): Set<HexString> =
-		config.crypto.entity.encryptionKeysOf(groupId, patient, EntityWithEncryptionMetadataTypeName.Patient, null)
+		config.crypto.entity.encryptionKeysOf(groupId, patient, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null)
 
 	override suspend fun forceInitializeExchangeDataToNewlyInvitedPatient(patientId: String): Boolean {
 		val patient = encrypted.getPatient(patientId) ?: throw NotFoundException("Patient $patientId not found")
@@ -827,14 +827,14 @@ private class PatientApiImpl(
 		)
 
 		suspend fun doWith(self: EncryptedPatient): EncryptedPatient {
-			val availableSecretIds = config.crypto.entity.secretIdsOf(null, self, EntityWithEncryptionMetadataTypeName.Patient, null)
+			val availableSecretIds = config.crypto.entity.secretIdsOf(null, self, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null)
 			return if (availableSecretIds.isNotEmpty()) {
 				self
-			} else if (config.crypto.entity.hasEmptyEncryptionMetadata(self, EntityWithEncryptionMetadataTypeName.Patient)) {
+			} else if (config.crypto.entity.hasEmptyEncryptionMetadata(self, EntityWithEncryptionMetadataTypeName.Builtin.Patient)) {
 				config.crypto.entity.entityWithInitializedEncryptedMetadata(
 					entityGroupId = null,
 					entity = self,
-					entityType = EntityWithEncryptionMetadataTypeName.Patient,
+					entityType = EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 					owningEntityDetails = null,
 					initializeEncryptionKey = true,
 					autoDelegations = sharingWith.keyAsLocalDataOwnerReferences().mapValues { it.value.toDefaultDelegateOptions() },
@@ -866,7 +866,7 @@ private class PatientApiImpl(
 				val shareResult = config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 					entityGroupId = null,
 					entity = self,
-					entityType = EntityWithEncryptionMetadataTypeName.Patient,
+					entityType = EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 					delegates = (mapOf(
 						(alternateRootDelegateId ?: self.id) to SimpleDelegateShareOptionsImpl(
 							shareEncryptionKey = ShareMetadataBehaviour.IfAvailable,

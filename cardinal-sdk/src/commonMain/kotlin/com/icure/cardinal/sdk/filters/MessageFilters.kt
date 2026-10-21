@@ -840,7 +840,7 @@ private suspend fun mapMessageFilterOptions(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
@@ -853,7 +853,7 @@ private suspend fun mapMessageFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,

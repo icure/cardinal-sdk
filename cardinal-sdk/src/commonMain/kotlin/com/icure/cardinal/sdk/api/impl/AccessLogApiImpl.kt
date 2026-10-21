@@ -62,7 +62,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedAccessLog, DecryptedAccessLog> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.AccessLog,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.AccessLog,
 	encryptors = config.encryptors.accessLog,
 	getRootModelVersion = EncryptedAccessLog::customisedModelVersion,
 )
@@ -72,7 +72,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedAccessLog, AccessLog> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.AccessLog,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.AccessLog,
 	encryptors = config.encryptors.accessLog,
 	getRootModelVersion = EncryptedAccessLog::customisedModelVersion,
 )
@@ -262,7 +262,7 @@ private abstract class AbstractAccessLogFlavouredApi<E : AccessLog>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId = groupId,
 			entity = accessLog,
-			entityType = EntityWithEncryptionMetadataTypeName.AccessLog,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.AccessLog,
 			delegates = delegates,
 			autoRetry = true,
 			getUpdatedEntity = { doGetAccessLog(groupId = groupId, entityId = it) ?: throw NotFoundException("Access log $it not found") },
@@ -564,12 +564,12 @@ private class AccessLogApiImpl(
 	override suspend fun getEncryptionKeysOf(accessLog: AccessLog): Set<HexString> = doGetEncryptionKeysOf(null, accessLog)
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, accessLog: AccessLog): Set<HexString> =
-		crypto.entity.encryptionKeysOf(groupId, accessLog, EntityWithEncryptionMetadataTypeName.AccessLog, null)
+		crypto.entity.encryptionKeysOf(groupId, accessLog, EntityWithEncryptionMetadataTypeName.Builtin.AccessLog, null)
 
 	override suspend fun hasWriteAccess(accessLog: AccessLog): Boolean = doHasWriteAccess(null, accessLog)
 
 	private suspend fun doHasWriteAccess(groupId: String?, accessLog: AccessLog): Boolean =
-		crypto.entity.hasWriteAccess(groupId, accessLog, EntityWithEncryptionMetadataTypeName.AccessLog)
+		crypto.entity.hasWriteAccess(groupId, accessLog, EntityWithEncryptionMetadataTypeName.Builtin.AccessLog)
 
 	override suspend fun decryptPatientIdOf(accessLog: AccessLog) = doDecryptPatientIdOf(null, accessLog)
 
@@ -577,7 +577,7 @@ private class AccessLogApiImpl(
 		crypto.entity.owningEntityIdsOf(
 			groupId,
 			accessLog,
-			EntityWithEncryptionMetadataTypeName.AccessLog,
+			EntityWithEncryptionMetadataTypeName.Builtin.AccessLog,
 			null
 		).mapTo(mutableSetOf()) {
 			crypto.entity.parseReference(groupId, it)
@@ -592,7 +592,7 @@ private class AccessLogApiImpl(
 		entity: AccessLog,
 		delegates: Set<EntityReferenceInGroup>
 	) {
-		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(entityGroupId, entity, EntityWithEncryptionMetadataTypeName.AccessLog, delegates)
+		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(entityGroupId, entity, EntityWithEncryptionMetadataTypeName.Builtin.AccessLog, delegates)
 	}
 
 	override suspend fun withEncryptionMetadata(
@@ -667,7 +667,7 @@ private class AccessLogApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			entityType = EntityWithEncryptionMetadataTypeName.AccessLog,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.AccessLog,
 			owningEntityDetails = patientInGroup?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					patientGroup,
@@ -675,7 +675,7 @@ private class AccessLogApiImpl(
 					crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)

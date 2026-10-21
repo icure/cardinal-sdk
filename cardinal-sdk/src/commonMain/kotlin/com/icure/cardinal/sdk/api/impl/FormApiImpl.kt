@@ -67,7 +67,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedForm, DecryptedForm> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Form,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 	encryptors = config.encryptors.form,
 	getRootModelVersion = { null },
 )
@@ -77,7 +77,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedForm, Form> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Form,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 	encryptors = config.encryptors.form,
 	getRootModelVersion = { null },
 )
@@ -261,7 +261,7 @@ private abstract class AbstractFormFlavouredApi<E : Form>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			groupId,
 			form,
-			EntityWithEncryptionMetadataTypeName.Form,
+			EntityWithEncryptionMetadataTypeName.Builtin.Form,
 			delegates,
 			true,
 			{ doGetForm(groupId, it) ?: throw NotFoundException("Form $it not found") },
@@ -855,7 +855,7 @@ private class FormApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			entityType = EntityWithEncryptionMetadataTypeName.Form,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 			owningEntityDetails = patientInGroup?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					groupId = patientGroup,
@@ -863,7 +863,7 @@ private class FormApiImpl(
 					secretIds = crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -879,14 +879,14 @@ private class FormApiImpl(
 		config.crypto.entity.encryptionKeysOf(
 			entityGroupId = groupId,
 			entity = form,
-			entityType = EntityWithEncryptionMetadataTypeName.Form,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 			dataOwnerId = null
 		)
 
 	override suspend fun hasWriteAccess(form: Form): Boolean = doHasWriteAccess(groupId = null, form = form)
 
 	private suspend fun doHasWriteAccess(groupId: String?, form: Form): Boolean =
-		config.crypto.entity.hasWriteAccess(entityGroupId = groupId, entity = form, entityType =  EntityWithEncryptionMetadataTypeName.Form)
+		config.crypto.entity.hasWriteAccess(entityGroupId = groupId, entity = form, entityType =  EntityWithEncryptionMetadataTypeName.Builtin.Form)
 
 	override suspend fun decryptPatientIdOf(form: Form): Set<EntityReferenceInGroup> = doDecryptPatientIdOf(groupId = null, form = form)
 
@@ -894,7 +894,7 @@ private class FormApiImpl(
 		config.crypto.entity.owningEntityIdsOf(
 			entityGroupId = groupId,
 			entity = form,
-			entityType = EntityWithEncryptionMetadataTypeName.Form,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 			dataOwnerId = null
 		).mapTo(mutableSetOf()) {
 			crypto.entity.parseReference(groupId, it)
@@ -908,7 +908,7 @@ private class FormApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			entityGroupId = groupId,
 			entity = entity,
-			entityType = EntityWithEncryptionMetadataTypeName.Form,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 			shareWithDataOwners = delegates
 		)
 	}
@@ -958,7 +958,7 @@ private class FormApiImpl(
 		val stubs = rawApi.findFormsDelegationsStubsByIds(formIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
-			entitiesType = EntityWithEncryptionMetadataTypeName.Form,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getForm(formId = it).successBody().asIcureStub() },

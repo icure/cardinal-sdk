@@ -54,7 +54,7 @@ class RawHealthElementApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawHealthElementApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.HealthElement)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.HealthElement)
 
 	// region common endpoints
 

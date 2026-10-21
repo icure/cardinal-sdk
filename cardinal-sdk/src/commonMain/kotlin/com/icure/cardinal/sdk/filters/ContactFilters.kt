@@ -1024,7 +1024,7 @@ private suspend fun mapContactFilterOptions(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretForeignKeys = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -1037,7 +1037,7 @@ private suspend fun mapContactFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -1100,7 +1100,7 @@ private suspend fun mapContactFilterOptions(
 		ContactByHcPartyPatientTagCodeDateFilter(
 			patientSecretForeignKeys = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			).toList(),
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
 		)
@@ -1110,7 +1110,7 @@ private suspend fun mapContactFilterOptions(
 		ContactByHcPartyPatientTagCodeDateFilter(
 			patientSecretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			).toList(),
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
 		)

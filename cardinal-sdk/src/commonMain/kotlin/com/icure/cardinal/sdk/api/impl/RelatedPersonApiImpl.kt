@@ -66,7 +66,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedRelatedPerson, DecryptedRelatedPerson> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.RelatedPerson,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 	encryptors = config.encryptors.relatedPerson,
 	getRootModelVersion = EncryptedRelatedPerson::customisedModelVersion,
 )
@@ -76,7 +76,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedRelatedPerson, RelatedPerson> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.RelatedPerson,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 	encryptors = config.encryptors.relatedPerson,
 	getRootModelVersion = EncryptedRelatedPerson::customisedModelVersion,
 )
@@ -289,7 +289,7 @@ private abstract class AbstractRelatedPersonFlavouredApi<E : RelatedPerson>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId,
 			relatedPerson,
-			EntityWithEncryptionMetadataTypeName.RelatedPerson,
+			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 			delegates,
 			true,
 			{ doGetRelatedPerson(entityGroupId, it) ?: throw NotFoundException("RelatedPerson $it not found") },
@@ -630,7 +630,7 @@ private class RelatedPersonApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			EntityWithEncryptionMetadataTypeName.RelatedPerson,
+			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 			owningEntityDetails = null,
 			initializeEncryptionKey = true,
 			autoDelegations = delegates + user?.autoDelegationsFor(DelegationTag.AdministrativeData)
@@ -645,7 +645,7 @@ private class RelatedPersonApiImpl(
 		config.crypto.entity.encryptionKeysOf(
 			groupId,
 			relatedPerson,
-			EntityWithEncryptionMetadataTypeName.RelatedPerson,
+			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 			null
 		)
 
@@ -653,7 +653,7 @@ private class RelatedPersonApiImpl(
 		doHasWriteAccess(null, relatedPerson)
 
 	private suspend fun doHasWriteAccess(groupId: String?, relatedPerson: RelatedPerson): Boolean =
-		config.crypto.entity.hasWriteAccess(groupId, relatedPerson, EntityWithEncryptionMetadataTypeName.RelatedPerson)
+		config.crypto.entity.hasWriteAccess(groupId, relatedPerson, EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson)
 
 	override suspend fun getSecretIdsOf(relatedPerson: RelatedPerson): Set<String> =
 		doGetSecretIdsOf(null, relatedPerson)
@@ -662,7 +662,7 @@ private class RelatedPersonApiImpl(
 		config.crypto.entity.secretIdsOf(
 			groupId,
 			relatedPerson,
-			EntityWithEncryptionMetadataTypeName.RelatedPerson,
+			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 			null
 		)
 
@@ -673,7 +673,7 @@ private class RelatedPersonApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			groupId,
 			entity,
-			EntityWithEncryptionMetadataTypeName.RelatedPerson,
+			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 			delegates
 		)
 	}

@@ -55,7 +55,7 @@ class RawDocumentApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawDocumentApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Document)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.Document)
 
 	// region common endpoints
 

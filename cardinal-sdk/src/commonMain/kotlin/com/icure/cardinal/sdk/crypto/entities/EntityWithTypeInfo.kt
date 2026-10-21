@@ -45,7 +45,7 @@ fun <T:HasEncryptionMetadata> T.toEncryptionMetadataStub() = EntityWithEncryptio
 	securityMetadata = securityMetadata
 )
 
-fun <T:Topic> T.withTypeInfo() = EntityWithTypeInfo(this, EntityWithEncryptionMetadataTypeName.Topic)
+fun <T:Topic> T.withTypeInfo() = EntityWithTypeInfo(this, EntityWithEncryptionMetadataTypeName.Builtin.Topic)
 
 fun <T> T.asIcureStub(): IcureStub where T : HasEncryptionMetadata, T : ICureDocument<String> =
 	IcureStub(

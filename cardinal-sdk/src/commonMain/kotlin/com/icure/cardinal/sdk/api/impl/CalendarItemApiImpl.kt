@@ -81,7 +81,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedCalendarItem, DecryptedCalendarItem> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 	encryptors = config.encryptors.calendarItem,
 	getRootModelVersion = EncryptedCalendarItem::customisedModelVersion,
 )
@@ -91,7 +91,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedCalendarItem, CalendarItem> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.CalendarItem,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 	encryptors = config.encryptors.calendarItem,
 	getRootModelVersion = EncryptedCalendarItem::customisedModelVersion,
 )
@@ -293,7 +293,7 @@ private abstract class AbstractCalendarItemFlavouredApi<E : CalendarItem>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			groupId,
 			calendarItem,
-			EntityWithEncryptionMetadataTypeName.CalendarItem,
+			EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 			delegates,
 			true,
 			{ doGetCalendarItem(groupId, it) ?: throw NotFoundException("CalendarItem $it not found") },
@@ -380,7 +380,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		val decryptedOwningEntityIds = config.crypto.entity.owningEntityIdsOf(
 			null,
 			calendarItem,
-			EntityWithEncryptionMetadataTypeName.CalendarItem,
+			EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 			null
 		)
 		val calendarItemHasAnyOwningEntityId = config.crypto.securityMetadataDecryptor.hasAnyValueOfType(
@@ -410,7 +410,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 		val newSecretForeignKeys = config.crypto.entity.resolveSecretIdOption(
 			null,
 			patient,
-			EntityWithEncryptionMetadataTypeName.Patient,
+			EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 			secretIdUseOption,
 		)
 		require(decryptedOwningEntityIds.isEmpty() || newSecretForeignKeys.isNotEmpty()) {
@@ -432,7 +432,7 @@ private class CalendarItemFlavouredApiImpl<E : CalendarItem>(
 					}.keyAsLocalDataOwnerReferences()
 				)
 			),
-			EntityWithEncryptionMetadataTypeName.CalendarItem,
+			EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 			true,
 			{ id ->
 				rawApi.getCalendarItem(calendarItemId = id).successBody().let {
@@ -850,7 +850,7 @@ private class CalendarItemApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			entityType = EntityWithEncryptionMetadataTypeName.CalendarItem,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 			owningEntityDetails = patientInGroup?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					patientGroup,
@@ -858,7 +858,7 @@ private class CalendarItemApiImpl(
 					crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -872,13 +872,13 @@ private class CalendarItemApiImpl(
 		doGetEncryptionKeysOf(null, calendarItem)
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, calendarItem: CalendarItem): Set<HexString> =
-		crypto.entity.encryptionKeysOf(groupId, calendarItem, EntityWithEncryptionMetadataTypeName.CalendarItem, null)
+		crypto.entity.encryptionKeysOf(groupId, calendarItem, EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem, null)
 
 	override suspend fun hasWriteAccess(calendarItem: CalendarItem): Boolean =
 		doHasWriteAccess(null, calendarItem)
 
 	private suspend fun doHasWriteAccess(groupId: String?, calendarItem: CalendarItem): Boolean =
-		crypto.entity.hasWriteAccess(groupId, calendarItem, EntityWithEncryptionMetadataTypeName.CalendarItem)
+		crypto.entity.hasWriteAccess(groupId, calendarItem, EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem)
 
 	override suspend fun decryptPatientIdOf(calendarItem: CalendarItem): Set<EntityReferenceInGroup> =
 		doDecryptPatientIdOf(null, calendarItem)
@@ -887,7 +887,7 @@ private class CalendarItemApiImpl(
 		crypto.entity.owningEntityIdsOf(
 			groupId,
 			calendarItem,
-			EntityWithEncryptionMetadataTypeName.CalendarItem,
+			EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 			null
 		).mapTo(mutableSetOf()) {
 			crypto.entity.parseReference(groupId, it)
@@ -901,7 +901,7 @@ private class CalendarItemApiImpl(
 		entity: CalendarItem,
 		delegates: Set<EntityReferenceInGroup>
 	) {
-		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(entityGroupId, entity, EntityWithEncryptionMetadataTypeName.CalendarItem, delegates)
+		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(entityGroupId, entity, EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem, delegates)
 	}
 
 	override suspend fun decrypt(calendarItems: List<EncryptedCalendarItem>): List<DecryptedCalendarItem> =
@@ -957,7 +957,7 @@ private class CalendarItemApiImpl(
 		val stubs = rawApi.findCalendarItemsDelegationsStubsByIds(calendarItemIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
-			entitiesType = EntityWithEncryptionMetadataTypeName.CalendarItem,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getCalendarItem(calendarItemId = it).successBody().asIcureStub() },

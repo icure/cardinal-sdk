@@ -42,7 +42,8 @@ data class EntityEncryptionManifest(
 	 * -> Knowing only the version of the root model is not enough: V2 of a root model points to Address V1 if the root
 	 *    model is patient or Address V2 if the root model is Hcp
 	 */
-	val extensionsManifestsByModelVersion: Map<EntityWithEncryptionMetadataTypeName, Map<Int, String>>,
+	val extensionsManifestsByModelVersion: Map<EntityWithEncryptionMetadataTypeName.Builtin, Map<Int, String>>,
+	// TODO also add manifest for custom entity + special handling on encryptors
 	/**
 	 * Specifies how to encrypt the extensions, matches the current version of customised model (value is a key of
 	 * [EntitiesEncryptionManifests.extensionsManifestsByName]).

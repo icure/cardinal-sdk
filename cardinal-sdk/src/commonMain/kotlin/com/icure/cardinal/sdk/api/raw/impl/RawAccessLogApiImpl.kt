@@ -52,7 +52,7 @@ class RawAccessLogApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawAccessLogApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.AccessLog)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.AccessLog)
 
 	// region common endpoints
 

@@ -1684,7 +1684,7 @@ private suspend fun mapServiceFilterOptions(
 			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(
 				null,
 				filterOptions.patients,
-				EntityWithEncryptionMetadataTypeName.Patient,
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 				null
 			).values.flatten().toSet(),
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
@@ -1741,7 +1741,7 @@ private suspend fun mapServiceFilterOptions(
 			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(
 				null,
 				filterOptions.patients,
-				EntityWithEncryptionMetadataTypeName.Patient,
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 				null
 			).values.flatten().toSet(),
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
@@ -1774,7 +1774,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByDataOwnerPatientDateFilter(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
@@ -1784,7 +1784,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByDataOwnerPatientDateFilter(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
@@ -1883,7 +1883,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientCodesFilter(
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			codeCodes = filterOptions.codeCodes,
 			startValueDate = filterOptions.startOfServiceValueDate,
 			endValueDate = filterOptions.endOfServiceValueDate,
@@ -1893,7 +1893,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientCodesFilter(
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			codeCodes = filterOptions.codeCodes,
 			startValueDate = filterOptions.startOfServiceValueDate,
 			endValueDate = filterOptions.endOfServiceValueDate,
@@ -1922,7 +1922,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientCodePrefixFilter(
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			codeType = filterOptions.codeType,
 			codeCodePrefix = filterOptions.codeCodePrefix,
 			startValueDate = filterOptions.startOfServiceValueDate,
@@ -1933,7 +1933,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientCodePrefixFilter(
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			codeType = filterOptions.codeType,
 			codeCodePrefix = filterOptions.codeCodePrefix,
 			startValueDate = filterOptions.startOfServiceValueDate,
@@ -1965,7 +1965,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientTagCodesFilter(
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			tagCodes = filterOptions.tagCodes,
 			startValueDate = filterOptions.startOfServiceValueDate,
 			endValueDate = filterOptions.endOfServiceValueDate,
@@ -1975,7 +1975,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientTagCodesFilter(
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			tagCodes = filterOptions.tagCodes,
 			startValueDate = filterOptions.startOfServiceValueDate,
 			endValueDate = filterOptions.endOfServiceValueDate,
@@ -2004,7 +2004,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientTagPrefixFilter(
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			tagType = filterOptions.tagType,
 			tagCodePrefix = filterOptions.tagCodePrefix,
 			startValueDate = filterOptions.startOfServiceValueDate,
@@ -2015,7 +2015,7 @@ private suspend fun mapServiceFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		ServiceByHcPartyPatientTagPrefixFilter(
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			tagType = filterOptions.tagType,
 			tagCodePrefix = filterOptions.tagCodePrefix,
 			startValueDate = filterOptions.startOfServiceValueDate,

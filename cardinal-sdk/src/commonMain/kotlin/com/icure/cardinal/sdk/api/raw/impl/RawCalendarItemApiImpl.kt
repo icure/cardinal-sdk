@@ -53,7 +53,7 @@ class RawCalendarItemApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawCalendarItemApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.CalendarItem)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem)
 
 	// region common endpoints
 

@@ -108,7 +108,7 @@ private suspend fun tryDecryptServices(
 	val results = config.crypto.incrementalSecurityMetadataDecryptor.doManyIncrementallyDecryptingKeys(
 		servicesGroupId,
 		services.map { it.asIcureStub() },
-		EntityWithEncryptionMetadataTypeName.Contact,
+		EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 	) { serviceStub, _, keys ->
 		currentCoroutineContext().ensureActive()
 		val fullService = servicesById.getValue(serviceStub.id)
@@ -117,7 +117,7 @@ private suspend fun tryDecryptServices(
 				decryptionKeys = keys.map { it.key },
 				encryptedEntity = fullService,
 				customisedModelVersion = fullService.contactCustomisedModelVersion?.let {
-					CustomisedModelVersion(EntityWithEncryptionMetadataTypeName.Contact, it)
+					CustomisedModelVersion(EntityWithEncryptionMetadataTypeName.Builtin.Contact, it)
 				}
 			)
 		}
@@ -145,7 +145,7 @@ private fun decryptedApiFlavour(
 	FlavouredApi<EncryptedContact, DecryptedContact> by FlavouredApi.decrypted(
 		config = config,
 		encryptors = config.encryptors.contact,
-		type = EntityWithEncryptionMetadataTypeName.Contact,
+		type = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 		getRootModelVersion = Contact::customisedModelVersion,
 	) {
 		override suspend fun maybeDecryptServices(
@@ -184,7 +184,7 @@ private fun tryAndRecoverApiFlavour(
 	FlavouredApi<EncryptedContact, Contact> by FlavouredApi.tryAndRecover(
 		config = config,
 		encryptors = config.encryptors.contact,
-		type = EntityWithEncryptionMetadataTypeName.Contact,
+		type = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 		getRootModelVersion = Contact::customisedModelVersion,
 	) {
 		override suspend fun maybeDecryptServices(
@@ -416,7 +416,7 @@ private abstract class AbstractContactFlavouredApi<E : Contact, S : Service>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			groupId,
 			contact,
-			EntityWithEncryptionMetadataTypeName.Contact,
+			EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			delegates,
 			true,
 			{ doGetContact(groupId, it) ?: throw NotFoundException("Contact $it not found") },
@@ -826,7 +826,7 @@ private class ContactApiImpl(
 				openingDate = base?.openingDate ?: currentFuzzyDateTime(TimeZone.currentSystemDefault()),
 				groupId = base?.groupId ?: base?.id,
 			),
-			entityType = EntityWithEncryptionMetadataTypeName.Contact,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			owningEntityDetails = patientInGroup?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					patientGroup,
@@ -834,7 +834,7 @@ private class ContactApiImpl(
 					crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -851,7 +851,7 @@ private class ContactApiImpl(
 		crypto.entity.encryptionKeysOf(
 			entityGroupId = groupId,
 			entity = contact,
-			entityType = EntityWithEncryptionMetadataTypeName.Contact,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			dataOwnerId = null
 		)
 
@@ -861,7 +861,7 @@ private class ContactApiImpl(
 		crypto.entity.hasWriteAccess(
 			entityGroupId = groupId,
 			entity = contact,
-			entityType = EntityWithEncryptionMetadataTypeName.Contact
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Contact
 		)
 
 	override suspend fun decryptPatientIdOf(contact: Contact): Set<EntityReferenceInGroup> =
@@ -874,7 +874,7 @@ private class ContactApiImpl(
 		crypto.entity.owningEntityIdsOf(
 			entityGroupId = groupId,
 			entity = contact,
-			entityType = EntityWithEncryptionMetadataTypeName.Contact,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			dataOwnerId = null
 		).mapTo(mutableSetOf()) {
 			crypto.entity.parseReference(groupId, it)
@@ -884,7 +884,7 @@ private class ContactApiImpl(
 		crypto.entity.owningEntityIdsOf(
 			entityGroupId = groupId,
 			entity = service.asIcureStub(),
-			entityType = EntityWithEncryptionMetadataTypeName.Contact,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			dataOwnerId = null
 		).mapTo(mutableSetOf()) {
 			crypto.entity.parseReference(groupId, it)
@@ -898,7 +898,7 @@ private class ContactApiImpl(
 		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			entityGroupId = groupId,
 			entity = entity,
-			entityType = EntityWithEncryptionMetadataTypeName.Contact,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			shareWithDataOwners = delegates
 		)
 	}
@@ -956,7 +956,7 @@ private class ContactApiImpl(
 		val stubs = rawApi.findContactsDelegationsStubsByIds(contactIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
-			entitiesType = EntityWithEncryptionMetadataTypeName.Contact,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getContact(contactId = it).successBody().asIcureStub() },

@@ -442,7 +442,7 @@ private suspend fun mapCalendarItemFilterOptions(
 			dataOwnerId = filterOptions.dataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientIds = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
@@ -455,7 +455,7 @@ private suspend fun mapCalendarItemFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientIds = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,

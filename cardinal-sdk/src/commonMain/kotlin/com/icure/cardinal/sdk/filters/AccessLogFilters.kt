@@ -324,7 +324,7 @@ internal suspend fun mapAccessLogFilterOptions(
 			dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientIds = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
@@ -337,7 +337,7 @@ internal suspend fun mapAccessLogFilterOptions(
 			dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			secretPatientIds = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,

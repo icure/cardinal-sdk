@@ -647,7 +647,7 @@ private suspend fun mapHealthElementFilterOptions(
 		HealthElementByDataOwnerPatientOpeningDate(
 			patientSecretForeignKeys = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
@@ -690,7 +690,7 @@ private suspend fun mapHealthElementFilterOptions(
 		HealthElementByDataOwnerPatientOpeningDate(
 			patientSecretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 		)
@@ -718,7 +718,7 @@ private suspend fun mapHealthElementFilterOptions(
 			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
 			patientSecretForeignKeys = filterOptions.patients.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,
@@ -731,7 +731,7 @@ private suspend fun mapHealthElementFilterOptions(
 			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
 			patientSecretForeignKeys = filterOptions.patients.map { Pair(it, null) }.mapToSecretIds(
 				entityEncryptionService,
-				EntityWithEncryptionMetadataTypeName.Patient
+				EntityWithEncryptionMetadataTypeName.Builtin.Patient
 			),
 			startDate = filterOptions.from,
 			endDate = filterOptions.to,

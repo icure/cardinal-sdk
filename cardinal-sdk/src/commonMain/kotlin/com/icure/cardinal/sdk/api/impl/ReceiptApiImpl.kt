@@ -57,7 +57,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedReceipt, DecryptedReceipt> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Receipt,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
 	encryptors = config.encryptors.receipt,
 	getRootModelVersion = { null },
 )
@@ -67,7 +67,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedReceipt, Receipt> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Receipt,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
 	encryptors = config.encryptors.receipt,
 	getRootModelVersion = { null },
 )
@@ -263,7 +263,7 @@ private abstract class AbstractReceiptFlavouredApi<E : Receipt>(
 	): E = config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId = entityGroupId,
 			entity = receipt,
-			entityType = EntityWithEncryptionMetadataTypeName.Receipt,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
 			delegates = delegates,
 			autoRetry = true,
 			getUpdatedEntity = { doGetReceipt(entityGroupId, it) ?: throw NotFoundException("Receipt $it not found") },
@@ -607,7 +607,7 @@ private class ReceiptApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			EntityWithEncryptionMetadataTypeName.Receipt,
+			EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
 			patient?.let {
 				OwningEntityDetails(
 					patientGroupId,
@@ -615,7 +615,7 @@ private class ReceiptApiImpl(
 					config.crypto.entity.resolveSecretIdOption(
 						patientGroupId,
 						it,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -631,7 +631,7 @@ private class ReceiptApiImpl(
 			val aesKey = config.crypto.entity.tryDecryptAndImportAnyEncryptionKey(
 				null,
 				listOf(receipt),
-				EntityWithEncryptionMetadataTypeName.Receipt
+				EntityWithEncryptionMetadataTypeName.Builtin.Receipt
 			)[receipt.id]?.key
 				?: throw UnavailableEncryptionKeyException("Cannot extract decryption key from Receipt(\"${receipt.id}\")")
 			config.crypto.primitives.aes.decrypt(it, aesKey)
@@ -640,12 +640,12 @@ private class ReceiptApiImpl(
 	override suspend fun getEncryptionKeysOf(receipt: Receipt): Set<HexString> = doGetEncryptionKeysOf(groupId = null, receipt = receipt)
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, receipt: Receipt): Set<HexString> =
-		config.crypto.entity.encryptionKeysOf(groupId, receipt, EntityWithEncryptionMetadataTypeName.Receipt, null)
+		config.crypto.entity.encryptionKeysOf(groupId, receipt, EntityWithEncryptionMetadataTypeName.Builtin.Receipt, null)
 
 	override suspend fun hasWriteAccess(receipt: Receipt): Boolean = doHasWriteAccess(groupId = null, receipt = receipt)
 
 	private suspend fun doHasWriteAccess(groupId: String?, receipt: Receipt): Boolean =
-		config.crypto.entity.hasWriteAccess(groupId, receipt, EntityWithEncryptionMetadataTypeName.Receipt)
+		config.crypto.entity.hasWriteAccess(groupId, receipt, EntityWithEncryptionMetadataTypeName.Builtin.Receipt)
 
 	override suspend fun decryptPatientIdOf(receipt: Receipt): Set<EntityReferenceInGroup> =
 		doDecryptPatientIdOf(groupId = null, receipt = receipt)
@@ -654,7 +654,7 @@ private class ReceiptApiImpl(
 		config.crypto.entity.owningEntityIdsOf(
 			groupId,
 			receipt,
-			EntityWithEncryptionMetadataTypeName.Receipt,
+			EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
 			null
 		).mapTo(mutableSetOf()) { config.crypto.entity.parseReference(groupId, it) }
 
@@ -666,7 +666,7 @@ private class ReceiptApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			groupId,
 			entity,
-			EntityWithEncryptionMetadataTypeName.Receipt,
+			EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
 			delegates
 		)
 	}
@@ -696,7 +696,7 @@ private class ReceiptApiImpl(
 		val aesKey = config.crypto.entity.tryDecryptAndImportAnyEncryptionKey(
 			null,
 			listOf(receipt),
-			EntityWithEncryptionMetadataTypeName.Receipt
+			EntityWithEncryptionMetadataTypeName.Builtin.Receipt
 		)[receipt.id]?.key
 			?: throw UnavailableEncryptionKeyException("Cannot extract encryption key from receipt")
 		val payload = config.crypto.primitives.aes.encrypt(attachment, aesKey)

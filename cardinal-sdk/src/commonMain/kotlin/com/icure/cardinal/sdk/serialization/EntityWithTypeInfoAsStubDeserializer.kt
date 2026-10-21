@@ -42,7 +42,7 @@ object EntityWithTypeInfoAsStubDeserializer : KSerializer<EntityWithTypeInfo<*>>
 			while (true) {
 				when (val index = decodeElementIndex(descriptor)) {
 					0 -> entity = decodeSerializableElement(descriptor, 0, EntityWithEncryptionMetadataStubSerializer)
-					1 -> type = decodeSerializableElement(descriptor, 1, EntityWithEncryptionMetadataTypeName.serializer())
+					1 -> type = decodeSerializableElement(descriptor, 1, EntityWithEncryptionMetadataTypeName.Builtin.serializer())
 					CompositeDecoder.DECODE_DONE -> break
 					else -> throw SerializationException("Unknown index $index")
 				}

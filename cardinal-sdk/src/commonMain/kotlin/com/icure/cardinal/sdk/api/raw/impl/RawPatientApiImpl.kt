@@ -61,7 +61,7 @@ class RawPatientApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawPatientApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Patient)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.Patient)
 
 	// region common endpoints
 

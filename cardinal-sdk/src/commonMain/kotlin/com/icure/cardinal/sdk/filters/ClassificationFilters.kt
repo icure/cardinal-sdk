@@ -203,7 +203,7 @@ internal suspend fun mapClassificationFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
 		ClassificationByDataOwnerPatientCreatedDateFilter(
 			dataOwnerId = filterOptions.dataOwnerId,
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending
@@ -213,7 +213,7 @@ internal suspend fun mapClassificationFilterOptions(
 		filterOptions.ensureNonBaseEnvironment(selfDataOwnerId, entityEncryptionService)
 		ClassificationByDataOwnerPatientCreatedDateFilter(
 			dataOwnerId = selfDataOwnerId,
-			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
+			secretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet(),
 			startDate = filterOptions.to,
 			endDate = filterOptions.from,
 			descending = filterOptions.descending

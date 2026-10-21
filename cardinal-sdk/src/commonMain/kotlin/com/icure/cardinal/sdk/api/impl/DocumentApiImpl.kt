@@ -65,7 +65,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedDocument, DecryptedDocument> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Document,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Document,
 	encryptors = config.encryptors.document,
 	getRootModelVersion = EncryptedDocument::customisedModelVersion,
 )
@@ -75,7 +75,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedDocument, Document> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Document,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Document,
 	encryptors = config.encryptors.document,
 	getRootModelVersion = EncryptedDocument::customisedModelVersion,
 )
@@ -261,7 +261,7 @@ private abstract class AbstractDocumentFlavouredApi<E : Document>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId = groupId,
 			entity = document,
-			entityType = EntityWithEncryptionMetadataTypeName.Document,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Document,
 			delegates = delegates,
 			autoRetry = true,
 			getUpdatedEntity = { doGetDocument(groupId, it) ?: throw NotFoundException("Document $it not found") },
@@ -544,7 +544,7 @@ private class DocumentApiImpl(
 				OwningEntityDetails(
 					entityGroupId,
 					message.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, message.entity, EntityWithEncryptionMetadataTypeName.Message, secretId)
+					crypto.entity.resolveSecretIdOption(entityGroupId, message.entity, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
 				)
 			),
 			entityGroupId,
@@ -567,7 +567,7 @@ private class DocumentApiImpl(
 				OwningEntityDetails(
 					entityGroupId,
 					message.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, message.entity, EntityWithEncryptionMetadataTypeName.Message, secretId)
+					crypto.entity.resolveSecretIdOption(entityGroupId, message.entity, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
 				)
 			),
 			entityGroupId,
@@ -590,7 +590,7 @@ private class DocumentApiImpl(
 				OwningEntityDetails(
 					entityGroupId,
 					patient.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, patient.entity, EntityWithEncryptionMetadataTypeName.Patient, secretId)
+					crypto.entity.resolveSecretIdOption(entityGroupId, patient.entity, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
 				)
 			),
 			entityGroupId,
@@ -613,7 +613,7 @@ private class DocumentApiImpl(
 				OwningEntityDetails(
 					entityGroupId,
 					patient.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, patient.entity, EntityWithEncryptionMetadataTypeName.Patient, secretId)
+					crypto.entity.resolveSecretIdOption(entityGroupId, patient.entity, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
 				)
 			),
 			entityGroupId,
@@ -702,7 +702,7 @@ private class DocumentApiImpl(
 			OwningEntityDetails(
 				null,
 				patient.id,
-				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Patient, secretId)
+				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
 			)
 		)
 
@@ -722,7 +722,7 @@ private class DocumentApiImpl(
 			OwningEntityDetails(
 				null,
 				patient.id,
-				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Patient, secretId)
+				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
 			)
 		)
 
@@ -742,7 +742,7 @@ private class DocumentApiImpl(
 			OwningEntityDetails(
 				null,
 				message.id,
-				crypto.entity.resolveSecretIdOption(null, message, EntityWithEncryptionMetadataTypeName.Message, secretId)
+				crypto.entity.resolveSecretIdOption(null, message, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
 			)
 		)
 
@@ -762,7 +762,7 @@ private class DocumentApiImpl(
 			OwningEntityDetails(
 				null,
 				message.id,
-				crypto.entity.resolveSecretIdOption(null, message, EntityWithEncryptionMetadataTypeName.Message, secretId)
+				crypto.entity.resolveSecretIdOption(null, message, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
 			)
 		)
 
@@ -812,7 +812,7 @@ private class DocumentApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			entityType = EntityWithEncryptionMetadataTypeName.Document,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Document,
 			owningEntityDetails = owningEntityDetails,
 			initializeEncryptionKey = true,
 			autoDelegations = (delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty()).keyAsLocalDataOwnerReferences(),
@@ -824,7 +824,7 @@ private class DocumentApiImpl(
 		document: Document,
 		decryptedAttachmentValidator: (suspend (document: ByteArray) -> Boolean)?
 	): ByteArray? = getRawMainAttachment(document.id).let {
-			crypto.entity.tryDecryptAttachmentOf(null, document, EntityWithEncryptionMetadataTypeName.Document, it, decryptedAttachmentValidator)
+			crypto.entity.tryDecryptAttachmentOf(null, document, EntityWithEncryptionMetadataTypeName.Builtin.Document, it, decryptedAttachmentValidator)
 		}
 
 	override suspend fun getAndDecryptMainAttachment(
@@ -835,14 +835,14 @@ private class DocumentApiImpl(
 			crypto.entity.decryptAttachmentOf(
 				entityGroupId = null,
 				entity = document,
-				entityType = EntityWithEncryptionMetadataTypeName.Document,
+				entityType = EntityWithEncryptionMetadataTypeName.Builtin.Document,
 				content = it,
 				validator = decryptedAttachmentValidator
 			)
 		}
 
 	override suspend fun encryptAndSetMainAttachment(document: Document, utis: List<String>?, attachment: ByteArray): EncryptedDocument {
-		val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(null, listOf(document), EntityWithEncryptionMetadataTypeName.Document)[document.id]?.key
+		val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(null, listOf(document), EntityWithEncryptionMetadataTypeName.Builtin.Document)[document.id]?.key
 			?: throw UnavailableEncryptionKeyException("Cannot extract encryption key from document")
 		val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setDocumentAttachment(
@@ -864,7 +864,7 @@ private class DocumentApiImpl(
 			crypto.entity.decryptAttachmentOf(
 				entityGroupId = null,
 				entity = document,
-				entityType = EntityWithEncryptionMetadataTypeName.Document,
+				entityType = EntityWithEncryptionMetadataTypeName.Builtin.Document,
 				content = it,
 				validator = decryptedAttachmentValidator
 			)
@@ -876,7 +876,7 @@ private class DocumentApiImpl(
 		utis: List<String>?,
 		attachment: ByteArray,
 	): EncryptedDocument {
-		val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(null, listOf(document), EntityWithEncryptionMetadataTypeName.Document)[document.id]?.key
+		val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(null, listOf(document), EntityWithEncryptionMetadataTypeName.Builtin.Document)[document.id]?.key
 			?: throw UnavailableEncryptionKeyException("Cannot extract encryption key from document")
 		val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setSecondaryAttachment(
@@ -893,12 +893,12 @@ private class DocumentApiImpl(
 	override suspend fun getEncryptionKeysOf(document: Document): Set<HexString> = doGetEncryptionKeysOf(groupId = null, document = document)
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, document: Document): Set<HexString> =
-		crypto.entity.encryptionKeysOf(groupId, document, EntityWithEncryptionMetadataTypeName.Document, null)
+		crypto.entity.encryptionKeysOf(groupId, document, EntityWithEncryptionMetadataTypeName.Builtin.Document, null)
 
 	override suspend fun hasWriteAccess(document: Document): Boolean = doHasWriteAccess(groupId = null, document = document)
 
 	private suspend fun doHasWriteAccess(groupId: String?, document: Document): Boolean =
-		crypto.entity.hasWriteAccess(groupId, document, EntityWithEncryptionMetadataTypeName.Document)
+		crypto.entity.hasWriteAccess(groupId, document, EntityWithEncryptionMetadataTypeName.Builtin.Document)
 
 	override suspend fun decryptOwningEntityIdsOf(document: Document): Set<EntityReferenceInGroup> =
 		doDecryptOwningEntityIdsOf(groupId = null, document = document)
@@ -907,7 +907,7 @@ private class DocumentApiImpl(
 		crypto.entity.owningEntityIdsOf(
 			entityGroupId = groupId,
 			entity = document,
-			entityType = EntityWithEncryptionMetadataTypeName.Document,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Document,
 			dataOwnerId = null
 		).mapTo(mutableSetOf()) {
 			crypto.entity.parseReference(groupId, it)
@@ -922,7 +922,7 @@ private class DocumentApiImpl(
 		entity: Document,
 		delegates: Set<EntityReferenceInGroup>
 	) {
-		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(entityGroupId, entity, EntityWithEncryptionMetadataTypeName.Document, delegates)
+		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(entityGroupId, entity, EntityWithEncryptionMetadataTypeName.Builtin.Document, delegates)
 	}
 
 	override suspend fun decrypt(document: EncryptedDocument): DecryptedDocument =
@@ -936,7 +936,7 @@ private class DocumentApiImpl(
 		encryptedAttachment: ByteArray,
 		decryptedAttachmentValidator: (suspend (document: ByteArray) -> Boolean)?
 	): ByteArray? =
-		crypto.entity.tryDecryptAttachmentOf(null, document, EntityWithEncryptionMetadataTypeName.Document, encryptedAttachment, decryptedAttachmentValidator)
+		crypto.entity.tryDecryptAttachmentOf(null, document, EntityWithEncryptionMetadataTypeName.Builtin.Document, encryptedAttachment, decryptedAttachmentValidator)
 
 	override suspend fun matchDocumentsBy(filter: FilterOptions<Document>): List<String> =
 		doMatchDocumentsBy(groupId = null, filter = filter)

@@ -55,7 +55,7 @@ class RawMessageApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawMessageApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Message)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.Message)
 
 	// region common endpoints
 

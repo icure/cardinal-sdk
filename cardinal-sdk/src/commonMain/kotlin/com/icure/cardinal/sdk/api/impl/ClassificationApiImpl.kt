@@ -53,7 +53,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedClassification, DecryptedClassification> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Classification,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Classification,
 	encryptors = config.encryptors.classification,
 	getRootModelVersion = { null },
 )
@@ -63,7 +63,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedClassification, Classification> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Classification,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Classification,
 	encryptors = config.encryptors.classification,
 	getRootModelVersion = { null },
 )
@@ -115,7 +115,7 @@ private class ClassificationFlavouredApiImpl<E : Classification>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			null,
 			classification,
-			EntityWithEncryptionMetadataTypeName.Classification,
+			EntityWithEncryptionMetadataTypeName.Builtin.Classification,
 			delegates.keyAsLocalDataOwnerReferences(),
 			true,
 			{ getClassification(it) ?: throw NotFoundException("Classification $it not found") },
@@ -139,7 +139,7 @@ private class ClassificationFlavouredApiImpl<E : Classification>(
 				config.crypto.entity.secretIdsOf(
 					null,
 					patient,
-					EntityWithEncryptionMetadataTypeName.Patient,
+					EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 					null
 				).toList())
 		).successBody()
@@ -226,25 +226,25 @@ private class ClassificationApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			EntityWithEncryptionMetadataTypeName.Classification,
+			EntityWithEncryptionMetadataTypeName.Builtin.Classification,
 			OwningEntityDetails(
 				null,
 				patient.id,
-				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Patient, secretId),
+				crypto.entity.resolveSecretIdOption(null, patient, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId),
 			),
 			initializeEncryptionKey = true,
 			autoDelegations = (delegates.mapValues { it.value.toDefaultDelegateOptions() } + user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty()).keyAsLocalDataOwnerReferences(),
 			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 		).updatedEntity
 
-	override suspend fun getEncryptionKeysOf(classification: Classification): Set<HexString> = crypto.entity.encryptionKeysOf(null, classification, EntityWithEncryptionMetadataTypeName.Classification, null)
+	override suspend fun getEncryptionKeysOf(classification: Classification): Set<HexString> = crypto.entity.encryptionKeysOf(null, classification, EntityWithEncryptionMetadataTypeName.Builtin.Classification, null)
 
-	override suspend fun hasWriteAccess(classification: Classification): Boolean = crypto.entity.hasWriteAccess(null, classification, EntityWithEncryptionMetadataTypeName.Classification)
+	override suspend fun hasWriteAccess(classification: Classification): Boolean = crypto.entity.hasWriteAccess(null, classification, EntityWithEncryptionMetadataTypeName.Builtin.Classification)
 
-	override suspend fun decryptPatientIdOf(classification: Classification): Set<String> = crypto.entity.owningEntityIdsOf(null, classification, EntityWithEncryptionMetadataTypeName.Classification, null)
+	override suspend fun decryptPatientIdOf(classification: Classification): Set<String> = crypto.entity.owningEntityIdsOf(null, classification, EntityWithEncryptionMetadataTypeName.Builtin.Classification, null)
 
 	override suspend fun createDelegationDeAnonymizationMetadata(entity: Classification, delegates: Set<String>) {
-		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(null, entity, EntityWithEncryptionMetadataTypeName.Classification, delegates.asLocalDataOwnerReferences())
+		crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(null, entity, EntityWithEncryptionMetadataTypeName.Builtin.Classification, delegates.asLocalDataOwnerReferences())
 	}
 
 	override suspend fun decrypt(classification: EncryptedClassification): DecryptedClassification =
@@ -277,7 +277,7 @@ private class ClassificationApiImpl(
 		val stubs = rawApi.findClassificationsDelegationsStubsByIds(classificationIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
-			entitiesType = EntityWithEncryptionMetadataTypeName.Classification,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Builtin.Classification,
 			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getClassification(classificationId = it).successBody().asIcureStub() },

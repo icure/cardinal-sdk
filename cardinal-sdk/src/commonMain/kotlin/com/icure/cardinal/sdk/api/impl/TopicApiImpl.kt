@@ -72,7 +72,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedTopic, DecryptedTopic> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Topic,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Topic,
 	encryptors = config.encryptors.topic,
 	getRootModelVersion = EncryptedTopic::customisedModelVersion,
 )
@@ -82,7 +82,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedTopic, Topic> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Topic,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Topic,
 	encryptors = config.encryptors.topic,
 	getRootModelVersion = EncryptedTopic::customisedModelVersion,
 )
@@ -302,7 +302,7 @@ private abstract class AbstractTopicFlavouredApi<E : Topic>(
 	): E  = config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 		entityGroupId = entityGroupId,
 		entity = topic,
-		entityType = EntityWithEncryptionMetadataTypeName.Topic,
+		entityType = EntityWithEncryptionMetadataTypeName.Builtin.Topic,
 		delegates,
 		autoRetry = true,
 		getUpdatedEntity = { doGetTopic(entityGroupId, it) ?: throw NotFoundException("Topic $it not found") },
@@ -660,7 +660,7 @@ private class TopicApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			EntityWithEncryptionMetadataTypeName.Topic,
+			EntityWithEncryptionMetadataTypeName.Builtin.Topic,
 			patient?.let {
 				OwningEntityDetails(
 					patientGroupId,
@@ -668,7 +668,7 @@ private class TopicApiImpl(
 					config.crypto.entity.resolveSecretIdOption(
 						patientGroupId,
 						it,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -683,13 +683,13 @@ private class TopicApiImpl(
 		doGetEncryptionKeysOf(groupId = null, entity = topic)
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, entity: Topic): Set<HexString> =
-		config.crypto.entity.encryptionKeysOf(groupId, entity, EntityWithEncryptionMetadataTypeName.Topic, null)
+		config.crypto.entity.encryptionKeysOf(groupId, entity, EntityWithEncryptionMetadataTypeName.Builtin.Topic, null)
 
 	override suspend fun hasWriteAccess(topic: Topic): Boolean =
 		doHasWriteAccess(groupId = null, entity = topic)
 
 	private suspend fun doHasWriteAccess(groupId: String?, entity: Topic): Boolean =
-		config.crypto.entity.hasWriteAccess(groupId, entity, EntityWithEncryptionMetadataTypeName.Topic)
+		config.crypto.entity.hasWriteAccess(groupId, entity, EntityWithEncryptionMetadataTypeName.Builtin.Topic)
 
 	override suspend fun decryptPatientIdOf(topic: Topic): Set<EntityReferenceInGroup> =
 		doDecryptPatientIdOf(groupId = null, topic = topic)
@@ -698,7 +698,7 @@ private class TopicApiImpl(
 		config.crypto.entity.owningEntityIdsOf(
 			entityGroupId = groupId,
 			entity = topic,
-			entityType = EntityWithEncryptionMetadataTypeName.Topic,
+			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Topic,
 			dataOwnerId = null
 		).mapTo(mutableSetOf()) { config.crypto.entity.parseReference(groupId, it) }
 
@@ -711,7 +711,7 @@ private class TopicApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			groupId,
 			entity,
-			EntityWithEncryptionMetadataTypeName.Topic,
+			EntityWithEncryptionMetadataTypeName.Builtin.Topic,
 			delegates
 		)
 	}

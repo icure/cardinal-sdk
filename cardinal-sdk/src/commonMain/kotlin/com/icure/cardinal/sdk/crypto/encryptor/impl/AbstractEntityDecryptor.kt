@@ -79,7 +79,7 @@ internal abstract class AbstractEntityDecryptor<ENCRYPTED : Encryptable, DECRYPT
 		}
 }
 
-internal fun Map<EntityWithEncryptionMetadataTypeName, Map<Int, String>>.loadExtensionsEncryptors(
+internal fun Map<EntityWithEncryptionMetadataTypeName.Builtin, Map<Int, String>>.loadExtensionsEncryptors(
 	getExtensionsEncryptorsProvider: (extensionsManifestName: String) -> Lazy<ExtensionsEncryptors>
 ): Map<CustomisedModelVersion, Lazy<ExtensionsEncryptors>> = this.flatMap { (type, inner) ->
 	inner.map { (version, manifestName) ->

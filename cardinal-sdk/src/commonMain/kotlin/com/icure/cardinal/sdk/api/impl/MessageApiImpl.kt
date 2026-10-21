@@ -71,7 +71,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedMessage, DecryptedMessage> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Message,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Message,
 	encryptors = config.encryptors.message,
 	getRootModelVersion = EncryptedMessage::customisedModelVersion,
 )
@@ -81,7 +81,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedMessage, Message> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.Message,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.Message,
 	encryptors = config.encryptors.message,
 	getRootModelVersion = EncryptedMessage::customisedModelVersion,
 )
@@ -312,7 +312,7 @@ private abstract class AbstractMessageFlavouredApi<E : Message>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId,
 			message,
-			EntityWithEncryptionMetadataTypeName.Message,
+			EntityWithEncryptionMetadataTypeName.Builtin.Message,
 			delegates,
 			true,
 			{ doGetMessage(entityGroupId, it) ?: throw NotFoundException("Message $it not found") },
@@ -672,7 +672,7 @@ private class MessageApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			EntityWithEncryptionMetadataTypeName.Message,
+			EntityWithEncryptionMetadataTypeName.Builtin.Message,
 			owningEntityDetails = patient?.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					patientGroup,
@@ -680,7 +680,7 @@ private class MessageApiImpl(
 					config.crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -698,7 +698,7 @@ private class MessageApiImpl(
 		config.crypto.entity.encryptionKeysOf(
 			groupId,
 			message,
-			EntityWithEncryptionMetadataTypeName.Message,
+			EntityWithEncryptionMetadataTypeName.Builtin.Message,
 			null
 		)
 
@@ -706,7 +706,7 @@ private class MessageApiImpl(
 		doHasWriteAccess(null, message)
 
 	private suspend fun doHasWriteAccess(groupId: String?, message: Message): Boolean =
-		config.crypto.entity.hasWriteAccess(groupId, message, EntityWithEncryptionMetadataTypeName.Message)
+		config.crypto.entity.hasWriteAccess(groupId, message, EntityWithEncryptionMetadataTypeName.Builtin.Message)
 
 	override suspend fun decryptPatientIdOf(message: Message): Set<EntityReferenceInGroup> =
 		doDecryptPatientIdOf(null, message)
@@ -715,7 +715,7 @@ private class MessageApiImpl(
 		config.crypto.entity.owningEntityIdsOf(
 			groupId,
 			message,
-			EntityWithEncryptionMetadataTypeName.Message,
+			EntityWithEncryptionMetadataTypeName.Builtin.Message,
 			null
 		).mapTo(mutableSetOf()) { config.crypto.entity.parseReference(groupId, it) }
 
@@ -726,7 +726,7 @@ private class MessageApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			groupId,
 			entity,
-			EntityWithEncryptionMetadataTypeName.Message,
+			EntityWithEncryptionMetadataTypeName.Builtin.Message,
 			delegates
 		)
 	}
@@ -776,7 +776,7 @@ private class MessageApiImpl(
 		doGetSecretIdsOf(null, message)
 
 	private suspend fun doGetSecretIdsOf(groupId: String?, message: Message): Map<String, Set<EntityReferenceInGroup>> =
-		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(message), EntityWithEncryptionMetadataTypeName.Patient).values.singleOrNull()) {
+		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(message), EntityWithEncryptionMetadataTypeName.Builtin.Patient).values.singleOrNull()) {
 			"Method secretIdsWithDataOwnersInfo should have returned single item for single message"
 		}
 }

@@ -55,7 +55,7 @@ class RawFormApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawFormApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Form)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.Form)
 
 	// region common endpoints
 

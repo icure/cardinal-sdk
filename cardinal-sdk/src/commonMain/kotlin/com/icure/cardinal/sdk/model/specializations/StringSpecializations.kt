@@ -55,7 +55,7 @@ value class AccessControlSecret(val s: String) {
 	 * One way operation to get all possible secure delegation keys corresponding to this access control secret
 	 */
 	internal suspend fun allAccessControlKeys(cryptoService: CryptoService): Set<AccessControlKeyHexString> =
-		EntityWithEncryptionMetadataTypeName.entries.mapTo(mutableSetOf()) { toAccessControlKeyStringFor(it, cryptoService) }
+		EntityWithEncryptionMetadataTypeName.Builtin.entries.mapTo(mutableSetOf()) { toAccessControlKeyStringFor(it, cryptoService) }
 
 	/**
 	 * Get the secure delegation key corresponding to an access control secret for a specific entity type

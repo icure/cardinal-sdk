@@ -83,8 +83,32 @@ private class FullyCachedExchangeDataManagerInGroup(
 		val dataById: Map<String, CachedExchangeDataDetails>,
 		val dataByDelegationKey: Map<SecureDelegationKeyString, CachedExchangeDataDetails>,
 		val verifiedDataByDelegateId: Map<String, CachedExchangeDataDetails>,
-		val entityTypeToAccessControlKeysValue: Map<EntityWithEncryptionMetadataTypeName, List<Base64String>>,
 	) {
+		private val accessControlKeysCacheLock = Mutex()
+		@Volatile
+		private var entityTypeToAccessControlKeysValueCache: Map<String, List<Base64String>> = emptyMap()
+
+		suspend fun getAccessControlKeysValue(
+			entityType: EntityWithEncryptionMetadataTypeName,
+			cryptoService: CryptoService
+		): List<Base64String> =
+			entityTypeToAccessControlKeysValueCache[entityType.id] ?: accessControlKeysCacheLock.withLock {
+				// First check again if it exists after we got the lock, maybe someone added it since then
+				entityTypeToAccessControlKeysValueCache[entityType.id] ?: kotlin.run {
+					val allAccessControlSecrets = dataById.values.mapNotNull {
+						it.decryptedDetails?.decryptedContent?.accessControlSecret
+					}
+					// Compute inside the lock, blocks potentially parallel computation for other kinds of entities, but
+					// at least prevents many parallel computation for same entity.
+					val computed = allAccessControlSecrets.map { s ->
+						s.toAccessControlKeyStringFor(entityType, cryptoService)
+					}.encodeAsAccessControlHeaders()
+					entityTypeToAccessControlKeysValueCache += entityType.id to computed
+					computed
+				}
+			}
+
+
 		fun getEncryptionDataTo(delegateReferenceString: String): ExchangeDataWithUnencryptedContent? =
 			verifiedDataByDelegateId[delegateReferenceString]?.let { data ->
 				ExchangeDataWithUnencryptedContent(
@@ -282,7 +306,7 @@ private class FullyCachedExchangeDataManagerInGroup(
 		}
 
 	override suspend fun getEncodedAccessControlKeysValue(entityType: EntityWithEncryptionMetadataTypeName): List<Base64String> =
-		getCachesAndAwaited().second.entityTypeToAccessControlKeysValue.getValue(entityType)
+		getCachesAndAwaited().second.getAccessControlKeysValue(entityType, cryptoService)
 
 	override suspend fun cacheInjectedExchangeData(exchangeDataDetails: List<Pair<ExchangeDataWithUnencryptedContent, Boolean>>) {
 		val exchangeDataDetailsMap = exchangeDataDetails.associate { (data, isVerified) ->
@@ -361,11 +385,6 @@ private class FullyCachedExchangeDataManagerInGroup(
 		dataById,
 		dataByDelegationKey,
 		verifiedDataByDelegateId,
-		dataById.values.mapNotNull { it.decryptedDetails?.decryptedContent?.accessControlSecret }.let { allAccessControlSecrets ->
-			EntityWithEncryptionMetadataTypeName.entries.associateWith {
-				allAccessControlSecrets.map { s -> s.toAccessControlKeyStringFor(it, cryptoService) }.encodeAsAccessControlHeaders()
-			}
-		},
 	)
 
 	private fun UserEncryptionKeysManager.delegatorActorReferenceString() =

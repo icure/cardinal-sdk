@@ -73,7 +73,7 @@ private fun decryptedApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedHealthElement, DecryptedHealthElement> = FlavouredApi.decrypted(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.HealthElement,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 	encryptors = config.encryptors.healthElement,
 	getRootModelVersion = EncryptedHealthElement::customisedModelVersion,
 )
@@ -83,7 +83,7 @@ private fun tryAndRecoverApiFlavour(
 	config: ApiConfiguration
 ): FlavouredApi<EncryptedHealthElement, HealthElement> = FlavouredApi.tryAndRecover(
 	config = config,
-	type = EntityWithEncryptionMetadataTypeName.HealthElement,
+	type = EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 	encryptors = config.encryptors.healthElement,
 	getRootModelVersion = EncryptedHealthElement::customisedModelVersion,
 )
@@ -296,7 +296,7 @@ private abstract class AbstractHealthElementFlavouredApi<E : HealthElement>(
 		config.crypto.entity.simpleShareOrUpdateEncryptedEntityMetadata(
 			entityGroupId,
 			healthElement,
-			EntityWithEncryptionMetadataTypeName.HealthElement,
+			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 			delegates,
 			true,
 			{ doGetHealthElement(entityGroupId, it) ?: throw NotFoundException("HealthElement $it not found") },
@@ -659,7 +659,7 @@ private class HealthElementApiImpl(
 				responsible = base?.responsible ?: user?.takeIf { config.autofillAuthor }?.dataOwnerId,
 				author = base?.author ?: user?.id?.takeIf { config.autofillAuthor },
 			),
-			EntityWithEncryptionMetadataTypeName.HealthElement,
+			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 			owningEntityDetails = patient.let { (patient, patientGroup) ->
 				OwningEntityDetails(
 					patientGroup,
@@ -667,7 +667,7 @@ private class HealthElementApiImpl(
 					config.crypto.entity.resolveSecretIdOption(
 						entityGroupId,
 						patient,
-						EntityWithEncryptionMetadataTypeName.Patient,
+						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
 					)
 				)
@@ -685,7 +685,7 @@ private class HealthElementApiImpl(
 		config.crypto.entity.encryptionKeysOf(
 			groupId,
 			healthElement,
-			EntityWithEncryptionMetadataTypeName.HealthElement,
+			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 			null
 		)
 
@@ -693,7 +693,7 @@ private class HealthElementApiImpl(
 		doHasWriteAccess(null, healthElement)
 
 	private suspend fun doHasWriteAccess(groupId: String?, healthElement: HealthElement): Boolean =
-		config.crypto.entity.hasWriteAccess(groupId, healthElement, EntityWithEncryptionMetadataTypeName.HealthElement)
+		config.crypto.entity.hasWriteAccess(groupId, healthElement, EntityWithEncryptionMetadataTypeName.Builtin.HealthElement)
 
 	override suspend fun decryptPatientIdOf(healthElement: HealthElement): Set<EntityReferenceInGroup> =
 		doDecryptPatientIdOf(null, healthElement)
@@ -702,7 +702,7 @@ private class HealthElementApiImpl(
 		config.crypto.entity.owningEntityIdsOf(
 			groupId,
 			healthElement,
-			EntityWithEncryptionMetadataTypeName.HealthElement,
+			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 			null
 		).mapTo(mutableSetOf()) { config.crypto.entity.parseReference(groupId, it) }
 
@@ -713,7 +713,7 @@ private class HealthElementApiImpl(
 		config.crypto.delegationsDeAnonymization.createOrUpdateDeAnonymizationInfo(
 			groupId,
 			entity,
-			EntityWithEncryptionMetadataTypeName.HealthElement,
+			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 			delegates
 		)
 	}
@@ -736,7 +736,7 @@ private class HealthElementApiImpl(
 		val stubs = rawApi.listHealthElementsDelegationsStubById(healthElementIds = ListOfIds(distinctIds.toList())).successBody()
 		val result = config.crypto.entity.simpleBulkShareOrUpdateEncryptedEntityMetadataNoEntities(
 			entities = stubs,
-			entitiesType = EntityWithEncryptionMetadataTypeName.HealthElement,
+			entitiesType = EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 			delegates = normalizedDelegates,
 			autoRetry = true,
 			getUpdatedEntity = { rawApi.getHealthElement(healthElementId = it).successBody().asIcureStub() },
