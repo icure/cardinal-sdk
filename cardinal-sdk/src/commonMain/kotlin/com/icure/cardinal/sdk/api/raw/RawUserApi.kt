@@ -94,6 +94,11 @@ public interface RawUserApi {
 		properties: List<EncryptedPropertyStub>?,
 	): HttpResponse<User>
 
+	suspend fun deleteProperties(
+		userId: String,
+		propertyTypeIdentifiers: List<String>,
+	): HttpResponse<User>
+
 	suspend fun getToken(
 		userId: String,
 		key: String,
