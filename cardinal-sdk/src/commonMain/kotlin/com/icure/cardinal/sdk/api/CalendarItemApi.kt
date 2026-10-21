@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.api
 import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -102,6 +103,16 @@ interface CalendarItemBasicFlavourlessApi {
 		purgeCalendarItemsByIds(calendarItems.map { calendarItem ->
 			calendarItem.toStoredDocumentIdentifier()
 		})
+
+	/**
+	 * Get all data owners with access to the provided calendar item, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param calendarItem a calendar item
+	 * @return information on users with access to the provided calendar item
+	 */
+	suspend fun getDataOwnersWithAccessTo(calendarItem: CalendarItem): EntityAccessInformation
 }
 
 interface CalendarItemBasicFlavourlessInGroupApi {
@@ -149,6 +160,11 @@ interface CalendarItemBasicFlavourlessInGroupApi {
 	 */
 	suspend fun purgeCalendarItems(calendarItems: List<GroupScoped<CalendarItem>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeCalendarItemsByIds(calendarItems.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [CalendarItemBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(calendarItem: GroupScoped<CalendarItem>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */

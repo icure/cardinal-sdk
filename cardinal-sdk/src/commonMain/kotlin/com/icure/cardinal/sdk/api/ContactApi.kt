@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk.api
 import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -117,6 +118,27 @@ interface ContactBasicFlavourlessApi {
 	 * @return the occurrences for codes of type [codeType] in services.
 	 */
 	suspend fun getServiceCodesOccurrences(codeType: String, minOccurrences: Long): List<LabelledOccurence>
+
+	/**
+	 * Get all data owners with access to the provided contact, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param contact a contact
+	 * @return information on users with access to the provided contact
+	 */
+	suspend fun getDataOwnersWithAccessTo(contact: Contact): EntityAccessInformation
+
+	/**
+	 * Get all data owners with access to the provided service, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata. Services share the security metadata of the contact containing them,
+	 * so this reflects the access to that contact.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param service a service
+	 * @return information on users with access to the provided service
+	 */
+	suspend fun getDataOwnersWithAccessToService(service: Service): EntityAccessInformation
 }
 
 interface ContactBasicFlavourlessInGroupApi {
@@ -164,6 +186,16 @@ interface ContactBasicFlavourlessInGroupApi {
 	 */
 	suspend fun purgeContacts(contacts: List<GroupScoped<Contact>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeContactsByIds(contacts.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(contact: GroupScoped<Contact>): EntityAccessInformation
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessToService].
+	 */
+	suspend fun getDataOwnersWithAccessToService(service: GroupScoped<Service>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */

@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.TopicDelegateOptions
@@ -399,7 +400,8 @@ private class TopicFlavouredInGroupApiImpl<E : Topic>(
 
 @InternalIcureApi
 private abstract class AbstractTopicBasicFlavourless(
-	protected val rawApi: RawTopicApi
+	protected val rawApi: RawTopicApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteTopic(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -434,10 +436,20 @@ private abstract class AbstractTopicBasicFlavourless(
 				rawApi.purgeTopicsInGroup(groupId = groupId, topicIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, topic: Topic): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			topic,
+			EntityWithEncryptionMetadataTypeName.Topic,
+		)
 }
 
 @InternalIcureApi
-private class TopicBasicFlavourlessApiImpl(rawApi: RawTopicApi) : AbstractTopicBasicFlavourless(rawApi), TopicBasicFlavourlessApi {
+private class TopicBasicFlavourlessApiImpl(
+	rawApi: RawTopicApi,
+	config: BasicApiConfiguration
+) : AbstractTopicBasicFlavourless(rawApi, config), TopicBasicFlavourlessApi {
 
 	override suspend fun deleteTopicById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteTopic(groupId = null, entityId, rev)
@@ -451,10 +463,16 @@ private class TopicBasicFlavourlessApiImpl(rawApi: RawTopicApi) : AbstractTopicB
 
 	override suspend fun purgeTopicsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		doPurgeTopics(groupId = null, entityIds = entityIds)
+
+	override suspend fun getDataOwnersWithAccessTo(topic: Topic): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, topic = topic)
 }
 
 @InternalIcureApi
-private class TopicBasicFlavourlessInGroupApiImpl(rawApi: RawTopicApi) : AbstractTopicBasicFlavourless(rawApi), TopicBasicFlavourlessInGroupApi {
+private class TopicBasicFlavourlessInGroupApiImpl(
+	rawApi: RawTopicApi,
+	config: BasicApiConfiguration
+) : AbstractTopicBasicFlavourless(rawApi, config), TopicBasicFlavourlessInGroupApi {
 	override suspend fun deleteTopicById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, it ->
 			doDeleteTopic(groupId, it.id, it.rev)
@@ -473,6 +491,9 @@ private class TopicBasicFlavourlessInGroupApiImpl(rawApi: RawTopicApi) : Abstrac
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeTopics(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(topic: GroupScoped<Topic>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = topic.groupId, topic = topic.entity)
 }
 
 @InternalIcureApi
@@ -501,12 +522,12 @@ private class TopicApiImpl(
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedTopic, Topic>,
 ) : TopicApi,
 	TopicFlavouredApi<DecryptedTopic> by TopicFlavouredApiImpl(rawApi, config, decryptedFlavour),
-	TopicBasicFlavourlessApi by TopicBasicFlavourlessApiImpl(rawApi) {
+	TopicBasicFlavourlessApi by TopicBasicFlavourlessApiImpl(rawApi, config) {
 	override val encrypted: TopicFlavouredApi<EncryptedTopic> = TopicFlavouredApiImpl(rawApi, config, encryptedFlavour)
 	override val tryAndRecover: TopicFlavouredApi<Topic> = TopicFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 	override val inGroup: TopicInGroupApi = object : TopicInGroupApi,
 		TopicFlavouredInGroupApi<DecryptedTopic> by TopicFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
-		TopicBasicFlavourlessInGroupApi by TopicBasicFlavourlessInGroupApiImpl(rawApi) {
+		TopicBasicFlavourlessInGroupApi by TopicBasicFlavourlessInGroupApiImpl(rawApi, config) {
 
 		override val encrypted: TopicFlavouredInGroupApi<EncryptedTopic> = TopicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
 		override val tryAndRecover: TopicFlavouredInGroupApi<Topic> = TopicFlavouredInGroupApiImpl(rawApi, config, tryAndRecoverFlavour)
@@ -792,10 +813,10 @@ private class TopicBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedTopic, EncryptedTopic>,
 ) : TopicBasicApi,
 	TopicBasicFlavouredApi<EncryptedTopic> by TopicBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	TopicBasicFlavourlessApi by TopicBasicFlavourlessApiImpl(rawApi) {
+	TopicBasicFlavourlessApi by TopicBasicFlavourlessApiImpl(rawApi, config) {
 	override val inGroup: TopicBasicInGroupApi = object : TopicBasicInGroupApi,
 		TopicBasicFlavouredInGroupApi<EncryptedTopic> by TopicBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		TopicBasicFlavourlessInGroupApi by TopicBasicFlavourlessInGroupApiImpl(rawApi) {
+		TopicBasicFlavourlessInGroupApi by TopicBasicFlavourlessInGroupApiImpl(rawApi, config) {
 
 		override suspend fun matchTopicsBy(groupId: String, filter: BaseFilterOptions<Topic>): List<String> =
 			rawApi.doMatchTopicsBy(config = config, groupId = groupId, filter = filter)
