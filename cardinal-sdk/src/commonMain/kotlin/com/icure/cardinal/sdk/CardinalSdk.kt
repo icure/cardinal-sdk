@@ -537,12 +537,13 @@ internal suspend fun initializeApiCrypto(
 	val rawPatientApiNoAccessKeys = RawPatientApiImpl(apiUrl, authProvider, null, rawApiConfig)
 	val rawHealthcarePartyApi = RawHealthcarePartyApiImpl(apiUrl, authProvider, rawApiConfig)
 	val rawDeviceApi = RawDeviceApiImpl(apiUrl, authProvider, rawApiConfig)
+	val rawDataOwnerApi = RawDataOwnerApiImpl(
+		apiUrl,
+		authProvider,
+		rawApiConfig
+	)
 	val dataOwnerApi = DataOwnerApiImpl(
-		RawDataOwnerApiImpl(
-			apiUrl,
-			authProvider,
-			rawApiConfig
-		),
+		rawDataOwnerApi,
 		rawHealthcarePartyApi,
 		rawPatientApiNoAccessKeys,
 		rawDeviceApi,
@@ -570,6 +571,7 @@ internal suspend fun initializeApiCrypto(
 	val baseExchangeKeysManager = BaseExchangeKeysManagerImpl(
 		cryptoService,
 		dataOwnerApi,
+		rawDataOwnerApi,
 		rawPatientApiNoAccessKeys,
 		rawDeviceApi,
 		rawHealthcarePartyApi,

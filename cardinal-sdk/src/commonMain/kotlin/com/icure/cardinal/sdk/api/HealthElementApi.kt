@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
@@ -100,6 +101,16 @@ interface HealthElementBasicFlavourlessApi  {
 	 */
 	suspend fun purgeHealthElements(healthElements: List<HealthElement>): List<StoredDocumentIdentifier> =
 		purgeHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * Get all data owners with access to the provided health element, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param healthElement a health element
+	 * @return information on users with access to the provided health element
+	 */
+	suspend fun getDataOwnersWithAccessTo(healthElement: HealthElement): EntityAccessInformation
 }
 
 interface HealthElementBasicFlavourlessInGroupApi  {
@@ -147,6 +158,11 @@ interface HealthElementBasicFlavourlessInGroupApi  {
 	 */
 	suspend fun purgeHealthElements(healthElements: List<GroupScoped<HealthElement>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeHealthElementsByIds(healthElements.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [HealthElementBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(healthElement: GroupScoped<HealthElement>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */

@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.MessageDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.MessageShareOptions
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -403,7 +404,8 @@ private class MessageFlavouredInGroupApiImpl<E : Message>(
 
 @InternalIcureApi
 private abstract class AbstractMessageBasicFlavourless(
-	protected val rawApi: RawMessageApi
+	protected val rawApi: RawMessageApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteMessage(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -438,10 +440,20 @@ private abstract class AbstractMessageBasicFlavourless(
 				rawApi.purgeMessagesInGroup(groupId = groupId, messageIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, message: Message): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			message,
+			EntityWithEncryptionMetadataTypeName.Message,
+		)
 }
 
 @InternalIcureApi
-private class MessageBasicFlavourlessApiImpl(rawApi: RawMessageApi) : AbstractMessageBasicFlavourless(rawApi), MessageBasicFlavourlessApi {
+private class MessageBasicFlavourlessApiImpl(
+	rawApi: RawMessageApi,
+	config: BasicApiConfiguration
+) : AbstractMessageBasicFlavourless(rawApi, config), MessageBasicFlavourlessApi {
 
 	override suspend fun deleteMessageById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteMessage(groupId = null, entityId, rev)
@@ -455,10 +467,16 @@ private class MessageBasicFlavourlessApiImpl(rawApi: RawMessageApi) : AbstractMe
 
 	override suspend fun purgeMessagesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		doPurgeMessages(groupId = null, entityIds = entityIds)
+
+	override suspend fun getDataOwnersWithAccessTo(message: Message): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, message = message)
 }
 
 @InternalIcureApi
-private class MessageBasicFlavourlessInGroupApiImpl(rawApi: RawMessageApi) : AbstractMessageBasicFlavourless(rawApi), MessageBasicFlavourlessInGroupApi {
+private class MessageBasicFlavourlessInGroupApiImpl(
+	rawApi: RawMessageApi,
+	config: BasicApiConfiguration
+) : AbstractMessageBasicFlavourless(rawApi, config), MessageBasicFlavourlessInGroupApi {
 	override suspend fun deleteMessageById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, it ->
 			doDeleteMessage(groupId, it.id, it.rev)
@@ -477,6 +495,9 @@ private class MessageBasicFlavourlessInGroupApiImpl(rawApi: RawMessageApi) : Abs
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeMessages(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(message: GroupScoped<Message>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = message.groupId, message = message.entity)
 }
 
 @InternalIcureApi
@@ -505,14 +526,14 @@ private class MessageApiImpl(
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedMessage, Message>,
 ) : MessageApi,
 	MessageFlavouredApi<DecryptedMessage> by MessageFlavouredApiImpl(rawApi, config, decryptedFlavour),
-	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi) {
+	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi, config) {
 
 	override val encrypted: MessageFlavouredApi<EncryptedMessage> = MessageFlavouredApiImpl(rawApi, config, encryptedFlavour)
 	override val tryAndRecover: MessageFlavouredApi<Message> = MessageFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: MessageInGroupApi = object : MessageInGroupApi,
 		MessageFlavouredInGroupApi<DecryptedMessage> by MessageFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
-		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi) {
+		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi, config) {
 		override val encrypted: MessageFlavouredInGroupApi<EncryptedMessage> =
 			MessageFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
 		override val tryAndRecover: MessageFlavouredInGroupApi<Message> =
@@ -798,10 +819,10 @@ private class MessageBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedMessage, EncryptedMessage>,
 ) : MessageBasicApi,
 	MessageBasicFlavouredApi<EncryptedMessage> by MessageBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi) {
+	MessageBasicFlavourlessApi by MessageBasicFlavourlessApiImpl(rawApi, config) {
 	override val inGroup: MessageBasicInGroupApi = object : MessageBasicInGroupApi,
 		MessageBasicFlavouredInGroupApi<EncryptedMessage> by MessageBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi) {
+		MessageBasicFlavourlessInGroupApi by MessageBasicFlavourlessInGroupApiImpl(rawApi, config) {
 
 		override suspend fun matchMessagesBy(groupId: String, filter: BaseFilterOptions<Message>): List<String> =
 			rawApi.doMatchMessagesBy(config = config, groupId = groupId, filter = filter)

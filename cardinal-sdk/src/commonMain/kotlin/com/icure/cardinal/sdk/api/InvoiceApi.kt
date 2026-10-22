@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -113,6 +114,15 @@ interface InvoiceBasicFlavourlessApi {
 	 */
 	suspend fun getTarificationsCodesOccurrences(minOccurrence: Int): List<LabelledOccurence>
 
+	/**
+	 * Get all data owners with access to the provided invoice, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param invoice an invoice
+	 * @return information on users with access to the provided invoice
+	 */
+	suspend fun getDataOwnersWithAccessTo(invoice: Invoice): EntityAccessInformation
 }
 
 interface InvoiceBasicFlavourlessInGroupApi  {
@@ -160,6 +170,11 @@ interface InvoiceBasicFlavourlessInGroupApi  {
 	 */
 	suspend fun purgeInvoices(invoices: List<GroupScoped<Invoice>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeInvoicesByIds(invoices.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [InvoiceBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(invoice: GroupScoped<Invoice>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */

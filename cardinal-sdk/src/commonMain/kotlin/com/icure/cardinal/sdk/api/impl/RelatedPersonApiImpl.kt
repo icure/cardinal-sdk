@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.RelatedPersonDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.RelatedPersonShareOptions
 import com.icure.cardinal.sdk.exceptions.NotFoundException
@@ -378,7 +379,8 @@ private class RelatedPersonFlavouredInGroupApiImpl<E : RelatedPerson>(
 
 @InternalIcureApi
 private abstract class AbstractRelatedPersonBasicFlavourless(
-	protected val rawApi: RawRelatedPersonApi
+	protected val rawApi: RawRelatedPersonApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteRelatedPerson(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -413,10 +415,20 @@ private abstract class AbstractRelatedPersonBasicFlavourless(
 				rawApi.purgeRelatedPersonsInGroup(groupId = groupId, relatedPersonIds = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, relatedPerson: RelatedPerson): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			relatedPerson,
+			EntityWithEncryptionMetadataTypeName.RelatedPerson,
+		)
 }
 
 @InternalIcureApi
-private class RelatedPersonBasicFlavourlessApiImpl(rawApi: RawRelatedPersonApi) : AbstractRelatedPersonBasicFlavourless(rawApi), RelatedPersonBasicFlavourlessApi {
+private class RelatedPersonBasicFlavourlessApiImpl(
+	rawApi: RawRelatedPersonApi,
+	config: BasicApiConfiguration
+) : AbstractRelatedPersonBasicFlavourless(rawApi, config), RelatedPersonBasicFlavourlessApi {
 
 	override suspend fun deleteRelatedPersonById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteRelatedPerson(groupId = null, entityId, rev)
@@ -430,10 +442,16 @@ private class RelatedPersonBasicFlavourlessApiImpl(rawApi: RawRelatedPersonApi) 
 
 	override suspend fun purgeRelatedPersonsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		doPurgeRelatedPersons(groupId = null, entityIds = entityIds)
+
+	override suspend fun getDataOwnersWithAccessTo(relatedPerson: RelatedPerson): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, relatedPerson = relatedPerson)
 }
 
 @InternalIcureApi
-private class RelatedPersonBasicFlavourlessInGroupApiImpl(rawApi: RawRelatedPersonApi) : AbstractRelatedPersonBasicFlavourless(rawApi), RelatedPersonBasicFlavourlessInGroupApi {
+private class RelatedPersonBasicFlavourlessInGroupApiImpl(
+	rawApi: RawRelatedPersonApi,
+	config: BasicApiConfiguration
+) : AbstractRelatedPersonBasicFlavourless(rawApi, config), RelatedPersonBasicFlavourlessInGroupApi {
 	override suspend fun deleteRelatedPersonById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, it ->
 			doDeleteRelatedPerson(groupId, it.id, it.rev)
@@ -452,6 +470,9 @@ private class RelatedPersonBasicFlavourlessInGroupApiImpl(rawApi: RawRelatedPers
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeRelatedPersons(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(relatedPerson: GroupScoped<RelatedPerson>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = relatedPerson.groupId, relatedPerson = relatedPerson.entity)
 }
 
 @InternalIcureApi
@@ -480,14 +501,14 @@ private class RelatedPersonApiImpl(
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedRelatedPerson, RelatedPerson>,
 ) : RelatedPersonApi,
 	RelatedPersonFlavouredApi<DecryptedRelatedPerson> by RelatedPersonFlavouredApiImpl(rawApi, config, decryptedFlavour),
-	RelatedPersonBasicFlavourlessApi by RelatedPersonBasicFlavourlessApiImpl(rawApi) {
+	RelatedPersonBasicFlavourlessApi by RelatedPersonBasicFlavourlessApiImpl(rawApi, config) {
 
 	override val encrypted: RelatedPersonFlavouredApi<EncryptedRelatedPerson> = RelatedPersonFlavouredApiImpl(rawApi, config, encryptedFlavour)
 	override val tryAndRecover: RelatedPersonFlavouredApi<RelatedPerson> = RelatedPersonFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: RelatedPersonInGroupApi = object : RelatedPersonInGroupApi,
 		RelatedPersonFlavouredInGroupApi<DecryptedRelatedPerson> by RelatedPersonFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
-		RelatedPersonBasicFlavourlessInGroupApi by RelatedPersonBasicFlavourlessInGroupApiImpl(rawApi) {
+		RelatedPersonBasicFlavourlessInGroupApi by RelatedPersonBasicFlavourlessInGroupApiImpl(rawApi, config) {
 		override val encrypted: RelatedPersonFlavouredInGroupApi<EncryptedRelatedPerson> =
 			RelatedPersonFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
 		override val tryAndRecover: RelatedPersonFlavouredInGroupApi<RelatedPerson> =
@@ -738,10 +759,10 @@ private class RelatedPersonBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedRelatedPerson, EncryptedRelatedPerson>,
 ) : RelatedPersonBasicApi,
 	RelatedPersonBasicFlavouredApi<EncryptedRelatedPerson> by RelatedPersonBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	RelatedPersonBasicFlavourlessApi by RelatedPersonBasicFlavourlessApiImpl(rawApi) {
+	RelatedPersonBasicFlavourlessApi by RelatedPersonBasicFlavourlessApiImpl(rawApi, config) {
 	override val inGroup: RelatedPersonBasicInGroupApi = object : RelatedPersonBasicInGroupApi,
 		RelatedPersonBasicFlavouredInGroupApi<EncryptedRelatedPerson> by RelatedPersonBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		RelatedPersonBasicFlavourlessInGroupApi by RelatedPersonBasicFlavourlessInGroupApiImpl(rawApi) {
+		RelatedPersonBasicFlavourlessInGroupApi by RelatedPersonBasicFlavourlessInGroupApiImpl(rawApi, config) {
 
 		override suspend fun matchRelatedPersonsBy(groupId: String, filter: BaseFilterOptions<RelatedPerson>): List<String> =
 			rawApi.doMatchRelatedPersonsBy(config = config, groupId = groupId, filter = filter)

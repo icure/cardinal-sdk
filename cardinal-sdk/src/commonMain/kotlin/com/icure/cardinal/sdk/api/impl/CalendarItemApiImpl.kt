@@ -20,6 +20,7 @@ import com.icure.cardinal.sdk.crypto.entities.CalendarItemDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CalendarItemShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.FailedRequestDetails
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
@@ -522,7 +523,8 @@ private class CalendarItemFlavouredInGroupApiImpl<E : CalendarItem>(
 
 @InternalIcureApi
 private abstract class AbstractCalendarItemBasicFlavourless(
-	protected val rawApi: RawCalendarItemApi
+	protected val rawApi: RawCalendarItemApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteCalendarItemById(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -557,10 +559,20 @@ private abstract class AbstractCalendarItemBasicFlavourless(
 				rawApi.purgeCalendarItemsInGroup(groupId = groupId, calendarItemIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, calendarItem: CalendarItem): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			calendarItem,
+			EntityWithEncryptionMetadataTypeName.CalendarItem,
+		)
 }
 
 @InternalIcureApi
-private class CalendarItemBasicFlavourlessApiImpl(rawApi: RawCalendarItemApi) : AbstractCalendarItemBasicFlavourless(rawApi), CalendarItemBasicFlavourlessApi {
+private class CalendarItemBasicFlavourlessApiImpl(
+	rawApi: RawCalendarItemApi,
+	config: BasicApiConfiguration
+) : AbstractCalendarItemBasicFlavourless(rawApi, config), CalendarItemBasicFlavourlessApi {
 
 	override suspend fun deleteCalendarItemById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteCalendarItemById(groupId = null, entityId, rev)
@@ -574,10 +586,16 @@ private class CalendarItemBasicFlavourlessApiImpl(rawApi: RawCalendarItemApi) : 
 
 	override suspend fun purgeCalendarItemsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		doPurgeCalendarItemsByIds(groupId = null, entityIds = entityIds)
+
+	override suspend fun getDataOwnersWithAccessTo(calendarItem: CalendarItem): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, calendarItem = calendarItem)
 }
 
 @InternalIcureApi
-private class CalendarItemBasicFlavourlessInGroupApiImpl(rawApi: RawCalendarItemApi) : AbstractCalendarItemBasicFlavourless(rawApi), CalendarItemBasicFlavourlessInGroupApi {
+private class CalendarItemBasicFlavourlessInGroupApiImpl(
+	rawApi: RawCalendarItemApi,
+	config: BasicApiConfiguration
+) : AbstractCalendarItemBasicFlavourless(rawApi, config), CalendarItemBasicFlavourlessInGroupApi {
 	override suspend fun deleteCalendarItemById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		GroupScoped(doDeleteCalendarItemById(entityId.groupId, entityId.entity.id, entityId.entity.rev), entityId.groupId)
 
@@ -594,6 +612,9 @@ private class CalendarItemBasicFlavourlessInGroupApiImpl(rawApi: RawCalendarItem
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeCalendarItemsByIds(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(calendarItem: GroupScoped<CalendarItem>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = calendarItem.groupId, calendarItem = calendarItem.entity)
 }
 
 @InternalIcureApi
@@ -627,7 +648,7 @@ private class CalendarItemApiImpl(
 	private val decryptedFlavour: FlavouredApi<EncryptedCalendarItem, DecryptedCalendarItem>,
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedCalendarItem, CalendarItem>
 ) : CalendarItemApi,
-	CalendarItemBasicFlavourlessApi by CalendarItemBasicFlavourlessApiImpl(rawApi),
+	CalendarItemBasicFlavourlessApi by CalendarItemBasicFlavourlessApiImpl(rawApi, config),
 	CalendarItemFlavouredApi<DecryptedCalendarItem> by CalendarItemFlavouredApiImpl(rawApi, config, decryptedFlavour, rawDataOwnerApi, rawPatientApi) {
 	override val encrypted: CalendarItemFlavouredApi<EncryptedCalendarItem> =
 		CalendarItemFlavouredApiImpl(rawApi, config, encryptedFlavour, rawDataOwnerApi, rawPatientApi)
@@ -636,7 +657,7 @@ private class CalendarItemApiImpl(
 		CalendarItemFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour, rawDataOwnerApi, rawPatientApi)
 
 	override val inGroup: CalendarItemInGroupApi = object : CalendarItemInGroupApi,
-		CalendarItemBasicFlavourlessInGroupApi by CalendarItemBasicFlavourlessInGroupApiImpl(rawApi),
+		CalendarItemBasicFlavourlessInGroupApi by CalendarItemBasicFlavourlessInGroupApiImpl(rawApi, config),
 		CalendarItemFlavouredInGroupApi<DecryptedCalendarItem> by CalendarItemFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
 		override val encrypted: CalendarItemFlavouredInGroupApi<EncryptedCalendarItem> =
 			CalendarItemFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
@@ -1097,9 +1118,9 @@ private class CalendarItemBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedCalendarItem, EncryptedCalendarItem>,
 ) : CalendarItemBasicApi,
 	CalendarItemBasicFlavouredApi<EncryptedCalendarItem> by CalendarItemBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	CalendarItemBasicFlavourlessApi by CalendarItemBasicFlavourlessApiImpl(rawApi) {
+	CalendarItemBasicFlavourlessApi by CalendarItemBasicFlavourlessApiImpl(rawApi, config) {
 	override val inGroup: CalendarItemBasicInGroupApi = object : CalendarItemBasicInGroupApi,
-		CalendarItemBasicFlavourlessInGroupApi by CalendarItemBasicFlavourlessInGroupApiImpl(rawApi),
+		CalendarItemBasicFlavourlessInGroupApi by CalendarItemBasicFlavourlessInGroupApiImpl(rawApi, config),
 		CalendarItemBasicFlavouredInGroupApi<EncryptedCalendarItem> by CalendarItemBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchCalendarItemsBy(

@@ -17,6 +17,7 @@ import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -525,6 +526,7 @@ private  class ContactFlavouredInGroupApiImpl<E : Contact, S : Service>(
 @InternalIcureApi
 private abstract class AbstractContactBasicFlavourless(
 	protected val rawApi: RawContactApi,
+	protected val config: BasicApiConfiguration,
 ) {
 
 	protected suspend fun doDeleteContact(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -560,10 +562,26 @@ private abstract class AbstractContactBasicFlavourless(
 			}.successBody().toStoredDocumentIdentifier()
 		}
 
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, contact: Contact): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			contact,
+			EntityWithEncryptionMetadataTypeName.Contact,
+		)
+
+	protected suspend fun doGetDataOwnersWithAccessToService(groupId: String?, service: Service): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			service.asIcureStub(),
+			EntityWithEncryptionMetadataTypeName.Contact,
+		)
 }
 
 @InternalIcureApi
-private class ContactBasicFlavourlessApiImpl(rawApi: RawContactApi) : AbstractContactBasicFlavourless(rawApi), ContactBasicFlavourlessApi {
+private class ContactBasicFlavourlessApiImpl(
+	rawApi: RawContactApi,
+	config: BasicApiConfiguration,
+) : AbstractContactBasicFlavourless(rawApi, config), ContactBasicFlavourlessApi {
 
 	override suspend fun deleteContactById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteContact(groupId = null, entityId, rev)
@@ -581,12 +599,19 @@ private class ContactBasicFlavourlessApiImpl(rawApi: RawContactApi) : AbstractCo
 	override suspend fun getServiceCodesOccurrences(codeType: String, minOccurrences: Long): List<LabelledOccurence> {
 		return rawApi.getServiceCodesOccurrences(codeType = codeType, minOccurrences = minOccurrences).successBody()
 	}
+
+	override suspend fun getDataOwnersWithAccessTo(contact: Contact): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, contact = contact)
+
+	override suspend fun getDataOwnersWithAccessToService(service: Service): EntityAccessInformation =
+		doGetDataOwnersWithAccessToService(groupId = null, service = service)
 }
 
 @InternalIcureApi
 private class ContactBasicFlavourlessInGroupApiImpl(
-	rawApi: RawContactApi
-) : AbstractContactBasicFlavourless(rawApi), ContactBasicFlavourlessInGroupApi {
+	rawApi: RawContactApi,
+	config: BasicApiConfiguration,
+) : AbstractContactBasicFlavourless(rawApi, config), ContactBasicFlavourlessInGroupApi {
 	override suspend fun deleteContactById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, entity ->
 			doDeleteContact(groupId = groupId, entityId = entity.id, rev = entity.rev)
@@ -605,6 +630,12 @@ private class ContactBasicFlavourlessInGroupApiImpl(
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeContacts(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(contact: GroupScoped<Contact>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = contact.groupId, contact = contact.entity)
+
+	override suspend fun getDataOwnersWithAccessToService(service: GroupScoped<Service>): EntityAccessInformation =
+		doGetDataOwnersWithAccessToService(groupId = service.groupId, service = service.entity)
 }
 
 @InternalIcureApi
@@ -632,7 +663,7 @@ private class ContactApiImpl(
 	private val decryptedFlavour: ContactExtendedFlavouredApi<DecryptedContact, DecryptedService>,
 	private val tryAndRecoverFlavour: ContactExtendedFlavouredApi<Contact, Service>
 ) : ContactApi,
-	ContactBasicFlavourlessApi by ContactBasicFlavourlessApiImpl(rawApi),
+	ContactBasicFlavourlessApi by ContactBasicFlavourlessApiImpl(rawApi, config),
 	ContactFlavouredApi<DecryptedContact, DecryptedService> by ContactFlavouredApiImpl(rawApi, config, decryptedFlavour) {
 	private val crypto get() = config.crypto
 
@@ -640,7 +671,7 @@ private class ContactApiImpl(
 	override val tryAndRecover: ContactFlavouredApi<Contact, Service> = ContactFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: ContactInGroupApi = object: ContactInGroupApi,
-		ContactBasicFlavourlessInGroupApi by ContactBasicFlavourlessInGroupApiImpl(rawApi),
+		ContactBasicFlavourlessInGroupApi by ContactBasicFlavourlessInGroupApiImpl(rawApi, config),
 		ContactFlavouredInGroupApi<DecryptedContact, DecryptedService> by ContactFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
 		override val encrypted: ContactFlavouredInGroupApi<EncryptedContact, EncryptedService> =
 			ContactFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
@@ -1064,10 +1095,10 @@ private class ContactBasicApiImpl(
 	private val encryptedFlavour: ContactExtendedFlavouredApi<EncryptedContact, EncryptedService>
 ) : ContactBasicApi,
 	ContactBasicFlavouredApi<EncryptedContact, EncryptedService> by ContactBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	ContactBasicFlavourlessApi by ContactBasicFlavourlessApiImpl(rawApi) {
+	ContactBasicFlavourlessApi by ContactBasicFlavourlessApiImpl(rawApi, config) {
 
 	override val inGroup: ContactBasicInGroupApi = object : ContactBasicInGroupApi,
-		ContactBasicFlavourlessInGroupApi by ContactBasicFlavourlessInGroupApiImpl(rawApi),
+		ContactBasicFlavourlessInGroupApi by ContactBasicFlavourlessInGroupApiImpl(rawApi, config),
 		ContactBasicFlavouredInGroupApi<EncryptedContact, EncryptedService> by ContactBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchContactsBy(
