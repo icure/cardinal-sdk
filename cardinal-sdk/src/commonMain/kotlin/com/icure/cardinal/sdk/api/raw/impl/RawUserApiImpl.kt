@@ -307,6 +307,33 @@ class RawUserApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun deleteToken(
+		userId: String,
+		key: String,
+	): HttpResponse<User> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "token", key)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteAllTokens(
+		userId: String,
+		skip: List<String>?,
+	): HttpResponse<User> =
+		delete(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "user", userId, "token")
+				skip?.forEach {
+					parameter("skip", it)
+				}
+			}
+			accept(Application.Json)
+		}.wrap()
+
 	override suspend fun getToken(
 		userId: String,
 		key: String,
