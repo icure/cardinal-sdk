@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api.raw
 
 import com.icure.cardinal.sdk.model.EncryptedCustomEntityBase
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
@@ -20,88 +21,52 @@ import kotlin.collections.List
 public interface RawCustomEntityApi {
 	// region common endpoints
 
-	suspend fun createCustomEntity(
-		entityType: String,
-		entityDto: EncryptedCustomEntityBase,
-	): HttpResponse<EncryptedCustomEntityBase>
+	suspend fun createCustomEntity(entityDto: EncryptedCustomEntityBase): HttpResponse<EncryptedCustomEntityBase>
 
-	suspend fun createCustomEntities(
-		entityType: String,
-		entityDtos: List<EncryptedCustomEntityBase>,
-	): HttpResponse<List<EncryptedCustomEntityBase>>
+	suspend fun createCustomEntities(entityDtos: List<EncryptedCustomEntityBase>): HttpResponse<List<EncryptedCustomEntityBase>>
 
-	suspend fun getCustomEntity(
-		entityType: String,
-		entityId: String,
-	): HttpResponse<EncryptedCustomEntityBase>
+	suspend fun getCustomEntity(entityId: String): HttpResponse<EncryptedCustomEntityBase>
 
-	suspend fun getCustomEntities(
-		entityType: String,
-		entityIds: ListOfIds,
-	): HttpResponse<List<EncryptedCustomEntityBase>>
+	suspend fun getCustomEntities(entityIds: ListOfIds): HttpResponse<List<EncryptedCustomEntityBase>>
 
-	suspend fun modifyCustomEntity(
-		entityType: String,
-		customEntityDto: EncryptedCustomEntityBase,
-	): HttpResponse<EncryptedCustomEntityBase>
+	suspend fun findCustomEntitiesDelegationsStubsByIds(entityIds: ListOfIds): HttpResponse<List<IcureStub>>
 
-	suspend fun modifyCustomEntities(
-		entityType: String,
-		customEntityDtos: List<EncryptedCustomEntityBase>,
-	): HttpResponse<List<EncryptedCustomEntityBase>>
+	suspend fun modifyCustomEntity(customEntityDto: EncryptedCustomEntityBase): HttpResponse<EncryptedCustomEntityBase>
+
+	suspend fun modifyCustomEntities(customEntityDtos: List<EncryptedCustomEntityBase>): HttpResponse<List<EncryptedCustomEntityBase>>
 
 	suspend fun deleteCustomEntity(
-		entityType: String,
 		entityId: String,
 		rev: String? = null,
 	): HttpResponse<DocIdentifier>
 
-	suspend fun deleteCustomEntities(
-		entityType: String,
-		entityIds: ListOfIdsAndRev,
-	): HttpResponse<List<DocIdentifier>>
+	suspend fun deleteCustomEntities(entityIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
 	suspend fun undeleteCustomEntity(
-		entityType: String,
 		entityId: String,
 		rev: String,
 	): HttpResponse<EncryptedCustomEntityBase>
 
-	suspend fun undeleteCustomEntities(
-		entityType: String,
-		entityIds: ListOfIdsAndRev,
-	): HttpResponse<List<EncryptedCustomEntityBase>>
+	suspend fun undeleteCustomEntities(entityIds: ListOfIdsAndRev): HttpResponse<List<EncryptedCustomEntityBase>>
 
 	suspend fun purgeCustomEntity(
-		entityType: String,
 		entityId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier>
 
-	suspend fun purgeCustomEntities(
-		entityType: String,
-		entityIds: ListOfIdsAndRev,
-	): HttpResponse<List<DocIdentifier>>
+	suspend fun purgeCustomEntities(entityIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>>
 
-	suspend fun bulkShare(
-		entityType: String,
-		request: BulkShareOrUpdateMetadataParams,
-	): HttpResponse<List<EntityBulkShareResult<EncryptedCustomEntityBase>>>
+	suspend fun bulkShare(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<EncryptedCustomEntityBase>>>
 
-	suspend fun bulkShareMinimal(
-		entityType: String,
-		request: BulkShareOrUpdateMetadataParams,
-	): HttpResponse<List<EntityBulkShareResult<Nothing>>>
+	suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>>
 
 	suspend fun getAttachment(
-		entityType: String,
 		entityId: String,
 		key: String,
 		fileName: String? = null,
 	): HttpResponse<ByteArray>
 
 	suspend fun setAttachment(
-		entityType: String,
 		entityId: String,
 		key: String,
 		rev: String,
@@ -115,10 +80,80 @@ public interface RawCustomEntityApi {
 	): HttpResponse<EncryptedCustomEntityBase>
 
 	suspend fun deleteAttachment(
-		entityType: String,
 		entityId: String,
 		key: String,
 		rev: String,
 	): HttpResponse<EncryptedCustomEntityBase>
+	// endregion
+
+	// region cloud endpoints
+
+	suspend fun createCustomEntityInGroup(
+		groupId: String,
+		entityDto: EncryptedCustomEntityBase,
+	): HttpResponse<EncryptedCustomEntityBase>
+
+	suspend fun createCustomEntitiesInGroup(
+		groupId: String,
+		entityDtos: List<EncryptedCustomEntityBase>,
+	): HttpResponse<List<EncryptedCustomEntityBase>>
+
+	suspend fun getCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<EncryptedCustomEntityBase>
+
+	suspend fun getCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIds,
+	): HttpResponse<List<EncryptedCustomEntityBase>>
+
+	suspend fun modifyCustomEntityInGroup(
+		groupId: String,
+		customEntityDto: EncryptedCustomEntityBase,
+	): HttpResponse<EncryptedCustomEntityBase>
+
+	suspend fun modifyCustomEntitiesInGroup(
+		groupId: String,
+		customEntityDtos: List<EncryptedCustomEntityBase>,
+	): HttpResponse<List<EncryptedCustomEntityBase>>
+
+	suspend fun deleteCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+		rev: String? = null,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun deleteCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun undeleteCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+		rev: String,
+	): HttpResponse<EncryptedCustomEntityBase>
+
+	suspend fun undeleteCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedCustomEntityBase>>
+
+	suspend fun purgeCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier>
+
+	suspend fun purgeCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>>
+
+	suspend fun bulkShareInGroup(
+		groupId: String,
+		request: BulkShareOrUpdateMetadataParams,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedCustomEntityBase>>>
 	// endregion
 }

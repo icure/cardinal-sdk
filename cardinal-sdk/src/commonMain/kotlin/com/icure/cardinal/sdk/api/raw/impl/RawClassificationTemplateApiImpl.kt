@@ -36,7 +36,10 @@ class RawClassificationTemplateApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawClassificationTemplateApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.ClassificationTemplate)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
+			groupId,
+			EntityWithEncryptionMetadataTypeName.Builtin.ClassificationTemplate,
+		)
 
 	// region common endpoints
 

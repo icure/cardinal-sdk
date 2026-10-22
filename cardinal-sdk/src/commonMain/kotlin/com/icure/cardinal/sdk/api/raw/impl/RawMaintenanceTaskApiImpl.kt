@@ -48,7 +48,10 @@ class RawMaintenanceTaskApiImpl(
 ) : BaseRawApi(rawApiConfig),
 	RawMaintenanceTaskApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
+			groupId,
+			EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
+		)
 
 	// region common endpoints
 

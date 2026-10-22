@@ -62,13 +62,3 @@ data class CustomEntityShareOptions(
 	@param:DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions.AllAvailable()")
 	override val shareSecretIds: SecretIdShareOptions = SecretIdShareOptions.AllAvailable(),
 ) : SimpleDelegateShareOptions
-
-/**
- * Content and metadata of an attachment to set in a bulk attachments update.
- * @param utis uniform type identifiers for the attachment (https://en.wikipedia.org/wiki/Uniform_Type_Identifier).
- * @param attachment the attachment content.
- */
-class CustomEntityAttachmentInput(
-	val utis: List<String>,
-	val attachment: ByteArray,
-)

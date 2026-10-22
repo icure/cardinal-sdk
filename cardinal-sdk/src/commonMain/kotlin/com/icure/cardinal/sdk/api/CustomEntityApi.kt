@@ -1,7 +1,6 @@
 package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
-import com.icure.cardinal.sdk.crypto.entities.CustomEntityAttachmentInput
 import com.icure.cardinal.sdk.crypto.entities.CustomEntityDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CustomEntityOwningEntity
 import com.icure.cardinal.sdk.crypto.entities.CustomEntityShareOptions
@@ -15,7 +14,6 @@ import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.embed.AccessLevel
-import com.icure.cardinal.sdk.model.requests.customentity.CustomEntityBulkAttachmentUpdateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -38,8 +36,8 @@ import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
  * definition.
  *
  * Custom entities that don't support encryption (e.g. with role-based access control) only use the
- * [DecryptedCustomEntityBase] flavour, and can be created directly with [CustomEntityBasicFlavouredApi.createEntity]
- * without initialising encryption metadata.
+ * [CustomEntityBasicApi], for all users, and can be created directly with [CustomEntityBasicFlavouredApi.createEntity]
+ * without initialising encryption metadata. The [CustomEntityApi] is used only for delegation-based custom entities.
  */
 
 /* This interface includes the API calls that do not need encryption keys and do not return or consume encrypted/decrypted items, they are completely agnostic towards the presence of encrypted items */
@@ -335,24 +333,6 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	@CustomEntityApiMethod(Attachments)
 	suspend fun deleteAttachment(entityId: String, rev: String, key: String): E
 
-	/**
-	 * Sets and/or deletes multiple attachments of a custom entity in a single request, without performing any
-	 * transformation on the attachments. Most notably the attachments will not be encrypted by this method.
-	 * Flavoured method.
-	 * @param entityId the id of the custom entity
-	 * @param rev the last known revision of the custom entity
-	 * @param options metadata of the attachments to set, and keys of the attachments to delete.
-	 * @param attachments content of the attachments to set, by key. Must have exactly the same keys as
-	 * [CustomEntityBulkAttachmentUpdateOptions.updateAttachmentsMetadata].
-	 * @return the updated custom entity
-	 */
-	@CustomEntityApiMethod(Attachments)
-	suspend fun updateRawAttachments(
-		entityId: String,
-		rev: String,
-		options: CustomEntityBulkAttachmentUpdateOptions,
-		attachments: Map<String, ByteArray>,
-	): E
 }
 
 interface CustomEntityBasicFlavouredInGroupApi<E : CustomEntityBase> {
@@ -762,23 +742,6 @@ interface CustomEntityApi : CustomEntityBasicFlavourlessApi, CustomEntityFlavour
 		attachment: ByteArray,
 	): DecryptedCustomEntityBase
 
-	/**
-	 * Encrypts and sets and/or deletes multiple attachments of a custom entity in a single request.
-	 * @param entity a custom entity
-	 * @param setAttachments the clear attachments to encrypt and set, by key.
-	 * @param deleteAttachments keys of the attachments to delete.
-	 * @return the updated custom entity
-	 * @throws EntityEncryptionException if the current user does not have access to any encryption key of the
-	 * provided custom entity.
-	 */
-	@CustomEntityApiMethod(Attachments, Encryption)
-	suspend fun encryptAndUpdateAttachments(
-		entity: CustomEntityBase,
-		@DefaultValue("emptyMap()")
-		setAttachments: Map<String, CustomEntityAttachmentInput> = emptyMap(),
-		@DefaultValue("emptySet()")
-		deleteAttachments: Set<String> = emptySet(),
-	): DecryptedCustomEntityBase
 }
 
 interface CustomEntityInGroupApi : CustomEntityBasicFlavourlessInGroupApi, CustomEntityFlavouredInGroupApi<DecryptedCustomEntityBase> {

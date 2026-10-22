@@ -1,12 +1,14 @@
 package com.icure.cardinal.sdk.api.raw.`impl`
 
-import com.icure.cardinal.sdk.api.raw.BaseRawApi
+import com.icure.cardinal.sdk.api.raw.BaseRawCustomEntityApi
 import com.icure.cardinal.sdk.api.raw.HttpResponse
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
 import com.icure.cardinal.sdk.api.raw.RawCustomEntityApi
 import com.icure.cardinal.sdk.api.raw.wrap
 import com.icure.cardinal.sdk.auth.services.AuthProvider
+import com.icure.cardinal.sdk.crypto.AccessControlKeysHeadersProvider
 import com.icure.cardinal.sdk.model.EncryptedCustomEntityBase
+import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
@@ -36,74 +38,73 @@ import kotlin.collections.List
 class RawCustomEntityApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
+	customEntityType: String,
+	accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
+	usesAccessControlKeys: Boolean,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig),
+) : BaseRawCustomEntityApi(rawApiConfig, customEntityType, accessControlKeysHeadersProvider, usesAccessControlKeys),
 	RawCustomEntityApi {
 	// region common endpoints
 
-	override suspend fun createCustomEntity(
-		entityType: String,
-		entityDto: EncryptedCustomEntityBase,
-	): HttpResponse<EncryptedCustomEntityBase> =
+	override suspend fun createCustomEntity(entityDto: EncryptedCustomEntityBase): HttpResponse<EncryptedCustomEntityBase> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType)
+				appendPathSegments("rest", "v2", "custom", customEntityType)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityDto)
 		}.wrap()
 
-	override suspend fun createCustomEntities(
-		entityType: String,
-		entityDtos: List<EncryptedCustomEntityBase>,
-	): HttpResponse<List<EncryptedCustomEntityBase>> =
+	override suspend fun createCustomEntities(entityDtos: List<EncryptedCustomEntityBase>): HttpResponse<List<EncryptedCustomEntityBase>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "batch")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "batch")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityDtos)
 		}.wrap()
 
-	override suspend fun getCustomEntity(
-		entityType: String,
-		entityId: String,
-	): HttpResponse<EncryptedCustomEntityBase> =
+	override suspend fun getCustomEntity(entityId: String): HttpResponse<EncryptedCustomEntityBase> =
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, entityId)
+				appendPathSegments("rest", "v2", "custom", customEntityType, entityId)
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun getCustomEntities(
-		entityType: String,
-		entityIds: ListOfIds,
-	): HttpResponse<List<EncryptedCustomEntityBase>> =
+	override suspend fun getCustomEntities(entityIds: ListOfIds): HttpResponse<List<EncryptedCustomEntityBase>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "byIds")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "byIds")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(entityIds)
 		}.wrapList()
 
-	override suspend fun modifyCustomEntity(
-		entityType: String,
-		customEntityDto: EncryptedCustomEntityBase,
-	): HttpResponse<EncryptedCustomEntityBase> =
+	override suspend fun findCustomEntitiesDelegationsStubsByIds(entityIds: ListOfIds): HttpResponse<List<IcureStub>> =
+		post(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "delegations")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun modifyCustomEntity(customEntityDto: EncryptedCustomEntityBase): HttpResponse<EncryptedCustomEntityBase> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType)
+				appendPathSegments("rest", "v2", "custom", customEntityType)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -111,13 +112,12 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun modifyCustomEntities(
-		entityType: String,
 		customEntityDtos: List<EncryptedCustomEntityBase>,
 	): HttpResponse<List<EncryptedCustomEntityBase>> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "batch")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "batch")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -125,27 +125,23 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun deleteCustomEntity(
-		entityType: String,
 		entityId: String,
 		rev: String?,
 	): HttpResponse<DocIdentifier> =
 		delete(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, entityId)
+				appendPathSegments("rest", "v2", "custom", customEntityType, entityId)
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun deleteCustomEntities(
-		entityType: String,
-		entityIds: ListOfIdsAndRev,
-	): HttpResponse<List<DocIdentifier>> =
+	override suspend fun deleteCustomEntities(entityIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "delete", "batch")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "delete", "batch")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -153,28 +149,24 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun undeleteCustomEntity(
-		entityType: String,
 		entityId: String,
 		rev: String,
 	): HttpResponse<EncryptedCustomEntityBase> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "undelete", entityId)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "undelete", entityId)
 				parameter("rev", rev)
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun undeleteCustomEntities(
-		entityType: String,
-		entityIds: ListOfIdsAndRev,
-	): HttpResponse<List<EncryptedCustomEntityBase>> =
+	override suspend fun undeleteCustomEntities(entityIds: ListOfIdsAndRev): HttpResponse<List<EncryptedCustomEntityBase>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "undelete", "batch")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "undelete", "batch")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -182,27 +174,23 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun purgeCustomEntity(
-		entityType: String,
 		entityId: String,
 		rev: String,
 	): HttpResponse<DocIdentifier> =
 		delete(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "purge", entityId)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "purge", entityId)
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun purgeCustomEntities(
-		entityType: String,
-		entityIds: ListOfIdsAndRev,
-	): HttpResponse<List<DocIdentifier>> =
+	override suspend fun purgeCustomEntities(entityIds: ListOfIdsAndRev): HttpResponse<List<DocIdentifier>> =
 		post(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "purge", "batch")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "purge", "batch")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -210,27 +198,23 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun bulkShare(
-		entityType: String,
 		request: BulkShareOrUpdateMetadataParams,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedCustomEntityBase>>> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "bulkSharedMetadataUpdate")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "bulkSharedMetadataUpdate")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
 			setBody(request)
 		}.wrap()
 
-	override suspend fun bulkShareMinimal(
-		entityType: String,
-		request: BulkShareOrUpdateMetadataParams,
-	): HttpResponse<List<EntityBulkShareResult<Nothing>>> =
+	override suspend fun bulkShareMinimal(request: BulkShareOrUpdateMetadataParams): HttpResponse<List<EntityBulkShareResult<Nothing>>> =
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, "bulkSharedMetadataUpdateMinimal")
+				appendPathSegments("rest", "v2", "custom", customEntityType, "bulkSharedMetadataUpdateMinimal")
 			}
 			contentType(Application.Json)
 			accept(Application.Json)
@@ -238,7 +222,6 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun getAttachment(
-		entityType: String,
 		entityId: String,
 		key: String,
 		fileName: String?,
@@ -246,7 +229,7 @@ class RawCustomEntityApiImpl(
 		get(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, entityId, "attachments", key)
+				appendPathSegments("rest", "v2", "custom", customEntityType, entityId, "attachments", key)
 				parameter("fileName", fileName)
 				parameter("ts", GMTDate().timestamp)
 			}
@@ -254,7 +237,6 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun setAttachment(
-		entityType: String,
 		entityId: String,
 		key: String,
 		rev: String,
@@ -269,7 +251,7 @@ class RawCustomEntityApiImpl(
 		put(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, entityId, "attachments", key)
+				appendPathSegments("rest", "v2", "custom", customEntityType, entityId, "attachments", key)
 				parameter("rev", rev)
 				utis?.forEach {
 					parameter("utis", it)
@@ -285,7 +267,6 @@ class RawCustomEntityApiImpl(
 		}.wrap()
 
 	override suspend fun deleteAttachment(
-		entityType: String,
 		entityId: String,
 		key: String,
 		rev: String,
@@ -293,10 +274,196 @@ class RawCustomEntityApiImpl(
 		delete(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "custom", entityType, entityId, "attachments", key)
+				appendPathSegments("rest", "v2", "custom", customEntityType, entityId, "attachments", key)
 				parameter("rev", rev)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	// endregion
+
+	// region cloud endpoints
+
+	override suspend fun createCustomEntityInGroup(
+		groupId: String,
+		entityDto: EncryptedCustomEntityBase,
+	): HttpResponse<EncryptedCustomEntityBase> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityDto)
+		}.wrap()
+
+	override suspend fun createCustomEntitiesInGroup(
+		groupId: String,
+		entityDtos: List<EncryptedCustomEntityBase>,
+	): HttpResponse<List<EncryptedCustomEntityBase>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityDtos)
+		}.wrap()
+
+	override suspend fun getCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+	): HttpResponse<EncryptedCustomEntityBase> =
+		get(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, entityId)
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIds,
+	): HttpResponse<List<EncryptedCustomEntityBase>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "byIds")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
+		}.wrapList()
+
+	override suspend fun modifyCustomEntityInGroup(
+		groupId: String,
+		customEntityDto: EncryptedCustomEntityBase,
+	): HttpResponse<EncryptedCustomEntityBase> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(customEntityDto)
+		}.wrap()
+
+	override suspend fun modifyCustomEntitiesInGroup(
+		groupId: String,
+		customEntityDtos: List<EncryptedCustomEntityBase>,
+	): HttpResponse<List<EncryptedCustomEntityBase>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(customEntityDtos)
+		}.wrap()
+
+	override suspend fun deleteCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+		rev: String?,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, entityId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun deleteCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "delete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun undeleteCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+		rev: String,
+	): HttpResponse<EncryptedCustomEntityBase> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "undelete", entityId)
+				parameter("rev", rev)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun undeleteCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIdsAndRev,
+	): HttpResponse<List<EncryptedCustomEntityBase>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "undelete", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun purgeCustomEntityInGroup(
+		groupId: String,
+		entityId: String,
+		rev: String,
+	): HttpResponse<DocIdentifier> =
+		delete(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "purge", entityId)
+				parameter("rev", rev)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun purgeCustomEntitiesInGroup(
+		groupId: String,
+		entityIds: ListOfIdsAndRev,
+	): HttpResponse<List<DocIdentifier>> =
+		post(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "purge", "batch")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(entityIds)
+		}.wrap()
+
+	override suspend fun bulkShareInGroup(
+		groupId: String,
+		request: BulkShareOrUpdateMetadataParams,
+	): HttpResponse<List<EntityBulkShareResult<EncryptedCustomEntityBase>>> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "custom", customEntityType, "inGroup", groupId, "bulkSharedMetadataUpdate")
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(request)
 		}.wrap()
 
 	// endregion
