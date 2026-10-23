@@ -749,10 +749,10 @@ private class ContactApiImpl(
 			)
 
 		override suspend fun decryptPatientIdOf(contact: GroupScoped<Contact>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOf(contact.groupId, contact.entity).mapNullGroupTo(contact.groupId)
+			doDecryptPatientIdOf(contact.groupId, contact.entity).withExplicitBoundGroup(config)
 
 		override suspend fun decryptPatientIdOfService(service: GroupScoped<Service>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOfService(service.groupId, service.entity).mapNullGroupTo(service.groupId)
+			doDecryptPatientIdOfService(service.groupId, service.entity).withExplicitBoundGroup(config)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<Contact>,
@@ -863,7 +863,7 @@ private class ContactApiImpl(
 					patientGroup,
 					patient.id,
 					crypto.entity.resolveSecretIdOption(
-						entityGroupId,
+						patientGroup,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId

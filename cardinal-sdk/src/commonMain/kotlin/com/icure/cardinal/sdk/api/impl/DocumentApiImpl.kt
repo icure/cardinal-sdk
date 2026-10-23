@@ -558,14 +558,15 @@ private class DocumentApiImpl(
 			alternateRootDelegateId: String?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
 				alternateRootDelegateId,
 				OwningEntityDetails(
-					entityGroupId,
+					message.groupId,
 					message.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, message.entity, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
+					crypto.entity.resolveSecretIdOption(message.groupId, message.entity, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
 				)
 			),
 			entityGroupId,
@@ -581,14 +582,15 @@ private class DocumentApiImpl(
 			alternateRootDelegateId: String?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
 				alternateRootDelegateId,
 				OwningEntityDetails(
-					entityGroupId,
+					message.groupId,
 					message.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, message.entity, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
+					crypto.entity.resolveSecretIdOption(message.groupId, message.entity, EntityWithEncryptionMetadataTypeName.Builtin.Message, secretId)
 				)
 			),
 			entityGroupId,
@@ -604,14 +606,15 @@ private class DocumentApiImpl(
 			alternateRootDelegateId: String?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
 				alternateRootDelegateId,
 				OwningEntityDetails(
-					entityGroupId,
+					patient.groupId,
 					patient.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, patient.entity, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
+					crypto.entity.resolveSecretIdOption(patient.groupId, patient.entity, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
 				)
 			),
 			entityGroupId,
@@ -627,14 +630,15 @@ private class DocumentApiImpl(
 			alternateRootDelegateId: String?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
 				alternateRootDelegateId,
 				OwningEntityDetails(
-					entityGroupId,
+					patient.groupId,
 					patient.entity.id,
-					crypto.entity.resolveSecretIdOption(entityGroupId, patient.entity, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
+					crypto.entity.resolveSecretIdOption(patient.groupId, patient.entity, EntityWithEncryptionMetadataTypeName.Builtin.Patient, secretId)
 				)
 			),
 			entityGroupId,
@@ -648,6 +652,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateId: String?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -665,6 +670,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateId: String?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -696,7 +702,7 @@ private class DocumentApiImpl(
 			doHasWriteAccess(document.groupId, document.entity)
 
 		override suspend fun decryptOwningEntityIdsOf(document: GroupScoped<Document>): Set<EntityReferenceInGroup> =
-			doDecryptOwningEntityIdsOf(document.groupId, document.entity)
+			doDecryptOwningEntityIdsOf(document.groupId, document.entity).withExplicitBoundGroup(config)
 
 		override suspend fun matchDocumentsBy(groupId: String, filter: FilterOptions<Document>): List<String> =
 			doMatchDocumentsBy(groupId, filter)
@@ -716,6 +722,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadata(
+			null,
 			base,
 			user,
 			delegates,
@@ -736,6 +743,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadataAndDelegates(
+			null,
 			base,
 			user,
 			delegates,
@@ -756,6 +764,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadata(
+			null,
 			base,
 			user,
 			delegates,
@@ -776,6 +785,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadataAndDelegates(
+			null,
 			base,
 			user,
 			delegates,
@@ -793,7 +803,7 @@ private class DocumentApiImpl(
 		delegates: Map<String, AccessLevel>,
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
-		doWithEncryptionMetadata(base, user, delegates, alternateRootDelegateId, null)
+		doWithEncryptionMetadata(null, base, user, delegates, alternateRootDelegateId, null)
 
 	override suspend fun withEncryptionMetadataAndDelegatesUnlinked(
 		base: DecryptedDocument?,
@@ -801,9 +811,10 @@ private class DocumentApiImpl(
 		user: User?,
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
-		doWithEncryptionMetadataAndDelegates(base, user, delegates, alternateRootDelegateId, null)
+		doWithEncryptionMetadataAndDelegates(null, base, user, delegates, alternateRootDelegateId, null)
 
 	private suspend fun doWithEncryptionMetadata(
+		entityGroupId: String?,
 		base: DecryptedDocument?,
 		user: User?,
 		delegates: Map<String, AccessLevel>,
@@ -811,6 +822,7 @@ private class DocumentApiImpl(
 		owningEntityDetails: OwningEntityDetails?,
 	) =
 		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
 			base = base,
 			user = user,
 			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
@@ -819,6 +831,7 @@ private class DocumentApiImpl(
 		)
 
 	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
 		base: DecryptedDocument?,
 		user: User?,
 		delegates: Map<String, DelegateOptions>,
@@ -826,7 +839,7 @@ private class DocumentApiImpl(
 		owningEntityDetails: OwningEntityDetails?,
 	) =
 		crypto.entity.entityWithInitializedEncryptedMetadata(
-			entityGroupId = null,
+			entityGroupId = entityGroupId,
 			entity = (base ?: DecryptedDocument(crypto.primitives.strongRandom.randomUUID())).copy(
 				created = base?.created ?: currentEpochMs(),
 				modified = base?.modified ?: currentEpochMs(),

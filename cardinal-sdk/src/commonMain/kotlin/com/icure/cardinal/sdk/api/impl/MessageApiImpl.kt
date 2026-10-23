@@ -612,7 +612,7 @@ private class MessageApiImpl(
 			doHasWriteAccess(message.groupId, message.entity)
 
 		override suspend fun decryptPatientIdOf(message: GroupScoped<Message>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOf(message.groupId, message.entity).mapNullGroupTo(message.groupId)
+			doDecryptPatientIdOf(message.groupId, message.entity).withExplicitBoundGroup(config)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<Message>,
@@ -699,7 +699,7 @@ private class MessageApiImpl(
 					patientGroup,
 					patient.id,
 					config.crypto.entity.resolveSecretIdOption(
-						entityGroupId,
+						patientGroup,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId

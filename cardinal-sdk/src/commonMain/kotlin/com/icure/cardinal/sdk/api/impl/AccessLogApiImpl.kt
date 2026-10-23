@@ -558,7 +558,7 @@ private class AccessLogApiImpl(
 			)
 
 		override suspend fun decryptPatientIdOf(accessLog: GroupScoped<AccessLog>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOf(accessLog.groupId, accessLog.entity).mapNullGroupTo(accessLog.groupId)
+			doDecryptPatientIdOf(accessLog.groupId, accessLog.entity).withExplicitBoundGroup(config)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<AccessLog>,
@@ -694,7 +694,7 @@ private class AccessLogApiImpl(
 					patientGroup,
 					patient.id,
 					crypto.entity.resolveSecretIdOption(
-						entityGroupId,
+						patientGroup,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId

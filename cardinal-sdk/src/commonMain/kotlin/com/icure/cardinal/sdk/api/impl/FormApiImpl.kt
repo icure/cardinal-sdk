@@ -775,7 +775,7 @@ private class FormApiImpl(
 			)
 
 		override suspend fun decryptPatientIdOf(form: GroupScoped<Form>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOf(form.groupId, form.entity).mapNullGroupTo(form.groupId)
+			doDecryptPatientIdOf(form.groupId, form.entity).withExplicitBoundGroup(config)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<Form>,
@@ -874,7 +874,7 @@ private class FormApiImpl(
 					groupId = patientGroup,
 					id = patient.id,
 					secretIds = crypto.entity.resolveSecretIdOption(
-						entityGroupId,
+						patientGroup,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId

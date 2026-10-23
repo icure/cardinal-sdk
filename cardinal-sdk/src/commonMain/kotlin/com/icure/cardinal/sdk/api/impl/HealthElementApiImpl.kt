@@ -599,7 +599,7 @@ private class HealthElementApiImpl(
 			doHasWriteAccess(healthElement.groupId, healthElement.entity)
 
 		override suspend fun decryptPatientIdOf(healthElement: GroupScoped<HealthElement>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOf(healthElement.groupId, healthElement.entity).mapNullGroupTo(healthElement.groupId)
+			doDecryptPatientIdOf(healthElement.groupId, healthElement.entity).withExplicitBoundGroup(config)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<HealthElement>,
@@ -686,7 +686,7 @@ private class HealthElementApiImpl(
 					patientGroup,
 					patient.id,
 					config.crypto.entity.resolveSecretIdOption(
-						entityGroupId,
+						patientGroup,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId

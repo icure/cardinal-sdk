@@ -730,7 +730,7 @@ private class CalendarItemApiImpl(
 			)
 
 		override suspend fun decryptPatientIdOf(calendarItem: GroupScoped<CalendarItem>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOf(calendarItem.groupId, calendarItem.entity).mapNullGroupTo(calendarItem.groupId)
+			doDecryptPatientIdOf(calendarItem.groupId, calendarItem.entity).withExplicitBoundGroup(config)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<CalendarItem>,
@@ -877,7 +877,7 @@ private class CalendarItemApiImpl(
 					patientGroup,
 					patient.id,
 					crypto.entity.resolveSecretIdOption(
-						entityGroupId,
+						patientGroup,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId

@@ -6,9 +6,11 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.Identifiable
 import com.icure.cardinal.sdk.model.base.Versionable
+import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.utils.InternalIcureApi
+import kotlinx.coroutines.currentCoroutineContext
 
 internal fun <T> Map<String, T>.keyAsLocalDataOwnerReferences() =
 	mapKeys { EntityReferenceInGroup(it.key, null) }
@@ -78,6 +80,19 @@ fun EntityAccessInformation.mapNullGroupTo(groupId: String): EntityAccessInforma
 fun Set<EntityReferenceInGroup>.mapNullGroupTo(groupId: String): Set<EntityReferenceInGroup> = mapTo(mutableSetOf()) {
 	if (it.groupId == null) EntityReferenceInGroup(entityId = it.entityId, groupId = groupId) else it
 }
+
+/**
+ * References parsed from an entity have a null group id when they point to the group the sdk is bound to, regardless
+ * of the group of the entity. In-group apis instead always fill the group id: this maps the null group ids to the group
+ * the sdk is bound to.
+ */
+@InternalIcureApi
+internal suspend fun Set<EntityReferenceInGroup>.withExplicitBoundGroup(config: BasicApiConfiguration): Set<EntityReferenceInGroup> =
+	mapNullGroupTo(
+		ensureNonNull(config.getBoundGroup(currentCoroutineContext())) {
+			"In-group methods are not available when connected to a kraken-lite instance"
+		}.groupId
+	)
 
 internal inline fun <E, T> groupScopedWith(input: GroupScoped<E>, block: (groupId: String, entity: E) -> T): GroupScoped<T> =
 	GroupScoped(

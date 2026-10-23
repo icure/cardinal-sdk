@@ -673,7 +673,7 @@ private class InvoiceApiImpl(
 			doHasWriteAccess(invoice.groupId, invoice.entity)
 
 		override suspend fun decryptPatientIdOf(invoice: GroupScoped<Invoice>): Set<EntityReferenceInGroup> =
-			doDecryptPatientIdOf(invoice.groupId, invoice.entity).mapNullGroupTo(invoice.groupId)
+			doDecryptPatientIdOf(invoice.groupId, invoice.entity).withExplicitBoundGroup(config)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
 			entity: GroupScoped<Invoice>,
@@ -808,7 +808,7 @@ private class InvoiceApiImpl(
 					groupId = patientGroup,
 					id = patient.id,
 					secretIds = config.crypto.entity.resolveSecretIdOption(
-						entityGroupId,
+						patientGroup,
 						patient,
 						EntityWithEncryptionMetadataTypeName.Builtin.Patient,
 						secretId
