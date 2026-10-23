@@ -3,6 +3,7 @@ package com.icure.cardinal.sdk
 import com.icure.cardinal.sdk.api.AgendaApi
 import com.icure.cardinal.sdk.api.AuthApi
 import com.icure.cardinal.sdk.api.CalendarItemTypeApi
+import com.icure.cardinal.sdk.api.CustomEntityBasicApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
 import com.icure.cardinal.sdk.api.GroupApi
 import com.icure.cardinal.sdk.api.InsuranceApi
@@ -31,6 +32,7 @@ import com.icure.cardinal.sdk.api.impl.initCalendarItemBasicApi
 import com.icure.cardinal.sdk.api.impl.initContactBasicApi
 import com.icure.cardinal.sdk.api.impl.initDocumentBasicApi
 import com.icure.cardinal.sdk.api.impl.initFormBasicApi
+import com.icure.cardinal.sdk.api.impl.initCustomEntityBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementBasicApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceBasicApi
 import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskApi
@@ -58,6 +60,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawFilterApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawCustomEntityApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthElementApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawICureApiImpl
@@ -211,6 +214,17 @@ interface CardinalBaseSdk : CardinalBaseApis {
 	 * @return a new sdk for executing requests as the provided data owner
 	 */
 	suspend fun changeScope(dataOwnerId: String): CardinalBaseSdk
+
+	/**
+	 * Creates the basic api for a custom entity type.
+	 *
+	 * This api is not meant to be used directly: the customised SDK generator creates a typed wrapper over it for each
+	 * custom entity definition.
+	 *
+	 * @param entityTypeId the identifier of the custom entity type.
+	 */
+	@InternalIcureApi
+	fun customEntityBasicApi(entityTypeId: String): CustomEntityBasicApi
 
 	/**
 	 * Use the authentication for this base sdk to create a full sdk for the same user. Can only be used if the
@@ -697,6 +711,20 @@ private class CardinalBaseSdkImpl(
 		groupId,
 		options,
 	)
+
+	override fun customEntityBasicApi(entityTypeId: String): CustomEntityBasicApi =
+		initCustomEntityBasicApi(
+			RawCustomEntityApiImpl(
+				config.apiUrl,
+				authProvider,
+				entityTypeId,
+				NoAccessControlKeysHeadersProvider,
+				false,
+				config.rawApiConfig,
+			),
+			config,
+			entityTypeId,
+		)
 
 	override suspend fun changeScope(dataOwnerId: String): CardinalBaseSdk = CardinalBaseSdkImpl(
 		authProvider.changeScope(dataOwnerId),

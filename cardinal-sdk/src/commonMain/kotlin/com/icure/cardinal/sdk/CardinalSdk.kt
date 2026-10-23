@@ -16,6 +16,8 @@ import com.icure.cardinal.sdk.api.FilterApi
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
 import com.icure.cardinal.sdk.api.GroupApi
+import com.icure.cardinal.sdk.api.CustomEntityApi
+import com.icure.cardinal.sdk.api.CustomEntityBasicApi
 import com.icure.cardinal.sdk.api.HealthElementApi
 import com.icure.cardinal.sdk.api.HealthcarePartyApi
 import com.icure.cardinal.sdk.api.InsuranceApi
@@ -56,6 +58,8 @@ import com.icure.cardinal.sdk.api.impl.initCalendarItemApi
 import com.icure.cardinal.sdk.api.impl.initContactApi
 import com.icure.cardinal.sdk.api.impl.initDocumentApi
 import com.icure.cardinal.sdk.api.impl.initFormApi
+import com.icure.cardinal.sdk.api.impl.initCustomEntityApi
+import com.icure.cardinal.sdk.api.impl.initCustomEntityBasicApi
 import com.icure.cardinal.sdk.api.impl.initHealthElementApi
 import com.icure.cardinal.sdk.api.impl.initInvoiceApi
 import com.icure.cardinal.sdk.api.impl.initMaintenanceTaskApi
@@ -86,6 +90,7 @@ import com.icure.cardinal.sdk.api.raw.impl.RawFilterApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
+import com.icure.cardinal.sdk.api.raw.impl.RawCustomEntityApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthElementApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawICureApiImpl
@@ -230,6 +235,36 @@ interface CardinalSdk : CardinalApis {
 	 * @return a new sdk for executing requests as the provided data owner
 	 */
 	suspend fun changeScope(dataOwnerId: String): CardinalSdk
+
+	/**
+	 * Creates the api for a delegation-based custom entity type.
+	 *
+	 * This api is not meant to be used directly: the customised SDK generator creates a typed wrapper over it for each
+	 * custom entity definition.
+	 *
+	 * @param entityTypeId the identifier of the custom entity type. The type must be encryptable (have an encryption
+	 * manifest) and must be included in the known custom entity types of the customised SDK options.
+	 * @param usesAccessControlKeys if true the requests of the api will include the access control keys headers for
+	 * the custom entity type, allowing anonymous data owners to access the entities.
+	 * @throws IllegalArgumentException if the custom entity type is not known or not encryptable.
+	 */
+	@InternalIcureApi
+	fun customEntityApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityApi
+
+	/**
+	 * Creates the basic api for a custom entity type, used for custom entity types that are not encryptable.
+	 *
+	 * This api is not meant to be used directly: the customised SDK generator creates a typed wrapper over it for each
+	 * custom entity definition.
+	 *
+	 * @param entityTypeId the identifier of the custom entity type.
+	 * @param usesAccessControlKeys if true the requests of the api will include the access control keys headers for
+	 * the custom entity type. In that case the type must be included in the known custom entity types of the
+	 * customised SDK options.
+	 * @throws IllegalArgumentException if [usesAccessControlKeys] is true and the custom entity type is not known.
+	 */
+	@InternalIcureApi
+	fun customEntityBasicApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityBasicApi
 
 	/**
 	 * Exposes the scope used by the SDK to perform background tasks.
@@ -1094,6 +1129,40 @@ internal class CardinalSdkImpl(
 	override val agenda: AgendaApi by lazy {
 		AgendaApiImpl(RawAgendaApiImpl(apiUrl, authProvider, config.rawApiConfig), config)
 	}
+
+	override fun customEntityApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityApi {
+		requireKnownCustomEntityType(entityTypeId)
+		return initCustomEntityApi(
+			rawCustomEntityApi(entityTypeId, usesAccessControlKeys),
+			config,
+			entityTypeId,
+		)
+	}
+
+	override fun customEntityBasicApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityBasicApi {
+		if (usesAccessControlKeys) requireKnownCustomEntityType(entityTypeId)
+		return initCustomEntityBasicApi(
+			rawCustomEntityApi(entityTypeId, usesAccessControlKeys),
+			config,
+			entityTypeId,
+		)
+	}
+
+	private fun requireKnownCustomEntityType(entityTypeId: String) {
+		require(EntityWithEncryptionMetadataTypeName.Custom(entityTypeId) in options.knownEntityTypes) {
+			"Custom entity type $entityTypeId is not included in the known custom entity types of the customised SDK options"
+		}
+	}
+
+	private fun rawCustomEntityApi(entityTypeId: String, usesAccessControlKeys: Boolean) =
+		RawCustomEntityApiImpl(
+			apiUrl,
+			authProvider,
+			entityTypeId,
+			config.crypto.headersProvider,
+			usesAccessControlKeys,
+			config.rawApiConfig,
+		)
 
 	override suspend fun switchGroup(groupId: String): CardinalSdk =
 		withSwitchedProvider(authProvider.switchGroup(groupId), groupId)

@@ -10,29 +10,25 @@ import kotlinx.serialization.Serializable
  * Specifies how a new delegation-based custom entity is linked to its owning entity.
  *
  * The owning entity can be of any type supporting encryption metadata, builtin or custom.
- * The link between the custom entity and its owner is made of two optional parts:
- * - a secret id of the owning entity, stored in the secret foreign keys of the new custom entity, controlled by
- * [secretId]. This allows finding the custom entity starting from the owning entity (e.g. like a HealthElement can be
- * found starting from a Patient).
- * - the id of the owning entity, encrypted and stored in the new custom entity, controlled by [includeOwningEntityId].
- * This allows to find the owning entity starting from the custom entity.
- *
- * At least one of the two parts must be used.
+ * The link between the custom entity and its owner is made of:
+ * - the id of the owning entity (including its group, if different from the group of the new custom entity), always
+ * stored encrypted in the new custom entity. This allows finding the owning entity starting from the custom entity.
+ * - optionally, secret ids of the owning entity, stored in the secret foreign keys of the new custom entity, controlled
+ * by [secretId]. This allows finding the custom entity starting from the owning entity (e.g. like a HealthElement can
+ * be found starting from a Patient). Use [SecretIdUseOption.UseNone] if the current user can't access any secret id of
+ * the owning entity.
  *
  * @param T the type of the owning entity: `HasEncryptionMetadata` for apis working in the current group, or
  * `GroupScoped<HasEncryptionMetadata>` for in-group apis.
  * @param entity the owning entity.
  * @param entityType the type of the owning entity, needed to access its security metadata.
  * @param secretId specifies which secret ids of the owning entity to use for the link.
- * @param includeOwningEntityId if true the (encrypted) id of the owning entity is stored in the new custom entity.
  */
 data class CustomEntityOwningEntity<out T : Any>(
 	val entity: T,
 	val entityType: EntityWithEncryptionMetadataTypeName,
 	@param:DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
 	val secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
-	@param:DefaultValue("true")
-	val includeOwningEntityId: Boolean = true,
 )
 
 @OptIn(InternalIcureApi::class)

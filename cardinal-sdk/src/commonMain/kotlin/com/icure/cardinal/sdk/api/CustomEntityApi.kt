@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.CustomEntityDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.CustomEntityOwningEntity
 import com.icure.cardinal.sdk.crypto.entities.CustomEntityShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
 import com.icure.cardinal.sdk.model.CustomEntityBase
 import com.icure.cardinal.sdk.model.DecryptedCustomEntityBase
@@ -130,6 +131,17 @@ interface CustomEntityBasicFlavourlessApi {
 	 */
 	@CustomEntityApiMethod(Attachments)
 	suspend fun getRawAttachment(entityId: String, key: String): ByteArray
+
+	/**
+	 * Get all data owners with access to the provided custom entity, attempting to identify any unknown anonymous data
+	 * owners using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param entity a custom entity
+	 * @return information on users with access to the provided custom entity
+	 */
+	@CustomEntityApiMethod(Encryption)
+	suspend fun getDataOwnersWithAccessTo(entity: CustomEntityBase): EntityAccessInformation
 }
 
 interface CustomEntityBasicFlavourlessInGroupApi {
@@ -185,6 +197,12 @@ interface CustomEntityBasicFlavourlessInGroupApi {
 	@CustomEntityApiMethod(Crud)
 	suspend fun purgeEntities(entities: List<GroupScoped<CustomEntityBase>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeEntitiesByIds(entities.toStoredDocumentIdentifier())
+
+	/**
+	 * In-group version of [CustomEntityBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	@CustomEntityApiMethod(Encryption)
+	suspend fun getDataOwnersWithAccessTo(entity: GroupScoped<CustomEntityBase>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
