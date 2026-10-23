@@ -22,6 +22,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Lazy
 import kotlin.String
 import kotlin.Suppress
@@ -96,6 +97,7 @@ internal object AccessLogEncryptorFactory : EntityEncryptorFactory<EncryptedAcce
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
+			currentVersion = manifest.currentVersion,
 		)
 	}
 }
@@ -119,11 +121,15 @@ private class AccessLogEncryptor(
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
+	private val currentVersion: Int?,
 ) : AbstractEntityEncryptor<EncryptedAccessLog, DecryptedAccessLog>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedAccessLog,
 	): EncryptedAccessLog {
+		require(clearEntity.customisedModelVersion == currentVersion) {
+			"""Can't encrypt AccessLog with customised model version ${clearEntity.customisedModelVersion}: only entities at the current customised model version $currentVersion can be encrypted, the entity must be migrated first"""
+		}
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
 		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)

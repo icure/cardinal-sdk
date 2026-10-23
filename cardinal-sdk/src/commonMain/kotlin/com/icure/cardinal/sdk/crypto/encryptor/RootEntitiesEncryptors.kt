@@ -53,5 +53,10 @@ internal data class RootEntitiesEncryptors(
 	 */
 	val customEntities: Map<String, EntityEncryptors<EncryptedCustomEntityBase, DecryptedCustomEntityBase>>
 ) {
-	val serviceDecryptor = (contact.decryptor as ContactDecryptor).servicesDecryptor.value
+	// Lazy: contact may not be supported by the SDK, in which case its decryptor is not a ContactDecryptor and fails on use
+	val serviceDecryptor by lazy {
+		(contact.decryptor as? ContactDecryptor)?.servicesDecryptor?.value ?: throw UnsupportedOperationException(
+			"Contact entities are not supported by this SDK: the configuration of the customised SDK should include Contact to use services."
+		)
+	}
 }

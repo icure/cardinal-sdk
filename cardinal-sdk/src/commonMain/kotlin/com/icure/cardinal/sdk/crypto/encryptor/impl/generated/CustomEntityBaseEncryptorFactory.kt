@@ -30,13 +30,11 @@ internal object CustomEntityBaseEncryptorFactory {
 	): EntityEncryptor<EncryptedCustomEntityBase, DecryptedCustomEntityBase> {
 		val manifest = encryptorsFactoryContext.getCustomEntityManifest(customEntityTypeId)
 		val extensionsEncryptor =
-			manifest.currentExtensionsManifest?.let {
-				encryptorsFactoryContext.getExtensionEncryptorsProvider(
-					extensionsManifestName = it,
-					encryptedClass = EncryptedCustomEntityBase::class,
-					decryptedClass = DecryptedCustomEntityBase::class,
-				)
-			}
+			encryptorsFactoryContext.getExtensionEncryptorsProvider(
+				extensionsManifestName = manifest.currentExtensionsManifest,
+				encryptedClass = EncryptedCustomEntityBase::class,
+				decryptedClass = DecryptedCustomEntityBase::class,
+			)
 		return CustomEntityBaseEncryptor(
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,

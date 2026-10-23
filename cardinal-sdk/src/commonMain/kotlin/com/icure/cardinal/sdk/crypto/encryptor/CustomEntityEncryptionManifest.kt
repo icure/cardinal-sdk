@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 /**
  * An encryption manifest for a specific type of custom entity.
  * The actual custom properties encryption is handled by the [extensionsManifestsByModelVersion] and
- * [currentExtensionsManifest] properties.;
+ * [currentVersion] properties.
  */
 @Serializable
 data class CustomEntityEncryptionManifest(
@@ -21,15 +21,26 @@ data class CustomEntityEncryptionManifest(
 	 *
 	 * Unlike builtin entities the version number is enough for a given custom entity type, since it is not possible to
 	 * use embedded builtin entities in a fully custom entity.
+	 *
+	 * Every version of the custom entity must be present, even if it has nothing to encrypt (using an empty extensions
+	 * manifest), as entities with a version that is not in this map can't be decrypted.
 	 */
 	val extensionsManifestsByModelVersion: Map<Int, String>,
 	/**
-	 * Specifies how to encrypt the extensions, matches the current version of custom entity (the value is a key of
-	 * [EntitiesEncryptionManifests.extensionsManifestsByName]).
+	 * The current version of the custom entity type. Entities can only be encrypted if they have this version (older
+	 * entities must be migrated first), and their extensions are encrypted using the extensions manifest of this version.
 	 */
-	val currentExtensionsManifest: String?
+	val currentVersion: Int,
 ) : EntityEncryptionManifest {
+	/**
+	 * The extensions manifest to use for the encryption, a key of [EntitiesEncryptionManifests.extensionsManifestsByName].
+	 */
+	val currentExtensionsManifest: String get() = extensionsManifestsByModelVersion.getValue(currentVersion)
+
 	init {
+		require(currentVersion in extensionsManifestsByModelVersion) {
+			"The current version $currentVersion must be in extensionsManifestsByModelVersion"
+		}
 		// CustomEntityBase can't have an encryptedSelf (and can't embed other encryptable entities), so for now only the
 		// extensions can be encrypted. If this changes the encryptor generation for CustomEntityBase must be updated too.
 		require(fieldsToEncrypt.isEmpty()) {

@@ -29,7 +29,18 @@ data class BuiltinEntityEncryptionManifest(
 	 * [EntitiesEncryptionManifests.extensionsManifestsByName]).
 	 * This is always the same independently of the root model.
 	 */
-	val currentExtensionsManifest: String?
+	val currentExtensionsManifest: String?,
+	/**
+	 * Only meaningful for manifests of root entities with a customisable model (e.g. Patient), ignored for manifests of
+	 * embedded entities: the customised model version that entities must have to be encrypted with this manifest.
+	 * Entities at older versions must be migrated to the current version before being encrypted, otherwise they would
+	 * be encrypted using a different manifest than the one used for their decryption.
+	 *
+	 * Null for roots that are not customised: in this case the entities to encrypt must also have no customised model
+	 * version. If not null, the version must be in [extensionsManifestsByModelVersion] for the root entity type, and
+	 * map to [currentExtensionsManifest].
+	 */
+	val currentVersion: Int? = null,
 ) : EntityEncryptionManifest {
 	init {
 		require (!recursiveEncryption.keys.intersects(fieldsToEncrypt)) {

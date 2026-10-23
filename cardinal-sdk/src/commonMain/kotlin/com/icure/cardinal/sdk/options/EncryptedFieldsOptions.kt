@@ -362,6 +362,15 @@ private val defaultEntitiesEncryptionManifests = createDefaultEntitiesEncryption
 private val legacyEntitiesEncryptionManifests = createDefaultEntitiesEncryptionManifests(useLegacyServiceContentEncryption = true)
 
 // TODO will be non-nullable later on, everything must be defined by the custom config, even if it matches default / base
+/**
+ * Encryption configuration of a customised SDK, merged with the base manifests (default or legacy, depending on
+ * [useLegacyBase]) to build the full [EntitiesEncryptionManifests].
+ *
+ * The root entities that can be configured by a customised SDK ([accessLog], [calendarItem], [contact],
+ * [healthElement], [patient], [message], [topic], [document], [relatedPerson]) are not supported by the SDK if null:
+ * attempting to encrypt or decrypt them will fail. The other root entities ([form], [receipt], [classification],
+ * [invoice]) use the base manifest if null.
+ */
 @Serializable
 data class PartialEncryptedManifest(
 	val manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
@@ -423,18 +432,20 @@ private fun PartialEncryptedManifest.buildFullManifest(): EntitiesEncryptionMani
 		manifestsByName = manifestsByName + maskedBaseManifestsByName,
 		customEntitiesManifestByEntityTypeId = customEntitiesManifestByEntityTypeId,
 		extensionsManifestsByName = extensionsManifestsByName,
-		accessLog = accessLog ?: base.accessLog.masked(),
-		calendarItem = calendarItem ?: base.calendarItem.masked(),
-		contact = contact ?: base.contact.masked(),
-		healthElement = healthElement ?: base.healthElement.masked(),
-		patient = patient ?: base.patient.masked(),
-		message = message ?: base.message.masked(),
-		topic = topic ?: base.topic.masked(),
-		document = document ?: base.document.masked(),
+		// Roots configurable by a customised SDK are not supported if not configured, while the others (system
+		// entities) always use the base manifests.
+		accessLog = accessLog,
+		calendarItem = calendarItem,
+		contact = contact,
+		healthElement = healthElement,
+		patient = patient,
+		message = message,
+		topic = topic,
+		document = document,
 		form = form ?: base.form.masked(),
 		receipt = receipt ?: base.receipt.masked(),
 		classification = classification ?: base.classification.masked(),
 		invoice = invoice ?: base.invoice.masked(),
-		relatedPerson = relatedPerson ?: base.relatedPerson.masked(),
+		relatedPerson = relatedPerson,
 	)
 }

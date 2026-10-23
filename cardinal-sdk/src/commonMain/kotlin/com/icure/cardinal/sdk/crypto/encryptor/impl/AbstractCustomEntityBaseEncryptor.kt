@@ -18,22 +18,16 @@ internal abstract class AbstractCustomEntityBaseEncryptor(
 	private val customEntityTypeId: String,
 	cryptoService: CryptoService,
 ) : AbstractEntityEncryptor<EncryptedCustomEntityBase, DecryptedCustomEntityBase>(cryptoService) {
-	// The extensions are always encrypted using the current extensions manifest: an entity can be encrypted only if
-	// the extensions manifest of its version is the current one, otherwise it would be decrypted using a different
-	// manifest than the one used for encryption.
-	private val encryptableModelVersions: Set<Int> =
-		manifest.extensionsManifestsByModelVersion.filterValues { it == manifest.currentExtensionsManifest }.keys
+	private val currentVersion: Int = manifest.currentVersion
 
 	final override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedCustomEntityBase,
 	): EncryptedCustomEntityBase {
-		val customisedModelVersion = clearEntity.customisedModelVersion
-		require(customisedModelVersion != null) {
-			"Fully custom entity should always have a model version"
-		}
-		require(customisedModelVersion in encryptableModelVersions) {
-			"Can't encrypt custom entity of type $customEntityTypeId with version $customisedModelVersion: the entity should be migrated to a version using the current extensions manifest ($encryptableModelVersions)"
+		// The extensions are always encrypted using the extensions manifest of the current version: entities at older
+		// versions would be decrypted using a different manifest than the one used for encryption.
+		require(clearEntity.customisedModelVersion == currentVersion) {
+			"Can't encrypt custom entity of type $customEntityTypeId with version ${clearEntity.customisedModelVersion}: only entities at the current version $currentVersion can be encrypted, the entity must be migrated first"
 		}
 		return encryptValidated(encryptionKey, clearEntity)
 	}

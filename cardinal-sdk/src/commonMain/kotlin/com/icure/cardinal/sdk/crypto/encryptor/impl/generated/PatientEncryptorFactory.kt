@@ -45,6 +45,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Int
 import kotlin.Lazy
 import kotlin.String
 import kotlin.Suppress
@@ -389,6 +390,7 @@ internal object PatientEncryptorFactory : EntityEncryptorFactory<EncryptedPatien
 			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
+			currentVersion = manifest.currentVersion,
 		)
 	}
 }
@@ -462,11 +464,15 @@ private class PatientEncryptor(
 	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
+	private val currentVersion: Int?,
 ) : AbstractEntityEncryptor<EncryptedPatient, DecryptedPatient>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedPatient,
 	): EncryptedPatient {
+		require(clearEntity.customisedModelVersion == currentVersion) {
+			"""Can't encrypt Patient with customised model version ${clearEntity.customisedModelVersion}: only entities at the current customised model version $currentVersion can be encrypted, the entity must be migrated first"""
+		}
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
 			dataToEncrypt["identifier"] =
