@@ -408,7 +408,7 @@ private abstract class AbstractAccessLogBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			accessLog,
-			EntityWithEncryptionMetadataTypeName.AccessLog,
+			EntityWithEncryptionMetadataTypeName.Builtin.AccessLog,
 		)
 }
 

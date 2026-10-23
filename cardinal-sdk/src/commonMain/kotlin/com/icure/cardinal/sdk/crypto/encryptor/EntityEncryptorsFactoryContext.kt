@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 
 /**
  * A context used with [EntityEncryptorFactory.create] for creating multiple [EntityEncryptor]s that use an
- * [EntityEncryptionManifest] coming from the same group of [EntitiesEncryptionManifests].
+ * [BuiltinEntityEncryptionManifest] coming from the same group of [EntitiesEncryptionManifests].
  */
 @InternalIcureApi
 internal interface EntityEncryptorsFactoryContext {
@@ -46,7 +46,12 @@ internal interface EntityEncryptorsFactoryContext {
 	/**
 	 * Get the manifest with the given name, fails if the manifest is not available in this context.
 	 */
-	fun getManifest(manifestName: String): EntityEncryptionManifest
+	fun getManifest(manifestName: String): BuiltinEntityEncryptionManifest
+
+	/**
+	 * Get the manifest for the custom entity of the given entity type id.
+	 */
+	fun getCustomEntityManifest(entityTypeId: String): CustomEntityEncryptionManifest
 
 	/**
 	 * Get the decrypted json patcher to use for a certain manifest.

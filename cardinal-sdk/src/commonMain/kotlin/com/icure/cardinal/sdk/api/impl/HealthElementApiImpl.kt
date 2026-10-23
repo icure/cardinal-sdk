@@ -427,7 +427,7 @@ private abstract class AbstractHealthElementBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			healthElement,
-			EntityWithEncryptionMetadataTypeName.HealthElement,
+			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 		)
 }
 

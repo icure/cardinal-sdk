@@ -566,14 +566,14 @@ private abstract class AbstractContactBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			contact,
-			EntityWithEncryptionMetadataTypeName.Contact,
+			EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 		)
 
 	protected suspend fun doGetDataOwnersWithAccessToService(groupId: String?, service: Service): EntityAccessInformation =
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			service.asIcureStub(),
-			EntityWithEncryptionMetadataTypeName.Contact,
+			EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 		)
 }
 

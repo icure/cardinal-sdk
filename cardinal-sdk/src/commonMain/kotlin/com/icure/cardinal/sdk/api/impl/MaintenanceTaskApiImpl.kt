@@ -10,7 +10,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
@@ -194,7 +194,7 @@ internal fun initMaintenanceTaskApi(
 		DecryptedMaintenanceTask
 		>(
 		"MaintenanceTask",
-		mapOf("MaintenanceTask" to EntityEncryptionManifest(
+		mapOf("MaintenanceTask" to BuiltinEntityEncryptionManifest(
 			setOf("properties"),
 			emptyMap(),
 			emptyMap(),

@@ -7,7 +7,8 @@ import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
 import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptorsInitializer
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.CustomEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
@@ -15,11 +16,13 @@ import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.RootEntitiesEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.CustomEntityBaseEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.LegacyServiceEncryptorFactory
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedClassification
 import com.icure.cardinal.sdk.model.DecryptedContact
+import com.icure.cardinal.sdk.model.DecryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
@@ -33,6 +36,7 @@ import com.icure.cardinal.sdk.model.EncryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedClassification
 import com.icure.cardinal.sdk.model.EncryptedContact
+import com.icure.cardinal.sdk.model.EncryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.EncryptedDocument
 import com.icure.cardinal.sdk.model.EncryptedForm
 import com.icure.cardinal.sdk.model.EncryptedHealthElement
@@ -46,7 +50,6 @@ import com.icure.cardinal.sdk.model.embed.DecryptedService
 import com.icure.cardinal.sdk.model.embed.Encryptable
 import com.icure.cardinal.sdk.model.embed.EncryptedService
 import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
-import com.icure.cardinal.sdk.utils.ensure
 import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
@@ -120,7 +123,7 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 
 	override fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> initializeSingleEntityEncryptors(
 		mainManifestName: String,
-		manifestsByName: Map<String, EntityEncryptionManifest>,
+		manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
 		encryptorOptions: EncryptorOptions,
 		decryptorOptions: DecryptorOptions,
 		sharedOptions: SharedEncryptorsOptions,
@@ -128,11 +131,12 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		mainManifestDecryptedEntity: KClass<DECRYPTED>,
 	): EntityEncryptors<ENCRYPTED, DECRYPTED> {
 		val context = initializeContext(
-			manifestsByName,
-			encryptorOptions,
-			decryptorOptions,
-			sharedOptions,
-			emptyMap() // Only used without custom extensions
+			manifestsByName = manifestsByName,
+			customEntityManifestsByName = emptyMap(),
+			encryptorOptions = encryptorOptions,
+			decryptorOptions = decryptorOptions,
+			sharedOptions = sharedOptions,
+			extensionsManifestsByName = emptyMap() // Only used without custom extensions
 		)
 		context.markManifestTypeAndQueueGeneration(mainManifestName, mainManifestEncryptedEntity, mainManifestDecryptedEntity)
 		generateQueuedAndDependencies(context)
@@ -149,12 +153,30 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		sharedOptions: SharedEncryptorsOptions,
 	): RootEntitiesEncryptors {
 		val context = initializeContext(
-			manifests.manifestsByName,
-			encryptorOptions,
-			decryptorOptions,
-			sharedOptions,
-			manifests.extensionsManifestsByName,
+			manifestsByName = manifests.manifestsByName,
+			customEntityManifestsByName = manifests.customEntitiesManifestByEntityTypeId,
+			encryptorOptions = encryptorOptions,
+			decryptorOptions = decryptorOptions,
+			sharedOptions = sharedOptions,
+			extensionsManifestsByName = manifests.extensionsManifestsByName,
 		)
+		val customEntitiesEncryptors = manifests.customEntitiesManifestByEntityTypeId.keys.associateWith { typeId ->
+			EntityEncryptors(
+				CustomEntityBaseEncryptorFactory.create(
+					customEntityTypeId = typeId,
+					encryptorsFactoryContext = context,
+					encodingJson = context.encryptedContentJson,
+					cryptoService = context.cryptoService,
+				),
+				CustomEntityBaseDecryptorFactory.create(
+					customEntityTypeId = typeId,
+					encryptorsFactoryContext = context,
+					cryptoService = context.cryptoService,
+					encryptedContentDecoder = context.encryptedContentJson,
+					unversionedEntitiesDecryptedJsonStrictness = context.unversionedEntitiesDecryptedJsonStrictness
+				)
+			)
+		}
 		fillInitialQueue(context, manifests)
 		generateQueuedAndDependencies(context)
 		@Suppress("UNCHECKED_CAST")
@@ -198,6 +220,7 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 			relatedPerson = ensureNonNull(context.manifestToEncryptors[manifests.relatedPerson]) {
 				"Encryptor ${manifests.relatedPerson} for RelatedPerson should have been initialized."
 			} as EntityEncryptors<EncryptedRelatedPerson, DecryptedRelatedPerson>,
+			customEntities = customEntitiesEncryptors,
 		)
 	}
 
@@ -274,7 +297,8 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		)
 
 	private fun initializeContext(
-		manifestsByName: Map<String, EntityEncryptionManifest>,
+		manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+		customEntityManifestsByName: Map<String, CustomEntityEncryptionManifest>,
 		encryptorOptions: EncryptorOptions,
 		decryptorOptions: DecryptorOptions,
 		sharedOptions: SharedEncryptorsOptions,
@@ -291,10 +315,12 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		encryptedContentJson = sharedOptions.json,
 		unversionedEntitiesDecryptedJsonStrictness = decryptorOptions.unversionedEntitiesDecryptedJsonStrictness,
 		extensionsManifestsByName = extensionsManifestsByName,
+		customEntityManifestsByName = customEntityManifestsByName,
 	)
 
 	private class Context(
-		private val manifestsByName: Map<String, EntityEncryptionManifest>,
+		private val manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+		private val customEntityManifestsByName: Map<String, CustomEntityEncryptionManifest>,
 		private val factories: Map<Pair<KClass<*>, KClass<*>>, Factories<*, *>>,
 		override val serializeEncryptedSelfUsingLegacyNames: Boolean,
 		val cryptoService: CryptoService,
@@ -391,9 +417,14 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 			}.also { initializedExtensionsLazies[extensionsManifestName] = it }
 		}
 
-		override fun getManifest(manifestName: String): EntityEncryptionManifest =
+		override fun getManifest(manifestName: String): BuiltinEntityEncryptionManifest =
 			ensureNonNull(manifestsByName[manifestName]) {
 				"Manifest $manifestName is not defined." // Validation with better error messages is done at init of EntitiesEncryptionManifests
+			}
+
+		override fun getCustomEntityManifest(entityTypeId: String): CustomEntityEncryptionManifest =
+			ensureNonNull(customEntityManifestsByName[entityTypeId]) {
+				"Custom entity manifest $entityTypeId is not defined."
 			}
 
 		fun markManifestTypeAndQueueGeneration(manifestName: String, encryptedClass: KClass<out Encryptable>, decryptedClass: KClass<out Encryptable>) {

@@ -564,7 +564,7 @@ private abstract class AbstractCalendarItemBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			calendarItem,
-			EntityWithEncryptionMetadataTypeName.CalendarItem,
+			EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem,
 		)
 }
 

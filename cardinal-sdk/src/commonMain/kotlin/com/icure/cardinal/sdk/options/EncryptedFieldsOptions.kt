@@ -2,7 +2,8 @@ package com.icure.cardinal.sdk.options
 
 import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.CustomEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptionManifest
 import kotlinx.serialization.Serializable
 
@@ -42,19 +43,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 	useLegacyServiceContentEncryption: Boolean,
 ) = EntitiesEncryptionManifests(
 	manifestsByName = listOfNotNull(
-		"Annotation" to EntityEncryptionManifest(
+		"Annotation" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("markdown"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"CalendarItemTag" to EntityEncryptionManifest(
+		"CalendarItemTag" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("code", "date", "userId", "userName"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Service" to EntityEncryptionManifest(
+		"Service" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("comment"),
 			recursiveEncryption = listOfNotNull(
 				"notes" to "Annotation",
@@ -64,7 +65,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 			currentExtensionsManifest = null,
 		),
 		if (useLegacyServiceContentEncryption) null else (
-			"Content" to EntityEncryptionManifest(
+			"Content" to BuiltinEntityEncryptionManifest(
 				fieldsToEncrypt = setOf(
 					"stringValue",
 					"numberValue",
@@ -86,19 +87,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 				currentExtensionsManifest = null,
 			)
 		),
-		"CareTeamMember" to EntityEncryptionManifest(
+		"CareTeamMember" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("careTeamMemberType", "healthcarePartyId", "quality"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Episode" to EntityEncryptionManifest(
+		"Episode" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("name", "comment"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Insurability" to EntityEncryptionManifest(
+		"Insurability" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"identificationNumber",
 				"parameters",
@@ -114,19 +115,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Partnership" to EntityEncryptionManifest(
+		"Partnership" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("type", "status", "partnerId"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"PatientHealthCareParty" to EntityEncryptionManifest(
+		"PatientHealthCareParty" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("type", "healthcarePartyId", "sendFormats", "referralPeriods", "properties"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"FinancialInstitutionInformation" to EntityEncryptionManifest(
+		"FinancialInstitutionInformation" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"name",
 				"key",
@@ -140,19 +141,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"SchoolingInfo" to EntityEncryptionManifest(
+		"SchoolingInfo" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("startDate", "endDate", "school", "typeOfEducation"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"EmploymentInfo" to EntityEncryptionManifest(
+		"EmploymentInfo" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("startDate", "endDate", "professionType", "employer"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"MedicalHouseContract" to EntityEncryptionManifest(
+		"MedicalHouseContract" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"contractId",
 				"validFrom",
@@ -191,7 +192,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"AccessLog" to EntityEncryptionManifest(
+		"AccessLog" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"detail",
 				"objectId",
@@ -201,7 +202,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"CalendarItem" to EntityEncryptionManifest(
+		"CalendarItem" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"details",
 				"title",
@@ -217,7 +218,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Contact" to EntityEncryptionManifest(
+		"Contact" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"descr",
 				"location",
@@ -232,7 +233,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"HealthElement" to EntityEncryptionManifest(
+		"HealthElement" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"descr",
 				"note",
@@ -246,7 +247,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Patient" to EntityEncryptionManifest(
+		"Patient" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"note",
 				"created",
@@ -282,19 +283,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Message" to EntityEncryptionManifest(
+		"Message" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("subject"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Topic" to EntityEncryptionManifest(
+		"Topic" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("description", "linkedServices", "linkedHealthElements"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Document" to EntityEncryptionManifest(
+		"Document" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"medicalLocationId", // Deprecated and ignored unless using the legacy support SDK
 				"name",
@@ -303,31 +304,31 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Form" to EntityEncryptionManifest(
+		"Form" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("descr"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Receipt" to EntityEncryptionManifest(
+		"Receipt" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("references"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Classification" to EntityEncryptionManifest(
+		"Classification" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("label"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Invoice" to EntityEncryptionManifest(
+		"Invoice" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("reason"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"RelatedPerson" to EntityEncryptionManifest(
+		"RelatedPerson" to BuiltinEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"created",
 				"modified",
@@ -354,6 +355,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 	classification = "Classification",
 	invoice = "Invoice",
 	relatedPerson = "RelatedPerson",
+	customEntitiesManifestByEntityTypeId = emptyMap(),
 )
 
 private val defaultEntitiesEncryptionManifests = createDefaultEntitiesEncryptionManifests(useLegacyServiceContentEncryption = false)
@@ -362,7 +364,8 @@ private val legacyEntitiesEncryptionManifests = createDefaultEntitiesEncryptionM
 // TODO will be non-nullable later on, everything must be defined by the custom config, even if it matches default / base
 @Serializable
 data class PartialEncryptedManifest(
-	val manifestsByName: Map<String, EntityEncryptionManifest>,
+	val manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+	val customEntitiesManifestByEntityTypeId: Map<String, CustomEntityEncryptionManifest>,
 	val extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest>,
 	val accessLog: String? = null,
 	val calendarItem: String? = null,
@@ -381,9 +384,9 @@ data class PartialEncryptedManifest(
 )
 
 /*
- * Names of the builtin manifests (entity or extensions manifests) that clash with a name provided by the custom
- * configuration can't be used as-is: instead of failing we mask them by prepending underscores until we get a name
- * that is not used by the custom configuration nor by any other (masked or not) builtin manifest name.
+ * Names of the builtin entity manifests that clash with a name provided by the custom configuration can't be used
+ * as-is: instead of failing we mask them by prepending underscores until we get a name that is not used by the custom
+ * configuration nor by any other (masked or not) builtin manifest name.
  */
 private fun maskClashingBaseNames(baseNames: Set<String>, customNames: Set<String>): Map<String, String> {
 	val takenNames = (baseNames + customNames).toMutableSet()
@@ -399,38 +402,27 @@ private fun maskClashingBaseNames(baseNames: Set<String>, customNames: Set<Strin
 	return translations
 }
 
-private fun ExtensionsEncryptionManifest.Recursive.masked(mask: Map<String, String>): ExtensionsEncryptionManifest.Recursive = when (this) {
-	is ExtensionsEncryptionManifest.Recursive.Collection -> ExtensionsEncryptionManifest.Recursive.Collection(recursive.masked(mask))
-	is ExtensionsEncryptionManifest.Recursive.Map -> ExtensionsEncryptionManifest.Recursive.Map(recursive.masked(mask))
-	is ExtensionsEncryptionManifest.Recursive.Object -> ExtensionsEncryptionManifest.Recursive.Object(mask[manifestName] ?: manifestName)
-}
-
-private fun ExtensionsEncryptionManifest.masked(mask: Map<String, String>): ExtensionsEncryptionManifest = ExtensionsEncryptionManifest(
-	fullEncryptionFields = fullEncryptionFields,
-	recursiveEncryptionFields = recursiveEncryptionFields.mapValues { (_, recursive) -> recursive.masked(mask) },
-)
-
 private fun PartialEncryptedManifest.buildFullManifest(): EntitiesEncryptionManifests {
 	val base = if (useLegacyBase) legacyEntitiesEncryptionManifests else defaultEntitiesEncryptionManifests
+	// Only the builtin entity manifests of the base need masking. If the base ever defines extensions or custom entities
+	// manifests, they will need to be masked as well. Builtin manifests can't reference extensions manifests not in the base.
+	check(base.extensionsManifestsByName.isEmpty()) {
+		"Base manifests should not define extensions manifests"
+	}
+	check(base.customEntitiesManifestByEntityTypeId.isEmpty()) {
+		"Base manifests should not define custom entities manifests"
+	}
 	val baseNameMask = maskClashingBaseNames(base.manifestsByName.keys, manifestsByName.keys)
-	val baseExtensionsNameMask = maskClashingBaseNames(base.extensionsManifestsByName.keys, extensionsManifestsByName.keys)
 	fun String.masked() = baseNameMask[this] ?: this
-	fun String.maskedExtension() = baseExtensionsNameMask[this] ?: this
 	val maskedBaseManifestsByName = base.manifestsByName.entries.associate { (name, manifest) ->
 		name.masked() to manifest.copy(
 			recursiveEncryption = manifest.recursiveEncryption.mapValues { (_, referencedName) -> referencedName.masked() },
-			extensionsManifestsByModelVersion = manifest.extensionsManifestsByModelVersion.mapValues { (_, byVersion) ->
-				byVersion.mapValues { (_, extensionsManifestName) -> extensionsManifestName.maskedExtension() }
-			},
-			currentExtensionsManifest = manifest.currentExtensionsManifest?.maskedExtension(),
 		)
-	}
-	val maskedBaseExtensionsManifestsByName = base.extensionsManifestsByName.entries.associate { (name, manifest) ->
-		name.maskedExtension() to manifest.masked(baseExtensionsNameMask)
 	}
 	return EntitiesEncryptionManifests(
 		manifestsByName = manifestsByName + maskedBaseManifestsByName,
-		extensionsManifestsByName = extensionsManifestsByName + maskedBaseExtensionsManifestsByName,
+		customEntitiesManifestByEntityTypeId = customEntitiesManifestByEntityTypeId,
+		extensionsManifestsByName = extensionsManifestsByName,
 		accessLog = accessLog ?: base.accessLog.masked(),
 		calendarItem = calendarItem ?: base.calendarItem.masked(),
 		contact = contact ?: base.contact.masked(),

@@ -8,7 +8,7 @@ import com.icure.cardinal.sdk.crypto.EntityEncryptionService
 import com.icure.cardinal.sdk.crypto.UserEncryptionKeysManager
 import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
 import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEntityEncryptors
@@ -56,7 +56,7 @@ class DelegationsDeAnonymizationImpl(
 		DecryptedSecureDelegationKeyMap
 	>(
 		"SecureDelegationKeyMap",
-		mapOf("SecureDelegationKeyMap" to EntityEncryptionManifest(setOf("delegate", "delegator"), emptyMap(), emptyMap(), null)),
+		mapOf("SecureDelegationKeyMap" to BuiltinEntityEncryptionManifest(setOf("delegate", "delegator"), emptyMap(), emptyMap(), null)),
 		// Currently the maintenance task encryptor does not depend on the options so we can actually use anything here
 		EncryptorOptions(
 			useLegacyServiceContentEncryption = false,

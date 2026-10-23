@@ -505,7 +505,7 @@ private abstract class AbstractFormBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			form,
-			EntityWithEncryptionMetadataTypeName.Form,
+			EntityWithEncryptionMetadataTypeName.Builtin.Form,
 		)
 }
 

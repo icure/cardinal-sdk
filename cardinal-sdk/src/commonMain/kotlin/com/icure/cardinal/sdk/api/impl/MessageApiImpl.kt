@@ -445,7 +445,7 @@ private abstract class AbstractMessageBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			message,
-			EntityWithEncryptionMetadataTypeName.Message,
+			EntityWithEncryptionMetadataTypeName.Builtin.Message,
 		)
 }
 

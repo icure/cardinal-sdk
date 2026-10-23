@@ -384,7 +384,7 @@ private abstract class AbstractReceiptBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			receipt,
-			EntityWithEncryptionMetadataTypeName.Receipt,
+			EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
 		)
 }
 

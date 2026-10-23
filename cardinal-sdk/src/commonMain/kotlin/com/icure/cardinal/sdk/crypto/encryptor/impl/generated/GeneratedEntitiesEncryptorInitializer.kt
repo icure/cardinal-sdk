@@ -10,7 +10,6 @@ import com.icure.cardinal.sdk.model.DecryptedArticle
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedClassification
 import com.icure.cardinal.sdk.model.DecryptedContact
-import com.icure.cardinal.sdk.model.DecryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
@@ -30,7 +29,6 @@ import com.icure.cardinal.sdk.model.EncryptedArticle
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedClassification
 import com.icure.cardinal.sdk.model.EncryptedContact
-import com.icure.cardinal.sdk.model.EncryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.EncryptedDocument
 import com.icure.cardinal.sdk.model.EncryptedForm
 import com.icure.cardinal.sdk.model.EncryptedHealthElement
@@ -194,14 +192,6 @@ internal object GeneratedEntitiesEncryptorInitializer : AbstractEntitiesEncrypto
 				AbstractEntitiesEncryptorsInitializer.Factories(
 					encryptor = ContentEncryptorFactory,
 					decryptor = ContentDecryptorFactory,
-				),
-			Pair(
-				EncryptedCustomEntityBase::class,
-				DecryptedCustomEntityBase::class,
-			) to
-				AbstractEntitiesEncryptorsInitializer.Factories(
-					encryptor = CustomEntityBaseEncryptorFactory,
-					decryptor = CustomEntityBaseDecryptorFactory,
 				),
 			Pair(
 				EncryptedDocument::class,

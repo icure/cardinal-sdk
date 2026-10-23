@@ -420,7 +420,7 @@ private abstract class AbstractRelatedPersonBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			relatedPerson,
-			EntityWithEncryptionMetadataTypeName.RelatedPerson,
+			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
 		)
 }
 

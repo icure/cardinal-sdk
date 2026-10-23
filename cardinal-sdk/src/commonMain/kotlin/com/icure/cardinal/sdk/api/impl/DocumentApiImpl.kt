@@ -406,7 +406,7 @@ private abstract class AbstractDocumentBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			document,
-			EntityWithEncryptionMetadataTypeName.Document,
+			EntityWithEncryptionMetadataTypeName.Builtin.Document,
 		)
 }
 

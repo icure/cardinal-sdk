@@ -11,7 +11,7 @@ internal interface EntitiesEncryptorsInitializer {
 	 */
 	fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> initializeSingleEntityEncryptors(
 		mainManifestName: String,
-		manifestsByName: Map<String, EntityEncryptionManifest>,
+		manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
 		encryptorOptions: EncryptorOptions,
 		decryptorOptions: DecryptorOptions,
 		sharedOptions: SharedEncryptorsOptions,
@@ -36,7 +36,7 @@ internal inline fun <
 	reified DECRYPTED : Encryptable
 > EntitiesEncryptorsInitializer.initializeSingleEntityEncryptors(
 	mainManifestName: String,
-	manifestsByName: Map<String, EntityEncryptionManifest>,
+	manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
 	encryptorOptions: EncryptorOptions,
 	decryptorOptions: DecryptorOptions,
 	sharedOptions: SharedEncryptorsOptions,

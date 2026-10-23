@@ -506,7 +506,7 @@ private abstract class AbstractInvoiceBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			invoice,
-			EntityWithEncryptionMetadataTypeName.Invoice,
+			EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 		)
 }
 

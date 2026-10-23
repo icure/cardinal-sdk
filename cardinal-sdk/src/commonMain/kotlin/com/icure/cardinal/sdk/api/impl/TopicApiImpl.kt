@@ -431,7 +431,7 @@ private abstract class AbstractTopicBasicFlavourless(
 		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
 			groupId,
 			topic,
-			EntityWithEncryptionMetadataTypeName.Topic,
+			EntityWithEncryptionMetadataTypeName.Builtin.Topic,
 		)
 }
 

@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedClassification
 import com.icure.cardinal.sdk.model.DecryptedContact
+import com.icure.cardinal.sdk.model.DecryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
@@ -19,6 +20,7 @@ import com.icure.cardinal.sdk.model.EncryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
 import com.icure.cardinal.sdk.model.EncryptedClassification
 import com.icure.cardinal.sdk.model.EncryptedContact
+import com.icure.cardinal.sdk.model.EncryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.EncryptedDocument
 import com.icure.cardinal.sdk.model.EncryptedForm
 import com.icure.cardinal.sdk.model.EncryptedHealthElement
@@ -46,6 +48,10 @@ internal data class RootEntitiesEncryptors(
 	val classification: EntityEncryptors<EncryptedClassification, DecryptedClassification>,
 	val invoice: EntityEncryptors<EncryptedInvoice, DecryptedInvoice>,
 	val relatedPerson: EntityEncryptors<EncryptedRelatedPerson, DecryptedRelatedPerson>,
+	/**
+	 * Encryptors for custom entities, by custom entity type id
+	 */
+	val customEntities: Map<String, EntityEncryptors<EncryptedCustomEntityBase, DecryptedCustomEntityBase>>
 ) {
 	val serviceDecryptor = (contact.decryptor as ContactDecryptor).servicesDecryptor.value
 }
