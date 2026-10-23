@@ -924,11 +924,11 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("emptyMap()")
-		delegates: Map<String, AccessLevel> = emptyMap(),
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
-		alternateRootDelegateId: String? = null,
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedDocument>
 
 	/**
@@ -938,13 +938,13 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		entityGroupId: String,
 		base: DecryptedDocument?,
 		message: GroupScoped<Message>,
-		delegates: Map<String, DocumentDelegateOptions>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DocumentDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
-		alternateRootDelegateId: String? = null,
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedDocument>
 
 	/**
@@ -957,11 +957,11 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("emptyMap()")
-		delegates: Map<String, AccessLevel> = emptyMap(),
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
-		alternateRootDelegateId: String? = null,
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedDocument>
 
 	/**
@@ -971,13 +971,13 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		entityGroupId: String,
 		base: DecryptedDocument?,
 		patient: GroupScoped<Patient>,
-		delegates: Map<String, DocumentDelegateOptions>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DocumentDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
 		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
-		alternateRootDelegateId: String? = null,
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedDocument>
 
 	/**
@@ -989,9 +989,9 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("emptyMap()")
-		delegates: Map<String, AccessLevel> = emptyMap(),
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
 		@DefaultValue("null")
-		alternateRootDelegateId: String? = null,
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedDocument>
 
 	/**
@@ -1000,11 +1000,11 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 	suspend fun withEncryptionMetadataAndDelegatesUnlinked(
 		entityGroupId: String,
 		base: DecryptedDocument?,
-		delegates: Map<String, DocumentDelegateOptions>,
+		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DocumentDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
 		@DefaultValue("null")
-		alternateRootDelegateId: String? = null,
+		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedDocument>
 
 	/**
