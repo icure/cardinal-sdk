@@ -6,7 +6,9 @@ package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.EncryptedForm
@@ -19,6 +21,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Int
+import kotlin.Lazy
 import kotlin.Suppress
 
 @InternalIcureApi
@@ -29,9 +33,14 @@ internal object FormEncryptorFactory : RootEntityEncryptorFactory<EncryptedForm,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedForm, DecryptedForm> {
-		require(manifest.currentExtensionsManifest == null) {
-			"Form is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
-		}
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedForm::class,
+					decryptedClass = DecryptedForm::class,
+				)
+			}
 		return FormEncryptor(
 			created_e = "created" in manifest.fieldsToEncrypt,
 			modified_e = "modified" in manifest.fieldsToEncrypt,
@@ -53,8 +62,10 @@ internal object FormEncryptorFactory : RootEntityEncryptorFactory<EncryptedForm,
 			planOfActionId_e = "planOfActionId" in manifest.fieldsToEncrypt,
 			parent_e = "parent" in manifest.fieldsToEncrypt,
 			anchorId_e = "anchorId" in manifest.fieldsToEncrypt,
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
+			currentVersion = manifest.currentVersion,
 		)
 	}
 }
@@ -81,13 +92,18 @@ private class FormEncryptor(
 	private val planOfActionId_e: Boolean,
 	private val parent_e: Boolean,
 	private val anchorId_e: Boolean,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
+	private val currentVersion: Int?,
 ) : AbstractEntityEncryptor<EncryptedForm, DecryptedForm>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedForm,
 	): EncryptedForm {
+		require(clearEntity.customisedModelVersion == currentVersion) {
+			"""Can't encrypt Form with customised model version ${clearEntity.customisedModelVersion}: only entities at the current customised model version $currentVersion can be encrypted, the entity must be migrated first"""
+		}
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
 		if (modified_e && clearEntity.modified != null) dataToEncrypt["modified"] = encodingJson.encodeToJsonElement(clearEntity.modified)
@@ -174,6 +190,8 @@ private class FormEncryptor(
 			encryptionKeys = clearEntity.encryptionKeys,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
+			customisedModelVersion = clearEntity.customisedModelVersion,
 		)
 	}
 }

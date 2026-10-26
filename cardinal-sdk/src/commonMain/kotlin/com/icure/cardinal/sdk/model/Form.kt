@@ -3,6 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
@@ -13,6 +15,7 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Deprecated
 import kotlin.Int
 import kotlin.Long
@@ -25,7 +28,9 @@ sealed interface Form :
 	ICureDocument<String>,
 	HasMedicalLocation,
 	HasEncryptionMetadata,
-	Encryptable {
+	Encryptable,
+	CustomisableRoot,
+	Extendable {
 	override val id: String
 
 	override val rev: String?
@@ -86,6 +91,10 @@ sealed interface Form :
 	override val encryptedSelf: Base64String?
 
 	override val securityMetadata: SecurityMetadata?
+
+	override val extensions: JsonObject?
+
+	override val customisedModelVersion: Int?
 	// region Form-Form
 
 	// endregion
@@ -131,6 +140,8 @@ data class DecryptedForm(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Form {
 	// region Form-DecryptedForm
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedForm =
@@ -178,6 +189,8 @@ data class EncryptedForm(
 	override val encryptionKeys: Map<String, Set<Delegation>> = emptyMap(),
 	override val encryptedSelf: Base64String? = null,
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Form {
 	// region Form-EncryptedForm
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedForm =

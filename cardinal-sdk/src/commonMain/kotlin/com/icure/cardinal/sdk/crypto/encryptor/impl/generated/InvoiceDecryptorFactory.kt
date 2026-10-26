@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
@@ -21,9 +22,12 @@ import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Lazy
 import kotlin.Suppress
+import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
+import kotlin.collections.Map
 
 @InternalIcureApi
 internal object InvoiceDecryptorFactory : RootEntityDecryptorFactory<EncryptedInvoice, DecryptedInvoice> {
@@ -34,9 +38,14 @@ internal object InvoiceDecryptorFactory : RootEntityDecryptorFactory<EncryptedIn
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedInvoice, DecryptedInvoice> {
-		require(manifest.extensionsManifestsByModelVersion.isEmpty()) {
-			"Invoice is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
-		}
+		val extensionsDecryptorsByVersion =
+			manifest.extensionsManifestsByModelVersion.mapValues { (_, extensionsManifestName) ->
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = extensionsManifestName,
+					encryptedClass = EncryptedInvoice::class,
+					decryptedClass = DecryptedInvoice::class,
+				)
+			}
 		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		val invoicingCodesDecryptor =
 			manifest.recursiveEncryption["invoicingCodes"]?.let { nestedManifestName ->
@@ -54,6 +63,7 @@ internal object InvoiceDecryptorFactory : RootEntityDecryptorFactory<EncryptedIn
 		return InvoiceDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			invoicingCodesDecryptor = invoicingCodesDecryptor,
+			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,
 			cryptoService = cryptoService,
 			unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictness,
@@ -65,6 +75,7 @@ internal object InvoiceDecryptorFactory : RootEntityDecryptorFactory<EncryptedIn
 private class InvoiceDecryptor(
 	private val encryptedContentDecoder: Json,
 	private val invoicingCodesDecryptor: Lazy<EntityDecryptor<EncryptedInvoicingCode, DecryptedInvoicingCode>>,
+	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -78,6 +89,18 @@ private class InvoiceDecryptor(
 		encryptedEntity: EncryptedInvoice,
 		customisedModelVersion: CustomisedModelVersion?,
 	): DecryptedInvoice {
+		val extensions =
+			if (customisedModelVersion != null) {
+				val extensionsDecryptor =
+					(
+						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
+							"This instance of the SDK is not capable of handling Invoice entities of version $customisedModelVersion.",
+						)
+					).value
+				encryptedEntity.extensions?.let { extensionsDecryptor.decryptExtension(decryptionKeys, it) }
+			} else {
+				encryptedEntity.extensions
+			}
 		val entityCustomisedModelVersion = customisedModelVersion?.typeVersion
 		val decryptedContent = decryptAndPatchContent(decryptionKeys, encryptedEntity)
 		val usedEncryptedContent = mutableSetOf<String>()
@@ -482,6 +505,8 @@ private class InvoiceDecryptor(
 				encryptionKeys = encryptedEntity.encryptionKeys,
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
+				extensions = extensions,
+				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		val hasUnexpectedDecryptedContent =
 			entityCustomisedModelVersion == null &&

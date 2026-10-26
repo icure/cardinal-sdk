@@ -6,7 +6,9 @@ package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.DecryptedInvoice
@@ -22,6 +24,8 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
+import kotlin.Int
+import kotlin.Lazy
 import kotlin.Suppress
 
 @InternalIcureApi
@@ -32,9 +36,14 @@ internal object InvoiceEncryptorFactory : RootEntityEncryptorFactory<EncryptedIn
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInvoice, DecryptedInvoice> {
-		require(manifest.currentExtensionsManifest == null) {
-			"Invoice is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
-		}
+		val extensionsEncryptor =
+			manifest.currentExtensionsManifest?.let {
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = it,
+					encryptedClass = EncryptedInvoice::class,
+					decryptedClass = DecryptedInvoice::class,
+				)
+			}
 		return InvoiceEncryptor(
 			identifier_e = "identifier" in manifest.fieldsToEncrypt,
 			created_e = "created" in manifest.fieldsToEncrypt,
@@ -113,8 +122,10 @@ internal object InvoiceEncryptorFactory : RootEntityEncryptorFactory<EncryptedIn
 			cancelReason_e = "cancelReason" in manifest.fieldsToEncrypt,
 			cancelDate_e = "cancelDate" in manifest.fieldsToEncrypt,
 			options_e = "options" in manifest.fieldsToEncrypt,
+			extensionsEncryptor = extensionsEncryptor,
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
+			currentVersion = manifest.currentVersion,
 		)
 	}
 }
@@ -185,13 +196,18 @@ private class InvoiceEncryptor(
 	private val cancelReason_e: Boolean,
 	private val cancelDate_e: Boolean,
 	private val options_e: Boolean,
+	private val extensionsEncryptor: Lazy<ExtensionsEncryptors>?,
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
+	private val currentVersion: Int?,
 ) : AbstractEntityEncryptor<EncryptedInvoice, DecryptedInvoice>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedInvoice,
 	): EncryptedInvoice {
+		require(clearEntity.customisedModelVersion == currentVersion) {
+			"""Can't encrypt Invoice with customised model version ${clearEntity.customisedModelVersion}: only entities at the current customised model version $currentVersion can be encrypted, the entity must be migrated first"""
+		}
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
 			dataToEncrypt["identifier"] =
@@ -575,6 +591,8 @@ private class InvoiceEncryptor(
 			encryptionKeys = clearEntity.encryptionKeys,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
+			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
+			customisedModelVersion = clearEntity.customisedModelVersion,
 		)
 	}
 }

@@ -3,6 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
@@ -24,6 +26,7 @@ import com.icure.cardinal.sdk.model.embed.SecurityMetadata
 import com.icure.cardinal.sdk.model.specializations.Base64String
 import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
 import kotlin.Boolean
 import kotlin.Deprecated
 import kotlin.Double
@@ -46,7 +49,9 @@ sealed interface Invoice :
 	HasMedicalLocation,
 	HasEncryptionMetadata,
 	Encryptable,
-	HasIdentifier {
+	HasIdentifier,
+	CustomisableRoot,
+	Extendable {
 	/**
 	 * The Id of the Invoice. We encourage using either a v4 UUID or a HL7 Id.
 	 */
@@ -422,6 +427,10 @@ sealed interface Invoice :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
+
+	override val extensions: JsonObject?
+
+	override val customisedModelVersion: Int?
 	// region Invoice-Invoice
 
 	// endregion
@@ -747,6 +756,8 @@ data class DecryptedInvoice(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Invoice {
 	// region Invoice-DecryptedInvoice
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): DecryptedInvoice =
@@ -1074,6 +1085,8 @@ data class EncryptedInvoice(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val extensions: JsonObject? = null,
+	override val customisedModelVersion: Int? = null,
 ) : Invoice {
 	// region Invoice-EncryptedInvoice
 override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secretForeignKeys: Set<String>): EncryptedInvoice =

@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
@@ -19,8 +20,12 @@ import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlin.Int
+import kotlin.Lazy
 import kotlin.Suppress
+import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
+import kotlin.collections.Map
 
 @InternalIcureApi
 internal object FormDecryptorFactory : RootEntityDecryptorFactory<EncryptedForm, DecryptedForm> {
@@ -31,12 +36,18 @@ internal object FormDecryptorFactory : RootEntityDecryptorFactory<EncryptedForm,
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedForm, DecryptedForm> {
-		require(manifest.extensionsManifestsByModelVersion.isEmpty()) {
-			"Form is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
-		}
+		val extensionsDecryptorsByVersion =
+			manifest.extensionsManifestsByModelVersion.mapValues { (_, extensionsManifestName) ->
+				encryptorsFactoryContext.getExtensionEncryptorsProvider(
+					extensionsManifestName = extensionsManifestName,
+					encryptedClass = EncryptedForm::class,
+					decryptedClass = DecryptedForm::class,
+				)
+			}
 		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		return FormDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
+			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,
 			cryptoService = cryptoService,
 			unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictness,
@@ -47,6 +58,7 @@ internal object FormDecryptorFactory : RootEntityDecryptorFactory<EncryptedForm,
 @InternalIcureApi
 private class FormDecryptor(
 	private val encryptedContentDecoder: Json,
+	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -60,6 +72,18 @@ private class FormDecryptor(
 		encryptedEntity: EncryptedForm,
 		customisedModelVersion: CustomisedModelVersion?,
 	): DecryptedForm {
+		val extensions =
+			if (customisedModelVersion != null) {
+				val extensionsDecryptor =
+					(
+						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
+							"This instance of the SDK is not capable of handling Form entities of version $customisedModelVersion.",
+						)
+					).value
+				encryptedEntity.extensions?.let { extensionsDecryptor.decryptExtension(decryptionKeys, it) }
+			} else {
+				encryptedEntity.extensions
+			}
 		val entityCustomisedModelVersion = customisedModelVersion?.typeVersion
 		val decryptedContent = decryptAndPatchContent(decryptionKeys, encryptedEntity)
 		val usedEncryptedContent = mutableSetOf<String>()
@@ -194,6 +218,8 @@ private class FormDecryptor(
 				encryptionKeys = encryptedEntity.encryptionKeys,
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
+				extensions = extensions,
+				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		val hasUnexpectedDecryptedContent =
 			entityCustomisedModelVersion == null &&

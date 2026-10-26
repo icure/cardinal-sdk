@@ -70,7 +70,7 @@ private fun decryptedApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 	encryptors = config.encryptors.invoice,
-	getRootModelVersion = { null },
+	getRootModelVersion = EncryptedInvoice::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -80,7 +80,7 @@ private fun tryAndRecoverApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 	encryptors = config.encryptors.invoice,
-	getRootModelVersion = { null },
+	getRootModelVersion = EncryptedInvoice::customisedModelVersion,
 )
 
 @InternalIcureApi

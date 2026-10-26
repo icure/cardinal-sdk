@@ -34,7 +34,8 @@ data class PaginatedList<T>(
 	// region PaginatedList-PaginatedList
 inline fun <Q> map(mapper: (T) -> Q): PaginatedList<Q> = PaginatedList(
 		rows = rows.map { mapper(it) },
-		nextKeyPair = nextKeyPair
+		nextKeyPair = nextKeyPair,
+		error = error,
 	)
 	// endregion
 }

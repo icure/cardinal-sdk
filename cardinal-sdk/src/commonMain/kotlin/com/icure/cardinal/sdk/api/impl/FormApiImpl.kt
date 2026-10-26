@@ -70,7 +70,7 @@ private fun decryptedApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 	encryptors = config.encryptors.form,
-	getRootModelVersion = { null },
+	getRootModelVersion = EncryptedForm::customisedModelVersion,
 )
 
 @InternalIcureApi
@@ -80,7 +80,7 @@ private fun tryAndRecoverApiFlavour(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 	encryptors = config.encryptors.form,
-	getRootModelVersion = { null },
+	getRootModelVersion = EncryptedForm::customisedModelVersion,
 )
 
 @InternalIcureApi
