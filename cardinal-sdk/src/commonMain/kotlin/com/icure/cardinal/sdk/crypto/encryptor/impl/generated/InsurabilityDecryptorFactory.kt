@@ -36,7 +36,7 @@ internal object InsurabilityDecryptorFactory : EntityDecryptorFactory<EncryptedI
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedInsurability, DecryptedInsurability> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		val extensionsDecryptorsByVersion =
 			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
@@ -45,7 +45,7 @@ internal object InsurabilityDecryptorFactory : EntityDecryptorFactory<EncryptedI
 					decryptedClass = DecryptedInsurability::class,
 				)
 			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		return InsurabilityDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,

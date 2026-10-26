@@ -3,12 +3,12 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.`impl`.loadExtensionsEncryptors
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
@@ -26,34 +26,33 @@ import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
 import kotlin.collections.Map
 
 @InternalIcureApi
-internal object CalendarItemDecryptorFactory : EntityDecryptorFactory<EncryptedCalendarItem, DecryptedCalendarItem> {
+internal object CalendarItemDecryptorFactory : RootEntityDecryptorFactory<EncryptedCalendarItem, DecryptedCalendarItem> {
 	override fun create(
-		entityManifestName: String?,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		cryptoService: CryptoService,
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedCalendarItem, DecryptedCalendarItem> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
 		val extensionsDecryptorsByVersion =
-			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
+			manifest.extensionsManifestsByModelVersion.mapValues { (_, extensionsManifestName) ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
 					extensionsManifestName = extensionsManifestName,
 					encryptedClass = EncryptedCalendarItem::class,
 					decryptedClass = DecryptedCalendarItem::class,
 				)
-			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+			}
+		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		val addressDecryptor =
-			manifest?.recursiveEncryption?.get("address")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["address"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,
@@ -66,7 +65,7 @@ internal object CalendarItemDecryptorFactory : EntityDecryptorFactory<EncryptedC
 				decryptedClass = DecryptedAddress::class,
 			)
 		val meetingTagsDecryptor =
-			manifest?.recursiveEncryption?.get("meetingTags")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["meetingTags"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,
@@ -79,7 +78,7 @@ internal object CalendarItemDecryptorFactory : EntityDecryptorFactory<EncryptedC
 				decryptedClass = DecryptedCalendarItemTag::class,
 			)
 		val propertiesDecryptor =
-			manifest?.recursiveEncryption?.get("properties")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["properties"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,
@@ -110,7 +109,7 @@ private class CalendarItemDecryptor(
 	private val addressDecryptor: Lazy<EntityDecryptor<EncryptedAddress, DecryptedAddress>>,
 	private val meetingTagsDecryptor: Lazy<EntityDecryptor<EncryptedCalendarItemTag, DecryptedCalendarItemTag>>,
 	private val propertiesDecryptor: Lazy<EntityDecryptor<EncryptedPropertyStub, DecryptedPropertyStub>>,
-	private val extensionsDecryptorsByVersion: Map<CustomisedModelVersion, Lazy<ExtensionsEncryptors>>,
+	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -128,7 +127,7 @@ private class CalendarItemDecryptor(
 			if (customisedModelVersion != null) {
 				val extensionsDecryptor =
 					(
-						extensionsDecryptorsByVersion[customisedModelVersion] ?: throw UnsupportedOperationException(
+						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
 							"This instance of the SDK is not capable of handling CalendarItem entities of version $customisedModelVersion.",
 						)
 					).value

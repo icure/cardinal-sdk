@@ -78,7 +78,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCalendarItemTypeApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawClassificationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawCodeApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawContactApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDataOwnerApiImpl
@@ -989,15 +988,6 @@ internal class CardinalSdkImpl(
 		initDocumentApi(
 			rawApi = rawDocumentApi,
 			config = config
-		)
-	}
-
-	private val rawClassificationApi by lazy {
-		RawClassificationApiImpl(
-			apiUrl,
-			authProvider,
-			config.crypto.headersProvider,
-			config.rawApiConfig,
 		)
 	}
 

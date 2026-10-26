@@ -31,11 +31,11 @@ internal object InvoicingCodeDecryptorFactory : EntityDecryptorFactory<Encrypted
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedInvoicingCode, DecryptedInvoicingCode> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		require(manifest?.extensionsManifestsByModelVersion.isNullOrEmpty()) {
 			"InvoicingCode is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
 		}
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		return InvoicingCodeDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,

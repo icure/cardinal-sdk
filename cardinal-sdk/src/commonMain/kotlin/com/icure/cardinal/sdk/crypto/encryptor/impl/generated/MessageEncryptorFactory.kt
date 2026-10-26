@@ -3,10 +3,11 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
@@ -25,73 +26,16 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object MessageEncryptorFactory : EntityEncryptorFactory<EncryptedMessage, DecryptedMessage> {
-	override val empty: EntityEncryptor<EncryptedMessage, DecryptedMessage> =
-		object : EntityEncryptor<EncryptedMessage, DecryptedMessage> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedMessage,
-			): EncryptedMessage =
-				EncryptedMessage(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					fromAddress = clearEntity.fromAddress,
-					fromHealthcarePartyId = clearEntity.fromHealthcarePartyId,
-					formId = clearEntity.formId,
-					status = clearEntity.status,
-					recipientsType = clearEntity.recipientsType,
-					recipients = clearEntity.recipients,
-					toAddresses = clearEntity.toAddresses,
-					received = clearEntity.received,
-					sent = clearEntity.sent,
-					metas = clearEntity.metas,
-					readStatus = clearEntity.readStatus,
-					messageAttachments = clearEntity.messageAttachments,
-					transportGuid = clearEntity.transportGuid,
-					remark = clearEntity.remark,
-					conversationGuid = clearEntity.conversationGuid,
-					subject = clearEntity.subject,
-					invoiceIds = clearEntity.invoiceIds,
-					parentId = clearEntity.parentId,
-					externalRef = clearEntity.externalRef,
-					unassignedResults = clearEntity.unassignedResults,
-					assignedResults = clearEntity.assignedResults,
-					senderReferences = clearEntity.senderReferences,
-					properties =
-						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
-							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-					extensions = clearEntity.extensions,
-					customisedModelVersion = clearEntity.customisedModelVersion,
-				)
-		}
-
+internal object MessageEncryptorFactory : RootEntityEncryptorFactory<EncryptedMessage, DecryptedMessage> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedMessage, DecryptedMessage> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		val extensionsEncryptor =
 			manifest.currentExtensionsManifest?.let {
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(

@@ -50,7 +50,7 @@ internal object FlatRateTarificationEncryptorFactory : EntityEncryptorFactory<En
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedFlatRateTarification, DecryptedFlatRateTarification> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"FlatRateTarification is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

@@ -3,10 +3,11 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedTopic
@@ -22,53 +23,16 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object TopicEncryptorFactory : EntityEncryptorFactory<EncryptedTopic, DecryptedTopic> {
-	override val empty: EntityEncryptor<EncryptedTopic, DecryptedTopic> =
-		object : EntityEncryptor<EncryptedTopic, DecryptedTopic> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedTopic,
-			): EncryptedTopic =
-				EncryptedTopic(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					healthElementId = clearEntity.healthElementId,
-					contactId = clearEntity.contactId,
-					description = clearEntity.description,
-					codes = clearEntity.codes,
-					tags = clearEntity.tags,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					activeParticipants = clearEntity.activeParticipants,
-					securityMetadata = clearEntity.securityMetadata,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					linkedHealthElements = clearEntity.linkedHealthElements,
-					linkedServices = clearEntity.linkedServices,
-					extensions = clearEntity.extensions,
-					customisedModelVersion = clearEntity.customisedModelVersion,
-				)
-		}
-
+internal object TopicEncryptorFactory : RootEntityEncryptorFactory<EncryptedTopic, DecryptedTopic> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedTopic, DecryptedTopic> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		val extensionsEncryptor =
 			manifest.currentExtensionsManifest?.let {
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(

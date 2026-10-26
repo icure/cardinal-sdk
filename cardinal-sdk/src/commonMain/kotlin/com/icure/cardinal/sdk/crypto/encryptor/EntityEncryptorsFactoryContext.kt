@@ -7,8 +7,9 @@ import kotlinx.serialization.json.JsonObject
 import kotlin.reflect.KClass
 
 /**
- * A context used with [EntityEncryptorFactory.create] for creating multiple [EntityEncryptor]s that use an
- * [BuiltinEntityEncryptionManifest] coming from the same group of [EntitiesEncryptionManifests].
+ * A context used with [EntityEncryptorFactory.create] and [RootEntityEncryptorFactory.create] (and the decryptor
+ * equivalents) for creating multiple [EntityEncryptor]s that use manifests coming from the same group of
+ * [EntitiesEncryptionManifests].
  */
 @InternalIcureApi
 internal interface EntityEncryptorsFactoryContext {
@@ -44,9 +45,10 @@ internal interface EntityEncryptorsFactoryContext {
 	): Lazy<ExtensionsEncryptors>
 
 	/**
-	 * Get the manifest with the given name, fails if the manifest is not available in this context.
+	 * Get the manifest of an embedded entity with the given name, fails if the manifest is not available in this
+	 * context.
 	 */
-	fun getManifest(manifestName: String): BuiltinEntityEncryptionManifest
+	fun getEmbeddedManifest(manifestName: String): BuiltinEmbeddedEntityEncryptionManifest
 
 	/**
 	 * Get the manifest for the custom entity of the given entity type id.
@@ -56,7 +58,7 @@ internal interface EntityEncryptorsFactoryContext {
 	/**
 	 * Get the decrypted json patcher to use for a certain manifest.
 	 */
-	fun getManifestDecryptedJsonPatcher(manifestName: String): ((JsonObject) -> JsonObject)?
+	fun getManifestDecryptedJsonPatcher(manifest: EntityEncryptionManifest): ((JsonObject) -> JsonObject)?
 
 	/**
 	 * If true the content of encrypted self in entities will be serialized using the legacy field names rather than

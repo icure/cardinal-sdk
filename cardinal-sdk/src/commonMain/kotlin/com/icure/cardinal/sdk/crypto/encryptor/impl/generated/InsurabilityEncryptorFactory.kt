@@ -53,7 +53,7 @@ internal object InsurabilityEncryptorFactory : EntityEncryptorFactory<EncryptedI
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInsurability, DecryptedInsurability> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		val extensionsEncryptor =
 			manifest.currentExtensionsManifest?.let {
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(

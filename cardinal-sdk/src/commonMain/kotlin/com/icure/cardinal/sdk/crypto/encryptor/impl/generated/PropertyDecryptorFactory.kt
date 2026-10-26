@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedProperty
@@ -21,26 +22,24 @@ import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.Collection
 
 @InternalIcureApi
-internal object PropertyDecryptorFactory : EntityDecryptorFactory<EncryptedProperty, DecryptedProperty> {
+internal object PropertyDecryptorFactory : RootEntityDecryptorFactory<EncryptedProperty, DecryptedProperty> {
 	override fun create(
-		entityManifestName: String?,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		cryptoService: CryptoService,
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedProperty, DecryptedProperty> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
-		require(manifest?.extensionsManifestsByModelVersion.isNullOrEmpty()) {
+		require(manifest.extensionsManifestsByModelVersion.isEmpty()) {
 			"Property is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
 		}
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		val typedValueDecryptor =
-			manifest?.recursiveEncryption?.get("typedValue")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["typedValue"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,

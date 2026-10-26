@@ -48,7 +48,7 @@ internal object FinancialInstitutionInformationEncryptorFactory : EntityEncrypto
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedFinancialInstitutionInformation, DecryptedFinancialInstitutionInformation> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"FinancialInstitutionInformation is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

@@ -3,12 +3,12 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.`impl`.loadExtensionsEncryptors
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
@@ -22,32 +22,31 @@ import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.builtins.nullable
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
 import kotlin.collections.Map
 
 @InternalIcureApi
-internal object AccessLogDecryptorFactory : EntityDecryptorFactory<EncryptedAccessLog, DecryptedAccessLog> {
+internal object AccessLogDecryptorFactory : RootEntityDecryptorFactory<EncryptedAccessLog, DecryptedAccessLog> {
 	override fun create(
-		entityManifestName: String?,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		cryptoService: CryptoService,
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedAccessLog, DecryptedAccessLog> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
 		val extensionsDecryptorsByVersion =
-			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
+			manifest.extensionsManifestsByModelVersion.mapValues { (_, extensionsManifestName) ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
 					extensionsManifestName = extensionsManifestName,
 					encryptedClass = EncryptedAccessLog::class,
 					decryptedClass = DecryptedAccessLog::class,
 				)
-			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+			}
+		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		return AccessLogDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
@@ -61,7 +60,7 @@ internal object AccessLogDecryptorFactory : EntityDecryptorFactory<EncryptedAcce
 @InternalIcureApi
 private class AccessLogDecryptor(
 	private val encryptedContentDecoder: Json,
-	private val extensionsDecryptorsByVersion: Map<CustomisedModelVersion, Lazy<ExtensionsEncryptors>>,
+	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -79,7 +78,7 @@ private class AccessLogDecryptor(
 			if (customisedModelVersion != null) {
 				val extensionsDecryptor =
 					(
-						extensionsDecryptorsByVersion[customisedModelVersion] ?: throw UnsupportedOperationException(
+						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
 							"This instance of the SDK is not capable of handling AccessLog entities of version $customisedModelVersion.",
 						)
 					).value

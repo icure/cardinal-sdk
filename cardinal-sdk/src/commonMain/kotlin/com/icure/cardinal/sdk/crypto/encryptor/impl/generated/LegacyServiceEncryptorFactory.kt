@@ -42,7 +42,7 @@ internal object LegacyServiceEncryptorFactory : EntityEncryptorFactory<Encrypted
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedService, DecryptedService> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(!manifest.fieldsToEncrypt.contains("content") && !manifest.recursiveEncryption.containsKey("content")) {
 			"When using legacy encryption of service content you can't customize how the content is encrypted."
 		}

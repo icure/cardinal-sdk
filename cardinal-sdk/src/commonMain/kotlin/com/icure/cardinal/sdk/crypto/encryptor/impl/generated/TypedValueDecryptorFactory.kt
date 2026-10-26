@@ -33,11 +33,11 @@ internal object TypedValueDecryptorFactory : EntityDecryptorFactory<EncryptedTyp
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedTypedValue, DecryptedTypedValue> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		require(manifest?.extensionsManifestsByModelVersion.isNullOrEmpty()) {
 			"TypedValue is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
 		}
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		return TypedValueDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,

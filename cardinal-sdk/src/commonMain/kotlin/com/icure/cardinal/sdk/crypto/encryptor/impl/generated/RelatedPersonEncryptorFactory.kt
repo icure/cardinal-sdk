@@ -3,10 +3,11 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
@@ -27,62 +28,16 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object RelatedPersonEncryptorFactory : EntityEncryptorFactory<EncryptedRelatedPerson, DecryptedRelatedPerson> {
-	override val empty: EntityEncryptor<EncryptedRelatedPerson, DecryptedRelatedPerson> =
-		object : EntityEncryptor<EncryptedRelatedPerson, DecryptedRelatedPerson> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedRelatedPerson,
-			): EncryptedRelatedPerson =
-				EncryptedRelatedPerson(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					identifier = clearEntity.identifier,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					firstName = clearEntity.firstName,
-					lastName = clearEntity.lastName,
-					names = clearEntity.names,
-					companyName = clearEntity.companyName,
-					languages = clearEntity.languages,
-					addresses =
-						clearEntity.addresses.map { x0 ->
-							AddressEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					civility = clearEntity.civility,
-					gender = clearEntity.gender,
-					properties =
-						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
-							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-					customisedModelVersion = clearEntity.customisedModelVersion,
-					extensions = clearEntity.extensions,
-				)
-		}
-
+internal object RelatedPersonEncryptorFactory : RootEntityEncryptorFactory<EncryptedRelatedPerson, DecryptedRelatedPerson> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedRelatedPerson, DecryptedRelatedPerson> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		val extensionsEncryptor =
 			manifest.currentExtensionsManifest?.let {
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(

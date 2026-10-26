@@ -36,7 +36,7 @@ internal object TelecomDecryptorFactory : EntityDecryptorFactory<EncryptedTeleco
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedTelecom, DecryptedTelecom> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		val extensionsDecryptorsByVersion =
 			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
@@ -45,7 +45,7 @@ internal object TelecomDecryptorFactory : EntityDecryptorFactory<EncryptedTeleco
 					decryptedClass = DecryptedTelecom::class,
 				)
 			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		return TelecomDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,

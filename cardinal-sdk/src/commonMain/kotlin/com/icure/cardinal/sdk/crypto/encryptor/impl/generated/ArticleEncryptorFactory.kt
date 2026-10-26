@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedArticle
 import com.icure.cardinal.sdk.model.EncryptedArticle
@@ -18,47 +19,16 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object ArticleEncryptorFactory : EntityEncryptorFactory<EncryptedArticle, DecryptedArticle> {
-	override val empty: EntityEncryptor<EncryptedArticle, DecryptedArticle> =
-		object : EntityEncryptor<EncryptedArticle, DecryptedArticle> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedArticle,
-			): EncryptedArticle =
-				EncryptedArticle(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					name = clearEntity.name,
-					classification = clearEntity.classification,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-				)
-		}
-
+internal object ArticleEncryptorFactory : RootEntityEncryptorFactory<EncryptedArticle, DecryptedArticle> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedArticle, DecryptedArticle> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Article is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

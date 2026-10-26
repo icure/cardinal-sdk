@@ -4,21 +4,31 @@ import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeNa
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContain
 
-private const val ROOT = "Root"
-private const val PATIENT_ROOT = "PatientRoot"
+private const val EMBEDDED = "Embedded"
 
-private fun entityManifest(
+private fun rootManifest(
+	recursiveEncryption: Map<String, String> = emptyMap(),
+	extensionsManifestsByModelVersion: Map<Int, String> = emptyMap(),
+	currentVersion: Int? = null,
+) = BuiltinRootEntityEncryptionManifest(
+	fieldsToEncrypt = emptySet(),
+	recursiveEncryption = recursiveEncryption,
+	extensionsManifestsByModelVersion = extensionsManifestsByModelVersion,
+	currentVersion = currentVersion,
+)
+
+private fun embeddedManifest(
+	recursiveEncryption: Map<String, String> = emptyMap(),
 	extensionsManifestsByModelVersion: Map<EntityWithEncryptionMetadataTypeName.Builtin, Map<Int, String>> = emptyMap(),
 	currentExtensionsManifest: String? = null,
-	currentVersion: Int? = null,
-) = BuiltinEntityEncryptionManifest(
+) = BuiltinEmbeddedEntityEncryptionManifest(
 	fieldsToEncrypt = emptySet(),
-	recursiveEncryption = emptyMap(),
+	recursiveEncryption = recursiveEncryption,
 	extensionsManifestsByModelVersion = extensionsManifestsByModelVersion,
 	currentExtensionsManifest = currentExtensionsManifest,
-	currentVersion = currentVersion,
 )
 
 private fun customEntityManifest(
@@ -41,39 +51,44 @@ private fun extensionsManifest(
 )
 
 private fun manifests(
-	rootManifest: BuiltinEntityEncryptionManifest = entityManifest(),
+	// Manifest used only for patients, all other roots use an empty manifest
+	patientManifest: BuiltinRootEntityEncryptionManifest = rootManifest(),
+	embeddedManifestsByName: Map<String, BuiltinEmbeddedEntityEncryptionManifest> = emptyMap(),
 	extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest> = emptyMap(),
 	customEntitiesManifestByEntityTypeId: Map<String, CustomEntityEncryptionManifest> = emptyMap(),
-	// Manifest used only for patients, others use rootManifest
-	patientManifest: BuiltinEntityEncryptionManifest? = null,
 ) = EntitiesEncryptionManifests(
-	manifestsByName = mapOf(ROOT to rootManifest) + listOfNotNull(patientManifest?.let { PATIENT_ROOT to it }),
+	embeddedManifestsByName = embeddedManifestsByName,
 	customEntitiesManifestByEntityTypeId = customEntitiesManifestByEntityTypeId,
 	extensionsManifestsByName = extensionsManifestsByName,
-	accessLog = ROOT,
-	calendarItem = ROOT,
-	contact = ROOT,
-	healthElement = ROOT,
-	patient = if (patientManifest != null) PATIENT_ROOT else ROOT,
-	message = ROOT,
-	topic = ROOT,
-	document = ROOT,
-	form = ROOT,
-	receipt = ROOT,
-	classification = ROOT,
-	invoice = ROOT,
-	relatedPerson = ROOT,
+	accessLog = rootManifest(),
+	calendarItem = rootManifest(),
+	contact = rootManifest(),
+	healthElement = rootManifest(),
+	patient = patientManifest,
+	message = rootManifest(),
+	topic = rootManifest(),
+	document = rootManifest(),
+	form = rootManifest(),
+	invoice = rootManifest(),
+	relatedPerson = rootManifest(),
 )
 
 class EntitiesEncryptionManifestsValidationTest : StringSpec({
-	"Manifests with valid extensions manifest references should be accepted" {
+	"Manifests with valid references should be accepted" {
 		shouldNotThrowAny {
 			manifests(
-				rootManifest = entityManifest(
-					extensionsManifestsByModelVersion = mapOf(
-						EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1", 2 to "ExtV2"),
+				patientManifest = rootManifest(
+					recursiveEncryption = mapOf("addresses" to EMBEDDED),
+					extensionsManifestsByModelVersion = mapOf(1 to "ExtV1", 2 to "ExtV2"),
+					currentVersion = 2,
+				),
+				embeddedManifestsByName = mapOf(
+					EMBEDDED to embeddedManifest(
+						extensionsManifestsByModelVersion = mapOf(
+							EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1", 2 to "Nested"),
+						),
+						currentExtensionsManifest = "Nested",
 					),
-					currentExtensionsManifest = "ExtV2",
 				),
 				extensionsManifestsByName = mapOf(
 					"ExtV1" to extensionsManifest(),
@@ -92,20 +107,61 @@ class EntitiesEncryptionManifestsValidationTest : StringSpec({
 		}
 	}
 
-	"Undefined current extensions manifest should be rejected" {
+	"Root manifest current extensions manifest should be the extensions manifest of the current version" {
+		rootManifest(
+			extensionsManifestsByModelVersion = mapOf(1 to "ExtV1", 2 to "ExtV2"),
+			currentVersion = 1,
+		).currentExtensionsManifest shouldBe "ExtV1"
+		rootManifest().currentExtensionsManifest shouldBe null
+	}
+
+	"Root manifest with a current version missing from extensionsManifestsByModelVersion should be rejected" {
+		shouldThrow<IllegalArgumentException> {
+			rootManifest(extensionsManifestsByModelVersion = mapOf(1 to "ExtV1"), currentVersion = 2)
+		}
+	}
+
+	"Undefined extensions manifest in extensionsManifestsByModelVersion of root manifest should be rejected" {
 		shouldThrow<IllegalArgumentException> {
 			manifests(
-				rootManifest = entityManifest(currentExtensionsManifest = "Missing"),
+				patientManifest = rootManifest(extensionsManifestsByModelVersion = mapOf(1 to "ExtV1", 2 to "Missing"), currentVersion = 1),
+				extensionsManifestsByName = mapOf("ExtV1" to extensionsManifest()),
 			)
+		}.message.let {
+			it shouldContain "`Missing`"
+			it shouldContain "`patient`"
+		}
+	}
+
+	"Undefined embedded manifest in recursive encryption of root manifest should be rejected" {
+		shouldThrow<IllegalArgumentException> {
+			manifests(patientManifest = rootManifest(recursiveEncryption = mapOf("addresses" to "Missing")))
+		}.message.let {
+			it shouldContain "`Missing`"
+			it shouldContain "`patient`"
+		}
+	}
+
+	"Undefined embedded manifest in recursive encryption of embedded manifest should be rejected" {
+		shouldThrow<IllegalArgumentException> {
+			manifests(embeddedManifestsByName = mapOf(EMBEDDED to embeddedManifest(recursiveEncryption = mapOf("notes" to "Missing"))))
 		}.message shouldContain "`Missing`"
 	}
 
-	"Undefined extensions manifest in extensionsManifestsByModelVersion should be rejected" {
+	"Undefined current extensions manifest of embedded manifest should be rejected" {
+		shouldThrow<IllegalArgumentException> {
+			manifests(embeddedManifestsByName = mapOf(EMBEDDED to embeddedManifest(currentExtensionsManifest = "Missing")))
+		}.message shouldContain "`Missing`"
+	}
+
+	"Undefined extensions manifest in extensionsManifestsByModelVersion of embedded manifest should be rejected" {
 		shouldThrow<IllegalArgumentException> {
 			manifests(
-				rootManifest = entityManifest(
-					extensionsManifestsByModelVersion = mapOf(
-						EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1", 2 to "Missing"),
+				embeddedManifestsByName = mapOf(
+					EMBEDDED to embeddedManifest(
+						extensionsManifestsByModelVersion = mapOf(
+							EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1", 2 to "Missing"),
+						),
 					),
 				),
 				extensionsManifestsByName = mapOf("ExtV1" to extensionsManifest()),
@@ -141,71 +197,6 @@ class EntitiesEncryptionManifestsValidationTest : StringSpec({
 				),
 			)
 		}.message shouldContain "`Missing`"
-	}
-
-	"Root manifest with a current version mapped to the current extensions manifest should be accepted" {
-		shouldNotThrowAny {
-			manifests(
-				patientManifest = entityManifest(
-					extensionsManifestsByModelVersion = mapOf(
-						EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1", 2 to "ExtV2"),
-					),
-					currentExtensionsManifest = "ExtV2",
-					currentVersion = 2,
-				),
-				extensionsManifestsByName = mapOf(
-					"ExtV1" to extensionsManifest(),
-					"ExtV2" to extensionsManifest(),
-				),
-			)
-		}
-	}
-
-	"Root manifest with a current version missing from extensionsManifestsByModelVersion should be rejected" {
-		shouldThrow<IllegalArgumentException> {
-			manifests(
-				patientManifest = entityManifest(
-					extensionsManifestsByModelVersion = mapOf(
-						EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1"),
-					),
-					currentExtensionsManifest = "ExtV1",
-					currentVersion = 2,
-				),
-				extensionsManifestsByName = mapOf("ExtV1" to extensionsManifest()),
-			)
-		}.message shouldContain "`$PATIENT_ROOT`"
-	}
-
-	"Root manifest with a current version not mapped to the current extensions manifest should be rejected" {
-		shouldThrow<IllegalArgumentException> {
-			manifests(
-				patientManifest = entityManifest(
-					extensionsManifestsByModelVersion = mapOf(
-						EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1", 2 to "ExtV2"),
-					),
-					currentExtensionsManifest = "ExtV2",
-					currentVersion = 1,
-				),
-				extensionsManifestsByName = mapOf(
-					"ExtV1" to extensionsManifest(),
-					"ExtV2" to extensionsManifest(),
-				),
-			)
-		}.message shouldContain "`$PATIENT_ROOT`"
-	}
-
-	"Root manifest with a current version and no current extensions manifest should be rejected" {
-		shouldThrow<IllegalArgumentException> {
-			manifests(
-				patientManifest = entityManifest(
-					extensionsManifestsByModelVersion = mapOf(
-						EntityWithEncryptionMetadataTypeName.Builtin.Patient to mapOf(1 to "ExtV1"),
-					),
-					currentVersion = 1,
-				),
-				extensionsManifestsByName = mapOf("ExtV1" to extensionsManifest()),
-			)
-		}.message shouldContain "`$PATIENT_ROOT`"
 	}
 
 	"Custom entity manifests with valid extensions manifest references should be accepted" {
@@ -253,7 +244,7 @@ class EntitiesEncryptionManifestsValidationTest : StringSpec({
 			customEntityManifest(fieldsToEncrypt = setOf("created"))
 		}
 		shouldThrow<IllegalArgumentException> {
-			customEntityManifest(recursiveEncryption = mapOf("created" to ROOT))
+			customEntityManifest(recursiveEncryption = mapOf("created" to EMBEDDED))
 		}
 	}
 })

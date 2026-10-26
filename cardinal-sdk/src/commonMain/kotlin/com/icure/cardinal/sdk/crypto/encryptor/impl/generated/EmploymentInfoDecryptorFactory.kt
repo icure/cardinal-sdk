@@ -31,11 +31,11 @@ internal object EmploymentInfoDecryptorFactory : EntityDecryptorFactory<Encrypte
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		require(manifest?.extensionsManifestsByModelVersion.isNullOrEmpty()) {
 			"EmploymentInfo is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
 		}
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		return EmploymentInfoDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,

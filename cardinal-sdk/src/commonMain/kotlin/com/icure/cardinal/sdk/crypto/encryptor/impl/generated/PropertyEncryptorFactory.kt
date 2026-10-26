@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.DecryptedProperty
@@ -21,37 +22,16 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object PropertyEncryptorFactory : EntityEncryptorFactory<EncryptedProperty, DecryptedProperty> {
-	override val empty: EntityEncryptor<EncryptedProperty, DecryptedProperty> =
-		object : EntityEncryptor<EncryptedProperty, DecryptedProperty> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedProperty,
-			): EncryptedProperty =
-				EncryptedProperty(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					deletionDate = clearEntity.deletionDate,
-					type = clearEntity.type,
-					typedValue =
-						clearEntity.typedValue?.let {
-							TypedValueEncryptorFactory.empty.encrypt(encryptionKey, it)
-						},
-					encryptedSelf = null,
-				)
-		}
-
+internal object PropertyEncryptorFactory : RootEntityEncryptorFactory<EncryptedProperty, DecryptedProperty> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedProperty, DecryptedProperty> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Property is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

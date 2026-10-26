@@ -96,7 +96,7 @@ internal object InvoicingCodeEncryptorFactory : EntityEncryptorFactory<Encrypted
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInvoicingCode, DecryptedInvoicingCode> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"InvoicingCode is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

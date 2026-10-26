@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedInvoice
@@ -21,26 +22,24 @@ import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.Collection
 
 @InternalIcureApi
-internal object InvoiceDecryptorFactory : EntityDecryptorFactory<EncryptedInvoice, DecryptedInvoice> {
+internal object InvoiceDecryptorFactory : RootEntityDecryptorFactory<EncryptedInvoice, DecryptedInvoice> {
 	override fun create(
-		entityManifestName: String?,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		cryptoService: CryptoService,
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedInvoice, DecryptedInvoice> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
-		require(manifest?.extensionsManifestsByModelVersion.isNullOrEmpty()) {
+		require(manifest.extensionsManifestsByModelVersion.isEmpty()) {
 			"Invoice is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
 		}
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		val invoicingCodesDecryptor =
-			manifest?.recursiveEncryption?.get("invoicingCodes")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["invoicingCodes"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,

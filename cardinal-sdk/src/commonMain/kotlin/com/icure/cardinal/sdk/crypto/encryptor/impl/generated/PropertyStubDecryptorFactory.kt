@@ -34,11 +34,11 @@ internal object PropertyStubDecryptorFactory : EntityDecryptorFactory<EncryptedP
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedPropertyStub, DecryptedPropertyStub> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		require(manifest?.extensionsManifestsByModelVersion.isNullOrEmpty()) {
 			"PropertyStub is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
 		}
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		val typedValueDecryptor =
 			manifest?.recursiveEncryption?.get("typedValue")?.let { nestedManifestName ->
 				val pairLazy =

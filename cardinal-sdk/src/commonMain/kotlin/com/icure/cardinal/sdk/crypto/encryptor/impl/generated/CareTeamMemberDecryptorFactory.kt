@@ -36,7 +36,7 @@ internal object CareTeamMemberDecryptorFactory : EntityDecryptorFactory<Encrypte
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedCareTeamMember, DecryptedCareTeamMember> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		val extensionsDecryptorsByVersion =
 			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
@@ -45,7 +45,7 @@ internal object CareTeamMemberDecryptorFactory : EntityDecryptorFactory<Encrypte
 					decryptedClass = DecryptedCareTeamMember::class,
 				)
 			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		return CareTeamMemberDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,

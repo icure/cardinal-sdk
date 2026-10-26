@@ -37,11 +37,11 @@ internal object ContentDecryptorFactory : EntityDecryptorFactory<EncryptedConten
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedContent, DecryptedContent> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		require(manifest?.extensionsManifestsByModelVersion.isNullOrEmpty()) {
 			"Content is not Extendable and does not support extensions decryption, but its manifest defines extensionsManifestsByModelVersion."
 		}
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		val compoundValueDecryptor =
 			manifest?.recursiveEncryption?.get("compoundValue")?.let { nestedManifestName ->
 				val pairLazy =

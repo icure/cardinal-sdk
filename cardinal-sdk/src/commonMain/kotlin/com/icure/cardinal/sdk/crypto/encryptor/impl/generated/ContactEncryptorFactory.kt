@@ -3,10 +3,11 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
@@ -31,75 +32,16 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object ContactEncryptorFactory : EntityEncryptorFactory<EncryptedContact, DecryptedContact> {
-	override val empty: EntityEncryptor<EncryptedContact, DecryptedContact> =
-		object : EntityEncryptor<EncryptedContact, DecryptedContact> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedContact,
-			): EncryptedContact =
-				EncryptedContact(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					identifier = clearEntity.identifier,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					groupId = clearEntity.groupId,
-					openingDate = clearEntity.openingDate,
-					closingDate = clearEntity.closingDate,
-					descr = clearEntity.descr,
-					location = clearEntity.location,
-					externalId = clearEntity.externalId,
-					encounterType = clearEntity.encounterType,
-					encounterLocation =
-						clearEntity.encounterLocation?.let {
-							AddressEncryptorFactory.empty.encrypt(encryptionKey, it)
-						},
-					subContacts =
-						clearEntity.subContacts.mapTo(mutableSetOf()) { x0 ->
-							SubContactEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					services =
-						clearEntity.services.mapTo(mutableSetOf()) { x0 ->
-							ServiceEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					participants = clearEntity.participants,
-					participantList = clearEntity.participantList,
-					healthcarePartyId = clearEntity.healthcarePartyId,
-					modifiedContactId = clearEntity.modifiedContactId,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-					notes =
-						clearEntity.notes.map { x0 ->
-							AnnotationEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					extensions = clearEntity.extensions,
-					customisedModelVersion = clearEntity.customisedModelVersion,
-				)
-		}
-
+internal object ContactEncryptorFactory : RootEntityEncryptorFactory<EncryptedContact, DecryptedContact> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedContact, DecryptedContact> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		val extensionsEncryptor =
 			manifest.currentExtensionsManifest?.let {
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(

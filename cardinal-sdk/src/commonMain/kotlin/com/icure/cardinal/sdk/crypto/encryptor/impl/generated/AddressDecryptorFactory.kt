@@ -40,7 +40,7 @@ internal object AddressDecryptorFactory : EntityDecryptorFactory<EncryptedAddres
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedAddress, DecryptedAddress> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		val extensionsDecryptorsByVersion =
 			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
@@ -49,7 +49,7 @@ internal object AddressDecryptorFactory : EntityDecryptorFactory<EncryptedAddres
 					decryptedClass = DecryptedAddress::class,
 				)
 			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		val notesDecryptor =
 			manifest?.recursiveEncryption?.get("notes")?.let { nestedManifestName ->
 				val pairLazy =

@@ -40,7 +40,7 @@ internal object ServiceDecryptorFactory : EntityDecryptorFactory<EncryptedServic
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedService, DecryptedService> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		val extensionsDecryptorsByVersion =
 			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
@@ -49,7 +49,7 @@ internal object ServiceDecryptorFactory : EntityDecryptorFactory<EncryptedServic
 					decryptedClass = DecryptedService::class,
 				)
 			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		val contentDecryptor =
 			manifest?.recursiveEncryption?.get("content")?.let { nestedManifestName ->
 				val pairLazy =

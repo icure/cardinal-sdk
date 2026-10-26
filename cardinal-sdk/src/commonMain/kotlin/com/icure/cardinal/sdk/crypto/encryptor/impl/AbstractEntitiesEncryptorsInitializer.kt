@@ -7,10 +7,14 @@ import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
 import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptorsInitializer
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
-import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEmbeddedEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.CustomEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
@@ -21,7 +25,6 @@ import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.LegacyServiceEncry
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedAccessLog
 import com.icure.cardinal.sdk.model.DecryptedCalendarItem
-import com.icure.cardinal.sdk.model.DecryptedClassification
 import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.DecryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.DecryptedDocument
@@ -30,12 +33,10 @@ import com.icure.cardinal.sdk.model.DecryptedHealthElement
 import com.icure.cardinal.sdk.model.DecryptedInvoice
 import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.DecryptedPatient
-import com.icure.cardinal.sdk.model.DecryptedReceipt
 import com.icure.cardinal.sdk.model.DecryptedRelatedPerson
 import com.icure.cardinal.sdk.model.DecryptedTopic
 import com.icure.cardinal.sdk.model.EncryptedAccessLog
 import com.icure.cardinal.sdk.model.EncryptedCalendarItem
-import com.icure.cardinal.sdk.model.EncryptedClassification
 import com.icure.cardinal.sdk.model.EncryptedContact
 import com.icure.cardinal.sdk.model.EncryptedCustomEntityBase
 import com.icure.cardinal.sdk.model.EncryptedDocument
@@ -44,7 +45,6 @@ import com.icure.cardinal.sdk.model.EncryptedHealthElement
 import com.icure.cardinal.sdk.model.EncryptedInvoice
 import com.icure.cardinal.sdk.model.EncryptedMessage
 import com.icure.cardinal.sdk.model.EncryptedPatient
-import com.icure.cardinal.sdk.model.EncryptedReceipt
 import com.icure.cardinal.sdk.model.EncryptedRelatedPerson
 import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.cardinal.sdk.model.embed.DecryptedService
@@ -67,10 +67,11 @@ import kotlin.reflect.KClass
  * generated in any order, including cyclically, without requiring the dependency graph to be resolved upfront.
  *
  * ### Algorithm
- * - [initializeEncryptorsForManifests] first queues a generation request for each root entity manifest (see
- *   [fillInitialQueue]), then drains the queue one request at a time, calling [EntityEncryptorFactory.create] and
- *   storing the result in `manifestToEncryptor`.
- * - While a factory's [EntityEncryptorFactory.create] is running it can request the encryptor of another manifest
+ * - [initializeEncryptorsForManifests] first creates the encryptors of each root entity from its manifest
+ *   ([RootEntityEncryptorFactory.create], also for custom entities), then drains the queue of the encryptors of embedded
+ *   entities requested by them one request at a time, calling [EntityEncryptorFactory.create] and storing the result in
+ *   `manifestToEncryptor`.
+ * - While a factory's `create` is running it can request the encryptor of another (embedded entity) manifest
  *   (e.g. for a recursively-encrypted field) via [EntityEncryptorsFactoryContext.getEntityEncryptorsProvider]. This queues a
  *   generation request for that manifest if one hasn't already been queued, and returns a [Lazy] rather than the
  *   encryptor itself.
@@ -99,13 +100,13 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 	 */
 	protected abstract val encryptorFactoriesByType: Map<Pair<KClass<*>, KClass<*>>, Factories<*, *>>
 	/**
-	 * Same as above, but the encryptor factory for Service uses the legacy content encryption solution
+	 * Gives access to all the encryptor factories for root entities by key = (encrypted entity type, decrypted entity type)
+	 */
+	protected abstract val rootEncryptorFactoriesByType: Map<Pair<KClass<*>, KClass<*>>, RootFactories<*, *>>
+	/**
+	 * Same as [encryptorFactoriesByType], but the encryptor factory for Service uses the legacy content encryption solution
 	 */
 	private val encryptorFactoriesByTypeWithLegacyService: Map<Pair<KClass<*>, KClass<*>>, Factories<*, *>> by lazy {
-		@Suppress("UNCHECKED_CAST")
-		val standardContactFactories = encryptorFactoriesByType.getValue(
-			EncryptedContact::class to DecryptedContact::class
-		) as Factories<EncryptedContact, DecryptedContact>
 		@Suppress("UNCHECKED_CAST")
 		val standardServiceFactories = encryptorFactoriesByType.getValue(
 			EncryptedService::class to DecryptedService::class
@@ -113,9 +114,20 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		encryptorFactoriesByType + Pair(
 			(EncryptedService::class to DecryptedService::class),
 			Factories(LegacyServiceEncryptorFactory, standardServiceFactories.decryptor)
-		) + Pair(
+		)
+	}
+	/**
+	 * Same as [rootEncryptorFactoriesByType], but the encryptor factory for Contact uses the legacy service content
+	 * encryption solution
+	 */
+	private val rootEncryptorFactoriesByTypeWithLegacyService: Map<Pair<KClass<*>, KClass<*>>, RootFactories<*, *>> by lazy {
+		@Suppress("UNCHECKED_CAST")
+		val standardContactFactories = rootEncryptorFactoriesByType.getValue(
+			EncryptedContact::class to DecryptedContact::class
+		) as RootFactories<EncryptedContact, DecryptedContact>
+		rootEncryptorFactoriesByType + Pair(
 			(EncryptedContact::class to DecryptedContact::class),
-			Factories(LegacyContactEncryptorFactory, standardContactFactories.decryptor)
+			RootFactories(LegacyContactEncryptorFactory, standardContactFactories.decryptor)
 		)
 	}
 
@@ -124,29 +136,31 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		val decryptor: EntityDecryptorFactory<ENCRYPTED, DECRYPTED>,
 	)
 
+	protected data class RootFactories<ENCRYPTED : Encryptable, DECRYPTED : Encryptable>(
+		val encryptor: RootEntityEncryptorFactory<ENCRYPTED, DECRYPTED>,
+		val decryptor: RootEntityDecryptorFactory<ENCRYPTED, DECRYPTED>,
+	)
+
 	override fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> initializeSingleEntityEncryptors(
-		mainManifestName: String,
-		manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+		rootManifest: BuiltinRootEntityEncryptionManifest,
+		embeddedManifestsByName: Map<String, BuiltinEmbeddedEntityEncryptionManifest>,
 		encryptorOptions: EncryptorOptions,
 		decryptorOptions: DecryptorOptions,
 		sharedOptions: SharedEncryptorsOptions,
-		mainManifestEncryptedEntity: KClass<ENCRYPTED>,
-		mainManifestDecryptedEntity: KClass<DECRYPTED>,
+		rootEncryptedEntity: KClass<ENCRYPTED>,
+		rootDecryptedEntity: KClass<DECRYPTED>,
 	): EntityEncryptors<ENCRYPTED, DECRYPTED> {
 		val context = initializeContext(
-			manifestsByName = manifestsByName,
+			embeddedManifestsByName = embeddedManifestsByName,
 			customEntityManifestsByName = emptyMap(),
 			encryptorOptions = encryptorOptions,
 			decryptorOptions = decryptorOptions,
 			sharedOptions = sharedOptions,
 			extensionsManifestsByName = emptyMap() // Only used without custom extensions
 		)
-		context.markManifestTypeAndQueueGeneration(mainManifestName, mainManifestEncryptedEntity, mainManifestDecryptedEntity)
+		val encryptors = context.createRootEncryptors(rootManifest, rootEncryptedEntity, rootDecryptedEntity)
 		generateQueuedAndDependencies(context)
-		@Suppress("UNCHECKED_CAST")
-		return ensureNonNull(context.manifestToEncryptors[mainManifestName]) {
-			"Encryptor for $mainManifestName should have been initialized."
-		} as EntityEncryptors<ENCRYPTED, DECRYPTED>
+		return encryptors
 	}
 
 	override fun initializeEncryptorsForManifests(
@@ -156,7 +170,7 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		sharedOptions: SharedEncryptorsOptions,
 	): RootEntitiesEncryptors {
 		val context = initializeContext(
-			manifestsByName = manifests.manifestsByName,
+			embeddedManifestsByName = manifests.embeddedManifestsByName,
 			customEntityManifestsByName = manifests.customEntitiesManifestByEntityTypeId,
 			encryptorOptions = encryptorOptions,
 			decryptorOptions = decryptorOptions,
@@ -180,67 +194,31 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 				)
 			)
 		}
-		fillInitialQueue(context, manifests)
+		// Must be created before generating the queued encryptors of embedded entities, which they may request
+		val accessLog = context.createRootEncryptorsOrUnsupported<EncryptedAccessLog, DecryptedAccessLog>(manifests.accessLog, "AccessLog")
+		val calendarItem = context.createRootEncryptorsOrUnsupported<EncryptedCalendarItem, DecryptedCalendarItem>(manifests.calendarItem, "CalendarItem")
+		val contact = context.createRootEncryptorsOrUnsupported<EncryptedContact, DecryptedContact>(manifests.contact, "Contact")
+		val healthElement = context.createRootEncryptorsOrUnsupported<EncryptedHealthElement, DecryptedHealthElement>(manifests.healthElement, "HealthElement")
+		val patient = context.createRootEncryptorsOrUnsupported<EncryptedPatient, DecryptedPatient>(manifests.patient, "Patient")
+		val message = context.createRootEncryptorsOrUnsupported<EncryptedMessage, DecryptedMessage>(manifests.message, "Message")
+		val topic = context.createRootEncryptorsOrUnsupported<EncryptedTopic, DecryptedTopic>(manifests.topic, "Topic")
+		val document = context.createRootEncryptorsOrUnsupported<EncryptedDocument, DecryptedDocument>(manifests.document, "Document")
+		val form = context.createRootEncryptorsOrUnsupported<EncryptedForm, DecryptedForm>(manifests.form, "Form")
+		val invoice = context.createRootEncryptorsOrUnsupported<EncryptedInvoice, DecryptedInvoice>(manifests.invoice, "Invoice")
+		val relatedPerson = context.createRootEncryptorsOrUnsupported<EncryptedRelatedPerson, DecryptedRelatedPerson>(manifests.relatedPerson, "RelatedPerson")
 		generateQueuedAndDependencies(context)
-		@Suppress("UNCHECKED_CAST")
 		return RootEntitiesEncryptors(
-			accessLog = manifests.accessLog?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for AccessLog should have been initialized."
-				} as EntityEncryptors<EncryptedAccessLog, DecryptedAccessLog>
-			} ?: unsupportedRootEntityEncryptors("AccessLog"),
-			calendarItem = manifests.calendarItem?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for CalendarItem should have been initialized."
-				} as EntityEncryptors<EncryptedCalendarItem, DecryptedCalendarItem>
-			} ?: unsupportedRootEntityEncryptors("CalendarItem"),
-			contact = manifests.contact?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for Contact should have been initialized."
-				} as EntityEncryptors<EncryptedContact, DecryptedContact>
-			} ?: unsupportedRootEntityEncryptors("Contact"),
-			healthElement = manifests.healthElement?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for HealthElement should have been initialized."
-				} as EntityEncryptors<EncryptedHealthElement, DecryptedHealthElement>
-			} ?: unsupportedRootEntityEncryptors("HealthElement"),
-			patient = manifests.patient?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for Patient should have been initialized."
-				} as EntityEncryptors<EncryptedPatient, DecryptedPatient>
-			} ?: unsupportedRootEntityEncryptors("Patient"),
-			message = manifests.message?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for Message should have been initialized."
-				} as EntityEncryptors<EncryptedMessage, DecryptedMessage>
-			} ?: unsupportedRootEntityEncryptors("Message"),
-			topic = manifests.topic?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for Topic should have been initialized."
-				} as EntityEncryptors<EncryptedTopic, DecryptedTopic>
-			} ?: unsupportedRootEntityEncryptors("Topic"),
-			document = manifests.document?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for Document should have been initialized."
-				} as EntityEncryptors<EncryptedDocument, DecryptedDocument>
-			} ?: unsupportedRootEntityEncryptors("Document"),
-			form = ensureNonNull(context.manifestToEncryptors[manifests.form]) {
-				"Encryptor ${manifests.form} for Form should have been initialized."
-			} as EntityEncryptors<EncryptedForm, DecryptedForm>,
-			receipt = ensureNonNull(context.manifestToEncryptors[manifests.receipt]) {
-				"Encryptor ${manifests.receipt} for Receipt should have been initialized."
-			} as EntityEncryptors<EncryptedReceipt, DecryptedReceipt>,
-			classification = ensureNonNull(context.manifestToEncryptors[manifests.classification]) {
-				"Encryptor ${manifests.classification} for Classification should have been initialized."
-			} as EntityEncryptors<EncryptedClassification, DecryptedClassification>,
-			invoice = ensureNonNull(context.manifestToEncryptors[manifests.invoice]) {
-				"Encryptor ${manifests.invoice} for Invoice should have been initialized."
-			} as EntityEncryptors<EncryptedInvoice, DecryptedInvoice>,
-			relatedPerson = manifests.relatedPerson?.let { manifestName ->
-				ensureNonNull(context.manifestToEncryptors[manifestName]) {
-					"Encryptor $manifestName for RelatedPerson should have been initialized."
-				} as EntityEncryptors<EncryptedRelatedPerson, DecryptedRelatedPerson>
-			} ?: unsupportedRootEntityEncryptors("RelatedPerson"),
+			accessLog = accessLog,
+			calendarItem = calendarItem,
+			contact = contact,
+			healthElement = healthElement,
+			patient = patient,
+			message = message,
+			topic = topic,
+			document = document,
+			form = form,
+			invoice = invoice,
+			relatedPerson = relatedPerson,
 			customEntities = customEntitiesEncryptors,
 		)
 	}
@@ -294,33 +272,42 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 		context.manifestToEncryptors[manifestName] = EntityEncryptors(encryptor, decryptor)
 	}
 
-	private fun fillInitialQueue(context: Context, manifests: EntitiesEncryptionManifests) {
-		context.markManifestTypeAndQueueGeneration<EncryptedAccessLog, DecryptedAccessLog>(manifests.accessLog)
-		context.markManifestTypeAndQueueGeneration<EncryptedCalendarItem, DecryptedCalendarItem>(manifests.calendarItem)
-		context.markManifestTypeAndQueueGeneration<EncryptedContact, DecryptedContact>(manifests.contact)
-		context.markManifestTypeAndQueueGeneration<EncryptedHealthElement, DecryptedHealthElement>(manifests.healthElement)
-		context.markManifestTypeAndQueueGeneration<EncryptedPatient, DecryptedPatient>(manifests.patient)
-		context.markManifestTypeAndQueueGeneration<EncryptedMessage, DecryptedMessage>(manifests.message)
-		context.markManifestTypeAndQueueGeneration<EncryptedTopic, DecryptedTopic>(manifests.topic)
-		context.markManifestTypeAndQueueGeneration<EncryptedDocument, DecryptedDocument>(manifests.document)
-		context.markManifestTypeAndQueueGeneration<EncryptedForm, DecryptedForm>(manifests.form)
-		context.markManifestTypeAndQueueGeneration<EncryptedReceipt, DecryptedReceipt>(manifests.receipt)
-		context.markManifestTypeAndQueueGeneration<EncryptedClassification, DecryptedClassification>(manifests.classification)
-		context.markManifestTypeAndQueueGeneration<EncryptedInvoice, DecryptedInvoice>(manifests.invoice)
-		context.markManifestTypeAndQueueGeneration<EncryptedRelatedPerson, DecryptedRelatedPerson>(manifests.relatedPerson)
-	}
-
-	/**
-	 * Does nothing if [manifestName] is null (root entity not supported).
-	 */
-	private inline fun <reified ENCRYPTED : Encryptable, reified DECRYPTED : Encryptable> Context.markManifestTypeAndQueueGeneration(manifestName: String?) {
-		if (manifestName == null) return
-		markManifestTypeAndQueueGeneration(
-			manifestName = manifestName,
-			encryptedClass = ENCRYPTED::class,
-			decryptedClass = DECRYPTED::class
+	private fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> Context.createRootEncryptors(
+		manifest: BuiltinRootEntityEncryptionManifest,
+		encryptedClass: KClass<ENCRYPTED>,
+		decryptedClass: KClass<DECRYPTED>,
+	): EntityEncryptors<ENCRYPTED, DECRYPTED> {
+		val factories = getRootFactoriesFor(encrypted = encryptedClass, decrypted = decryptedClass)
+		return EntityEncryptors(
+			encryptor = factories.encryptor.create(
+				manifest = manifest,
+				encryptorsFactoryContext = this,
+				encodingJson = encryptedContentJson,
+				cryptoService = cryptoService,
+			),
+			decryptor = factories.decryptor.create(
+				manifest = manifest,
+				encryptorsFactoryContext = this,
+				cryptoService = cryptoService,
+				encryptedContentDecoder = encryptedContentJson,
+				unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictness,
+			),
 		)
 	}
+
+	private inline fun <reified ENCRYPTED : Encryptable, reified DECRYPTED : Encryptable> Context.createRootEncryptors(
+		manifest: BuiltinRootEntityEncryptionManifest,
+	): EntityEncryptors<ENCRYPTED, DECRYPTED> =
+		createRootEncryptors(manifest, ENCRYPTED::class, DECRYPTED::class)
+
+	/**
+	 * If [manifest] is null (root entity not supported) the encryptors fail on use.
+	 */
+	private inline fun <reified ENCRYPTED : Encryptable, reified DECRYPTED : Encryptable> Context.createRootEncryptorsOrUnsupported(
+		manifest: BuiltinRootEntityEncryptionManifest?,
+		entityName: String,
+	): EntityEncryptors<ENCRYPTED, DECRYPTED> =
+		if (manifest != null) createRootEncryptors(manifest) else unsupportedRootEntityEncryptors(entityName)
 
 	/**
 	 * Encryptors for a root entity type that is not supported by the SDK (not included in the configuration of the
@@ -350,19 +337,24 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 	}
 
 	private fun initializeContext(
-		manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+		embeddedManifestsByName: Map<String, BuiltinEmbeddedEntityEncryptionManifest>,
 		customEntityManifestsByName: Map<String, CustomEntityEncryptionManifest>,
 		encryptorOptions: EncryptorOptions,
 		decryptorOptions: DecryptorOptions,
 		sharedOptions: SharedEncryptorsOptions,
 		extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest>,
 	): Context = Context(
-		manifestsByName = manifestsByName,
+		embeddedManifestsByName = embeddedManifestsByName,
 		factories =
 			if (encryptorOptions.useLegacyServiceContentEncryption)
 				encryptorFactoriesByTypeWithLegacyService
 			else
 				encryptorFactoriesByType,
+		rootFactories =
+			if (encryptorOptions.useLegacyServiceContentEncryption)
+				rootEncryptorFactoriesByTypeWithLegacyService
+			else
+				rootEncryptorFactoriesByType,
 		serializeEncryptedSelfUsingLegacyNames = encryptorOptions.serializeEncryptedSelfUsingLegacyNames,
 		cryptoService = sharedOptions.cryptoService,
 		encryptedContentJson = sharedOptions.json,
@@ -372,9 +364,10 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 	)
 
 	private class Context(
-		private val manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+		private val embeddedManifestsByName: Map<String, BuiltinEmbeddedEntityEncryptionManifest>,
 		private val customEntityManifestsByName: Map<String, CustomEntityEncryptionManifest>,
 		private val factories: Map<Pair<KClass<*>, KClass<*>>, Factories<*, *>>,
+		private val rootFactories: Map<Pair<KClass<*>, KClass<*>>, RootFactories<*, *>>,
 		override val serializeEncryptedSelfUsingLegacyNames: Boolean,
 		val cryptoService: CryptoService,
 		val encryptedContentJson: Json,
@@ -470,8 +463,8 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 			}.also { initializedExtensionsLazies[extensionsManifestName] = it }
 		}
 
-		override fun getManifest(manifestName: String): BuiltinEntityEncryptionManifest =
-			ensureNonNull(manifestsByName[manifestName]) {
+		override fun getEmbeddedManifest(manifestName: String): BuiltinEmbeddedEntityEncryptionManifest =
+			ensureNonNull(embeddedManifestsByName[manifestName]) {
 				"Manifest $manifestName is not defined." // Validation with better error messages is done at init of EntitiesEncryptionManifests
 			}
 
@@ -489,7 +482,7 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 			} else {
 				manifestTypeRegistry[manifestName] = encryptedClass to decryptedClass
 				val factories = getFactoriesFor(encrypted = encryptedClass, decrypted = decryptedClass)
-				getManifest(manifestName) // just check exists
+				getEmbeddedManifest(manifestName) // just check exists
 				toGenerateQueue.addLast(GenerationRequest.Encryptors(manifestName, factories))
 			}
 		}
@@ -502,8 +495,16 @@ internal abstract class AbstractEntitiesEncryptorsInitializer : EntitiesEncrypto
 				"Missing encryptor factory for ${encrypted.simpleName} <-> ${decrypted.simpleName}"
 			} as Factories<ENCRYPTED, DECRYPTED>
 
+		@Suppress("UNCHECKED_CAST")
+		fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> getRootFactoriesFor(encrypted: KClass<ENCRYPTED>, decrypted: KClass<DECRYPTED>) =
+			ensureNonNull(
+				rootFactories[encrypted to decrypted]
+			) {
+				"Missing root encryptor factory for ${encrypted.simpleName} <-> ${decrypted.simpleName}"
+			} as RootFactories<ENCRYPTED, DECRYPTED>
+
 		// TODO currently unsupported
-		override fun getManifestDecryptedJsonPatcher(manifestName: String): ((JsonObject) -> JsonObject)? =
+		override fun getManifestDecryptedJsonPatcher(manifest: EntityEncryptionManifest): ((JsonObject) -> JsonObject)? =
 			null
 
 		override fun getExtensionsManifest(name: String): ExtensionsEncryptionManifest =

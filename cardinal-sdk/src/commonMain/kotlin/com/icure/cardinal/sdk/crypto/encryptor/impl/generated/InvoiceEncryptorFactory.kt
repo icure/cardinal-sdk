@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.DecryptedInvoice
@@ -21,104 +22,16 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object InvoiceEncryptorFactory : EntityEncryptorFactory<EncryptedInvoice, DecryptedInvoice> {
-	override val empty: EntityEncryptor<EncryptedInvoice, DecryptedInvoice> =
-		object : EntityEncryptor<EncryptedInvoice, DecryptedInvoice> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedInvoice,
-			): EncryptedInvoice =
-				EncryptedInvoice(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					identifier = clearEntity.identifier,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					invoiceDate = clearEntity.invoiceDate,
-					sentDate = clearEntity.sentDate,
-					printedDate = clearEntity.printedDate,
-					invoicingCodes =
-						clearEntity.invoicingCodes.map { x0 ->
-							InvoicingCodeEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					receipts = clearEntity.receipts,
-					recipientType = clearEntity.recipientType,
-					recipientId = clearEntity.recipientId,
-					invoiceReference = clearEntity.invoiceReference,
-					decisionReference = clearEntity.decisionReference,
-					thirdPartyReference = clearEntity.thirdPartyReference,
-					thirdPartyPaymentJustification = clearEntity.thirdPartyPaymentJustification,
-					thirdPartyPaymentReason = clearEntity.thirdPartyPaymentReason,
-					reason = clearEntity.reason,
-					invoiceType = clearEntity.invoiceType,
-					sentMediumType = clearEntity.sentMediumType,
-					interventionType = clearEntity.interventionType,
-					groupId = clearEntity.groupId,
-					paymentType = clearEntity.paymentType,
-					paid = clearEntity.paid,
-					payments = clearEntity.payments,
-					gnotionNihii = clearEntity.gnotionNihii,
-					gnotionSsin = clearEntity.gnotionSsin,
-					gnotionLastName = clearEntity.gnotionLastName,
-					gnotionFirstName = clearEntity.gnotionFirstName,
-					gnotionCdHcParty = clearEntity.gnotionCdHcParty,
-					invoicePeriod = clearEntity.invoicePeriod,
-					careProviderType = clearEntity.careProviderType,
-					internshipNihii = clearEntity.internshipNihii,
-					internshipSsin = clearEntity.internshipSsin,
-					internshipLastName = clearEntity.internshipLastName,
-					internshipFirstName = clearEntity.internshipFirstName,
-					internshipCdHcParty = clearEntity.internshipCdHcParty,
-					internshipCbe = clearEntity.internshipCbe,
-					supervisorNihii = clearEntity.supervisorNihii,
-					supervisorSsin = clearEntity.supervisorSsin,
-					supervisorLastName = clearEntity.supervisorLastName,
-					supervisorFirstName = clearEntity.supervisorFirstName,
-					supervisorCdHcParty = clearEntity.supervisorCdHcParty,
-					supervisorCbe = clearEntity.supervisorCbe,
-					error = clearEntity.error,
-					encounterLocationName = clearEntity.encounterLocationName,
-					encounterLocationNihii = clearEntity.encounterLocationNihii,
-					encounterLocationNorm = clearEntity.encounterLocationNorm,
-					longDelayJustification = clearEntity.longDelayJustification,
-					correctiveInvoiceId = clearEntity.correctiveInvoiceId,
-					correctedInvoiceId = clearEntity.correctedInvoiceId,
-					creditNote = clearEntity.creditNote,
-					creditNoteRelatedInvoiceId = clearEntity.creditNoteRelatedInvoiceId,
-					idDocument = clearEntity.idDocument,
-					admissionDate = clearEntity.admissionDate,
-					locationNihii = clearEntity.locationNihii,
-					locationService = clearEntity.locationService,
-					cancelReason = clearEntity.cancelReason,
-					cancelDate = clearEntity.cancelDate,
-					options = clearEntity.options,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-				)
-		}
-
+internal object InvoiceEncryptorFactory : RootEntityEncryptorFactory<EncryptedInvoice, DecryptedInvoice> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedInvoice, DecryptedInvoice> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Invoice is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

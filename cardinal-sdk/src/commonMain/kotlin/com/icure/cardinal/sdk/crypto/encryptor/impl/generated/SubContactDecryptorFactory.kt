@@ -36,7 +36,7 @@ internal object SubContactDecryptorFactory : EntityDecryptorFactory<EncryptedSub
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedSubContact, DecryptedSubContact> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		val extensionsDecryptorsByVersion =
 			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
@@ -45,7 +45,7 @@ internal object SubContactDecryptorFactory : EntityDecryptorFactory<EncryptedSub
 					decryptedClass = DecryptedSubContact::class,
 				)
 			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		return SubContactDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,

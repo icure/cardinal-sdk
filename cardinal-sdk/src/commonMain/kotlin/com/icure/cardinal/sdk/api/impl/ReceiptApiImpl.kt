@@ -13,9 +13,16 @@ import com.icure.cardinal.sdk.api.ReceiptInGroupApi
 import com.icure.cardinal.sdk.api.raw.RawReceiptApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
+import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
+import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEntityEncryptors
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
-import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
@@ -40,7 +47,9 @@ import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
+import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
+import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
@@ -55,21 +64,23 @@ private fun encryptedApiFlavour(
 
 @InternalIcureApi
 private fun decryptedApiFlavour(
-	config: ApiConfiguration
+	config: ApiConfiguration,
+	receiptEncryptors: EntityEncryptors<EncryptedReceipt, DecryptedReceipt>,
 ): FlavouredApi<EncryptedReceipt, DecryptedReceipt> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
-	encryptors = config.encryptors.receipt,
+	encryptors = receiptEncryptors,
 	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
 private fun tryAndRecoverApiFlavour(
-	config: ApiConfiguration
+	config: ApiConfiguration,
+	receiptEncryptors: EntityEncryptors<EncryptedReceipt, DecryptedReceipt>,
 ): FlavouredApi<EncryptedReceipt, Receipt> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Receipt,
-	encryptors = config.encryptors.receipt,
+	encryptors = receiptEncryptors,
 	getRootModelVersion = { null },
 )
 
@@ -440,13 +451,40 @@ private class ReceiptBasicFlavourlessInGroupApiImpl(
 }
 
 @InternalIcureApi
+private fun fixedReceiptEncryptors(
+	config: ApiConfiguration,
+): EntityEncryptors<EncryptedReceipt, DecryptedReceipt> =
+	// Receipt is a legacy entity type: its encryption is not configurable, and like for maintenance tasks we always use
+	// the same fixed configuration.
+	GeneratedEntitiesEncryptorInitializer.initializeSingleEntityEncryptors<EncryptedReceipt, DecryptedReceipt>(
+		BuiltinRootEntityEncryptionManifest(
+			fieldsToEncrypt = setOf("references"),
+			recursiveEncryption = emptyMap(),
+		),
+		emptyMap(),
+		// The receipt encryptor does not depend on these options (no legacy content or renamed fields)
+		EncryptorOptions(
+			useLegacyServiceContentEncryption = false,
+			serializeEncryptedSelfUsingLegacyNames = false
+		),
+		DecryptorOptions(
+			unversionedEntitiesDecryptedJsonStrictness = DecryptedJsonStrictness.IgnoreBadValues
+		),
+		SharedEncryptorsOptions(
+			json = Serialization.lenientJson,
+			cryptoService = config.crypto.primitives,
+		)
+	)
+
+@InternalIcureApi
 internal fun initReceiptApi(
 	rawApi: RawReceiptApi,
 	config: ApiConfiguration
 ): ReceiptApi {
-	val decryptedFlavour = decryptedApiFlavour(config)
+	val receiptEncryptors = fixedReceiptEncryptors(config)
+	val decryptedFlavour = decryptedApiFlavour(config, receiptEncryptors)
 	val encryptedFlavour = encryptedApiFlavour(config)
-	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
+	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config, receiptEncryptors)
 	return ReceiptApiImpl(
 		rawApi,
 		config,

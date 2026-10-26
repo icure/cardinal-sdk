@@ -6,6 +6,10 @@ import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 
+/**
+ * Factory for decryptors of embedded entities, using a [BuiltinEmbeddedEntityEncryptionManifest]. See
+ * [RootEntityDecryptorFactory] for root entities.
+ */
 @InternalIcureApi
 internal interface EntityDecryptorFactory<ENCRYPTED : Encryptable, DECRYPTED : Encryptable> {
 	/**

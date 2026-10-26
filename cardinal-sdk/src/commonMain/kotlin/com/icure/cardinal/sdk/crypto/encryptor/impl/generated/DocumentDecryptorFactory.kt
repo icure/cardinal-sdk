@@ -3,12 +3,12 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.`impl`.loadExtensionsEncryptors
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.EncryptedDocument
@@ -20,32 +20,31 @@ import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
 import kotlin.collections.Map
 
 @InternalIcureApi
-internal object DocumentDecryptorFactory : EntityDecryptorFactory<EncryptedDocument, DecryptedDocument> {
+internal object DocumentDecryptorFactory : RootEntityDecryptorFactory<EncryptedDocument, DecryptedDocument> {
 	override fun create(
-		entityManifestName: String?,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		cryptoService: CryptoService,
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedDocument, DecryptedDocument> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
 		val extensionsDecryptorsByVersion =
-			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
+			manifest.extensionsManifestsByModelVersion.mapValues { (_, extensionsManifestName) ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
 					extensionsManifestName = extensionsManifestName,
 					encryptedClass = EncryptedDocument::class,
 					decryptedClass = DecryptedDocument::class,
 				)
-			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+			}
+		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		return DocumentDecryptor(
 			encryptedContentDecoder = encryptedContentDecoder,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
@@ -59,7 +58,7 @@ internal object DocumentDecryptorFactory : EntityDecryptorFactory<EncryptedDocum
 @InternalIcureApi
 private class DocumentDecryptor(
 	private val encryptedContentDecoder: Json,
-	private val extensionsDecryptorsByVersion: Map<CustomisedModelVersion, Lazy<ExtensionsEncryptors>>,
+	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -77,7 +76,7 @@ private class DocumentDecryptor(
 			if (customisedModelVersion != null) {
 				val extensionsDecryptor =
 					(
-						extensionsDecryptorsByVersion[customisedModelVersion] ?: throw UnsupportedOperationException(
+						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
 							"This instance of the SDK is not capable of handling Document entities of version $customisedModelVersion.",
 						)
 					).value

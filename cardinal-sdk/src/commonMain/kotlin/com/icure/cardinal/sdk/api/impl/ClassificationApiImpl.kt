@@ -8,6 +8,13 @@ import com.icure.cardinal.sdk.api.ClassificationFlavouredApi
 import com.icure.cardinal.sdk.api.raw.RawClassificationApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
+import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
+import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
+import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
+import com.icure.cardinal.sdk.crypto.encryptor.initializeSingleEntityEncryptors
 import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ClassificationShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
@@ -36,6 +43,8 @@ import com.icure.cardinal.sdk.model.extensions.toDefaultDelegateOptions
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
+import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
+import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -50,21 +59,23 @@ private fun encryptedApiFlavour(
 
 @InternalIcureApi
 private fun decryptedApiFlavour(
-	config: ApiConfiguration
+	config: ApiConfiguration,
+	classificationEncryptors: EntityEncryptors<EncryptedClassification, DecryptedClassification>,
 ): FlavouredApi<EncryptedClassification, DecryptedClassification> = FlavouredApi.decrypted(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Classification,
-	encryptors = config.encryptors.classification,
+	encryptors = classificationEncryptors,
 	getRootModelVersion = { null },
 )
 
 @InternalIcureApi
 private fun tryAndRecoverApiFlavour(
-	config: ApiConfiguration
+	config: ApiConfiguration,
+	classificationEncryptors: EntityEncryptors<EncryptedClassification, DecryptedClassification>,
 ): FlavouredApi<EncryptedClassification, Classification> = FlavouredApi.tryAndRecover(
 	config = config,
 	type = EntityWithEncryptionMetadataTypeName.Builtin.Classification,
-	encryptors = config.encryptors.classification,
+	encryptors = classificationEncryptors,
 	getRootModelVersion = { null },
 )
 
@@ -176,13 +187,40 @@ private class AbstractClassificationBasicFlavourlessApi(val rawApi: RawClassific
 }
 
 @InternalIcureApi
+private fun fixedClassificationEncryptors(
+	config: ApiConfiguration,
+): EntityEncryptors<EncryptedClassification, DecryptedClassification> =
+	// Classification is a legacy entity type: its encryption is not configurable, and like for maintenance tasks we always use
+	// the same fixed configuration.
+	GeneratedEntitiesEncryptorInitializer.initializeSingleEntityEncryptors<EncryptedClassification, DecryptedClassification>(
+		BuiltinRootEntityEncryptionManifest(
+			fieldsToEncrypt = setOf("label"),
+			recursiveEncryption = emptyMap(),
+		),
+		emptyMap(),
+		// The classification encryptor does not depend on these options (no legacy content or renamed fields)
+		EncryptorOptions(
+			useLegacyServiceContentEncryption = false,
+			serializeEncryptedSelfUsingLegacyNames = false
+		),
+		DecryptorOptions(
+			unversionedEntitiesDecryptedJsonStrictness = DecryptedJsonStrictness.IgnoreBadValues
+		),
+		SharedEncryptorsOptions(
+			json = Serialization.lenientJson,
+			cryptoService = config.crypto.primitives,
+		)
+	)
+
+@InternalIcureApi
 internal fun initClassificationApi(
 	rawApi: RawClassificationApi,
 	config: ApiConfiguration,
 ): ClassificationApi {
-	val decryptedFlavour = decryptedApiFlavour(config)
+	val classificationEncryptors = fixedClassificationEncryptors(config)
+	val decryptedFlavour = decryptedApiFlavour(config, classificationEncryptors)
 	val encryptedFlavour = encryptedApiFlavour(config)
-	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config)
+	val tryAndRecoverFlavour = tryAndRecoverApiFlavour(config, classificationEncryptors)
 	return ClassificationApiImpl(
 		rawApi,
 		config,

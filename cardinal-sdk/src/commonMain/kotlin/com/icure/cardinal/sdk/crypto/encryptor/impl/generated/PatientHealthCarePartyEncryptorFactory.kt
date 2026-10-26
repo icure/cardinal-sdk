@@ -55,7 +55,7 @@ internal object PatientHealthCarePartyEncryptorFactory : EntityEncryptorFactory<
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedPatientHealthCareParty, DecryptedPatientHealthCareParty> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"PatientHealthCareParty is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

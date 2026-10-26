@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedForm
 import com.icure.cardinal.sdk.model.EncryptedForm
@@ -18,57 +19,16 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object FormEncryptorFactory : EntityEncryptorFactory<EncryptedForm, DecryptedForm> {
-	override val empty: EntityEncryptor<EncryptedForm, DecryptedForm> =
-		object : EntityEncryptor<EncryptedForm, DecryptedForm> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedForm,
-			): EncryptedForm =
-				EncryptedForm(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					openingDate = clearEntity.openingDate,
-					status = clearEntity.status,
-					version = clearEntity.version,
-					logicalUuid = clearEntity.logicalUuid,
-					descr = clearEntity.descr,
-					uniqueId = clearEntity.uniqueId,
-					formTemplateId = clearEntity.formTemplateId,
-					contactId = clearEntity.contactId,
-					healthElementId = clearEntity.healthElementId,
-					planOfActionId = clearEntity.planOfActionId,
-					parent = clearEntity.parent,
-					anchorId = clearEntity.anchorId,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-				)
-		}
-
+internal object FormEncryptorFactory : RootEntityEncryptorFactory<EncryptedForm, DecryptedForm> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedForm, DecryptedForm> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Form is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

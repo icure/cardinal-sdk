@@ -38,7 +38,7 @@ internal object PlanOfActionDecryptorFactory : EntityDecryptorFactory<EncryptedP
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedPlanOfAction, DecryptedPlanOfAction> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
+		val manifest = entityManifestName?.let { encryptorsFactoryContext.getEmbeddedManifest(it) }
 		val extensionsDecryptorsByVersion =
 			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
@@ -47,7 +47,7 @@ internal object PlanOfActionDecryptorFactory : EntityDecryptorFactory<EncryptedP
 					decryptedClass = DecryptedPlanOfAction::class,
 				)
 			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+		val patchDecryptedSelfJson = manifest?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
 		val careTeamMembershipsDecryptor =
 			manifest?.recursiveEncryption?.get("careTeamMemberships")?.let { nestedManifestName ->
 				val pairLazy =

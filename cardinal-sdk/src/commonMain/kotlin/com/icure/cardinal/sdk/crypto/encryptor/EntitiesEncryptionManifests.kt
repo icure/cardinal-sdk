@@ -1,17 +1,19 @@
 package com.icure.cardinal.sdk.crypto.encryptor
 
-import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import kotlinx.serialization.Serializable
 
 /**
  * Specifies how entities should be encrypted.
+ *
+ * Root entities without a manifest are not supported by the SDK. The encryption of some legacy root entities
+ * ([com.icure.cardinal.sdk.model.Receipt], [com.icure.cardinal.sdk.model.Classification]) and of system root entities
+ * (e.g. [com.icure.cardinal.sdk.model.MaintenanceTask]) is not configurable: the SDK always uses a fixed configuration.
  */
 @Serializable
 data class EntitiesEncryptionManifests(
 	/**
-	 * Manifests of all the entities that should be partially encrypted, both root entities (which are referenced by
-	 * [accessLog], [calendarItem], ...) and embedded entities which are referenced by other manifests
-	 * [BuiltinEntityEncryptionManifest].
+	 * Manifests of the embedded entities that should be partially encrypted, which are referenced by the
+	 * [EntityEncryptionManifest.recursiveEncryption] of other manifests.
 	 *
 	 * Each manifest must only be used to handle one type of entity, but it is possible to have multiple manifests
 	 * per type of entity.
@@ -19,88 +21,84 @@ data class EntitiesEncryptionManifests(
 	 * [com.icure.cardinal.sdk.model.Patient] be encrypted differently from the annotation inside a
 	 * [com.icure.cardinal.sdk.model.Contact]).
 	 */
-	val manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+	val embeddedManifestsByName: Map<String, BuiltinEmbeddedEntityEncryptionManifest> = emptyMap(),
 	/**
 	 * Manifests for fully custom entities, indexed by the custom entity type identifier.
 	 */
-	val customEntitiesManifestByEntityTypeId: Map<String, CustomEntityEncryptionManifest>,
+	val customEntitiesManifestByEntityTypeId: Map<String, CustomEntityEncryptionManifest> = emptyMap(),
 	/**
 	 * Manifests for extensions encryption.
 	 */
-	val extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest>,
+	val extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest> = emptyMap(),
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.AccessLog] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.AccessLog] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val accessLog: String?,
+	val accessLog: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.CalendarItem] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.CalendarItem] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val calendarItem: String?,
+	val calendarItem: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Contact] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.Contact] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val contact: String?,
+	val contact: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.HealthElement] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.HealthElement] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val healthElement: String?,
+	val healthElement: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Patient] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.Patient] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val patient: String?,
+	val patient: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Message] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.Message] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val message: String?,
+	val message: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Topic] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.Topic] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val topic: String?,
+	val topic: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Document] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.Document] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val document: String?,
+	val document: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Form] entities
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.Form] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val form: String,
+	val form: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Receipt] entities
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.Invoice] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val receipt: String,
+	val invoice: BuiltinRootEntityEncryptionManifest? = null,
 	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Classification] entities
+	 * Manifest for the encryption of [com.icure.cardinal.sdk.model.RelatedPerson] entities, or null if the SDK does not support
+	 * this type of entity (the configuration of a customised SDK does not include it): any attempt to encrypt or decrypt
+	 * entities of this type will fail.
 	 */
-	val classification: String,
-	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.Invoice] entities
-	 */
-	val invoice: String,
-	/**
-	 * Name of the manifest in [manifestsByName] that should be used for the encryption of [com.icure.cardinal.sdk.model.RelatedPerson] entities,
-	 * or null if the SDK does not support this type of entity (the configuration of a customised SDK does not
-	 * include it): any attempt to encrypt or decrypt entities of this type will fail.
-	 */
-	val relatedPerson: String?,
+	val relatedPerson: BuiltinRootEntityEncryptionManifest? = null,
 ) {
 	init {
-		val entityManifestNames = mapOf(
+		val rootManifests = mapOf(
 			"accessLog" to accessLog,
 			"calendarItem" to calendarItem,
 			"contact" to contact,
@@ -110,47 +108,27 @@ data class EntitiesEncryptionManifests(
 			"topic" to topic,
 			"document" to document,
 			"form" to form,
-			"receipt" to receipt,
-			"classification" to classification,
 			"invoice" to invoice,
 			"relatedPerson" to relatedPerson,
 		)
-		for ((entityName, manifestName) in entityManifestNames) {
-			if (manifestName == null) continue
-			require(manifestName in manifestsByName) {
-				"Manifest `$manifestName` referenced by `$entityName` is not defined in manifestsByName"
-			}
-		}
-		val rootManifestNamesByType = mapOf(
-			EntityWithEncryptionMetadataTypeName.Builtin.AccessLog to accessLog,
-			EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem to calendarItem,
-			EntityWithEncryptionMetadataTypeName.Builtin.Contact to contact,
-			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement to healthElement,
-			EntityWithEncryptionMetadataTypeName.Builtin.Patient to patient,
-			EntityWithEncryptionMetadataTypeName.Builtin.Message to message,
-			EntityWithEncryptionMetadataTypeName.Builtin.Topic to topic,
-			EntityWithEncryptionMetadataTypeName.Builtin.Document to document,
-			EntityWithEncryptionMetadataTypeName.Builtin.Form to form,
-			EntityWithEncryptionMetadataTypeName.Builtin.Receipt to receipt,
-			EntityWithEncryptionMetadataTypeName.Builtin.Classification to classification,
-			EntityWithEncryptionMetadataTypeName.Builtin.Invoice to invoice,
-			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson to relatedPerson,
-		)
-		for ((rootType, manifestName) in rootManifestNamesByType) {
-			if (manifestName == null) continue
-			val manifest = manifestsByName.getValue(manifestName)
-			val currentVersion = manifest.currentVersion ?: continue
-			// Entities at the current version are encrypted with the current extensions manifest, and must be
-			// decrypted with the same manifest
-			val currentVersionExtensionsManifest = manifest.extensionsManifestsByModelVersion[rootType]?.get(currentVersion)
-			require(currentVersionExtensionsManifest != null && currentVersionExtensionsManifest == manifest.currentExtensionsManifest) {
-				"Manifest `$manifestName` of ${rootType.id} has current version $currentVersion, but the extensions manifest for ${rootType.id} v$currentVersion in extensionsManifestsByModelVersion (`$currentVersionExtensionsManifest`) is not the current extensions manifest (`${manifest.currentExtensionsManifest}`)"
-			}
-		}
-		for ((manifestName, manifest) in manifestsByName) {
+		for ((entityName, manifest) in rootManifests) {
+			if (manifest == null) continue
 			for (recursiveManifestName in manifest.recursiveEncryption.values) {
-				require(recursiveManifestName in manifestsByName) {
-					"Manifest `$recursiveManifestName` referenced by recursive encryption of manifest `$manifestName` is not defined in manifestsByName"
+				require(recursiveManifestName in embeddedManifestsByName) {
+					"Manifest `$recursiveManifestName` referenced by recursive encryption of the manifest of `$entityName` is not defined in embeddedManifestsByName"
+				}
+			}
+			// The current version is always in extensionsManifestsByModelVersion (validated by the manifest itself)
+			for ((version, extensionsManifestName) in manifest.extensionsManifestsByModelVersion) {
+				require(extensionsManifestName in extensionsManifestsByName) {
+					"Extensions manifest `$extensionsManifestName` referenced by the manifest of `$entityName` for v$version is not defined in extensionsManifestsByName"
+				}
+			}
+		}
+		for ((manifestName, manifest) in embeddedManifestsByName) {
+			for (recursiveManifestName in manifest.recursiveEncryption.values) {
+				require(recursiveManifestName in embeddedManifestsByName) {
+					"Manifest `$recursiveManifestName` referenced by recursive encryption of manifest `$manifestName` is not defined in embeddedManifestsByName"
 				}
 			}
 			manifest.currentExtensionsManifest?.let { currentExtensionsManifestName ->

@@ -10,7 +10,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.encryptor.DecryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
-import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptors
 import com.icure.cardinal.sdk.crypto.encryptor.SharedEncryptorsOptions
 import com.icure.cardinal.sdk.crypto.encryptor.impl.generated.GeneratedEntitiesEncryptorInitializer
@@ -193,13 +193,11 @@ internal fun initMaintenanceTaskApi(
 		EncryptedMaintenanceTask,
 		DecryptedMaintenanceTask
 		>(
-		"MaintenanceTask",
-		mapOf("MaintenanceTask" to BuiltinEntityEncryptionManifest(
-			setOf("properties"),
-			emptyMap(),
-			emptyMap(),
-			null
-		)),
+		BuiltinRootEntityEncryptionManifest(
+			fieldsToEncrypt = setOf("properties"),
+			recursiveEncryption = emptyMap(),
+		),
+		emptyMap(),
 		// Currently the maintenance task encryptor does not depend on the options so we can actually use anything here
 		EncryptorOptions(
 			useLegacyServiceContentEncryption = false,

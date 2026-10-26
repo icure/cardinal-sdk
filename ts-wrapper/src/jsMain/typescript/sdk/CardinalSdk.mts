@@ -1,6 +1,5 @@
 import {AccessLogApi} from "../api/AccessLogApi.mjs";
 import {CalendarItemApi} from "../api/CalendarItemApi.mjs";
-import {ClassificationApi} from "../api/ClassificationApi.mjs";
 import {ContactApi} from "../api/ContactApi.mjs";
 import {DeviceApi} from "../api/DeviceApi.mjs";
 import {DocumentApi} from "../api/DocumentApi.mjs";
@@ -37,7 +36,6 @@ import {PlaceApi} from "../api/PlaceApi.mjs";
 import {RoleApi} from "../api/RoleApi.mjs";
 import {AccessLogBasicApi} from "../api/AccessLogBasicApi.mjs";
 import {CalendarItemBasicApi} from "../api/CalendarItemBasicApi.mjs";
-import {ClassificationBasicApi} from "../api/ClassificationBasicApi.mjs";
 import {ContactBasicApi} from "../api/ContactBasicApi.mjs";
 import {DocumentBasicApi} from "../api/DocumentBasicApi.mjs";
 import {FormBasicApi} from "../api/FormBasicApi.mjs";
@@ -74,7 +72,6 @@ export interface CardinalApis {
   readonly agenda: AgendaApi
   readonly accessLog: AccessLogApi
   readonly calendarItem: CalendarItemApi
-  readonly classification: ClassificationApi
   readonly contact: ContactApi
   readonly document: DocumentApi
   readonly form: FormApi
@@ -148,7 +145,6 @@ export interface CardinalBaseApis {
   readonly agenda: AgendaApi
   readonly accessLog: AccessLogBasicApi
   readonly calendarItem: CalendarItemBasicApi
-  readonly classification: ClassificationBasicApi
   readonly contact: ContactBasicApi
   readonly document: DocumentBasicApi
   readonly form: FormBasicApi

@@ -10,13 +10,13 @@ internal interface EntitiesEncryptorsInitializer {
 	 * Used for initializing encryptors that are not configurable / customizable
 	 */
 	fun <ENCRYPTED : Encryptable, DECRYPTED : Encryptable> initializeSingleEntityEncryptors(
-		mainManifestName: String,
-		manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+		rootManifest: BuiltinRootEntityEncryptionManifest,
+		embeddedManifestsByName: Map<String, BuiltinEmbeddedEntityEncryptionManifest>,
 		encryptorOptions: EncryptorOptions,
 		decryptorOptions: DecryptorOptions,
 		sharedOptions: SharedEncryptorsOptions,
-		mainManifestEncryptedEntity: KClass<ENCRYPTED>,
-		mainManifestDecryptedEntity: KClass<DECRYPTED>,
+		rootEncryptedEntity: KClass<ENCRYPTED>,
+		rootDecryptedEntity: KClass<DECRYPTED>,
 	): EntityEncryptors<ENCRYPTED, DECRYPTED>
 
 	/**
@@ -35,15 +35,15 @@ internal inline fun <
 	reified ENCRYPTED : Encryptable,
 	reified DECRYPTED : Encryptable
 > EntitiesEncryptorsInitializer.initializeSingleEntityEncryptors(
-	mainManifestName: String,
-	manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
+	rootManifest: BuiltinRootEntityEncryptionManifest,
+	embeddedManifestsByName: Map<String, BuiltinEmbeddedEntityEncryptionManifest>,
 	encryptorOptions: EncryptorOptions,
 	decryptorOptions: DecryptorOptions,
 	sharedOptions: SharedEncryptorsOptions,
 ): EntityEncryptors<ENCRYPTED, DECRYPTED> =
 	initializeSingleEntityEncryptors(
-		mainManifestName,
-		manifestsByName,
+		rootManifest,
+		embeddedManifestsByName,
 		encryptorOptions,
 		decryptorOptions,
 		sharedOptions,

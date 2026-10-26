@@ -3,10 +3,11 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
@@ -31,78 +32,16 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object HealthElementEncryptorFactory : EntityEncryptorFactory<EncryptedHealthElement, DecryptedHealthElement> {
-	override val empty: EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> =
-		object : EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedHealthElement,
-			): EncryptedHealthElement =
-				EncryptedHealthElement(
-					id = clearEntity.id,
-					identifiers = clearEntity.identifiers,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					healthElementId = clearEntity.healthElementId,
-					valueDate = clearEntity.valueDate,
-					openingDate = clearEntity.openingDate,
-					closingDate = clearEntity.closingDate,
-					descr = clearEntity.descr,
-					note = clearEntity.note,
-					notes =
-						clearEntity.notes.map { x0 ->
-							AnnotationEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					relevant = clearEntity.relevant,
-					idOpeningContact = clearEntity.idOpeningContact,
-					idClosingContact = clearEntity.idClosingContact,
-					idService = clearEntity.idService,
-					status = clearEntity.status,
-					laterality = clearEntity.laterality,
-					plansOfAction =
-						clearEntity.plansOfAction.map { x0 ->
-							PlanOfActionEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					episodes =
-						clearEntity.episodes.map { x0 ->
-							EpisodeEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					careTeam =
-						clearEntity.careTeam.map { x0 ->
-							CareTeamMemberEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					qualifiedLinks = clearEntity.qualifiedLinks,
-					asserters = clearEntity.asserters,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-					extensions = clearEntity.extensions,
-					customisedModelVersion = clearEntity.customisedModelVersion,
-				)
-		}
-
+internal object HealthElementEncryptorFactory : RootEntityEncryptorFactory<EncryptedHealthElement, DecryptedHealthElement> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedHealthElement, DecryptedHealthElement> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		val extensionsEncryptor =
 			manifest.currentExtensionsManifest?.let {
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(

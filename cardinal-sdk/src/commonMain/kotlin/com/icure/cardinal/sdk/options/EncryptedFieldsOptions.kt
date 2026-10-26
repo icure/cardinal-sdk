@@ -2,16 +2,24 @@ package com.icure.cardinal.sdk.options
 
 import com.icure.cardinal.sdk.crypto.encryptor.EncryptorOptions
 import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
-import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEntityEncryptionManifest
-import com.icure.cardinal.sdk.crypto.encryptor.CustomEntityEncryptionManifest
-import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptionManifest
-import kotlinx.serialization.Serializable
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinEmbeddedEntityEncryptionManifest
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 
 sealed interface EncryptedFieldsOptions {
 	data object Default : EncryptedFieldsOptions
 	data object Legacy : EncryptedFieldsOptions
+	/**
+	 * Encryption configuration of a customised SDK.
+	 *
+	 * @param manifests the manifests for the encryption of entities: root entities without a manifest are not
+	 * supported by the SDK.
+	 * @param useLegacyServiceContentEncryption see [EncryptorOptions.useLegacyServiceContentEncryption].
+	 * @param serializeEncryptedSelfUsingLegacyNames see [EncryptorOptions.serializeEncryptedSelfUsingLegacyNames].
+	 */
 	data class Custom(
-		val manifests: PartialEncryptedManifest,
+		val manifests: EntitiesEncryptionManifests,
+		val useLegacyServiceContentEncryption: Boolean = false,
+		val serializeEncryptedSelfUsingLegacyNames: Boolean = false,
 	) : EncryptedFieldsOptions
 }
 
@@ -28,34 +36,34 @@ internal val EncryptedFieldsOptions?.encryptorOptions: EncryptorOptions get() = 
 	EncryptedFieldsOptions.Legacy -> legacyEncryptorOptions
 	EncryptedFieldsOptions.Default, null -> defaultEncryptorOptions
 	is EncryptedFieldsOptions.Custom -> EncryptorOptions(
-		useLegacyServiceContentEncryption = manifests.useLegacyBase,
-		serializeEncryptedSelfUsingLegacyNames = manifests.useLegacyBase,
+		useLegacyServiceContentEncryption = useLegacyServiceContentEncryption,
+		serializeEncryptedSelfUsingLegacyNames = serializeEncryptedSelfUsingLegacyNames,
 	)
 }
 
 internal val EncryptedFieldsOptions?.manifests: EntitiesEncryptionManifests get() = when (this) {
 	EncryptedFieldsOptions.Legacy -> legacyEntitiesEncryptionManifests
 	EncryptedFieldsOptions.Default, null -> defaultEntitiesEncryptionManifests
-	is EncryptedFieldsOptions.Custom -> manifests.buildFullManifest()
+	is EncryptedFieldsOptions.Custom -> manifests
 }
 
 private fun createDefaultEntitiesEncryptionManifests(
 	useLegacyServiceContentEncryption: Boolean,
 ) = EntitiesEncryptionManifests(
-	manifestsByName = listOfNotNull(
-		"Annotation" to BuiltinEntityEncryptionManifest(
+	embeddedManifestsByName = listOfNotNull(
+		"Annotation" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("markdown"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"CalendarItemTag" to BuiltinEntityEncryptionManifest(
+		"CalendarItemTag" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("code", "date", "userId", "userName"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Service" to BuiltinEntityEncryptionManifest(
+		"Service" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("comment"),
 			recursiveEncryption = listOfNotNull(
 				"notes" to "Annotation",
@@ -65,7 +73,7 @@ private fun createDefaultEntitiesEncryptionManifests(
 			currentExtensionsManifest = null,
 		),
 		if (useLegacyServiceContentEncryption) null else (
-			"Content" to BuiltinEntityEncryptionManifest(
+			"Content" to BuiltinEmbeddedEntityEncryptionManifest(
 				fieldsToEncrypt = setOf(
 					"stringValue",
 					"numberValue",
@@ -87,19 +95,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 				currentExtensionsManifest = null,
 			)
 		),
-		"CareTeamMember" to BuiltinEntityEncryptionManifest(
+		"CareTeamMember" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("careTeamMemberType", "healthcarePartyId", "quality"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Episode" to BuiltinEntityEncryptionManifest(
+		"Episode" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("name", "comment"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Insurability" to BuiltinEntityEncryptionManifest(
+		"Insurability" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"identificationNumber",
 				"parameters",
@@ -115,19 +123,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"Partnership" to BuiltinEntityEncryptionManifest(
+		"Partnership" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("type", "status", "partnerId"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"PatientHealthCareParty" to BuiltinEntityEncryptionManifest(
+		"PatientHealthCareParty" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("type", "healthcarePartyId", "sendFormats", "referralPeriods", "properties"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"FinancialInstitutionInformation" to BuiltinEntityEncryptionManifest(
+		"FinancialInstitutionInformation" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"name",
 				"key",
@@ -141,19 +149,19 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"SchoolingInfo" to BuiltinEntityEncryptionManifest(
+		"SchoolingInfo" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("startDate", "endDate", "school", "typeOfEducation"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"EmploymentInfo" to BuiltinEntityEncryptionManifest(
+		"EmploymentInfo" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf("startDate", "endDate", "professionType", "employer"),
 			recursiveEncryption = emptyMap(),
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"MedicalHouseContract" to BuiltinEntityEncryptionManifest(
+		"MedicalHouseContract" to BuiltinEmbeddedEntityEncryptionManifest(
 			fieldsToEncrypt = setOf(
 				"contractId",
 				"validFrom",
@@ -192,260 +200,124 @@ private fun createDefaultEntitiesEncryptionManifests(
 			extensionsManifestsByModelVersion = emptyMap(),
 			currentExtensionsManifest = null,
 		),
-		"AccessLog" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf(
-				"detail",
-				"objectId",
-				"patientId", // Deprecated and ignored unless using the legacy support SDK
-			),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"CalendarItem" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf(
-				"details",
-				"title",
-				"patientId", // Deprecated and ignored unless using the legacy support SDK
-				"phoneNumber",
-				"address",
-				"addressText",
-				"flowItem", // Deprecated and ignored unless using the legacy support SDK
-			),
-			// The old configuration used "meetingTags[].*" (encrypt every field of each tag); there is no
-			// equivalent wildcard anymore, so we emulate it with a dedicated manifest listing every field.
-			recursiveEncryption = mapOf("meetingTags" to "CalendarItemTag"),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Contact" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf(
-				"descr",
-				"location",
-				"encounterLocation",
-				"participants", // Deprecated and ignored unless using the legacy support SDK
-				"participantList",
-			),
-			recursiveEncryption = mapOf(
-				"notes" to "Annotation",
-				"services" to "Service",
-			),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"HealthElement" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf(
-				"descr",
-				"note",
-				"asserters",
-			),
-			recursiveEncryption = mapOf(
-				"notes" to "Annotation",
-				"careTeam" to "CareTeamMember",
-				"episodes" to "Episode",
-			),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Patient" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf(
-				"note",
-				"created",
-				"modified",
-				"companyName",
-				"languages",
-				"civility",
-				"birthSex",
-				"personalStatus",
-				"nationality",
-				"race",
-				"ethnicity",
-				"picture", // Deprecated and ignored unless using the legacy support SDK
-				"patientProfessions",
-				"comment", // Deprecated and ignored unless using the legacy support SDK
-				"warning", // Deprecated and ignored unless using the legacy support SDK
-				"fatherBirthCountry", // Deprecated and ignored unless using the legacy support SDK
-				"birthCountry", // Deprecated and ignored unless using the legacy support SDK
-				"nativeCountry", // Deprecated and ignored unless using the legacy support SDK
-				"socialStatus", // Deprecated and ignored unless using the legacy support SDK
-				"mainSourceOfIncome", // Deprecated and ignored unless using the legacy support SDK
-			),
-			recursiveEncryption = mapOf(
-				"notes" to "Annotation",
-				"insurabilities" to "Insurability",
-				"partnerships" to "Partnership",
-				"patientHealthCareParties" to "PatientHealthCareParty",
-				"financialInstitutionInformation" to "FinancialInstitutionInformation",
-				"medicalHouseContracts" to "MedicalHouseContract",
-				"schoolingInfos" to "SchoolingInfo", // Deprecated and ignored unless using the legacy support SDK
-				"employementInfos" to "EmploymentInfo", // Deprecated and ignored unless using the legacy support SDK
-			),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Message" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf("subject"),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Topic" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf("description", "linkedServices", "linkedHealthElements"),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Document" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf(
-				"medicalLocationId", // Deprecated and ignored unless using the legacy support SDK
-				"name",
-			),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Form" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf("descr"),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Receipt" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf("references"),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Classification" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf("label"),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"Invoice" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf("reason"),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		),
-		"RelatedPerson" to BuiltinEntityEncryptionManifest(
-			fieldsToEncrypt = setOf(
-				"created",
-				"modified",
-				"companyName",
-				"languages",
-				"civility"
-			),
-			recursiveEncryption = emptyMap(),
-			extensionsManifestsByModelVersion = emptyMap(),
-			currentExtensionsManifest = null,
-		)
 	).toMap(),
 	extensionsManifestsByName = emptyMap(),
-	accessLog = "AccessLog",
-	calendarItem = "CalendarItem",
-	contact = "Contact",
-	healthElement = "HealthElement",
-	patient = "Patient",
-	message = "Message",
-	topic = "Topic",
-	document = "Document",
-	form = "Form",
-	receipt = "Receipt",
-	classification = "Classification",
-	invoice = "Invoice",
-	relatedPerson = "RelatedPerson",
+	accessLog = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf(
+			"detail",
+			"objectId",
+			"patientId", // Deprecated and ignored unless using the legacy support SDK
+		),
+		recursiveEncryption = emptyMap(),
+	),
+	calendarItem = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf(
+			"details",
+			"title",
+			"patientId", // Deprecated and ignored unless using the legacy support SDK
+			"phoneNumber",
+			"address",
+			"addressText",
+			"flowItem", // Deprecated and ignored unless using the legacy support SDK
+		),
+		// The old configuration used "meetingTags[].*" (encrypt every field of each tag); there is no
+		// equivalent wildcard anymore, so we emulate it with a dedicated manifest listing every field.
+		recursiveEncryption = mapOf("meetingTags" to "CalendarItemTag"),
+	),
+	contact = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf(
+			"descr",
+			"location",
+			"encounterLocation",
+			"participants", // Deprecated and ignored unless using the legacy support SDK
+			"participantList",
+		),
+		recursiveEncryption = mapOf(
+			"notes" to "Annotation",
+			"services" to "Service",
+		),
+	),
+	healthElement = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf(
+			"descr",
+			"note",
+			"asserters",
+		),
+		recursiveEncryption = mapOf(
+			"notes" to "Annotation",
+			"careTeam" to "CareTeamMember",
+			"episodes" to "Episode",
+		),
+	),
+	patient = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf(
+			"note",
+			"created",
+			"modified",
+			"companyName",
+			"languages",
+			"civility",
+			"birthSex",
+			"personalStatus",
+			"nationality",
+			"race",
+			"ethnicity",
+			"picture", // Deprecated and ignored unless using the legacy support SDK
+			"patientProfessions",
+			"comment", // Deprecated and ignored unless using the legacy support SDK
+			"warning", // Deprecated and ignored unless using the legacy support SDK
+			"fatherBirthCountry", // Deprecated and ignored unless using the legacy support SDK
+			"birthCountry", // Deprecated and ignored unless using the legacy support SDK
+			"nativeCountry", // Deprecated and ignored unless using the legacy support SDK
+			"socialStatus", // Deprecated and ignored unless using the legacy support SDK
+			"mainSourceOfIncome", // Deprecated and ignored unless using the legacy support SDK
+		),
+		recursiveEncryption = mapOf(
+			"notes" to "Annotation",
+			"insurabilities" to "Insurability",
+			"partnerships" to "Partnership",
+			"patientHealthCareParties" to "PatientHealthCareParty",
+			"financialInstitutionInformation" to "FinancialInstitutionInformation",
+			"medicalHouseContracts" to "MedicalHouseContract",
+			"schoolingInfos" to "SchoolingInfo", // Deprecated and ignored unless using the legacy support SDK
+			"employementInfos" to "EmploymentInfo", // Deprecated and ignored unless using the legacy support SDK
+		),
+	),
+	message = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf("subject"),
+		recursiveEncryption = emptyMap(),
+	),
+	topic = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf("description", "linkedServices", "linkedHealthElements"),
+		recursiveEncryption = emptyMap(),
+	),
+	document = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf(
+			"medicalLocationId", // Deprecated and ignored unless using the legacy support SDK
+			"name",
+		),
+		recursiveEncryption = emptyMap(),
+	),
+	form = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf("descr"),
+		recursiveEncryption = emptyMap(),
+	),
+	invoice = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf("reason"),
+		recursiveEncryption = emptyMap(),
+	),
+	relatedPerson = BuiltinRootEntityEncryptionManifest(
+		fieldsToEncrypt = setOf(
+			"created",
+			"modified",
+			"companyName",
+			"languages",
+			"civility"
+		),
+		recursiveEncryption = emptyMap(),
+	),
 	customEntitiesManifestByEntityTypeId = emptyMap(),
 )
 
 private val defaultEntitiesEncryptionManifests = createDefaultEntitiesEncryptionManifests(useLegacyServiceContentEncryption = false)
 private val legacyEntitiesEncryptionManifests = createDefaultEntitiesEncryptionManifests(useLegacyServiceContentEncryption = true)
-
-// TODO will be non-nullable later on, everything must be defined by the custom config, even if it matches default / base
-/**
- * Encryption configuration of a customised SDK, merged with the base manifests (default or legacy, depending on
- * [useLegacyBase]) to build the full [EntitiesEncryptionManifests].
- *
- * The root entities that can be configured by a customised SDK ([accessLog], [calendarItem], [contact],
- * [healthElement], [patient], [message], [topic], [document], [relatedPerson]) are not supported by the SDK if null:
- * attempting to encrypt or decrypt them will fail. The other root entities ([form], [receipt], [classification],
- * [invoice]) use the base manifest if null.
- */
-@Serializable
-data class PartialEncryptedManifest(
-	val manifestsByName: Map<String, BuiltinEntityEncryptionManifest>,
-	val customEntitiesManifestByEntityTypeId: Map<String, CustomEntityEncryptionManifest>,
-	val extensionsManifestsByName: Map<String, ExtensionsEncryptionManifest>,
-	val accessLog: String? = null,
-	val calendarItem: String? = null,
-	val contact: String? = null,
-	val healthElement: String? = null,
-	val patient: String? = null,
-	val message: String? = null,
-	val topic: String? = null,
-	val document: String? = null,
-	val form: String? = null,
-	val receipt: String? = null,
-	val classification: String? = null,
-	val invoice: String? = null,
-	val relatedPerson: String? = null,
-	val useLegacyBase: Boolean = false,
-)
-
-/*
- * Names of the builtin entity manifests that clash with a name provided by the custom configuration can't be used
- * as-is: instead of failing we mask them by prepending underscores until we get a name that is not used by the custom
- * configuration nor by any other (masked or not) builtin manifest name.
- */
-private fun maskClashingBaseNames(baseNames: Set<String>, customNames: Set<String>): Map<String, String> {
-	val takenNames = (baseNames + customNames).toMutableSet()
-	val translations = mutableMapOf<String, String>()
-	for (baseName in baseNames) {
-		if (baseName in customNames) {
-			var maskedName = "_$baseName"
-			while (maskedName in takenNames) maskedName = "_$maskedName"
-			translations[baseName] = maskedName
-			takenNames += maskedName
-		}
-	}
-	return translations
-}
-
-private fun PartialEncryptedManifest.buildFullManifest(): EntitiesEncryptionManifests {
-	val base = if (useLegacyBase) legacyEntitiesEncryptionManifests else defaultEntitiesEncryptionManifests
-	// Only the builtin entity manifests of the base need masking. If the base ever defines extensions or custom entities
-	// manifests, they will need to be masked as well. Builtin manifests can't reference extensions manifests not in the base.
-	check(base.extensionsManifestsByName.isEmpty()) {
-		"Base manifests should not define extensions manifests"
-	}
-	check(base.customEntitiesManifestByEntityTypeId.isEmpty()) {
-		"Base manifests should not define custom entities manifests"
-	}
-	val baseNameMask = maskClashingBaseNames(base.manifestsByName.keys, manifestsByName.keys)
-	fun String.masked() = baseNameMask[this] ?: this
-	val maskedBaseManifestsByName = base.manifestsByName.entries.associate { (name, manifest) ->
-		name.masked() to manifest.copy(
-			recursiveEncryption = manifest.recursiveEncryption.mapValues { (_, referencedName) -> referencedName.masked() },
-		)
-	}
-	return EntitiesEncryptionManifests(
-		manifestsByName = manifestsByName + maskedBaseManifestsByName,
-		customEntitiesManifestByEntityTypeId = customEntitiesManifestByEntityTypeId,
-		extensionsManifestsByName = extensionsManifestsByName,
-		// Roots configurable by a customised SDK are not supported if not configured, while the others (system
-		// entities) always use the base manifests.
-		accessLog = accessLog,
-		calendarItem = calendarItem,
-		contact = contact,
-		healthElement = healthElement,
-		patient = patient,
-		message = message,
-		topic = topic,
-		document = document,
-		form = form ?: base.form.masked(),
-		receipt = receipt ?: base.receipt.masked(),
-		classification = classification ?: base.classification.masked(),
-		invoice = invoice ?: base.invoice.masked(),
-		relatedPerson = relatedPerson,
-	)
-}

@@ -3,12 +3,12 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityDecryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityDecryptor
-import com.icure.cardinal.sdk.crypto.encryptor.`impl`.loadExtensionsEncryptors
 import com.icure.cardinal.sdk.customsdk.commons.model.CustomisedModelVersion
 import com.icure.cardinal.sdk.model.DecryptedContact
 import com.icure.cardinal.sdk.model.EncryptedContact
@@ -28,34 +28,33 @@ import com.icure.kryptom.crypto.CryptoService
 import com.icure.utils.InternalIcureApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
+import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
 import kotlin.collections.Map
 
 @InternalIcureApi
-internal object ContactDecryptorFactory : EntityDecryptorFactory<EncryptedContact, DecryptedContact> {
+internal object ContactDecryptorFactory : RootEntityDecryptorFactory<EncryptedContact, DecryptedContact> {
 	override fun create(
-		entityManifestName: String?,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		cryptoService: CryptoService,
 		encryptedContentDecoder: Json,
 		unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
 	): EntityDecryptor<EncryptedContact, DecryptedContact> {
-		val manifest = entityManifestName?.let { encryptorsFactoryContext.getManifest(it) }
 		val extensionsDecryptorsByVersion =
-			manifest?.extensionsManifestsByModelVersion?.loadExtensionsEncryptors { extensionsManifestName ->
+			manifest.extensionsManifestsByModelVersion.mapValues { (_, extensionsManifestName) ->
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(
 					extensionsManifestName = extensionsManifestName,
 					encryptedClass = EncryptedContact::class,
 					decryptedClass = DecryptedContact::class,
 				)
-			} ?: emptyMap()
-		val patchDecryptedSelfJson = entityManifestName?.let { encryptorsFactoryContext.getManifestDecryptedJsonPatcher(it) }
+			}
+		val patchDecryptedSelfJson = encryptorsFactoryContext.getManifestDecryptedJsonPatcher(manifest)
 		val encounterLocationDecryptor =
-			manifest?.recursiveEncryption?.get("encounterLocation")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["encounterLocation"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,
@@ -68,7 +67,7 @@ internal object ContactDecryptorFactory : EntityDecryptorFactory<EncryptedContac
 				decryptedClass = DecryptedAddress::class,
 			)
 		val subContactsDecryptor =
-			manifest?.recursiveEncryption?.get("subContacts")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["subContacts"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,
@@ -81,7 +80,7 @@ internal object ContactDecryptorFactory : EntityDecryptorFactory<EncryptedContac
 				decryptedClass = DecryptedSubContact::class,
 			)
 		val servicesDecryptor =
-			manifest?.recursiveEncryption?.get("services")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["services"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,
@@ -94,7 +93,7 @@ internal object ContactDecryptorFactory : EntityDecryptorFactory<EncryptedContac
 				decryptedClass = DecryptedService::class,
 			)
 		val notesDecryptor =
-			manifest?.recursiveEncryption?.get("notes")?.let { nestedManifestName ->
+			manifest.recursiveEncryption["notes"]?.let { nestedManifestName ->
 				val pairLazy =
 					encryptorsFactoryContext.getEntityEncryptorsProvider(
 						entityManifestName = nestedManifestName,
@@ -127,7 +126,7 @@ internal class ContactDecryptor(
 	private val subContactsDecryptor: Lazy<EntityDecryptor<EncryptedSubContact, DecryptedSubContact>>,
 	internal val servicesDecryptor: Lazy<EntityDecryptor<EncryptedService, DecryptedService>>,
 	private val notesDecryptor: Lazy<EntityDecryptor<EncryptedAnnotation, DecryptedAnnotation>>,
-	private val extensionsDecryptorsByVersion: Map<CustomisedModelVersion, Lazy<ExtensionsEncryptors>>,
+	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -145,7 +144,7 @@ internal class ContactDecryptor(
 			if (customisedModelVersion != null) {
 				val extensionsDecryptor =
 					(
-						extensionsDecryptorsByVersion[customisedModelVersion] ?: throw UnsupportedOperationException(
+						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
 							"This instance of the SDK is not capable of handling Contact entities of version $customisedModelVersion.",
 						)
 					).value

@@ -10,7 +10,7 @@ interface EntityEncryptionManifest {
 
 	/**
 	 * Fields to encrypt recursively using another manifest, the key is the field name, the value is the name of the
-	 * manifest, which must be in the [EntitiesEncryptionManifests.manifestsByName] map.
+	 * manifest, which must be in the [EntitiesEncryptionManifests.embeddedManifestsByName] map.
 	 *
 	 * If the field is a map or collection the manifest will be applied to the corresponding values or elements;
 	 * multiple levels are also supported.

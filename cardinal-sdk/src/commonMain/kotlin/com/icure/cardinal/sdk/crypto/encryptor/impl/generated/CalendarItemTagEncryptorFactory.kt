@@ -44,7 +44,7 @@ internal object CalendarItemTagEncryptorFactory : EntityEncryptorFactory<Encrypt
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedCalendarItemTag, DecryptedCalendarItemTag> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"CalendarItemTag is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

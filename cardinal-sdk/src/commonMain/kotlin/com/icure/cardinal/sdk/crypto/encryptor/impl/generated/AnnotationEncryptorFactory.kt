@@ -49,7 +49,7 @@ internal object AnnotationEncryptorFactory : EntityEncryptorFactory<EncryptedAnn
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedAnnotation, DecryptedAnnotation> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Annotation is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

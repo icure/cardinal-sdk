@@ -12,6 +12,7 @@ import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
  import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
 import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
  import com.icure.cardinal.sdk.js.utils.cardinalInternalGlobals
+ import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
  import com.icure.cardinal.sdk.options.AnonymousSdkOptions
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
@@ -20,7 +21,6 @@ import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
  import com.icure.cardinal.sdk.options.EncryptedFieldsOptions
  import com.icure.cardinal.sdk.options.EntityListDecodingStrategy
  import com.icure.cardinal.sdk.options.MalformedEntity
- import com.icure.cardinal.sdk.options.PartialEncryptedManifest
  import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.kryptom.crypto.CryptoService
 import com.icure.kryptom.crypto.external.XCryptoService
@@ -128,7 +128,11 @@ private fun parseEncryptedFieldOptions(options: dynamic): EncryptedFieldsOptions
 	if (options == "Default") return EncryptedFieldsOptions.Default
 	val manifestsJson = options.manifestsJson
 	if (manifestsJson != null) {
-		return EncryptedFieldsOptions.Custom(Json.decodeFromDynamic(PartialEncryptedManifest.serializer(), manifestsJson))
+		return EncryptedFieldsOptions.Custom(
+			manifests = Json.decodeFromDynamic(EntitiesEncryptionManifests.serializer(), manifestsJson),
+			useLegacyServiceContentEncryption = options.useLegacyServiceContentEncryption == true,
+			serializeEncryptedSelfUsingLegacyNames = options.serializeEncryptedSelfUsingLegacyNames == true,
+		)
 	}
 	throw IllegalArgumentException("Invalid encryptedFieldsOptions: $options")
 }

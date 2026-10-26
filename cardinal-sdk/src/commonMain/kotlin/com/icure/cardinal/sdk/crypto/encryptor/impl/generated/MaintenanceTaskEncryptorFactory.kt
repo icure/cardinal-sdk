@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.EncryptableFieldConfig
 import com.icure.cardinal.sdk.model.DecryptedMaintenanceTask
@@ -22,52 +23,16 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object MaintenanceTaskEncryptorFactory : EntityEncryptorFactory<EncryptedMaintenanceTask, DecryptedMaintenanceTask> {
-	override val empty: EntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask> =
-		object : EntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedMaintenanceTask,
-			): EncryptedMaintenanceTask =
-				EncryptedMaintenanceTask(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					identifier = clearEntity.identifier,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					taskType = clearEntity.taskType,
-					properties =
-						clearEntity.properties.mapTo(mutableSetOf()) { x0 ->
-							PropertyStubEncryptorFactory.empty.encrypt(encryptionKey, x0)
-						},
-					status = clearEntity.status,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-				)
-		}
-
+internal object MaintenanceTaskEncryptorFactory : RootEntityEncryptorFactory<EncryptedMaintenanceTask, DecryptedMaintenanceTask> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedMaintenanceTask, DecryptedMaintenanceTask> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"MaintenanceTask is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

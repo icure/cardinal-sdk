@@ -50,7 +50,7 @@ internal object ValorisationEncryptorFactory : EntityEncryptorFactory<EncryptedV
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedValorisation, DecryptedValorisation> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Valorisation is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

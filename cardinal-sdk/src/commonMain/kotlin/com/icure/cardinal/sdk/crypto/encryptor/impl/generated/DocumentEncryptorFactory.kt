@@ -3,10 +3,11 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
 import com.icure.cardinal.sdk.crypto.encryptor.ExtensionsEncryptors
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.encryptExtension
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedDocument
@@ -22,68 +23,16 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object DocumentEncryptorFactory : EntityEncryptorFactory<EncryptedDocument, DecryptedDocument> {
-	override val empty: EntityEncryptor<EncryptedDocument, DecryptedDocument> =
-		object : EntityEncryptor<EncryptedDocument, DecryptedDocument> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedDocument,
-			): EncryptedDocument =
-				EncryptedDocument(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					documentLocation = clearEntity.documentLocation,
-					documentType = clearEntity.documentType,
-					documentStatus = clearEntity.documentStatus,
-					externalUri = clearEntity.externalUri,
-					name = clearEntity.name,
-					version = clearEntity.version,
-					storedICureDocumentId = clearEntity.storedICureDocumentId,
-					externalUuid = clearEntity.externalUuid,
-					size = clearEntity.size,
-					hash = clearEntity.hash,
-					openingContactId = clearEntity.openingContactId,
-					attachmentId = clearEntity.attachmentId,
-					objectStoreReference = clearEntity.objectStoreReference,
-					mainUti = clearEntity.mainUti,
-					otherUtis = clearEntity.otherUtis,
-					mainAttachmentStoredDataSize = clearEntity.mainAttachmentStoredDataSize,
-					extraMainAttachmentInfo = clearEntity.extraMainAttachmentInfo,
-					secondaryAttachments = clearEntity.secondaryAttachments,
-					deletedAttachments = clearEntity.deletedAttachments,
-					encryptedAttachment = clearEntity.encryptedAttachment,
-					decryptedAttachment = clearEntity.decryptedAttachment,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-					extensions = clearEntity.extensions,
-					customisedModelVersion = clearEntity.customisedModelVersion,
-				)
-		}
-
+internal object DocumentEncryptorFactory : RootEntityEncryptorFactory<EncryptedDocument, DecryptedDocument> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedDocument, DecryptedDocument> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		val extensionsEncryptor =
 			manifest.currentExtensionsManifest?.let {
 				encryptorsFactoryContext.getExtensionEncryptorsProvider(

@@ -64,7 +64,7 @@ internal object ContentEncryptorFactory : EntityEncryptorFactory<EncryptedConten
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedContent, DecryptedContent> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
+		val manifest = encryptorsFactoryContext.getEmbeddedManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Content is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

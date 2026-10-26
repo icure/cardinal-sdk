@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.EncryptedSecureDelegationKeyMap
@@ -18,41 +19,16 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object SecureDelegationKeyMapEncryptorFactory : EntityEncryptorFactory<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
-	override val empty:
-		EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> =
-		object : EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedSecureDelegationKeyMap,
-			): EncryptedSecureDelegationKeyMap =
-				EncryptedSecureDelegationKeyMap(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					delegationKey = clearEntity.delegationKey,
-					delegator = clearEntity.delegator,
-					delegate = clearEntity.delegate,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-					deletionDate = clearEntity.deletionDate,
-				)
-		}
-
+internal object SecureDelegationKeyMapEncryptorFactory : RootEntityEncryptorFactory<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedSecureDelegationKeyMap, DecryptedSecureDelegationKeyMap> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"SecureDelegationKeyMap is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}

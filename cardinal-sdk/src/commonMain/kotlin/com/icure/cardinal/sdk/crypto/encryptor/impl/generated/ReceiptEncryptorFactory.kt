@@ -3,9 +3,10 @@
 
 package com.icure.cardinal.sdk.crypto.encryptor.`impl`.generated
 
+import com.icure.cardinal.sdk.crypto.encryptor.BuiltinRootEntityEncryptionManifest
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptor
-import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.EntityEncryptorsFactoryContext
+import com.icure.cardinal.sdk.crypto.encryptor.RootEntityEncryptorFactory
 import com.icure.cardinal.sdk.crypto.encryptor.`impl`.AbstractEntityEncryptor
 import com.icure.cardinal.sdk.model.DecryptedReceipt
 import com.icure.cardinal.sdk.model.EncryptedReceipt
@@ -18,52 +19,16 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
-import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
-internal object ReceiptEncryptorFactory : EntityEncryptorFactory<EncryptedReceipt, DecryptedReceipt> {
-	override val empty: EntityEncryptor<EncryptedReceipt, DecryptedReceipt> =
-		object : EntityEncryptor<EncryptedReceipt, DecryptedReceipt> {
-			override suspend fun encrypt(
-				encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
-				clearEntity: DecryptedReceipt,
-			): EncryptedReceipt =
-				EncryptedReceipt(
-					id = clearEntity.id,
-					rev = clearEntity.rev,
-					created = clearEntity.created,
-					modified = clearEntity.modified,
-					author = clearEntity.author,
-					responsible = clearEntity.responsible,
-					medicalLocationId = clearEntity.medicalLocationId,
-					tags = clearEntity.tags,
-					codes = clearEntity.codes,
-					endOfLife = clearEntity.endOfLife,
-					deletionDate = clearEntity.deletionDate,
-					attachmentIds = clearEntity.attachmentIds,
-					attachmentInfos = clearEntity.attachmentInfos,
-					deletedAttachments = clearEntity.deletedAttachments,
-					references = clearEntity.references,
-					documentId = clearEntity.documentId,
-					category = clearEntity.category,
-					subCategory = clearEntity.subCategory,
-					secretForeignKeys = clearEntity.secretForeignKeys,
-					cryptedForeignKeys = clearEntity.cryptedForeignKeys,
-					delegations = clearEntity.delegations,
-					encryptionKeys = clearEntity.encryptionKeys,
-					encryptedSelf = null,
-					securityMetadata = clearEntity.securityMetadata,
-				)
-		}
-
+internal object ReceiptEncryptorFactory : RootEntityEncryptorFactory<EncryptedReceipt, DecryptedReceipt> {
 	override fun create(
-		entityManifestName: String,
+		manifest: BuiltinRootEntityEncryptionManifest,
 		encryptorsFactoryContext: EntityEncryptorsFactoryContext,
 		encodingJson: Json,
 		cryptoService: CryptoService,
 	): EntityEncryptor<EncryptedReceipt, DecryptedReceipt> {
-		val manifest = encryptorsFactoryContext.getManifest(entityManifestName)
 		require(manifest.currentExtensionsManifest == null) {
 			"Receipt is not Extendable and does not support extensions encryption, but its manifest defines a currentExtensionsManifest."
 		}
