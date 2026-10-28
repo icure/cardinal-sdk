@@ -37,6 +37,8 @@ import com.icure.cardinal.sdk.js.api.MessageBasicApiJs
 import com.icure.cardinal.sdk.js.api.PatientApiJs
 import com.icure.cardinal.sdk.js.api.PatientBasicApiJs
 import com.icure.cardinal.sdk.js.api.PlaceApiJs
+import com.icure.cardinal.sdk.js.api.CustomEntityApiJs
+import com.icure.cardinal.sdk.js.api.CustomEntityBasicApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptBasicApiJs
 import com.icure.cardinal.sdk.js.api.RecoveryApiJs
@@ -89,6 +91,8 @@ external interface CardinalApisJs {
 external interface CardinalSdkJs : CardinalApisJs {
 	fun switchGroup(groupId: String): Promise<CardinalSdkJs>
 	fun changeScope(dataOwnerId: String): Promise<CardinalSdkJs>
+	fun customEntityApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityApiJs
+	fun customEntityBasicApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityBasicApiJs
 	fun close()
 }
 
@@ -128,6 +132,7 @@ external interface CardinalBaseSdkJs : CardinalBaseApisJs {
 	fun switchGroup(groupId: String): Promise<CardinalBaseSdkJs>
 	fun changeScope(dataOwnerId: String): Promise<CardinalBaseSdkJs>
 	fun toFullSdk(baseStorage: dynamic, options: BasicToFullSdkOptionsJs?): Promise<CardinalSdkJs>
+	fun customEntityBasicApi(entityTypeId: String): CustomEntityBasicApiJs
 }
 
 @JsName("CardinalAnonymousApis")

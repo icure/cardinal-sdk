@@ -54,6 +54,8 @@ import {CalendarItemTypeApi} from "../api/CalendarItemTypeApi.mjs";
 import {AnonymousHealthcarePartyApi} from "../api/AnonymousHealthcarePartyApi.mjs";
 import {AnonymousAgendaApi} from "../api/AnonymousAgendaApi.mjs";
 import {CustomisedSdkOptions} from "../options/CustomisedSdkOptions.mjs";
+import {CustomEntityApi} from "../api/CustomEntityApi.mjs";
+import {CustomEntityBasicApi} from "../api/CustomEntityBasicApi.mjs";
 import {FilterApi} from "../api/FilterApi.mjs";
 
 export interface CardinalApis {
@@ -121,6 +123,34 @@ export interface CardinalSdk extends CardinalApis {
    * @return a new sdk for executing requests as the provided data owner
    */
   changeScope(dataOwnerId: string): Promise<CardinalSdk>
+
+  /**
+   * Creates the api for a delegation-based custom entity type.
+   *
+   * This api is not meant to be used directly: the customised SDK generator creates a typed wrapper over it for each
+   * custom entity definition.
+   *
+   * @param entityTypeId the identifier of the custom entity type. The type must be encryptable (have an encryption
+   * manifest) and must be included in the known custom entity types of the customised SDK options.
+   * @param usesAccessControlKeys if true the requests of the api will include the access control keys headers for
+   * the custom entity type, allowing anonymous data owners to access the entities.
+   * @internal
+   */
+  customEntityApi(entityTypeId: string, usesAccessControlKeys: boolean): CustomEntityApi
+
+  /**
+   * Creates the basic api for a custom entity type, used for custom entity types that are not encryptable.
+   *
+   * This api is not meant to be used directly: the customised SDK generator creates a typed wrapper over it for each
+   * custom entity definition.
+   *
+   * @param entityTypeId the identifier of the custom entity type.
+   * @param usesAccessControlKeys if true the requests of the api will include the access control keys headers for
+   * the custom entity type. In that case the type must be included in the known custom entity types of the
+   * customised SDK options.
+   * @internal
+   */
+  customEntityBasicApi(entityTypeId: string, usesAccessControlKeys: boolean): CustomEntityBasicApi
 
   /**
    * Closes the SDK instance freeing any held resources and canceling ongoing tasks.
@@ -203,6 +233,17 @@ export interface CardinalBaseSdk extends CardinalBaseApis {
     baseStorage: StorageFacade | CardinalStorageOptions,
     options?: BasicToFullSdkOptions
   ): Promise<CardinalSdk>
+
+  /**
+   * Creates the basic api for a custom entity type.
+   *
+   * This api is not meant to be used directly: the customised SDK generator creates a typed wrapper over it for each
+   * custom entity definition.
+   *
+   * @param entityTypeId the identifier of the custom entity type.
+   * @internal
+   */
+  customEntityBasicApi(entityTypeId: string): CustomEntityBasicApi
 }
 
 export namespace CardinalSdk {

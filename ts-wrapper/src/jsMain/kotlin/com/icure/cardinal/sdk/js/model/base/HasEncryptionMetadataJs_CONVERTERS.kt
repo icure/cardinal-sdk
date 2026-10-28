@@ -118,9 +118,12 @@ import com.icure.cardinal.sdk.model.EncryptedSecureDelegationKeyMap
 import com.icure.cardinal.sdk.model.EncryptedTopic
 import com.icure.cardinal.sdk.model.IcureStub
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
+import com.icure.utils.InternalIcureApi
+import kotlin.OptIn
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
+@OptIn(InternalIcureApi::class)
 public fun hasEncryptionMetadata_toJs(obj: HasEncryptionMetadata): HasEncryptionMetadataJs = when (obj) {
 	is EntityWithEncryptionMetadataStub -> entityWithEncryptionMetadataStub_toJs(obj)
 	is EncryptedPatient -> patient_toJs(obj)
@@ -163,6 +166,7 @@ public fun hasEncryptionMetadata_toJs(obj: HasEncryptionMetadata): HasEncryption
 	else -> throw IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.base.HasEncryptionMetadata: $obj""")
 }
 
+@OptIn(InternalIcureApi::class)
 public fun hasEncryptionMetadata_fromJs(obj: HasEncryptionMetadataJs): HasEncryptionMetadata = when {
 	obj is EntityWithEncryptionMetadataStubJs || obj.ktClass == "com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub" ->entityWithEncryptionMetadataStub_fromJs(obj as com.icure.cardinal.sdk.js.crypto.entities.EntityWithEncryptionMetadataStubJs)
 	obj is EncryptedPatientJs || obj.ktClass == "com.icure.cardinal.sdk.model.EncryptedPatient" ->patient_fromJs(obj as com.icure.cardinal.sdk.js.model.EncryptedPatientJs)

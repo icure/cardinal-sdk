@@ -14,12 +14,15 @@ import com.icure.cardinal.sdk.js.model.embed.delegation_toJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_fromJs
 import com.icure.cardinal.sdk.js.model.embed.securityMetadata_toJs
 import com.icure.cardinal.sdk.model.embed.Delegation
+import com.icure.utils.InternalIcureApi
 import kotlin.Array
+import kotlin.OptIn
 import kotlin.String
 import kotlin.Suppress
 import kotlin.collections.Set
 
 @Suppress("UNUSED_VARIABLE")
+@OptIn(InternalIcureApi::class)
 public fun entityWithEncryptionMetadataStub_toJs(obj: EntityWithEncryptionMetadataStub): EntityWithEncryptionMetadataStubJs {
 	val id = obj.id
 	val rev = nullToUndefined(
@@ -89,6 +92,7 @@ public fun entityWithEncryptionMetadataStub_toJs(obj: EntityWithEncryptionMetada
 	"}"))
 }
 
+@OptIn(InternalIcureApi::class)
 public fun entityWithEncryptionMetadataStub_fromJs(obj: EntityWithEncryptionMetadataStubJs): EntityWithEncryptionMetadataStub {
 	val id = obj.id
 	val rev = undefinedToNull(obj.rev)

@@ -126,4 +126,5 @@ external interface MalformedEntityJs {
 @JsName("CustomisedSdkOptions")
 external interface CustomisedSdkOptionsJs {
 	val encryptedFieldsOptions: dynamic
+	val knownCustomEntityTypes: Array<String>?
 }

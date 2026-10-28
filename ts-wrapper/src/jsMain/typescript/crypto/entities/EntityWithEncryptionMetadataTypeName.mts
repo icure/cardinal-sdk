@@ -1,6 +1,6 @@
 // auto-generated file
 
-export type EntityWithEncryptionMetadataTypeName = EntityWithEncryptionMetadataTypeName.Custom;
+export type EntityWithEncryptionMetadataTypeName = EntityWithEncryptionMetadataTypeName.Builtin | EntityWithEncryptionMetadataTypeName.Custom;
 
 export namespace EntityWithEncryptionMetadataTypeName {
 

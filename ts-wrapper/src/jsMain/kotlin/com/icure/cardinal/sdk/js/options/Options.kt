@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.js.storage.loadKeyStorageOptions
  import com.icure.cardinal.sdk.js.utils.cardinalInternalGlobals
  import com.icure.cardinal.sdk.crypto.encryptor.EntitiesEncryptionManifests
  import com.icure.cardinal.sdk.options.AnonymousSdkOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
  import com.icure.cardinal.sdk.options.CustomisedSdkOptions
@@ -103,6 +104,9 @@ fun CustomisedSdkOptionsJs.toKt(): CustomisedSdkOptions {
 	val defaultSdkOptions = CustomisedSdkOptions()
 	return CustomisedSdkOptions(
 		encryptedFieldsOptions = parseEncryptedFieldOptions(encryptedFieldsOptions) ?: defaultSdkOptions.encryptedFieldsOptions,
+		knownCustomEntityTypes = knownCustomEntityTypes?.mapTo(mutableSetOf()) {
+			EntityWithEncryptionMetadataTypeName.Custom(it)
+		} ?: defaultSdkOptions.knownCustomEntityTypes,
 	)
 }
 

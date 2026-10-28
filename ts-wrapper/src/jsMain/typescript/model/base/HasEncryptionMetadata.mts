@@ -1,5 +1,4 @@
 // auto-generated file
-import {EntityWithEncryptionMetadataStub} from '../../crypto/entities/EntityWithEncryptionMetadataStub.mjs';
 import {DecryptedAccessLog, EncryptedAccessLog} from '../AccessLog.mjs';
 import {DecryptedApplicationSettings, EncryptedApplicationSettings} from '../ApplicationSettings.mjs';
 import {DecryptedArticle, EncryptedArticle} from '../Article.mjs';
@@ -51,7 +50,6 @@ export namespace HasEncryptionMetadata {
 	export function fromJSON(json: any, ignoreUnknownKeys: boolean = false,
 			path: Array<string> = ['HasEncryptionMetadata']): HasEncryptionMetadata {
 		switch ((json as HasEncryptionMetadata).$ktClass) {
-			case 'com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataStub': return EntityWithEncryptionMetadataStub.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.EncryptedPatient': return EncryptedPatient.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.DecryptedPatient': return DecryptedPatient.fromJSON(json, ignoreUnknownKeys)
 			case 'com.icure.cardinal.sdk.model.EncryptedSecureDelegationKeyMap': return EncryptedSecureDelegationKeyMap.fromJSON(json, ignoreUnknownKeys)

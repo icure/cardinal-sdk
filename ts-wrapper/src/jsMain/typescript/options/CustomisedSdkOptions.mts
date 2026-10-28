@@ -10,4 +10,9 @@ export interface CustomisedSdkOptions {
    * Normally this parameter should be automatically filled by the generated customized SDK.
    */
   readonly encryptedFieldsOptions?: EncryptedFieldsOptions
+  /**
+   * The ids of all the custom entity types that this customised SDK uses with access control keys.
+   * Normally this parameter should be automatically filled by the generated customized SDK.
+   */
+  readonly knownCustomEntityTypes?: Array<string>
 }

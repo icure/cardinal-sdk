@@ -31,6 +31,8 @@ import com.icure.cardinal.sdk.js.api.FormApiJs
 import com.icure.cardinal.sdk.js.api.FormBasicApiJs
 import com.icure.cardinal.sdk.js.api.FrontEndMigrationApiJs
 import com.icure.cardinal.sdk.js.api.GroupApiJs
+import com.icure.cardinal.sdk.js.api.CustomEntityApiJs
+import com.icure.cardinal.sdk.js.api.CustomEntityBasicApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementBasicApiJs
 import com.icure.cardinal.sdk.js.api.HealthcarePartyApiJs
@@ -77,6 +79,8 @@ import com.icure.cardinal.sdk.js.api.impl.FormApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.FormBasicApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.FrontEndMigrationApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.GroupApiImplJs
+import com.icure.cardinal.sdk.js.api.impl.CustomEntityApiImplJs
+import com.icure.cardinal.sdk.js.api.impl.CustomEntityBasicApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.HealthElementApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.HealthElementBasicApiImplJs
 import com.icure.cardinal.sdk.js.api.impl.HealthcarePartyApiImplJs
@@ -124,6 +128,7 @@ import com.icure.cardinal.sdk.options.BasicSdkOptions
 import com.icure.cardinal.sdk.options.BasicToFullSdkOptions
 import com.icure.cardinal.sdk.options.CustomisedSdkOptions
 import com.icure.cardinal.sdk.options.SdkOptions
+import com.icure.utils.InternalIcureApi
 import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.kryptom.crypto.external.XCryptoService
 import com.icure.kryptom.crypto.external.adaptCryptoServiceForExternal
@@ -301,6 +306,14 @@ internal class CardinalSdkJsImpl(
 		CardinalSdkJsImpl(sdk.changeScope(dataOwnerId))
 	}
 
+	@OptIn(InternalIcureApi::class)
+	override fun customEntityApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityApiJs =
+		CustomEntityApiImplJs(sdk.customEntityApi(entityTypeId, usesAccessControlKeys))
+
+	@OptIn(InternalIcureApi::class)
+	override fun customEntityBasicApi(entityTypeId: String, usesAccessControlKeys: Boolean): CustomEntityBasicApiJs =
+		CustomEntityBasicApiImplJs(sdk.customEntityBasicApi(entityTypeId, usesAccessControlKeys))
+
 	override fun close() {
 		sdk.scope.cancel()
 	}
@@ -355,6 +368,10 @@ internal class CardinalBaseSdkJsImpl(
 		val ktOptions = options?.toKt(jsCryptoService) ?: BasicToFullSdkOptions()
 		CardinalSdkJsImpl(sdk.toFullSdk(storageFacade, ktOptions))
 	}
+
+	@OptIn(InternalIcureApi::class)
+	override fun customEntityBasicApi(entityTypeId: String): CustomEntityBasicApiJs =
+		CustomEntityBasicApiImplJs(sdk.customEntityBasicApi(entityTypeId))
 }
 
 
