@@ -422,6 +422,7 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 	suspend fun getAndDecryptReceiptAttachment(receipt: Receipt, attachmentId: String): ByteArray
 	suspend fun encryptAndSetReceiptAttachment(receipt: Receipt, blobType: String, attachment: ByteArray): EncryptedReceipt
 	suspend fun getEncryptionKeysOf(receipt: Receipt): Set<HexString>
+	suspend fun getSecretIdsOf(receipt: Receipt): Map<String, Set<EntityReferenceInGroup>>
 	suspend fun hasWriteAccess(receipt: Receipt): Boolean
 	suspend fun decryptPatientIdOf(receipt: Receipt): Set<EntityReferenceInGroup>
 	suspend fun createDelegationDeAnonymizationMetadata(entity: Receipt, delegates: Set<String>)
@@ -477,6 +478,11 @@ interface ReceiptInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptFlavoure
 	 * In-group version of [ReceiptApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(receipt: GroupScoped<Receipt>): Set<HexString>
+
+	/**
+	 * In-group version of [ReceiptApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(receipt: GroupScoped<Receipt>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [ReceiptApi.hasWriteAccess]

@@ -123,17 +123,15 @@ interface EntityEncryptionService : EntityValidationService {
 
 	// region metadata initialisation and share
 	/**
-	 * Initializes encryption metadata for an entity. This includes the encrypted secret id, owning entity id, encryption key for the entity, and
-	 * the clear text secret foreign key of the parent entity.
+	 * Initializes encryption metadata for an entity. This includes a new encrypted secret id (always initialized, regardless of the entity type),
+	 * owning entity id, encryption key for the entity, and the clear text secret foreign key of the parent entity.
 	 * This method returns a modified copy of the entity and DOES NOT SAVE the entity to the cloud/DB: you will have to save the entity manually.
 	 * @param entity entity which requires encryption metadata initialisation.
-	 * @param owningEntityDetails details of the owning entity, if any (e.g. patient id for Contact/HealtchareElement, message id for Document, ...).
-	 * @param owningEntitySecretId secret id of the parent entity, to use in the secret foreign keys for the provided entity, if any.
+	 * @param owningEntityDetails details of the owning entity, if any (e.g. patient id for Contact/HealtchareElement, message id for Document, ...),
+	 * including the secret ids of the owning entity to use in the secret foreign keys for the provided entity.
 	 * @param initializeEncryptionKey if false this method will not initialize an encryption key for the entity. Use only for entities which use
 	 * delegations for access control but don't actually have any encrypted content.
-	 * @param initializeSecretId if false this method will not initialize any secret id, use it for entities which can not be 'owning entities' (e.g.
-	 * HealthElement).
-	 * @param autoDelegations automatically shares the metadata with the provided data owners, with the provided access level.
+	 * @param autoDelegations automatically shares the metadata with the provided data owners, with the provided options.
 	 * @throws if the entity already has non-empty values for encryption metadata.
 	 * @return an updated copy of the entity.
 	 */

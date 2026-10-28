@@ -740,6 +740,14 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	suspend fun getEncryptionKeysOf(document: Document): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided document.
+	 * @param document a document
+	 * @return a map where the keys are the secret ids of the document and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(document: Document): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to a document through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -981,6 +989,11 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 	 * In-group version of [DocumentApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(document: GroupScoped<Document>): Set<HexString>
+
+	/**
+	 * In-group version of [DocumentApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(document: GroupScoped<Document>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [DocumentApi.hasWriteAccess]

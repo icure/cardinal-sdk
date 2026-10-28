@@ -46,6 +46,7 @@ import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -568,6 +569,9 @@ private class AccessLogApiImpl(
 		override suspend fun getEncryptionKeysOf(accessLog: GroupScoped<AccessLog>): Set<HexString> =
 			doGetEncryptionKeysOf(accessLog.groupId, accessLog.entity)
 
+		override suspend fun getSecretIdsOf(accessLog: GroupScoped<AccessLog>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(accessLog.groupId, accessLog.entity)
+
 		override suspend fun hasWriteAccess(accessLog: GroupScoped<AccessLog>): Boolean =
 			doHasWriteAccess(accessLog.groupId, accessLog.entity)
 
@@ -586,6 +590,16 @@ private class AccessLogApiImpl(
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, accessLog: AccessLog): Set<HexString> =
 		crypto.entity.encryptionKeysOf(groupId, accessLog, EntityWithEncryptionMetadataTypeName.Builtin.AccessLog, null)
+
+	override suspend fun getSecretIdsOf(accessLog: AccessLog): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, accessLog)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, accessLog: AccessLog): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(accessLog), EntityWithEncryptionMetadataTypeName.Builtin.AccessLog).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single access log"
+		}
 
 	override suspend fun hasWriteAccess(accessLog: AccessLog): Boolean = doHasWriteAccess(null, accessLog)
 

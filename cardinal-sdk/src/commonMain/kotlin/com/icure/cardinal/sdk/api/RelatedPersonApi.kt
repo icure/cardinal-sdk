@@ -489,12 +489,13 @@ interface RelatedPersonApi : RelatedPersonBasicFlavourlessApi, RelatedPersonFlav
 	suspend fun hasWriteAccess(relatedPerson: RelatedPerson): Boolean
 
 	/**
-	 * Attempts to extract the secret ids of a related person. Since a related person is a root entity these secret ids
-	 * may be used to link other entities to it.
+	 * Get all the secret ids that the current data owner can access from the provided related person. Since a related
+	 * person is a root entity these secret ids may be used to link other entities to it.
 	 * @param relatedPerson a related person
-	 * @return the secret ids of the provided related person that the current user can access.
+	 * @return a map where the keys are the secret ids of the related person and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
 	 */
-	suspend fun getSecretIdsOf(relatedPerson: RelatedPerson): Set<String>
+	suspend fun getSecretIdsOf(relatedPerson: RelatedPerson): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * Create metadata to allow other users to identify the anonymous delegates of a related person.
@@ -622,7 +623,7 @@ interface RelatedPersonInGroupApi : RelatedPersonBasicFlavourlessInGroupApi, Rel
 	/**
 	 * In-group version of [RelatedPersonApi.getSecretIdsOf]
 	 */
-	suspend fun getSecretIdsOf(relatedPerson: GroupScoped<RelatedPerson>): Set<String>
+	suspend fun getSecretIdsOf(relatedPerson: GroupScoped<RelatedPerson>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [RelatedPersonApi.createDelegationDeAnonymizationMetadata]

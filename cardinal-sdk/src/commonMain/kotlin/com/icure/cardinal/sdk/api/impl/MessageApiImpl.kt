@@ -608,6 +608,9 @@ private class MessageApiImpl(
 		override suspend fun getEncryptionKeysOf(message: GroupScoped<Message>): Set<HexString> =
 			doGetEncryptionKeysOf(message.groupId, message.entity)
 
+		override suspend fun getSecretIdsOf(message: GroupScoped<Message>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(message.groupId, message.entity)
+
 		override suspend fun hasWriteAccess(message: GroupScoped<Message>): Boolean =
 			doHasWriteAccess(message.groupId, message.entity)
 
@@ -797,7 +800,7 @@ private class MessageApiImpl(
 		doGetSecretIdsOf(null, message)
 
 	private suspend fun doGetSecretIdsOf(groupId: String?, message: Message): Map<String, Set<EntityReferenceInGroup>> =
-		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(message), EntityWithEncryptionMetadataTypeName.Builtin.Patient).values.singleOrNull()) {
+		ensureNonNull(config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(message), EntityWithEncryptionMetadataTypeName.Builtin.Message).values.singleOrNull()) {
 			"Method secretIdsWithDataOwnersInfo should have returned single item for single message"
 		}
 }

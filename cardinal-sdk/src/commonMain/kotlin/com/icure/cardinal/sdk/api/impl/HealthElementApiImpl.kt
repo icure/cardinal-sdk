@@ -57,6 +57,7 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -595,6 +596,9 @@ private class HealthElementApiImpl(
 		override suspend fun getEncryptionKeysOf(healthElement: GroupScoped<HealthElement>): Set<HexString> =
 			doGetEncryptionKeysOf(healthElement.groupId, healthElement.entity)
 
+		override suspend fun getSecretIdsOf(healthElement: GroupScoped<HealthElement>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(healthElement.groupId, healthElement.entity)
+
 		override suspend fun hasWriteAccess(healthElement: GroupScoped<HealthElement>): Boolean =
 			doHasWriteAccess(healthElement.groupId, healthElement.entity)
 
@@ -709,6 +713,16 @@ private class HealthElementApiImpl(
 			EntityWithEncryptionMetadataTypeName.Builtin.HealthElement,
 			null
 		)
+
+	override suspend fun getSecretIdsOf(healthElement: HealthElement): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, healthElement)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, healthElement: HealthElement): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(healthElement), EntityWithEncryptionMetadataTypeName.Builtin.HealthElement).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single health element"
+		}
 
 	override suspend fun hasWriteAccess(healthElement: HealthElement): Boolean =
 		doHasWriteAccess(null, healthElement)

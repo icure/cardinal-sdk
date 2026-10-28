@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.filters.SortableFilterOptions
 import com.icure.cardinal.sdk.model.Classification
 import com.icure.cardinal.sdk.model.DecryptedClassification
 import com.icure.cardinal.sdk.model.EncryptedClassification
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
@@ -192,6 +193,14 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * @return the encryption keys extracted from the provided classification.
 	 */
 	suspend fun getEncryptionKeysOf(classification: Classification): Set<HexString>
+
+	/**
+	 * Get all the secret ids that the current data owner can access from the provided classification.
+	 * @param classification a classification
+	 * @return a map where the keys are the secret ids of the classification and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(classification: Classification): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * Specifies if the current user has write access to a classification through delegations.

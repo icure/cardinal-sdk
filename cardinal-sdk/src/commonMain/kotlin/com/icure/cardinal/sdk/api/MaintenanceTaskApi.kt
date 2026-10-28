@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.model.DecryptedMaintenanceTask
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EncryptedMaintenanceTask
 import com.icure.cardinal.sdk.model.EncryptedPatient
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.MaintenanceTask
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
@@ -239,6 +240,14 @@ interface MaintenanceTaskApi : MaintenanceTaskBasicFlavourlessApi, MaintenanceTa
 	 * @return the encryption keys extracted from the provided maintenance task.
 	 */
 	suspend fun getEncryptionKeysOf(maintenanceTask: MaintenanceTask): Set<HexString>
+
+	/**
+	 * Get all the secret ids that the current data owner can access from the provided maintenance task.
+	 * @param maintenanceTask a maintenance task
+	 * @return a map where the keys are the secret ids of the maintenance task and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(maintenanceTask: MaintenanceTask): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * Specifies if the current user has write access to a maintenance task through delegations.

@@ -50,6 +50,7 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -583,7 +584,7 @@ private class RelatedPersonApiImpl(
 		override suspend fun hasWriteAccess(relatedPerson: GroupScoped<RelatedPerson>): Boolean =
 			doHasWriteAccess(relatedPerson.groupId, relatedPerson.entity)
 
-		override suspend fun getSecretIdsOf(relatedPerson: GroupScoped<RelatedPerson>): Set<String> =
+		override suspend fun getSecretIdsOf(relatedPerson: GroupScoped<RelatedPerson>): Map<String, Set<EntityReferenceInGroup>> =
 			doGetSecretIdsOf(relatedPerson.groupId, relatedPerson.entity)
 
 		override suspend fun createDelegationDeAnonymizationMetadata(
@@ -676,16 +677,15 @@ private class RelatedPersonApiImpl(
 	private suspend fun doHasWriteAccess(groupId: String?, relatedPerson: RelatedPerson): Boolean =
 		config.crypto.entity.hasWriteAccess(groupId, relatedPerson, EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson)
 
-	override suspend fun getSecretIdsOf(relatedPerson: RelatedPerson): Set<String> =
+	override suspend fun getSecretIdsOf(relatedPerson: RelatedPerson): Map<String, Set<EntityReferenceInGroup>> =
 		doGetSecretIdsOf(null, relatedPerson)
 
-	private suspend fun doGetSecretIdsOf(groupId: String?, relatedPerson: RelatedPerson): Set<String> =
-		config.crypto.entity.secretIdsOf(
-			groupId,
-			relatedPerson,
-			EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson,
-			null
-		)
+	private suspend fun doGetSecretIdsOf(groupId: String?, relatedPerson: RelatedPerson): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(relatedPerson), EntityWithEncryptionMetadataTypeName.Builtin.RelatedPerson).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single related person"
+		}
 
 	override suspend fun createDelegationDeAnonymizationMetadata(entity: RelatedPerson, delegates: Set<String>) =
 		doCreateDelegationDeAnonymizationMetadata(groupId = null, entity, delegates.asLocalDataOwnerReferences())

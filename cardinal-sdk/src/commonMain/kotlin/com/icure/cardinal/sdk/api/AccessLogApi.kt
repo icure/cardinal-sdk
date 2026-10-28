@@ -462,6 +462,14 @@ interface AccessLogApi : AccessLogBasicFlavourlessApi, AccessLogFlavouredApi<Dec
 	suspend fun getEncryptionKeysOf(accessLog: AccessLog): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided access log.
+	 * @param accessLog a access log
+	 * @return a map where the keys are the secret ids of the access log and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(accessLog: AccessLog): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to an access log through delegations.
  	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
  	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -622,6 +630,11 @@ interface AccessLogInGroupApi : AccessLogBasicFlavourlessInGroupApi, AccessLogFl
 	 * In-group version of [AccessLogApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(accessLog: GroupScoped<AccessLog>): Set<HexString>
+
+	/**
+	 * In-group version of [AccessLogApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(accessLog: GroupScoped<AccessLog>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [AccessLogApi.hasWriteAccess]

@@ -46,6 +46,7 @@ import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.options.DecryptedJsonStrictness
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -276,6 +277,13 @@ private class ClassificationApiImpl(
 		).updatedEntity
 
 	override suspend fun getEncryptionKeysOf(classification: Classification): Set<HexString> = crypto.entity.encryptionKeysOf(null, classification, EntityWithEncryptionMetadataTypeName.Builtin.Classification, null)
+
+	override suspend fun getSecretIdsOf(classification: Classification): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			crypto.entity.secretIdsWithDataOwnersInfo(null, listOf(classification), EntityWithEncryptionMetadataTypeName.Builtin.Classification).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single classification"
+		}
 
 	override suspend fun hasWriteAccess(classification: Classification): Boolean = crypto.entity.hasWriteAccess(null, classification, EntityWithEncryptionMetadataTypeName.Builtin.Classification)
 

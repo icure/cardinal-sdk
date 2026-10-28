@@ -497,6 +497,14 @@ interface TopicApi : TopicBasicFlavourlessApi, TopicFlavouredApi<DecryptedTopic>
 	suspend fun getEncryptionKeysOf(topic: Topic): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided topic.
+	 * @param topic a topic
+	 * @return a map where the keys are the secret ids of the topic and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(topic: Topic): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to a topic through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -644,6 +652,11 @@ interface TopicInGroupApi : TopicBasicFlavourlessInGroupApi, TopicFlavouredInGro
 	 * In-group version of [TopicApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(topic: GroupScoped<Topic>): Set<HexString>
+
+	/**
+	 * In-group version of [TopicApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(topic: GroupScoped<Topic>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [TopicApi.hasWriteAccess]

@@ -49,6 +49,7 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.utils.InternalIcureApi
@@ -246,6 +247,13 @@ private class MaintenanceTaskApiImpl(
 			EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask,
 			null
 		)
+
+	override suspend fun getSecretIdsOf(maintenanceTask: MaintenanceTask): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			config.crypto.entity.secretIdsWithDataOwnersInfo(null, listOf(maintenanceTask), EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single maintenance task"
+		}
 
 	override suspend fun hasWriteAccess(maintenanceTask: MaintenanceTask): Boolean =
 		config.crypto.entity.hasWriteAccess(null, maintenanceTask, EntityWithEncryptionMetadataTypeName.Builtin.MaintenanceTask)

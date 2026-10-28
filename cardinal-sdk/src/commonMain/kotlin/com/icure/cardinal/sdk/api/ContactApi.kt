@@ -604,6 +604,14 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	suspend fun getEncryptionKeysOf(contact: Contact): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided contact.
+	 * @param contact a contact
+	 * @return a map where the keys are the secret ids of the contact and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(contact: Contact): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to a contact through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -789,6 +797,11 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 	 * In-group version of [ContactApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(contact: GroupScoped<Contact>): Set<HexString>
+
+	/**
+	 * In-group version of [ContactApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(contact: GroupScoped<Contact>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [ContactApi.hasWriteAccess]

@@ -49,6 +49,7 @@ import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -698,6 +699,9 @@ private class DocumentApiImpl(
 		override suspend fun getEncryptionKeysOf(document: GroupScoped<Document>): Set<HexString> =
 			doGetEncryptionKeysOf(document.groupId, document.entity)
 
+		override suspend fun getSecretIdsOf(document: GroupScoped<Document>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(document.groupId, document.entity)
+
 		override suspend fun hasWriteAccess(document: GroupScoped<Document>): Boolean =
 			doHasWriteAccess(document.groupId, document.entity)
 
@@ -928,6 +932,16 @@ private class DocumentApiImpl(
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, document: Document): Set<HexString> =
 		crypto.entity.encryptionKeysOf(groupId, document, EntityWithEncryptionMetadataTypeName.Builtin.Document, null)
+
+	override suspend fun getSecretIdsOf(document: Document): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, document)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, document: Document): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(document), EntityWithEncryptionMetadataTypeName.Builtin.Document).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single document"
+		}
 
 	override suspend fun hasWriteAccess(document: Document): Boolean = doHasWriteAccess(groupId = null, document = document)
 

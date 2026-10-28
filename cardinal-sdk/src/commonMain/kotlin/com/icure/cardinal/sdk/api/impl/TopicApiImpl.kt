@@ -56,6 +56,7 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -574,6 +575,9 @@ private class TopicApiImpl(
 		override suspend fun getEncryptionKeysOf(topic: GroupScoped<Topic>): Set<HexString> =
 			doGetEncryptionKeysOf(groupId = topic.groupId, entity = topic.entity)
 
+		override suspend fun getSecretIdsOf(topic: GroupScoped<Topic>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(topic.groupId, topic.entity)
+
 		override suspend fun hasWriteAccess(topic: GroupScoped<Topic>): Boolean  =
 			doHasWriteAccess(groupId = topic.groupId, entity = topic.entity)
 
@@ -705,6 +709,16 @@ private class TopicApiImpl(
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, entity: Topic): Set<HexString> =
 		config.crypto.entity.encryptionKeysOf(groupId, entity, EntityWithEncryptionMetadataTypeName.Builtin.Topic, null)
+
+	override suspend fun getSecretIdsOf(topic: Topic): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, topic)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, topic: Topic): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(topic), EntityWithEncryptionMetadataTypeName.Builtin.Topic).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single topic"
+		}
 
 	override suspend fun hasWriteAccess(topic: Topic): Boolean =
 		doHasWriteAccess(groupId = null, entity = topic)

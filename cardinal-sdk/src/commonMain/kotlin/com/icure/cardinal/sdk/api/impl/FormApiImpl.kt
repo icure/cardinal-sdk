@@ -51,6 +51,7 @@ import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -786,6 +787,9 @@ private class FormApiImpl(
 		override suspend fun getEncryptionKeysOf(form: GroupScoped<Form>): Set<HexString> =
 			doGetEncryptionKeysOf(form.groupId, form.entity)
 
+		override suspend fun getSecretIdsOf(form: GroupScoped<Form>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(form.groupId, form.entity)
+
 		override suspend fun hasWriteAccess(form: GroupScoped<Form>): Boolean =
 			doHasWriteAccess(form.groupId, form.entity)
 
@@ -895,6 +899,16 @@ private class FormApiImpl(
 			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Form,
 			dataOwnerId = null
 		)
+
+	override suspend fun getSecretIdsOf(form: Form): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, form)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, form: Form): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(form), EntityWithEncryptionMetadataTypeName.Builtin.Form).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single form"
+		}
 
 	override suspend fun hasWriteAccess(form: Form): Boolean = doHasWriteAccess(groupId = null, form = form)
 

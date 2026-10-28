@@ -65,6 +65,7 @@ import com.icure.cardinal.sdk.subscription.SubscriptionEventType
 import com.icure.cardinal.sdk.subscription.WebSocketSubscription
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -741,6 +742,9 @@ private class CalendarItemApiImpl(
 		override suspend fun getEncryptionKeysOf(calendarItem: GroupScoped<CalendarItem>): Set<HexString> =
 			doGetEncryptionKeysOf(calendarItem.groupId, calendarItem.entity)
 
+		override suspend fun getSecretIdsOf(calendarItem: GroupScoped<CalendarItem>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(calendarItem.groupId, calendarItem.entity)
+
 		override suspend fun hasWriteAccess(calendarItem: GroupScoped<CalendarItem>): Boolean =
 			doHasWriteAccess(calendarItem.groupId, calendarItem.entity)
 
@@ -894,6 +898,16 @@ private class CalendarItemApiImpl(
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, calendarItem: CalendarItem): Set<HexString> =
 		crypto.entity.encryptionKeysOf(groupId, calendarItem, EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem, null)
+
+	override suspend fun getSecretIdsOf(calendarItem: CalendarItem): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, calendarItem)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, calendarItem: CalendarItem): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(calendarItem), EntityWithEncryptionMetadataTypeName.Builtin.CalendarItem).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single calendar item"
+		}
 
 	override suspend fun hasWriteAccess(calendarItem: CalendarItem): Boolean =
 		doHasWriteAccess(null, calendarItem)

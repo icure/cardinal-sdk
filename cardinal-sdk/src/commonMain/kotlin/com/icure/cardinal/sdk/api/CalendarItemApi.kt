@@ -557,6 +557,14 @@ interface CalendarItemApi : CalendarItemBasicFlavourlessApi, CalendarItemFlavour
 	suspend fun getEncryptionKeysOf(calendarItem: CalendarItem): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided calendar item.
+	 * @param calendarItem a calendar item
+	 * @return a map where the keys are the secret ids of the calendar item and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(calendarItem: CalendarItem): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to a calendar item through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -780,6 +788,11 @@ interface CalendarItemInGroupApi : CalendarItemBasicFlavourlessInGroupApi, Calen
 	 * In-group version of [CalendarItemApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(calendarItem: GroupScoped<CalendarItem>): Set<HexString>
+
+	/**
+	 * In-group version of [CalendarItemApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(calendarItem: GroupScoped<CalendarItem>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [CalendarItemApi.hasWriteAccess]

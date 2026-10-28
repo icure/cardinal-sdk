@@ -69,6 +69,7 @@ import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.currentFuzzyDateTime
 import com.icure.cardinal.sdk.utils.ensure
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -763,6 +764,9 @@ private class ContactApiImpl(
 		override suspend fun getEncryptionKeysOf(contact: GroupScoped<Contact>): Set<HexString> =
 			doGetEncryptionKeysOf(contact.groupId, contact.entity)
 
+		override suspend fun getSecretIdsOf(contact: GroupScoped<Contact>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(contact.groupId, contact.entity)
+
 		override suspend fun hasWriteAccess(contact: GroupScoped<Contact>): Boolean =
 			doHasWriteAccess(contact.groupId, contact.entity)
 
@@ -885,6 +889,16 @@ private class ContactApiImpl(
 			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Contact,
 			dataOwnerId = null
 		)
+
+	override suspend fun getSecretIdsOf(contact: Contact): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, contact)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, contact: Contact): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(contact), EntityWithEncryptionMetadataTypeName.Builtin.Contact).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single contact"
+		}
 
 	override suspend fun hasWriteAccess(contact: Contact): Boolean = doHasWriteAccess(groupId = null, contact = contact)
 

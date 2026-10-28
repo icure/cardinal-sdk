@@ -369,7 +369,7 @@ interface MessageFlavouredApi<E : Message> : MessageBasicFlavouredApi<E> {
 		delegateId: String,
 		message: E,
 		@DefaultValue("null")
-		options: MessageShareOptions?
+		options: MessageShareOptions? = null,
 	): E
 
 	/**
@@ -611,7 +611,7 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	/**
 	 * Get all the secret ids that the current data owner can access from the provided message.
 	 * @param message a message
-	 * @return a map where the keys are the secret ids of the patient and the value is a set of references
+	 * @return a map where the keys are the secret ids of the message and the value is a set of references
 	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
 	 */
 	suspend fun getSecretIdsOf(message: Message): Map<String, Set<EntityReferenceInGroup>>
@@ -692,6 +692,11 @@ interface MessageInGroupApi : MessageBasicFlavourlessInGroupApi, MessageFlavoure
 	 * In-group version of [MessageApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(message: GroupScoped<Message>): Set<HexString>
+
+	/**
+	 * In-group version of [MessageApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(message: GroupScoped<Message>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [MessageApi.hasWriteAccess]

@@ -541,6 +541,14 @@ interface InvoiceApi : InvoiceBasicFlavourlessApi, InvoiceFlavouredApi<Decrypted
 	suspend fun getEncryptionKeysOf(invoice: Invoice): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided invoice.
+	 * @param invoice a invoice
+	 * @return a map where the keys are the secret ids of the invoice and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(invoice: Invoice): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to an invoice through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -701,6 +709,11 @@ interface InvoiceInGroupApi : InvoiceBasicFlavourlessInGroupApi, InvoiceFlavoure
 	 * In-group version of [InvoiceApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(invoice: GroupScoped<Invoice>): Set<HexString>
+
+	/**
+	 * In-group version of [InvoiceApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(invoice: GroupScoped<Invoice>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [InvoiceApi.hasWriteAccess]

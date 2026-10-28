@@ -48,6 +48,7 @@ import com.icure.cardinal.sdk.options.ApiConfiguration
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.currentEpochMs
 import com.icure.cardinal.sdk.utils.currentFuzzyDateTime
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -669,6 +670,9 @@ private class InvoiceApiImpl(
 		override suspend fun getEncryptionKeysOf(invoice: GroupScoped<Invoice>): Set<HexString> =
 			doGetEncryptionKeysOf(invoice.groupId, invoice.entity)
 
+		override suspend fun getSecretIdsOf(invoice: GroupScoped<Invoice>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(invoice.groupId, invoice.entity)
+
 		override suspend fun hasWriteAccess(invoice: GroupScoped<Invoice>): Boolean =
 			doHasWriteAccess(invoice.groupId, invoice.entity)
 
@@ -691,6 +695,16 @@ private class InvoiceApiImpl(
 			entityType = EntityWithEncryptionMetadataTypeName.Builtin.Invoice,
 			dataOwnerId = null
 		)
+
+	override suspend fun getSecretIdsOf(invoice: Invoice): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, invoice)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, invoice: Invoice): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(invoice), EntityWithEncryptionMetadataTypeName.Builtin.Invoice).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single invoice"
+		}
 
 	override suspend fun hasWriteAccess(invoice: Invoice): Boolean = doHasWriteAccess(groupId = null, invoice = invoice)
 

@@ -482,6 +482,14 @@ interface FormApi : FormBasicFlavourlessApi, FormFlavouredApi<DecryptedForm> {
 	suspend fun getEncryptionKeysOf(form: Form): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided form.
+	 * @param form a form
+	 * @return a map where the keys are the secret ids of the form and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(form: Form): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to a form through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -665,6 +673,11 @@ interface FormInGroupApi : FormBasicFlavourlessInGroupApi, FormFlavouredInGroupA
 	 * In-group version of [FormApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(form: GroupScoped<Form>): Set<HexString>
+
+	/**
+	 * In-group version of [FormApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(form: GroupScoped<Form>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [FormApi.hasWriteAccess]

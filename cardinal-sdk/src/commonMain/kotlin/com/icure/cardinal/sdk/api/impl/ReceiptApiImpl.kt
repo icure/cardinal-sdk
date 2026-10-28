@@ -52,6 +52,7 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.Serialization
 import com.icure.cardinal.sdk.utils.UnavailableEncryptionKeyException
 import com.icure.cardinal.sdk.utils.currentEpochMs
+import com.icure.cardinal.sdk.utils.ensureNonNull
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 import com.icure.utils.InternalIcureApi
 
@@ -564,6 +565,9 @@ private class ReceiptApiImpl(
 		override suspend fun getEncryptionKeysOf(receipt: GroupScoped<Receipt>): Set<HexString> =
 			doGetEncryptionKeysOf(groupId = receipt.groupId, receipt = receipt.entity)
 
+		override suspend fun getSecretIdsOf(receipt: GroupScoped<Receipt>): Map<String, Set<EntityReferenceInGroup>> =
+			doGetSecretIdsOf(receipt.groupId, receipt.entity)
+
 		override suspend fun hasWriteAccess(receipt: GroupScoped<Receipt>): Boolean =
 			doHasWriteAccess(groupId = receipt.groupId, receipt = receipt.entity)
 
@@ -700,6 +704,16 @@ private class ReceiptApiImpl(
 
 	private suspend fun doGetEncryptionKeysOf(groupId: String?, receipt: Receipt): Set<HexString> =
 		config.crypto.entity.encryptionKeysOf(groupId, receipt, EntityWithEncryptionMetadataTypeName.Builtin.Receipt, null)
+
+	override suspend fun getSecretIdsOf(receipt: Receipt): Map<String, Set<EntityReferenceInGroup>> =
+		doGetSecretIdsOf(null, receipt)
+
+	private suspend fun doGetSecretIdsOf(groupId: String?, receipt: Receipt): Map<String, Set<EntityReferenceInGroup>> =
+		ensureNonNull(
+			config.crypto.entity.secretIdsWithDataOwnersInfo(groupId, listOf(receipt), EntityWithEncryptionMetadataTypeName.Builtin.Receipt).values.singleOrNull()
+		) {
+			"Method secretIdsWithDataOwnersInfo should have returned single item for single receipt"
+		}
 
 	override suspend fun hasWriteAccess(receipt: Receipt): Boolean = doHasWriteAccess(groupId = null, receipt = receipt)
 

@@ -488,6 +488,14 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	suspend fun getEncryptionKeysOf(healthElement: HealthElement): Set<HexString>
 
 	/**
+	 * Get all the secret ids that the current data owner can access from the provided health element.
+	 * @param healthElement a health element
+	 * @return a map where the keys are the secret ids of the health element and the value is a set of references
+	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	suspend fun getSecretIdsOf(healthElement: HealthElement): Map<String, Set<EntityReferenceInGroup>>
+
+	/**
 	 * Specifies if the current user has write access to a health element through delegations.
 	 * Doesn't consider actual permissions on the server side: for example, if the data owner has access to all entities
 	 * thanks to extended permission but has no delegation on the provided entity this method returns false. Similarly,
@@ -665,6 +673,11 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 	 * In-group version of [HealthElementApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(healthElement: GroupScoped<HealthElement>): Set<HexString>
+
+	/**
+	 * In-group version of [HealthElementApi.getSecretIdsOf]
+	 */
+	suspend fun getSecretIdsOf(healthElement: GroupScoped<HealthElement>): Map<String, Set<EntityReferenceInGroup>>
 
 	/**
 	 * In-group version of [HealthElementApi.hasWriteAccess]
