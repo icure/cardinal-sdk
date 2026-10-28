@@ -377,6 +377,8 @@ export class DecryptedDocument {
 
 	readonly isEncrypted: false = false;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.DecryptedDocument' = 'com.icure.cardinal.sdk.model.DecryptedDocument';
+
 	constructor(partial: Partial<DecryptedDocument>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
 		this.id = partial.id ?? randomUuid();
@@ -464,6 +466,7 @@ export class DecryptedDocument {
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedDocument'
 		return res
 	}
 
@@ -472,6 +475,7 @@ export class DecryptedDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedDocument`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedDocument') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedDocument". The provided json doesn't represent a DecryptedDocument`)
 		const res = new DecryptedDocument({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -772,6 +776,8 @@ export class EncryptedDocument {
 
 	readonly isEncrypted: true = true;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.EncryptedDocument' = 'com.icure.cardinal.sdk.model.EncryptedDocument';
+
 	constructor(partial: Partial<EncryptedDocument>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
 		this.id = partial.id ?? randomUuid();
@@ -859,6 +865,7 @@ export class EncryptedDocument {
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedDocument'
 		return res
 	}
 
@@ -867,6 +874,7 @@ export class EncryptedDocument {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedDocument`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedDocument') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedDocument". The provided json doesn't represent a EncryptedDocument`)
 		const res = new EncryptedDocument({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),

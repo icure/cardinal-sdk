@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.MessageDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.MessageShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -81,6 +82,8 @@ public external interface MessageApiJs {
 	public fun purgeMessage(message: MessageJs): Promise<Unit>
 
 	public fun purgeMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(message: MessageJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

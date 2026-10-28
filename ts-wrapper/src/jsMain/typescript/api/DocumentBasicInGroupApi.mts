@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {Document, EncryptedDocument} from '../model/Document.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -81,6 +82,12 @@ export interface DocumentBasicInGroupApi {
 	 *  In-group version of [DocumentBasicFlavourlessApi.purgeDocuments]
 	 */
 	purgeDocuments(documents: Array<GroupScoped<Document>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [DocumentBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(document: GroupScoped<Document>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

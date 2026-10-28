@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.api
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.ContactJs
@@ -61,6 +62,8 @@ public external interface ContactApiJs {
 
 	public fun getEncryptionKeysOf(contact: ContactJs): Promise<Array<String>>
 
+	public fun getSecretIdsOf(contact: ContactJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(contact: ContactJs): Promise<Boolean>
 
 	public fun decryptPatientIdOf(contact: ContactJs): Promise<Array<EntityReferenceInGroupJs>>
@@ -98,6 +101,10 @@ public external interface ContactApiJs {
 	public fun purgeContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double): Promise<Array<LabelledOccurenceJs>>
+
+	public fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs>
+
+	public fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

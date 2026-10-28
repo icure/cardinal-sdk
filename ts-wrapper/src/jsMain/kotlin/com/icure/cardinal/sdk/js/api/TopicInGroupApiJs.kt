@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedTopicJs
@@ -14,6 +15,7 @@ import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.TopicJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToTopicShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -46,6 +48,8 @@ public external interface TopicInGroupApiJs {
 
 	public fun getEncryptionKeysOf(topic: GroupScopedJs<TopicJs>): Promise<Array<String>>
 
+	public fun getSecretIdsOf(topic: GroupScopedJs<TopicJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(topic: GroupScopedJs<TopicJs>): Promise<Boolean>
 
 	public fun decryptPatientIdOf(topic: GroupScopedJs<TopicJs>): Promise<Array<EntityReferenceInGroupJs>>
@@ -75,6 +79,8 @@ public external interface TopicInGroupApiJs {
 	public fun purgeTopic(topic: GroupScopedJs<TopicJs>): Promise<Unit>
 
 	public fun purgeTopics(topics: Array<GroupScopedJs<TopicJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

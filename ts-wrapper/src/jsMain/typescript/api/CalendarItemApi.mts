@@ -3,6 +3,7 @@ import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../ca
 import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {CalendarItemDelegateOptions} from '../crypto/entities/CalendarItemDelegateOptions.mjs';
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {CalendarItem, DecryptedCalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
 import {CalendarItemOccupancy} from '../model/CalendarItemOccupancy.mjs';
@@ -76,6 +77,15 @@ export interface CalendarItemApi {
 	 *  @return the encryption keys extracted from the provided calendar item.
 	 */
 	getEncryptionKeysOf(calendarItem: CalendarItem): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided calendar item.
+	 *  @param calendarItem a calendar item
+	 *  @return a map where the keys are the secret ids of the calendar item and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(calendarItem: CalendarItem): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -325,6 +335,17 @@ export interface CalendarItemApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeCalendarItems(calendarItems: Array<CalendarItem>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided calendar item, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param calendarItem a calendar item
+	 *  @return information on users with access to the provided calendar item
+	 */
+	getDataOwnersWithAccessTo(calendarItem: CalendarItem): Promise<EntityAccessInformation>;
 
 	/**
 	 *

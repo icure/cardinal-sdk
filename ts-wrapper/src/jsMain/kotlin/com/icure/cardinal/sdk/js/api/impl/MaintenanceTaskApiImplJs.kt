@@ -18,17 +18,20 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.DecryptedMaintenanceTaskJs
 import com.icure.cardinal.sdk.js.model.EncryptedMaintenanceTaskJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.MaintenanceTaskJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserJs
 import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
+import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_toJs
 import com.icure.cardinal.sdk.js.model.maintenanceTask_fromJs
 import com.icure.cardinal.sdk.js.model.maintenanceTask_toJs
 import com.icure.cardinal.sdk.js.model.specializations.hexString_toJs
@@ -43,6 +46,7 @@ import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.DecryptedMaintenanceTask
 import com.icure.cardinal.sdk.model.EncryptedMaintenanceTask
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.MaintenanceTask
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
@@ -405,6 +409,27 @@ internal class MaintenanceTaskApiImplJs(
 			result,
 			{ x1: HexString ->
 				hexString_toJs(x1)
+			},
+		)
+	}
+
+	override fun getSecretIdsOf(maintenanceTask: MaintenanceTaskJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val maintenanceTaskConverted: MaintenanceTask = maintenanceTask_fromJs(maintenanceTask)
+		val result = maintenanceTaskApi.getSecretIdsOf(
+			maintenanceTaskConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
 			},
 		)
 	}

@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {AccessLogDelegateOptions} from '../crypto/entities/AccessLogDelegateOptions.mjs';
 import {AccessLogShareOptions} from '../crypto/entities/AccessLogShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {AccessLog, DecryptedAccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -41,6 +42,12 @@ export interface AccessLogInGroupApi {
 	 *  In-group version of [AccessLogApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(accessLog: GroupScoped<AccessLog>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(accessLog: GroupScoped<AccessLog>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -129,6 +136,12 @@ export interface AccessLogInGroupApi {
 	purgeAccessLog(accessLog: GroupScoped<AccessLog>): Promise<void>;
 
 	purgeAccessLogs(accessLogs: Array<GroupScoped<AccessLog>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(accessLog: GroupScoped<AccessLog>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

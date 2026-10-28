@@ -23,6 +23,7 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
@@ -31,12 +32,14 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.js.model.ClassificationJs
 import com.icure.cardinal.sdk.js.model.DecryptedClassificationJs
 import com.icure.cardinal.sdk.js.model.EncryptedClassificationJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.UserJs
 import com.icure.cardinal.sdk.js.model.classification_fromJs
 import com.icure.cardinal.sdk.js.model.classification_toJs
 import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.model.couchdb.docIdentifier_toJs
+import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_toJs
 import com.icure.cardinal.sdk.js.model.patient_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.hexString_toJs
 import com.icure.cardinal.sdk.js.model.user_fromJs
@@ -46,6 +49,7 @@ import com.icure.cardinal.sdk.js.utils.pagination.paginatedListIterator_toJs
 import com.icure.cardinal.sdk.model.Classification
 import com.icure.cardinal.sdk.model.DecryptedClassification
 import com.icure.cardinal.sdk.model.EncryptedClassification
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
@@ -477,6 +481,27 @@ internal class ClassificationApiImplJs(
 			result,
 			{ x1: HexString ->
 				hexString_toJs(x1)
+			},
+		)
+	}
+
+	override fun getSecretIdsOf(classification: ClassificationJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val classificationConverted: Classification = classification_fromJs(classification)
+		val result = classificationApi.getSecretIdsOf(
+			classificationConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
 			},
 		)
 	}

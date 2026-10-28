@@ -1,4 +1,5 @@
 // auto-generated file
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {ReceiptDelegateOptions} from '../crypto/entities/ReceiptDelegateOptions.mjs';
 import {ReceiptShareOptions} from '../crypto/entities/ReceiptShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -34,6 +35,8 @@ export interface ReceiptApi {
 			attachment: Int8Array): Promise<EncryptedReceipt>;
 
 	getEncryptionKeysOf(receipt: Receipt): Promise<Array<HexString>>;
+
+	getSecretIdsOf(receipt: Receipt): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	hasWriteAccess(receipt: Receipt): Promise<boolean>;
 
@@ -130,6 +133,17 @@ export interface ReceiptApi {
 
 	setRawReceiptAttachment(receiptId: string, rev: string, blobType: string,
 			attachment: Int8Array): Promise<EncryptedReceipt>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided receipt, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param receipt a receipt
+	 *  @return information on users with access to the provided receipt
+	 */
+	getDataOwnersWithAccessTo(receipt: Receipt): Promise<EntityAccessInformation>;
 
 	shareWith(delegateId: string, receipt: DecryptedReceipt,
 			options?: { options?: ReceiptShareOptions | undefined }): Promise<DecryptedReceipt>;

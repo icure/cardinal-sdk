@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EncryptedHealthElementJs
@@ -44,6 +45,8 @@ public external interface HealthElementBasicApiJs {
 	public fun purgeHealthElement(healthElement: HealthElementJs): Promise<Unit>
 
 	public fun purgeHealthElements(healthElements: Array<HealthElementJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(healthElement: HealthElementJs): Promise<EntityAccessInformationJs>
 
 	public fun createHealthElement(entity: EncryptedHealthElementJs): Promise<EncryptedHealthElementJs>
 

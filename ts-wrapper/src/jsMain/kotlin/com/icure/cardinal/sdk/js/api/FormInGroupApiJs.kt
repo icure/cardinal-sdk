@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -16,6 +17,7 @@ import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -48,6 +50,8 @@ public external interface FormInGroupApiJs {
 
 	public fun getEncryptionKeysOf(form: GroupScopedJs<FormJs>): Promise<Array<String>>
 
+	public fun getSecretIdsOf(form: GroupScopedJs<FormJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(form: GroupScopedJs<FormJs>): Promise<Boolean>
 
 	public fun decryptPatientIdOf(form: GroupScopedJs<FormJs>): Promise<Array<EntityReferenceInGroupJs>>
@@ -77,6 +81,8 @@ public external interface FormInGroupApiJs {
 	public fun purgeForm(form: GroupScopedJs<FormJs>): Promise<Unit>
 
 	public fun purgeForms(forms: Array<GroupScopedJs<FormJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(form: GroupScopedJs<FormJs>): Promise<EntityAccessInformationJs>
 
 	public fun createFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<GroupScopedJs<FormTemplateJs>>
 

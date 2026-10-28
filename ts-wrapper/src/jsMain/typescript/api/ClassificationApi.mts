@@ -4,6 +4,7 @@ import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs'
 import {ClassificationShareOptions} from '../crypto/entities/ClassificationShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {Classification, DecryptedClassification, EncryptedClassification} from '../model/Classification.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {Patient} from '../model/Patient.mjs';
 import {User} from '../model/User.mjs';
 import {DocIdentifier} from '../model/couchdb/DocIdentifier.mjs';
@@ -44,6 +45,15 @@ export interface ClassificationApi {
 	 *  @return the encryption keys extracted from the provided classification.
 	 */
 	getEncryptionKeysOf(classification: Classification): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided classification.
+	 *  @param classification a classification
+	 *  @return a map where the keys are the secret ids of the classification and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(classification: Classification): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *

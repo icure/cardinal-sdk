@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DocumentBasicApiJs
 import com.icure.cardinal.sdk.js.api.DocumentBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -292,6 +294,19 @@ internal class DocumentBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
+				document,
+				{ x1: DocumentJs ->
+					document_fromJs(x1)
+				},
+			)
+			val result = documentBasicApi.inGroup.getDataOwnersWithAccessTo(
+				documentConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createDocument(entity: GroupScopedJs<EncryptedDocumentJs>): Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
@@ -793,6 +808,14 @@ internal class DocumentBasicApiImplJs(
 			revConverted,
 		)
 		document_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val documentConverted: Document = document_fromJs(document)
+		val result = documentBasicApi.getDataOwnersWithAccessTo(
+			documentConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs> = GlobalScope.promise {

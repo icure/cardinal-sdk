@@ -8,6 +8,8 @@ import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.js.api.CalendarItemBasicApiJs
 import com.icure.cardinal.sdk.js.api.CalendarItemBasicInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -388,6 +390,19 @@ internal class CalendarItemBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
+				calendarItem,
+				{ x1: CalendarItemJs ->
+					calendarItem_fromJs(x1)
+				},
+			)
+			val result = calendarItemBasicApi.inGroup.getDataOwnersWithAccessTo(
+				calendarItemConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>): Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
@@ -855,6 +870,14 @@ internal class CalendarItemBasicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
+		val result = calendarItemBasicApi.getDataOwnersWithAccessTo(
+			calendarItemConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs> = GlobalScope.promise {

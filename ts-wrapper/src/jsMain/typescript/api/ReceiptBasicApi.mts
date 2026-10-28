@@ -1,4 +1,5 @@
 // auto-generated file
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {EncryptedReceipt, Receipt} from '../model/Receipt.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {ReceiptBasicInGroupApi} from './ReceiptBasicInGroupApi.mjs';
@@ -85,6 +86,17 @@ export interface ReceiptBasicApi {
 
 	setRawReceiptAttachment(receiptId: string, rev: string, blobType: string,
 			attachment: Int8Array): Promise<EncryptedReceipt>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided receipt, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param receipt a receipt
+	 *  @return information on users with access to the provided receipt
+	 */
+	getDataOwnersWithAccessTo(receipt: Receipt): Promise<EntityAccessInformation>;
 
 	/**
 	 *

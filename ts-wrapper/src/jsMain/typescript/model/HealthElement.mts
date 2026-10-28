@@ -383,6 +383,8 @@ export class DecryptedHealthElement {
 
 	readonly isEncrypted: false = false;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.DecryptedHealthElement' = 'com.icure.cardinal.sdk.model.DecryptedHealthElement';
+
 	constructor(partial: Partial<DecryptedHealthElement>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
 		this.id = partial.id ?? randomUuid();
@@ -466,6 +468,7 @@ export class DecryptedHealthElement {
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedHealthElement'
 		return res
 	}
 
@@ -474,6 +477,7 @@ export class DecryptedHealthElement {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedHealthElement`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedHealthElement') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedHealthElement". The provided json doesn't represent a DecryptedHealthElement`)
 		const res = new DecryptedHealthElement({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			identifiers: expectArray(extractEntry(jCpy, 'identifiers', false, path), false, [...path, ".identifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),
@@ -771,6 +775,8 @@ export class EncryptedHealthElement {
 
 	readonly isEncrypted: true = true;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.EncryptedHealthElement' = 'com.icure.cardinal.sdk.model.EncryptedHealthElement';
+
 	constructor(partial: Partial<EncryptedHealthElement>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
 		this.id = partial.id ?? randomUuid();
@@ -854,6 +860,7 @@ export class EncryptedHealthElement {
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedHealthElement'
 		return res
 	}
 
@@ -862,6 +869,7 @@ export class EncryptedHealthElement {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedHealthElement`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedHealthElement') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedHealthElement". The provided json doesn't represent a EncryptedHealthElement`)
 		const res = new EncryptedHealthElement({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			identifiers: expectArray(extractEntry(jCpy, 'identifiers', false, path), false, [...path, ".identifiers"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, Identifier.fromJSON)),

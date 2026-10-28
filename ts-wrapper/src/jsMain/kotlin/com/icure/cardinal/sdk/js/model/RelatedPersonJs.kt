@@ -97,6 +97,8 @@ public external class DecryptedRelatedPersonJs(
 	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedRelatedPerson")
@@ -160,4 +162,6 @@ public external class EncryptedRelatedPersonJs(
 	override val extensions: dynamic
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

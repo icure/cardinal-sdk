@@ -479,6 +479,8 @@ export class DecryptedCalendarItem {
 
 	readonly isEncrypted: false = false;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.DecryptedCalendarItem' = 'com.icure.cardinal.sdk.model.DecryptedCalendarItem';
+
 	constructor(partial: Partial<DecryptedCalendarItem>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
 		this.id = partial.id ?? randomUuid();
@@ -578,6 +580,7 @@ export class DecryptedCalendarItem {
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedCalendarItem'
 		return res
 	}
 
@@ -586,6 +589,7 @@ export class DecryptedCalendarItem {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedCalendarItem`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedCalendarItem') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedCalendarItem". The provided json doesn't represent a DecryptedCalendarItem`)
 		const res = new DecryptedCalendarItem({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -938,6 +942,8 @@ export class EncryptedCalendarItem {
 
 	readonly isEncrypted: true = true;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.EncryptedCalendarItem' = 'com.icure.cardinal.sdk.model.EncryptedCalendarItem';
+
 	constructor(partial: Partial<EncryptedCalendarItem>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
 		this.id = partial.id ?? randomUuid();
@@ -1037,6 +1043,7 @@ export class EncryptedCalendarItem {
 		if (this.extensions != undefined) res['extensions'] = this.extensions
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedCalendarItem'
 		return res
 	}
 
@@ -1045,6 +1052,7 @@ export class EncryptedCalendarItem {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedCalendarItem`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedCalendarItem') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedCalendarItem". The provided json doesn't represent a EncryptedCalendarItem`)
 		const res = new EncryptedCalendarItem({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),

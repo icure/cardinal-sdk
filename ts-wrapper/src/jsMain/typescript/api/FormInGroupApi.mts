@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {FormDelegateOptions} from '../crypto/entities/FormDelegateOptions.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -47,6 +48,12 @@ export interface FormInGroupApi {
 	 *  In-group version of [FormApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(form: GroupScoped<Form>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [FormApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(form: GroupScoped<Form>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -138,6 +145,12 @@ export interface FormInGroupApi {
 	 *  In-group version of [FormBasicFlavourlessApi.purgeForms]
 	 */
 	purgeForms(forms: Array<GroupScoped<Form>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [FormBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(form: GroupScoped<Form>): Promise<EntityAccessInformation>;
 
 	createFormTemplate(formTemplate: GroupScoped<FormTemplate>): Promise<GroupScoped<FormTemplate>>;
 

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityWithEncryptionMetadataTypeNameJs
 import com.icure.cardinal.sdk.js.crypto.entities.ExchangeDataInjectionDetailsJs
 import com.icure.cardinal.sdk.js.crypto.entities.RawDecryptedExchangeDataJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -21,7 +22,7 @@ public external interface CryptoApiJs {
 
 	public val inGroup: CryptoInGroupApiJs
 
-	public fun getAccessControlKeys(entityType: String): Promise<Array<String>>
+	public fun getAccessControlKeys(entityType: EntityWithEncryptionMetadataTypeNameJs): Promise<Array<String>>
 
 	public fun forceReload(): Promise<Unit>
 

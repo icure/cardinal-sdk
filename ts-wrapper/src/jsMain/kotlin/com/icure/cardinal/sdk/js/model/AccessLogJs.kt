@@ -96,6 +96,8 @@ public external class DecryptedAccessLogJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedAccessLog")
@@ -153,4 +155,6 @@ public external class EncryptedAccessLogJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

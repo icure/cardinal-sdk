@@ -4,6 +4,8 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
 import com.icure.cardinal.sdk.js.model.base.ICureDocumentJs
@@ -21,7 +23,7 @@ import kotlin.js.JsQualifier
 
 @JsName("Form")
 public sealed external interface FormJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs {
+		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, CustomisableRootJs, ExtendableJs {
 	public val endOfLife: Double?
 
 	public val openingDate: Double?
@@ -113,7 +115,13 @@ public external class DecryptedFormJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val extensions: dynamic
+
+	override val customisedModelVersion: Double?
+
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedForm")
@@ -178,5 +186,11 @@ public external class EncryptedFormJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val extensions: dynamic
+
+	override val customisedModelVersion: Double?
+
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

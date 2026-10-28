@@ -163,6 +163,8 @@ public external class DecryptedHealthElementJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedHealthElement")
@@ -246,4 +248,6 @@ public external class EncryptedHealthElementJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedHealthElementJs
@@ -14,6 +15,7 @@ import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToHealthElementDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToHealthElementShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -46,6 +48,8 @@ public external interface HealthElementInGroupApiJs {
 
 	public fun getEncryptionKeysOf(healthElement: GroupScopedJs<HealthElementJs>): Promise<Array<String>>
 
+	public fun getSecretIdsOf(healthElement: GroupScopedJs<HealthElementJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(healthElement: GroupScopedJs<HealthElementJs>): Promise<Boolean>
 
 	public fun decryptPatientIdOf(healthElement: GroupScopedJs<HealthElementJs>): Promise<Array<EntityReferenceInGroupJs>>
@@ -77,6 +81,8 @@ public external interface HealthElementInGroupApiJs {
 	public fun purgeHealthElement(healthElement: GroupScopedJs<HealthElementJs>): Promise<Unit>
 
 	public fun purgeHealthElements(healthElements: Array<GroupScopedJs<HealthElementJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

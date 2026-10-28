@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {TopicDelegateOptions} from '../crypto/entities/TopicDelegateOptions.mjs';
 import {TopicShareOptions} from '../crypto/entities/TopicShareOptions.mjs';
@@ -46,6 +47,12 @@ export interface TopicInGroupApi {
 	 *  In-group version of [TopicApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(topic: GroupScoped<Topic>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [TopicApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(topic: GroupScoped<Topic>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -137,6 +144,12 @@ export interface TopicInGroupApi {
 	 *  In-group version of [TopicBasicFlavourlessApi.purgeTopics]
 	 */
 	purgeTopics(topics: Array<GroupScoped<Topic>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [TopicBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(topic: GroupScoped<Topic>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

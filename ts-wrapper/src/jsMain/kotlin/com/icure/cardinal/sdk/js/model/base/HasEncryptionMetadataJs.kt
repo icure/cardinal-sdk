@@ -22,4 +22,7 @@ public external interface HasEncryptionMetadataJs : VersionableJs<String> {
 	public val encryptionKeys: Record<String, out Array<out DelegationJs>>
 
 	public val securityMetadata: SecurityMetadataJs?
+
+	@JsName("${'$'}ktClass")
+	public val ktClass: String
 }

@@ -10,6 +10,7 @@ import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.ClassificationJs
 import com.icure.cardinal.sdk.js.model.DecryptedClassificationJs
 import com.icure.cardinal.sdk.js.model.EncryptedClassificationJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -35,6 +36,8 @@ public external interface ClassificationApiJs {
 	): Promise<DecryptedClassificationJs>
 
 	public fun getEncryptionKeysOf(classification: ClassificationJs): Promise<Array<String>>
+
+	public fun getSecretIdsOf(classification: ClassificationJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun hasWriteAccess(classification: ClassificationJs): Promise<Boolean>
 

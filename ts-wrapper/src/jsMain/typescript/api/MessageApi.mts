@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {MessageDelegateOptions} from '../crypto/entities/MessageDelegateOptions.mjs';
 import {MessageShareOptions} from '../crypto/entities/MessageShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -160,7 +161,7 @@ export interface MessageApi {
 	 *
 	 *  Get all the secret ids that the current data owner can access from the provided message.
 	 *  @param message a message
-	 *  @return a map where the keys are the secret ids of the patient and the value is a set of references
+	 *  @return a map where the keys are the secret ids of the message and the value is a set of references
 	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
 	 */
 	getSecretIdsOf(message: Message): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
@@ -263,6 +264,17 @@ export interface MessageApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeMessages(messages: Array<Message>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided message, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param message a message
+	 *  @return information on users with access to the provided message
+	 */
+	getDataOwnersWithAccessTo(message: Message): Promise<EntityAccessInformation>;
 
 	/**
 	 *

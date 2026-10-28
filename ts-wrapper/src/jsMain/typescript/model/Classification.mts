@@ -175,6 +175,8 @@ export class DecryptedClassification {
 
 	readonly isEncrypted: false = false;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.DecryptedClassification' = 'com.icure.cardinal.sdk.model.DecryptedClassification';
+
 	constructor(partial: Partial<DecryptedClassification>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
 		this.id = partial.id ?? randomUuid();
@@ -222,6 +224,7 @@ export class DecryptedClassification {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedClassification'
 		return res
 	}
 
@@ -230,6 +233,7 @@ export class DecryptedClassification {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedClassification`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedClassification') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedClassification". The provided json doesn't represent a DecryptedClassification`)
 		const res = new DecryptedClassification({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -408,6 +412,8 @@ export class EncryptedClassification {
 
 	readonly isEncrypted: true = true;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.EncryptedClassification' = 'com.icure.cardinal.sdk.model.EncryptedClassification';
+
 	constructor(partial: Partial<EncryptedClassification>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
 		this.id = partial.id ?? randomUuid();
@@ -455,6 +461,7 @@ export class EncryptedClassification {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedClassification'
 		return res
 	}
 
@@ -463,6 +470,7 @@ export class EncryptedClassification {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedClassification`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedClassification') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedClassification". The provided json doesn't represent a EncryptedClassification`)
 		const res = new EncryptedClassification({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),

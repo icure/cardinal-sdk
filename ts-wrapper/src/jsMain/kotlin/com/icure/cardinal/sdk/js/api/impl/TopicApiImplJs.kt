@@ -13,9 +13,11 @@ import com.icure.cardinal.sdk.js.api.TopicApiJs
 import com.icure.cardinal.sdk.js.api.TopicFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.TopicFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.TopicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.TopicDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.TopicShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.topicDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.topicShareOptions_fromJs
@@ -26,6 +28,7 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -1398,6 +1401,32 @@ internal class TopicApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(topic: GroupScopedJs<TopicJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
+				topic,
+				{ x1: TopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			val result = topicApi.inGroup.getSecretIdsOf(
+				topicConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(topic: GroupScopedJs<TopicJs>): Promise<Boolean> = GlobalScope.promise {
 			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
 				topic,
@@ -1714,6 +1743,19 @@ internal class TopicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
+				topic,
+				{ x1: TopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			val result = topicApi.inGroup.getDataOwnersWithAccessTo(
+				topicConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2183,6 +2225,27 @@ internal class TopicApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(topic: TopicJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val topicConverted: Topic = topic_fromJs(topic)
+		val result = topicApi.getSecretIdsOf(
+			topicConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(topic: TopicJs): Promise<Boolean> = GlobalScope.promise {
 		val topicConverted: Topic = topic_fromJs(topic)
 		val result = topicApi.hasWriteAccess(
@@ -2372,6 +2435,14 @@ internal class TopicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(topic: TopicJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val topicConverted: Topic = topic_fromJs(topic)
+		val result = topicApi.getDataOwnersWithAccessTo(
+			topicConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

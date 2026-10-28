@@ -1,4 +1,5 @@
 // auto-generated file
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {EncryptedInvoice, Invoice} from '../model/Invoice.mjs';
 import {PaginatedList} from '../model/PaginatedList.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -97,6 +98,17 @@ export interface InvoiceBasicApi {
 	 *  @return the occurrences for each invoicing code that is used at least [minOccurrence] times.
 	 */
 	getTarificationsCodesOccurrences(minOccurrence: number): Promise<Array<LabelledOccurence>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided invoice, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param invoice an invoice
+	 *  @return information on users with access to the provided invoice
+	 */
+	getDataOwnersWithAccessTo(invoice: Invoice): Promise<EntityAccessInformation>;
 
 	/**
 	 *

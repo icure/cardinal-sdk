@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedMaintenanceTaskJs
 import com.icure.cardinal.sdk.js.model.EncryptedMaintenanceTaskJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.MaintenanceTaskJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.couchdb.DocIdentifierJs
@@ -31,6 +32,8 @@ public external interface MaintenanceTaskApiJs {
 	public fun withEncryptionMetadata(maintenanceTask: DecryptedMaintenanceTaskJs?, options: dynamic): Promise<DecryptedMaintenanceTaskJs>
 
 	public fun getEncryptionKeysOf(maintenanceTask: MaintenanceTaskJs): Promise<Array<String>>
+
+	public fun getSecretIdsOf(maintenanceTask: MaintenanceTaskJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun hasWriteAccess(maintenanceTask: MaintenanceTaskJs): Promise<Boolean>
 

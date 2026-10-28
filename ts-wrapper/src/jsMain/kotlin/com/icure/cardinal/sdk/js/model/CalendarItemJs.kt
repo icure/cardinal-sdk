@@ -187,6 +187,8 @@ public external class DecryptedCalendarItemJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedCalendarItem")
@@ -286,4 +288,6 @@ public external class EncryptedCalendarItemJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

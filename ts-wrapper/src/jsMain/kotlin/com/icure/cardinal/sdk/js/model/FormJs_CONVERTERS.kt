@@ -2,7 +2,9 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -164,6 +166,12 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
+	)
 	return DecryptedFormJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -193,7 +201,9 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -294,6 +304,8 @@ public fun form_fromJs(obj: DecryptedFormJs): DecryptedForm {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedForm(
 		id = id,
 		rev = rev,
@@ -324,6 +336,8 @@ public fun form_fromJs(obj: DecryptedFormJs): DecryptedForm {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -460,6 +474,12 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
+	)
 	return EncryptedFormJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -489,7 +509,9 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -590,6 +612,8 @@ public fun form_fromJs(obj: EncryptedFormJs): EncryptedForm {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedForm(
 		id = id,
 		rev = rev,
@@ -620,6 +644,8 @@ public fun form_fromJs(obj: EncryptedFormJs): EncryptedForm {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

@@ -4,6 +4,8 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
@@ -28,7 +30,8 @@ import kotlin.js.JsQualifier
 
 @JsName("Invoice")
 public sealed external interface InvoiceJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs {
+		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs, CustomisableRootJs,
+		ExtendableJs {
 	public val endOfLife: Double?
 
 	public val invoiceDate: Double?
@@ -294,7 +297,13 @@ public external class DecryptedInvoiceJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val extensions: dynamic
+
+	override val customisedModelVersion: Double?
+
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedInvoice")
@@ -447,5 +456,11 @@ public external class EncryptedInvoiceJs(
 
 	override val securityMetadata: SecurityMetadataJs?
 
+	override val extensions: dynamic
+
+	override val customisedModelVersion: Double?
+
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

@@ -15,9 +15,11 @@ import com.icure.cardinal.sdk.js.api.DocumentFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DocumentInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.documentDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.documentShareOptions_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -26,6 +28,7 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -51,6 +54,10 @@ import com.icure.cardinal.sdk.js.model.specializations.hexString_toJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_fromJs
 import com.icure.cardinal.sdk.js.model.storedDocumentIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.user_fromJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions_fromJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions_fromJs
 import com.icure.cardinal.sdk.js.utils.Record
@@ -1212,21 +1219,12 @@ internal class DocumentApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val delegatesConverted: Map<String, AccessLevel> = convertingOptionOrDefaultNonNull(
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> = convertingOptionOrDefaultNonNull(
 					_options,
 					"delegates",
 					emptyMap()
-				) { delegates: Record<String, String> ->
-					objectToMap(
-						delegates,
-						"delegates",
-						{ x1: String ->
-							x1
-						},
-						{ x1: String ->
-							AccessLevel.valueOf(x1)
-						},
-					)
+				) { delegates: Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel> ->
+					EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(delegates)
 				}
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
@@ -1235,12 +1233,14 @@ internal class DocumentApiImplJs(
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
-					"alternateRootDelegateId",
+					"alternateRootDelegateReference",
 					null
-				) { alternateRootDelegateId: String? ->
-					undefinedToNull(alternateRootDelegateId)
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
 				}
 				val result = documentApi.inGroup.withEncryptionMetadataLinkedToMessage(
 					entityGroupIdConverted,
@@ -1249,7 +1249,7 @@ internal class DocumentApiImplJs(
 					userConverted,
 					delegatesConverted,
 					secretIdConverted,
-					alternateRootDelegateIdConverted,
+					alternateRootDelegateReferenceConverted,
 				)
 				groupScoped_toJs(
 					result,
@@ -1264,7 +1264,7 @@ internal class DocumentApiImplJs(
 			entityGroupId: String,
 			base: DecryptedDocumentJs?,
 			message: GroupScopedJs<MessageJs>,
-			delegates: Record<String, DocumentDelegateOptionsJs>,
+			delegates: Array<EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions>,
 			options: dynamic,
 		): Promise<GroupScopedJs<DecryptedDocumentJs>> {
 			val _options = options ?: js("{}")
@@ -1279,16 +1279,7 @@ internal class DocumentApiImplJs(
 						message_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
-					delegates,
-					"delegates",
-					{ x1: String ->
-						x1
-					},
-					{ x1: DocumentDelegateOptionsJs ->
-						documentDelegateOptions_fromJs(x1)
-					},
-				)
+				val delegatesConverted: Map<EntityReferenceInGroup, DocumentDelegateOptions> = EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1305,12 +1296,14 @@ internal class DocumentApiImplJs(
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
-					"alternateRootDelegateId",
+					"alternateRootDelegateReference",
 					null
-				) { alternateRootDelegateId: String? ->
-					undefinedToNull(alternateRootDelegateId)
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
 				}
 				val result = documentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToMessage(
 					entityGroupIdConverted,
@@ -1319,7 +1312,7 @@ internal class DocumentApiImplJs(
 					delegatesConverted,
 					userConverted,
 					secretIdConverted,
-					alternateRootDelegateIdConverted,
+					alternateRootDelegateReferenceConverted,
 				)
 				groupScoped_toJs(
 					result,
@@ -1357,21 +1350,12 @@ internal class DocumentApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val delegatesConverted: Map<String, AccessLevel> = convertingOptionOrDefaultNonNull(
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> = convertingOptionOrDefaultNonNull(
 					_options,
 					"delegates",
 					emptyMap()
-				) { delegates: Record<String, String> ->
-					objectToMap(
-						delegates,
-						"delegates",
-						{ x1: String ->
-							x1
-						},
-						{ x1: String ->
-							AccessLevel.valueOf(x1)
-						},
-					)
+				) { delegates: Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel> ->
+					EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(delegates)
 				}
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
@@ -1380,12 +1364,14 @@ internal class DocumentApiImplJs(
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
-					"alternateRootDelegateId",
+					"alternateRootDelegateReference",
 					null
-				) { alternateRootDelegateId: String? ->
-					undefinedToNull(alternateRootDelegateId)
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
 				}
 				val result = documentApi.inGroup.withEncryptionMetadataLinkedToPatient(
 					entityGroupIdConverted,
@@ -1394,7 +1380,7 @@ internal class DocumentApiImplJs(
 					userConverted,
 					delegatesConverted,
 					secretIdConverted,
-					alternateRootDelegateIdConverted,
+					alternateRootDelegateReferenceConverted,
 				)
 				groupScoped_toJs(
 					result,
@@ -1409,7 +1395,7 @@ internal class DocumentApiImplJs(
 			entityGroupId: String,
 			base: DecryptedDocumentJs?,
 			patient: GroupScopedJs<PatientJs>,
-			delegates: Record<String, DocumentDelegateOptionsJs>,
+			delegates: Array<EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions>,
 			options: dynamic,
 		): Promise<GroupScopedJs<DecryptedDocumentJs>> {
 			val _options = options ?: js("{}")
@@ -1424,16 +1410,7 @@ internal class DocumentApiImplJs(
 						patient_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
-					delegates,
-					"delegates",
-					{ x1: String ->
-						x1
-					},
-					{ x1: DocumentDelegateOptionsJs ->
-						documentDelegateOptions_fromJs(x1)
-					},
-				)
+				val delegatesConverted: Map<EntityReferenceInGroup, DocumentDelegateOptions> = EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1450,12 +1427,14 @@ internal class DocumentApiImplJs(
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
-					"alternateRootDelegateId",
+					"alternateRootDelegateReference",
 					null
-				) { alternateRootDelegateId: String? ->
-					undefinedToNull(alternateRootDelegateId)
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
 				}
 				val result = documentApi.inGroup.withEncryptionMetadataAndDelegatesLinkedToPatient(
 					entityGroupIdConverted,
@@ -1464,7 +1443,7 @@ internal class DocumentApiImplJs(
 					delegatesConverted,
 					userConverted,
 					secretIdConverted,
-					alternateRootDelegateIdConverted,
+					alternateRootDelegateReferenceConverted,
 				)
 				groupScoped_toJs(
 					result,
@@ -1495,35 +1474,28 @@ internal class DocumentApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val delegatesConverted: Map<String, AccessLevel> = convertingOptionOrDefaultNonNull(
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> = convertingOptionOrDefaultNonNull(
 					_options,
 					"delegates",
 					emptyMap()
-				) { delegates: Record<String, String> ->
-					objectToMap(
-						delegates,
-						"delegates",
-						{ x1: String ->
-							x1
-						},
-						{ x1: String ->
-							AccessLevel.valueOf(x1)
-						},
-					)
+				) { delegates: Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel> ->
+					EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(delegates)
 				}
-				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
-					"alternateRootDelegateId",
+					"alternateRootDelegateReference",
 					null
-				) { alternateRootDelegateId: String? ->
-					undefinedToNull(alternateRootDelegateId)
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
 				}
 				val result = documentApi.inGroup.withEncryptionMetadataUnlinked(
 					entityGroupIdConverted,
 					baseConverted,
 					userConverted,
 					delegatesConverted,
-					alternateRootDelegateIdConverted,
+					alternateRootDelegateReferenceConverted,
 				)
 				groupScoped_toJs(
 					result,
@@ -1537,7 +1509,7 @@ internal class DocumentApiImplJs(
 		override fun withEncryptionMetadataAndDelegatesUnlinked(
 			entityGroupId: String,
 			base: DecryptedDocumentJs?,
-			delegates: Record<String, DocumentDelegateOptionsJs>,
+			delegates: Array<EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions>,
 			options: dynamic,
 		): Promise<GroupScopedJs<DecryptedDocumentJs>> {
 			val _options = options ?: js("{}")
@@ -1546,16 +1518,7 @@ internal class DocumentApiImplJs(
 				val baseConverted: DecryptedDocument? = base?.let { nonNull1 ->
 					document_fromJs(nonNull1)
 				}
-				val delegatesConverted: Map<String, DocumentDelegateOptions> = objectToMap(
-					delegates,
-					"delegates",
-					{ x1: String ->
-						x1
-					},
-					{ x1: DocumentDelegateOptionsJs ->
-						documentDelegateOptions_fromJs(x1)
-					},
-				)
+				val delegatesConverted: Map<EntityReferenceInGroup, DocumentDelegateOptions> = EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1565,19 +1528,21 @@ internal class DocumentApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val alternateRootDelegateIdConverted: String? = convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
-					"alternateRootDelegateId",
+					"alternateRootDelegateReference",
 					null
-				) { alternateRootDelegateId: String? ->
-					undefinedToNull(alternateRootDelegateId)
+				) { alternateRootDelegateReference: EntityReferenceInGroupJs? ->
+					alternateRootDelegateReference?.let { nonNull1 ->
+						entityReferenceInGroup_fromJs(nonNull1)
+					}
 				}
 				val result = documentApi.inGroup.withEncryptionMetadataAndDelegatesUnlinked(
 					entityGroupIdConverted,
 					baseConverted,
 					delegatesConverted,
 					userConverted,
-					alternateRootDelegateIdConverted,
+					alternateRootDelegateReferenceConverted,
 				)
 				groupScoped_toJs(
 					result,
@@ -1602,6 +1567,32 @@ internal class DocumentApiImplJs(
 				result,
 				{ x1: HexString ->
 					hexString_toJs(x1)
+				},
+			)
+		}
+
+		override fun getSecretIdsOf(document: GroupScopedJs<DocumentJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
+				document,
+				{ x1: DocumentJs ->
+					document_fromJs(x1)
+				},
+			)
+			val result = documentApi.inGroup.getSecretIdsOf(
+				documentConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
 				},
 			)
 		}
@@ -1922,6 +1913,19 @@ internal class DocumentApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
+				document,
+				{ x1: DocumentJs ->
+					document_fromJs(x1)
+				},
+			)
+			val result = documentApi.inGroup.getDataOwnersWithAccessTo(
+				documentConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2724,6 +2728,27 @@ internal class DocumentApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(document: DocumentJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val documentConverted: Document = document_fromJs(document)
+		val result = documentApi.getSecretIdsOf(
+			documentConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(document: DocumentJs): Promise<Boolean> = GlobalScope.promise {
 		val documentConverted: Document = document_fromJs(document)
 		val result = documentApi.hasWriteAccess(
@@ -3047,6 +3072,14 @@ internal class DocumentApiImplJs(
 			revConverted,
 		)
 		document_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val documentConverted: Document = document_fromJs(document)
+		val result = documentApi.getDataOwnersWithAccessTo(
+			documentConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

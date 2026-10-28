@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {EncryptedHealthElement, HealthElement} from '../model/HealthElement.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
@@ -138,6 +139,17 @@ export interface HealthElementBasicApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeHealthElements(healthElements: Array<HealthElement>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided health element, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param healthElement a health element
+	 *  @return information on users with access to the provided health element
+	 */
+	getDataOwnersWithAccessTo(healthElement: HealthElement): Promise<EntityAccessInformation>;
 
 	/**
 	 *

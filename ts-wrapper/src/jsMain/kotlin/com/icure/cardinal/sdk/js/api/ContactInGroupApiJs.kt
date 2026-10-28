@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.ContactJs
@@ -17,6 +18,7 @@ import com.icure.cardinal.sdk.js.model.embed.EncryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.ServiceJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToContactDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToContactShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -48,6 +50,8 @@ public external interface ContactInGroupApiJs {
 	): Promise<GroupScopedJs<DecryptedContactJs>>
 
 	public fun getEncryptionKeysOf(contact: GroupScopedJs<ContactJs>): Promise<Array<String>>
+
+	public fun getSecretIdsOf(contact: GroupScopedJs<ContactJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun hasWriteAccess(contact: GroupScopedJs<ContactJs>): Promise<Boolean>
 
@@ -88,6 +92,10 @@ public external interface ContactInGroupApiJs {
 	public fun purgeContact(contact: GroupScopedJs<ContactJs>): Promise<Unit>
 
 	public fun purgeContacts(contacts: Array<GroupScopedJs<ContactJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>): Promise<EntityAccessInformationJs>
+
+	public fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

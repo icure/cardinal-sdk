@@ -1,6 +1,7 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {MaintenanceTaskShareOptions} from '../crypto/entities/MaintenanceTaskShareOptions.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {DecryptedMaintenanceTask, EncryptedMaintenanceTask, MaintenanceTask} from '../model/MaintenanceTask.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
@@ -42,6 +43,15 @@ export interface MaintenanceTaskApi {
 	 *  @return the encryption keys extracted from the provided maintenance task.
 	 */
 	getEncryptionKeysOf(maintenanceTask: MaintenanceTask): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided maintenance task.
+	 *  @param maintenanceTask a maintenance task
+	 *  @return a map where the keys are the secret ids of the maintenance task and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(maintenanceTask: MaintenanceTask): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *

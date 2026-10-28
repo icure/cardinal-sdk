@@ -159,6 +159,8 @@ public external class DecryptedDocumentJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedDocument")
@@ -246,4 +248,6 @@ public external class EncryptedDocumentJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

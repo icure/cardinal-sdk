@@ -3,6 +3,7 @@ import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../ca
 import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {ContactDelegateOptions} from '../crypto/entities/ContactDelegateOptions.mjs';
 import {ContactShareOptions} from '../crypto/entities/ContactShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {Contact, DecryptedContact, EncryptedContact} from '../model/Contact.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -125,6 +126,15 @@ export interface ContactApi {
 	 *  @return the encryption keys extracted from the provided contact.
 	 */
 	getEncryptionKeysOf(contact: Contact): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided contact.
+	 *  @param contact a contact
+	 *  @return a map where the keys are the secret ids of the contact and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(contact: Contact): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -341,6 +351,29 @@ export interface ContactApi {
 	 */
 	getServiceCodesOccurrences(codeType: string,
 			minOccurrences: number): Promise<Array<LabelledOccurence>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided contact, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param contact a contact
+	 *  @return information on users with access to the provided contact
+	 */
+	getDataOwnersWithAccessTo(contact: Contact): Promise<EntityAccessInformation>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided service, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata. Services share the security metadata of the contact containing them,
+	 *  so this reflects the access to that contact.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param service a service
+	 *  @return information on users with access to the provided service
+	 */
+	getDataOwnersWithAccessToService(service: Service): Promise<EntityAccessInformation>;
 
 	/**
 	 *

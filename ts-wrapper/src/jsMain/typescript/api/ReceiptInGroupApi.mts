@@ -1,4 +1,5 @@
 // auto-generated file
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {ReceiptDelegateOptions} from '../crypto/entities/ReceiptDelegateOptions.mjs';
 import {ReceiptShareOptions} from '../crypto/entities/ReceiptShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -45,6 +46,12 @@ export interface ReceiptInGroupApi {
 	 *  In-group version of [ReceiptApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(receipt: GroupScoped<Receipt>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [ReceiptApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(receipt: GroupScoped<Receipt>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -131,6 +138,12 @@ export interface ReceiptInGroupApi {
 	 */
 	getRawReceiptAttachment(groupId: string, receiptId: string,
 			attachmentId: string): Promise<Int8Array>;
+
+	/**
+	 *
+	 *  In-group version of [ReceiptBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(receipt: GroupScoped<Receipt>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.ContactJs
@@ -60,6 +61,10 @@ public external interface ContactBasicApiJs {
 	public fun purgeContacts(contacts: Array<ContactJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double): Promise<Array<LabelledOccurenceJs>>
+
+	public fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs>
+
+	public fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs>
 
 	public fun createContact(entity: EncryptedContactJs): Promise<EncryptedContactJs>
 

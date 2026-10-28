@@ -13,9 +13,11 @@ import com.icure.cardinal.sdk.js.api.MessageApiJs
 import com.icure.cardinal.sdk.js.api.MessageFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.MessageFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.MessageInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.MessageDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.MessageShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.messageDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.messageShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -1423,6 +1425,32 @@ internal class MessageApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(message: GroupScopedJs<MessageJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
+				message,
+				{ x1: MessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			val result = messageApi.inGroup.getSecretIdsOf(
+				messageConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(message: GroupScopedJs<MessageJs>): Promise<Boolean> = GlobalScope.promise {
 			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
 				message,
@@ -1739,6 +1767,19 @@ internal class MessageApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
+				message,
+				{ x1: MessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			val result = messageApi.inGroup.getDataOwnersWithAccessTo(
+				messageConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2437,6 +2478,14 @@ internal class MessageApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(message: MessageJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val messageConverted: Message = message_fromJs(message)
+		val result = messageApi.getDataOwnersWithAccessTo(
+			messageConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

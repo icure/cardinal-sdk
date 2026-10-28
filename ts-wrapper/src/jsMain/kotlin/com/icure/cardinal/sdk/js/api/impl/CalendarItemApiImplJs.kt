@@ -16,10 +16,12 @@ import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOr
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.calendarItemDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.calendarItemShareOptions_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -30,6 +32,7 @@ import com.icure.cardinal.sdk.js.model.CalendarItemOccupancyJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
@@ -1414,6 +1417,32 @@ internal class CalendarItemApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
+				calendarItem,
+				{ x1: CalendarItemJs ->
+					calendarItem_fromJs(x1)
+				},
+			)
+			val result = calendarItemApi.inGroup.getSecretIdsOf(
+				calendarItemConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Boolean> = GlobalScope.promise {
 			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
 				calendarItem,
@@ -1837,6 +1866,19 @@ internal class CalendarItemApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
+				calendarItem,
+				{ x1: CalendarItemJs ->
+					calendarItem_fromJs(x1)
+				},
+			)
+			val result = calendarItemApi.inGroup.getDataOwnersWithAccessTo(
+				calendarItemConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2306,6 +2348,27 @@ internal class CalendarItemApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(calendarItem: CalendarItemJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
+		val result = calendarItemApi.getSecretIdsOf(
+			calendarItemConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(calendarItem: CalendarItemJs): Promise<Boolean> = GlobalScope.promise {
 		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
 		val result = calendarItemApi.hasWriteAccess(
@@ -2630,6 +2693,14 @@ internal class CalendarItemApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
+		val result = calendarItemApi.getDataOwnersWithAccessTo(
+			calendarItemConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

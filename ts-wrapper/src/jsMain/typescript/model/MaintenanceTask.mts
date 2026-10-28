@@ -185,6 +185,8 @@ export class DecryptedMaintenanceTask {
 
 	readonly isEncrypted: false = false;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.DecryptedMaintenanceTask' = 'com.icure.cardinal.sdk.model.DecryptedMaintenanceTask';
+
 	constructor(partial: Partial<DecryptedMaintenanceTask>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
 		this.id = partial.id ?? randomUuid();
@@ -234,6 +236,7 @@ export class DecryptedMaintenanceTask {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedMaintenanceTask'
 		return res
 	}
 
@@ -242,6 +245,7 @@ export class DecryptedMaintenanceTask {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedMaintenanceTask`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedMaintenanceTask') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedMaintenanceTask". The provided json doesn't represent a DecryptedMaintenanceTask`)
 		const res = new DecryptedMaintenanceTask({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -427,6 +431,8 @@ export class EncryptedMaintenanceTask {
 
 	readonly isEncrypted: true = true;
 
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.EncryptedMaintenanceTask' = 'com.icure.cardinal.sdk.model.EncryptedMaintenanceTask';
+
 	constructor(partial: Partial<EncryptedMaintenanceTask>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
 		this.id = partial.id ?? randomUuid();
@@ -476,6 +482,7 @@ export class EncryptedMaintenanceTask {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedMaintenanceTask'
 		return res
 	}
 
@@ -484,6 +491,7 @@ export class EncryptedMaintenanceTask {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedMaintenanceTask`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedMaintenanceTask') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedMaintenanceTask". The provided json doesn't represent a EncryptedMaintenanceTask`)
 		const res = new EncryptedMaintenanceTask({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),

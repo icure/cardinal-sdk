@@ -15,9 +15,11 @@ import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOr
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.accessLogDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.accessLogShareOptions_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -27,6 +29,7 @@ import com.icure.cardinal.sdk.js.model.AccessLogJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -1347,6 +1350,32 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(accessLog: GroupScopedJs<AccessLogJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+				accessLog,
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.inGroup.getSecretIdsOf(
+				accessLogConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(accessLog: GroupScopedJs<AccessLogJs>): Promise<Boolean> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
@@ -1663,6 +1692,19 @@ internal class AccessLogApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+				accessLog,
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.inGroup.getDataOwnersWithAccessTo(
+				accessLogConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2139,6 +2181,27 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(accessLog: AccessLogJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
+		val result = accessLogApi.getSecretIdsOf(
+			accessLogConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(accessLog: AccessLogJs): Promise<Boolean> = GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.hasWriteAccess(
@@ -2328,6 +2391,14 @@ internal class AccessLogApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
+		val result = accessLogApi.getDataOwnersWithAccessTo(
+			accessLogConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

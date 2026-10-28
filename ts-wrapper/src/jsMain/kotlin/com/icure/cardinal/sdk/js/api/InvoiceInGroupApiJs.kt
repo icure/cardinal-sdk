@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.model.DecryptedInvoiceJs
 import com.icure.cardinal.sdk.js.model.EncryptedInvoiceJs
 import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
@@ -12,6 +13,7 @@ import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToInvoiceShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -43,6 +45,8 @@ public external interface InvoiceInGroupApiJs {
 
 	public fun getEncryptionKeysOf(invoice: GroupScopedJs<InvoiceJs>): Promise<Array<String>>
 
+	public fun getSecretIdsOf(invoice: GroupScopedJs<InvoiceJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(invoice: GroupScopedJs<InvoiceJs>): Promise<Boolean>
 
 	public fun decryptPatientIdOf(invoice: GroupScopedJs<InvoiceJs>): Promise<Array<EntityReferenceInGroupJs>>
@@ -68,6 +72,8 @@ public external interface InvoiceInGroupApiJs {
 	public fun purgeInvoice(invoice: GroupScopedJs<InvoiceJs>): Promise<Unit>
 
 	public fun purgeInvoices(invoices: Array<GroupScopedJs<InvoiceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

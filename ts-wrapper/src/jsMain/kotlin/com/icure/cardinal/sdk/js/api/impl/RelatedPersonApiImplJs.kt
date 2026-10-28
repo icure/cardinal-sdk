@@ -12,8 +12,10 @@ import com.icure.cardinal.sdk.js.api.RelatedPersonApiJs
 import com.icure.cardinal.sdk.js.api.RelatedPersonFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.RelatedPersonFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.RelatedPersonInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.relatedPersonDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.relatedPersonShareOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -23,6 +25,7 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -35,6 +38,7 @@ import com.icure.cardinal.sdk.js.model.RelatedPersonJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserJs
 import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_fromJs
+import com.icure.cardinal.sdk.js.model.entityReferenceInGroup_toJs
 import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
 import com.icure.cardinal.sdk.js.model.groupScoped_toJs
 import com.icure.cardinal.sdk.js.model.relatedPerson_fromJs
@@ -1313,7 +1317,7 @@ internal class RelatedPersonApiImplJs(
 			result
 		}
 
-		override fun getSecretIdsOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Array<String>> = GlobalScope.promise {
+		override fun getSecretIdsOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1323,10 +1327,18 @@ internal class RelatedPersonApiImplJs(
 			val result = relatedPersonApi.inGroup.getSecretIdsOf(
 				relatedPersonConverted,
 			)
-			setToArray(
+			mapToObject(
 				result,
 				{ x1: String ->
 					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
 				},
 			)
 		}
@@ -1645,6 +1657,19 @@ internal class RelatedPersonApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
+				relatedPerson,
+				{ x1: RelatedPersonJs ->
+					relatedPerson_fromJs(x1)
+				},
+			)
+			val result = relatedPersonApi.inGroup.getDataOwnersWithAccessTo(
+				relatedPersonConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2093,15 +2118,23 @@ internal class RelatedPersonApiImplJs(
 		result
 	}
 
-	override fun getSecretIdsOf(relatedPerson: RelatedPersonJs): Promise<Array<String>> = GlobalScope.promise {
+	override fun getSecretIdsOf(relatedPerson: RelatedPersonJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.getSecretIdsOf(
 			relatedPersonConverted,
 		)
-		setToArray(
+		mapToObject(
 			result,
 			{ x1: String ->
 				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
 			},
 		)
 	}
@@ -2315,6 +2348,14 @@ internal class RelatedPersonApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
+		val result = relatedPersonApi.getDataOwnersWithAccessTo(
+			relatedPersonConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, FilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {CalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
 import {CalendarItemOccupancy} from '../model/CalendarItemOccupancy.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -180,6 +181,17 @@ export interface CalendarItemBasicApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeCalendarItems(calendarItems: Array<CalendarItem>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided calendar item, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param calendarItem a calendar item
+	 *  @return information on users with access to the provided calendar item
+	 */
+	getDataOwnersWithAccessTo(calendarItem: CalendarItem): Promise<EntityAccessInformation>;
 
 	/**
 	 *

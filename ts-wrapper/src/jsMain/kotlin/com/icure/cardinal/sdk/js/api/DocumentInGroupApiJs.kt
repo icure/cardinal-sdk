@@ -3,7 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
-import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedDocumentJs
@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.MessageJs
 import com.icure.cardinal.sdk.js.model.PatientJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToDocumentShareOptionsMapObject_delegate_shareOptions
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
@@ -42,7 +43,7 @@ public external interface DocumentInGroupApiJs {
 		entityGroupId: String,
 		base: DecryptedDocumentJs?,
 		message: GroupScopedJs<MessageJs>,
-		delegates: Record<String, DocumentDelegateOptionsJs>,
+		delegates: Array<EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
@@ -57,7 +58,7 @@ public external interface DocumentInGroupApiJs {
 		entityGroupId: String,
 		base: DecryptedDocumentJs?,
 		patient: GroupScopedJs<PatientJs>,
-		delegates: Record<String, DocumentDelegateOptionsJs>,
+		delegates: Array<EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
@@ -70,11 +71,13 @@ public external interface DocumentInGroupApiJs {
 	public fun withEncryptionMetadataAndDelegatesUnlinked(
 		entityGroupId: String,
 		base: DecryptedDocumentJs?,
-		delegates: Record<String, DocumentDelegateOptionsJs>,
+		delegates: Array<EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
 
 	public fun getEncryptionKeysOf(document: GroupScopedJs<DocumentJs>): Promise<Array<String>>
+
+	public fun getSecretIdsOf(document: GroupScopedJs<DocumentJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun hasWriteAccess(document: GroupScopedJs<DocumentJs>): Promise<Boolean>
 
@@ -105,6 +108,8 @@ public external interface DocumentInGroupApiJs {
 	public fun purgeDocument(document: GroupScopedJs<DocumentJs>): Promise<Unit>
 
 	public fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

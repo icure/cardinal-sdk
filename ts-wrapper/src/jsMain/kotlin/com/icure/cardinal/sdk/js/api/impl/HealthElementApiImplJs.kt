@@ -14,10 +14,12 @@ import com.icure.cardinal.sdk.js.api.HealthElementFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.healthElementDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.healthElementShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -28,6 +30,7 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -1341,6 +1344,32 @@ internal class HealthElementApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(healthElement: GroupScopedJs<HealthElementJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+				healthElement,
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.inGroup.getSecretIdsOf(
+				healthElementConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(healthElement: GroupScopedJs<HealthElementJs>): Promise<Boolean> = GlobalScope.promise {
 			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
 				healthElement,
@@ -1686,6 +1715,19 @@ internal class HealthElementApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+				healthElement,
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.inGroup.getDataOwnersWithAccessTo(
+				healthElementConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2151,6 +2193,27 @@ internal class HealthElementApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(healthElement: HealthElementJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
+		val result = healthElementApi.getSecretIdsOf(
+			healthElementConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(healthElement: HealthElementJs): Promise<Boolean> = GlobalScope.promise {
 		val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
 		val result = healthElementApi.hasWriteAccess(
@@ -2406,6 +2469,14 @@ internal class HealthElementApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(healthElement: HealthElementJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
+		val result = healthElementApi.getDataOwnersWithAccessTo(
+			healthElementConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

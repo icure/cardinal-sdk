@@ -3,12 +3,14 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedRelatedPersonJs
 import com.icure.cardinal.sdk.js.model.EncryptedRelatedPersonJs
+import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.RelatedPersonJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.subscription.EntitySubscriptionJs
@@ -42,7 +44,7 @@ public external interface RelatedPersonApiJs {
 
 	public fun hasWriteAccess(relatedPerson: RelatedPersonJs): Promise<Boolean>
 
-	public fun getSecretIdsOf(relatedPerson: RelatedPersonJs): Promise<Array<String>>
+	public fun getSecretIdsOf(relatedPerson: RelatedPersonJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: RelatedPersonJs, delegates: Array<String>): Promise<Unit>
 
@@ -71,6 +73,8 @@ public external interface RelatedPersonApiJs {
 	public fun purgeRelatedPerson(relatedPerson: RelatedPersonJs): Promise<Unit>
 
 	public fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

@@ -96,6 +96,8 @@ public external class DecryptedReceiptJs(
 	override val securityMetadata: SecurityMetadataJs?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedReceipt")
@@ -151,4 +153,6 @@ public external class EncryptedReceiptJs(
 	override val securityMetadata: SecurityMetadataJs?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

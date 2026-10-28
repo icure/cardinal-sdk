@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedRelatedPersonJs
@@ -13,6 +14,7 @@ import com.icure.cardinal.sdk.js.model.RelatedPersonJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToRelatedPersonDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -45,7 +47,7 @@ public external interface RelatedPersonInGroupApiJs {
 
 	public fun hasWriteAccess(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Boolean>
 
-	public fun getSecretIdsOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Array<String>>
+	public fun getSecretIdsOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<RelatedPersonJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit>
 
@@ -74,6 +76,8 @@ public external interface RelatedPersonInGroupApiJs {
 	public fun purgeRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Unit>
 
 	public fun purgeRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

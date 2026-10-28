@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {DocumentDelegateOptions} from '../crypto/entities/DocumentDelegateOptions.mjs';
 import {DocumentShareOptions} from '../crypto/entities/DocumentShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {DecryptedDocument, Document, EncryptedDocument} from '../model/Document.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -28,7 +29,7 @@ export interface DocumentInGroupApi {
 	 */
 	withEncryptionMetadataLinkedToMessage(entityGroupId: string, base: DecryptedDocument | undefined,
 			message: GroupScoped<Message>,
-			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
 	 *
@@ -38,8 +39,8 @@ export interface DocumentInGroupApi {
 			entityGroupId: string,
 			base: DecryptedDocument | undefined,
 			message: GroupScoped<Message>,
-			delegates: { [ key: string ]: DocumentDelegateOptions },
-			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: DocumentDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
 	): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
@@ -48,7 +49,7 @@ export interface DocumentInGroupApi {
 	 */
 	withEncryptionMetadataLinkedToPatient(entityGroupId: string, base: DecryptedDocument | undefined,
 			patient: GroupScoped<Patient>,
-			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
 	 *
@@ -58,8 +59,8 @@ export interface DocumentInGroupApi {
 			entityGroupId: string,
 			base: DecryptedDocument | undefined,
 			patient: GroupScoped<Patient>,
-			delegates: { [ key: string ]: DocumentDelegateOptions },
-			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: DocumentDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
 	): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
@@ -67,21 +68,28 @@ export interface DocumentInGroupApi {
 	 *  In-group version of [DocumentApi.withEncryptionMetadataUnlinked]
 	 */
 	withEncryptionMetadataUnlinked(entityGroupId: string, base: DecryptedDocument | undefined,
-			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
 	 *
 	 *  In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesUnlinked]
 	 */
 	withEncryptionMetadataAndDelegatesUnlinked(entityGroupId: string,
-			base: DecryptedDocument | undefined, delegates: { [ key: string ]: DocumentDelegateOptions },
-			options?: { user?: User | undefined, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			base: DecryptedDocument | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: DocumentDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
 	 *
 	 *  In-group version of [DocumentApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(document: GroupScoped<Document>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [DocumentApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(document: GroupScoped<Document>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -174,6 +182,12 @@ export interface DocumentInGroupApi {
 	 *  In-group version of [DocumentBasicFlavourlessApi.purgeDocuments]
 	 */
 	purgeDocuments(documents: Array<GroupScoped<Document>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [DocumentBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(document: GroupScoped<Document>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {DocumentDelegateOptions} from '../crypto/entities/DocumentDelegateOptions.mjs';
 import {DocumentShareOptions} from '../crypto/entities/DocumentShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {DecryptedDocument, Document, EncryptedDocument} from '../model/Document.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -215,6 +216,15 @@ export interface DocumentApi {
 	 *  @return the encryption keys extracted from the provided document.
 	 */
 	getEncryptionKeysOf(document: Document): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided document.
+	 *  @param document a document
+	 *  @return a map where the keys are the secret ids of the document and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(document: Document): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -500,6 +510,17 @@ export interface DocumentApi {
 	 */
 	deleteSecondaryAttachment(documentId: string, key: string,
 			rev: string): Promise<EncryptedDocument>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided document, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param document a document
+	 *  @return information on users with access to the provided document
+	 */
+	getDataOwnersWithAccessTo(document: Document): Promise<EntityAccessInformation>;
 
 	/**
 	 *

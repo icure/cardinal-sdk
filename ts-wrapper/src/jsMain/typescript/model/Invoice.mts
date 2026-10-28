@@ -2,6 +2,8 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
+import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
@@ -27,7 +29,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  *  /
  */
-export interface Invoice extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasIdentifier {
+export interface Invoice extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, HasIdentifier, CustomisableRoot, Extendable {
 
 	/**
 	 *
@@ -817,7 +819,13 @@ export class DecryptedInvoice {
 	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	customisedModelVersion: number | undefined = undefined;
+
 	readonly isEncrypted: false = false;
+
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.DecryptedInvoice' = 'com.icure.cardinal.sdk.model.DecryptedInvoice';
 
 	constructor(partial: Partial<DecryptedInvoice>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
@@ -894,6 +902,8 @@ export class DecryptedInvoice {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -971,7 +981,10 @@ export class DecryptedInvoice {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedInvoice'
 		return res
 	}
 
@@ -980,6 +993,7 @@ export class DecryptedInvoice {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedInvoice`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedInvoice') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedInvoice". The provided json doesn't represent a DecryptedInvoice`)
 		const res = new DecryptedInvoice({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -1084,6 +1098,8 @@ export class DecryptedInvoice {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -1539,7 +1555,13 @@ export class EncryptedInvoice {
 	 */
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	customisedModelVersion: number | undefined = undefined;
+
 	readonly isEncrypted: true = true;
+
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.EncryptedInvoice' = 'com.icure.cardinal.sdk.model.EncryptedInvoice';
 
 	constructor(partial: Partial<EncryptedInvoice>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
@@ -1616,6 +1638,8 @@ export class EncryptedInvoice {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -1693,7 +1717,10 @@ export class EncryptedInvoice {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedInvoice'
 		return res
 	}
 
@@ -1702,6 +1729,7 @@ export class EncryptedInvoice {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedInvoice`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedInvoice') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedInvoice". The provided json doesn't represent a EncryptedInvoice`)
 		const res = new EncryptedInvoice({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -1806,6 +1834,8 @@ export class EncryptedInvoice {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.CalendarItemJs
@@ -67,6 +68,8 @@ public external interface CalendarItemBasicInGroupApiJs {
 	public fun purgeCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Unit>
 
 	public fun purgeCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<EntityAccessInformationJs>
 
 	public fun createCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>): Promise<GroupScopedJs<EncryptedCalendarItemJs>>
 

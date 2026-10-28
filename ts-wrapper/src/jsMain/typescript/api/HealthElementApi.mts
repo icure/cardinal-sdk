@@ -1,6 +1,7 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {HealthElementDelegateOptions} from '../crypto/entities/HealthElementDelegateOptions.mjs';
 import {HealthElementShareOptions} from '../crypto/entities/HealthElementShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -71,6 +72,15 @@ export interface HealthElementApi {
 	 *  @return the encryption keys extracted from the provided health element.
 	 */
 	getEncryptionKeysOf(healthElement: HealthElement): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided health element.
+	 *  @param healthElement a health element
+	 *  @return a map where the keys are the secret ids of the health element and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(healthElement: HealthElement): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -279,6 +289,17 @@ export interface HealthElementApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeHealthElements(healthElements: Array<HealthElement>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided health element, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param healthElement a health element
+	 *  @return information on users with access to the provided health element
+	 */
+	getDataOwnersWithAccessTo(healthElement: HealthElement): Promise<EntityAccessInformation>;
 
 	/**
 	 *

@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {RelatedPersonDelegateOptions} from '../crypto/entities/RelatedPersonDelegateOptions.mjs';
 import {RelatedPersonShareOptions} from '../crypto/entities/RelatedPersonShareOptions.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -50,7 +51,7 @@ export interface RelatedPersonInGroupApi {
 	 *
 	 *  In-group version of [RelatedPersonApi.getSecretIdsOf]
 	 */
-	getSecretIdsOf(relatedPerson: GroupScoped<RelatedPerson>): Promise<Array<string>>;
+	getSecretIdsOf(relatedPerson: GroupScoped<RelatedPerson>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -138,6 +139,12 @@ export interface RelatedPersonInGroupApi {
 	 *  In-group version of [RelatedPersonBasicFlavourlessApi.purgeRelatedPersons]
 	 */
 	purgeRelatedPersons(relatedPersons: Array<GroupScoped<RelatedPerson>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [RelatedPersonBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(relatedPerson: GroupScoped<RelatedPerson>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

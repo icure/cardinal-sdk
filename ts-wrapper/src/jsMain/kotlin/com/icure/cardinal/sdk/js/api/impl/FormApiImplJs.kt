@@ -15,10 +15,12 @@ import com.icure.cardinal.sdk.js.api.FormFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.FormFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.FormInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.formDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.formShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -31,6 +33,7 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
@@ -1362,6 +1365,32 @@ internal class FormApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(form: GroupScopedJs<FormJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
+				form,
+				{ x1: FormJs ->
+					form_fromJs(x1)
+				},
+			)
+			val result = formApi.inGroup.getSecretIdsOf(
+				formConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(form: GroupScopedJs<FormJs>): Promise<Boolean> = GlobalScope.promise {
 			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 				form,
@@ -1678,6 +1707,19 @@ internal class FormApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(form: GroupScopedJs<FormJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
+				form,
+				{ x1: FormJs ->
+					form_fromJs(x1)
+				},
+			)
+			val result = formApi.inGroup.getDataOwnersWithAccessTo(
+				formConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
@@ -2569,6 +2611,27 @@ internal class FormApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(form: FormJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val formConverted: Form = form_fromJs(form)
+		val result = formApi.getSecretIdsOf(
+			formConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(form: FormJs): Promise<Boolean> = GlobalScope.promise {
 		val formConverted: Form = form_fromJs(form)
 		val result = formApi.hasWriteAccess(
@@ -2783,6 +2846,14 @@ internal class FormApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(form: FormJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val formConverted: Form = form_fromJs(form)
+		val result = formApi.getDataOwnersWithAccessTo(
+			formConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun getFormTemplate(formTemplateId: String, options: dynamic): Promise<FormTemplateJs> {

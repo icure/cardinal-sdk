@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {HealthElementDelegateOptions} from '../crypto/entities/HealthElementDelegateOptions.mjs';
 import {HealthElementShareOptions} from '../crypto/entities/HealthElementShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -46,6 +47,12 @@ export interface HealthElementInGroupApi {
 	 *  In-group version of [HealthElementApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(healthElement: GroupScoped<HealthElement>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [HealthElementApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(healthElement: GroupScoped<HealthElement>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -145,6 +152,12 @@ export interface HealthElementInGroupApi {
 	 *  In-group version of [HealthElementBasicFlavourlessApi.purgeHealthElements]
 	 */
 	purgeHealthElements(healthElements: Array<GroupScoped<HealthElement>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [HealthElementBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(healthElement: GroupScoped<HealthElement>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

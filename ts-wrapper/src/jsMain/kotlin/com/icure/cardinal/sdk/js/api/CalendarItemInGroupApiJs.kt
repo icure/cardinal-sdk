@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.CalendarItemJs
@@ -16,6 +17,7 @@ import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.model.UserJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToCalendarItemShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -49,6 +51,8 @@ public external interface CalendarItemInGroupApiJs {
 	): Promise<GroupScopedJs<DecryptedCalendarItemJs>>
 
 	public fun getEncryptionKeysOf(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Array<String>>
+
+	public fun getSecretIdsOf(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
 
 	public fun hasWriteAccess(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Boolean>
 
@@ -104,6 +108,8 @@ public external interface CalendarItemInGroupApiJs {
 	public fun purgeCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Unit>
 
 	public fun purgeCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

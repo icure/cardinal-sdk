@@ -1,4 +1,5 @@
 // auto-generated file
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {EncryptedReceipt, Receipt} from '../model/Receipt.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -60,6 +61,12 @@ export interface ReceiptBasicInGroupApi {
 	 */
 	getRawReceiptAttachment(groupId: string, receiptId: string,
 			attachmentId: string): Promise<Int8Array>;
+
+	/**
+	 *
+	 *  In-group version of [ReceiptBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(receipt: GroupScoped<Receipt>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

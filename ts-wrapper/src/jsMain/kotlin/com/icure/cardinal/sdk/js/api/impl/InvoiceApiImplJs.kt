@@ -12,10 +12,12 @@ import com.icure.cardinal.sdk.js.api.InvoiceFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.invoiceDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.invoiceShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -23,6 +25,7 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
@@ -2224,6 +2227,32 @@ internal class InvoiceApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(invoice: GroupScopedJs<InvoiceJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
+				invoice,
+				{ x1: InvoiceJs ->
+					invoice_fromJs(x1)
+				},
+			)
+			val result = invoiceApi.inGroup.getSecretIdsOf(
+				invoiceConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(invoice: GroupScopedJs<InvoiceJs>): Promise<Boolean> = GlobalScope.promise {
 			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
 				invoice,
@@ -2510,6 +2539,19 @@ internal class InvoiceApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
+				invoice,
+				{ x1: InvoiceJs ->
+					invoice_fromJs(x1)
+				},
+			)
+			val result = invoiceApi.inGroup.getDataOwnersWithAccessTo(
+				invoiceConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2939,6 +2981,27 @@ internal class InvoiceApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(invoice: InvoiceJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val invoiceConverted: Invoice = invoice_fromJs(invoice)
+		val result = invoiceApi.getSecretIdsOf(
+			invoiceConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(invoice: InvoiceJs): Promise<Boolean> = GlobalScope.promise {
 		val invoiceConverted: Invoice = invoice_fromJs(invoice)
 		val result = invoiceApi.hasWriteAccess(
@@ -3140,6 +3203,14 @@ internal class InvoiceApiImplJs(
 				labelledOccurence_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val invoiceConverted: Invoice = invoice_fromJs(invoice)
+		val result = invoiceApi.getDataOwnersWithAccessTo(
+			invoiceConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

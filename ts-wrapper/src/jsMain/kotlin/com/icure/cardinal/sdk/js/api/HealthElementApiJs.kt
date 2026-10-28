@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -48,6 +49,8 @@ public external interface HealthElementApiJs {
 
 	public fun getEncryptionKeysOf(healthElement: HealthElementJs): Promise<Array<String>>
 
+	public fun getSecretIdsOf(healthElement: HealthElementJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(healthElement: HealthElementJs): Promise<Boolean>
 
 	public fun decryptPatientIdOf(healthElement: HealthElementJs): Promise<Array<EntityReferenceInGroupJs>>
@@ -81,6 +84,8 @@ public external interface HealthElementApiJs {
 	public fun purgeHealthElement(healthElement: HealthElementJs): Promise<Unit>
 
 	public fun purgeHealthElements(healthElements: Array<HealthElementJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(healthElement: HealthElementJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

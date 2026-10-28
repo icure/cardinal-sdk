@@ -2,6 +2,8 @@
 import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
+import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
 import {ICureDocument} from './base/ICureDocument.mjs';
@@ -12,7 +14,7 @@ import {SecurityMetadata} from './embed/SecurityMetadata.mjs';
 import {Base64String} from './specializations/Base64String.mjs';
 
 
-export interface Form extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable {
+export interface Form extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
 
 	endOfLife: number | undefined;
 
@@ -106,7 +108,13 @@ export class DecryptedForm {
 
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	customisedModelVersion: number | undefined = undefined;
+
 	readonly isEncrypted: false = false;
+
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.DecryptedForm' = 'com.icure.cardinal.sdk.model.DecryptedForm';
 
 	constructor(partial: Partial<DecryptedForm>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== false) throw new Error('partial.isEncrypted must be undefined or false');
@@ -139,6 +147,8 @@ export class DecryptedForm {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -172,7 +182,10 @@ export class DecryptedForm {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedForm'
 		return res
 	}
 
@@ -181,6 +194,7 @@ export class DecryptedForm {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== false) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be false. The provided json doesn't represent a DecryptedForm`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.DecryptedForm') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.DecryptedForm". The provided json doesn't represent a DecryptedForm`)
 		const res = new DecryptedForm({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -229,6 +243,8 @@ export class DecryptedForm {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -298,7 +314,13 @@ export class EncryptedForm {
 
 	securityMetadata: SecurityMetadata | undefined = undefined;
 
+	extensions: Record<string, any> | undefined = undefined;
+
+	customisedModelVersion: number | undefined = undefined;
+
 	readonly isEncrypted: true = true;
+
+	readonly $ktClass: 'com.icure.cardinal.sdk.model.EncryptedForm' = 'com.icure.cardinal.sdk.model.EncryptedForm';
 
 	constructor(partial: Partial<EncryptedForm>) {
 		if (partial.isEncrypted !== undefined && partial.isEncrypted !== true) throw new Error('partial.isEncrypted must be undefined or true');
@@ -331,6 +353,8 @@ export class EncryptedForm {
 		if ('encryptionKeys' in partial && partial.encryptionKeys !== undefined) this.encryptionKeys = partial.encryptionKeys;
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
+		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
 	toJSON(): object {
@@ -364,7 +388,10 @@ export class EncryptedForm {
 		res['encryptionKeys'] = Object.fromEntries(Object.entries(this.encryptionKeys).map(([k0, v0]) => [k0, v0.map((x1) => x1.toJSON() )]))
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
+		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
+		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedForm'
 		return res
 	}
 
@@ -373,6 +400,7 @@ export class EncryptedForm {
 		if (typeof json != 'object') throw new Error(`Expected json object at path ${path.join("")}`)
 		const jCpy = { ...json }
 		if (extractEntry(jCpy, "isEncrypted", true, path) !== true) throw new Error(`Unexpected value for ${path.join("")} isEncrypted marker, should be true. The provided json doesn't represent a EncryptedForm`)
+		if (extractEntry(jCpy, '\$ktClass', true, path) !== 'com.icure.cardinal.sdk.model.EncryptedForm') throw new Error(`Unexpected value for ${path.join("")} class marker, should be "com.icure.cardinal.sdk.model.EncryptedForm". The provided json doesn't represent a EncryptedForm`)
 		const res = new EncryptedForm({
 			id: expectString(extractEntry(jCpy, 'id', true, path), false, [...path, ".id"]),
 			rev: expectString(extractEntry(jCpy, 'rev', false, path), true, [...path, ".rev"]),
@@ -421,6 +449,8 @@ export class EncryptedForm {
 			),
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
+			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

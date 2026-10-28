@@ -11,15 +11,18 @@ import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.receiptDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.receiptShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
@@ -1403,6 +1406,32 @@ internal class ReceiptApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(receipt: GroupScopedJs<ReceiptJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
+				receipt,
+				{ x1: ReceiptJs ->
+					receipt_fromJs(x1)
+				},
+			)
+			val result = receiptApi.inGroup.getSecretIdsOf(
+				receiptConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(receipt: GroupScopedJs<ReceiptJs>): Promise<Boolean> = GlobalScope.promise {
 			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
 				receipt,
@@ -1705,6 +1734,19 @@ internal class ReceiptApiImplJs(
 				attachmentIdConverted,
 			)
 			result
+		}
+
+		override fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
+				receipt,
+				{ x1: ReceiptJs ->
+					receipt_fromJs(x1)
+				},
+			)
+			val result = receiptApi.inGroup.getDataOwnersWithAccessTo(
+				receiptConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2205,6 +2247,27 @@ internal class ReceiptApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(receipt: ReceiptJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val receiptConverted: Receipt = receipt_fromJs(receipt)
+		val result = receiptApi.getSecretIdsOf(
+			receiptConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(receipt: ReceiptJs): Promise<Boolean> = GlobalScope.promise {
 		val receiptConverted: Receipt = receipt_fromJs(receipt)
 		val result = receiptApi.hasWriteAccess(
@@ -2425,6 +2488,14 @@ internal class ReceiptApiImplJs(
 			attachmentConverted,
 		)
 		receipt_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessTo(receipt: ReceiptJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val receiptConverted: Receipt = receipt_fromJs(receipt)
+		val result = receiptApi.getDataOwnersWithAccessTo(
+			receiptConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

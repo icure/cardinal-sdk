@@ -3,7 +3,9 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
+import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonObjectNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.jsonToDynamic
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
@@ -351,6 +353,12 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
+	)
 	return DecryptedInvoiceJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -424,7 +432,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -615,6 +625,8 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedInvoice(
 		id = id,
 		rev = rev,
@@ -689,6 +701,8 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 
@@ -990,6 +1004,12 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val extensions = nullToUndefined(
+		jsonToDynamic(obj.extensions)
+	)
+	val customisedModelVersion = nullToUndefined(
+		intToNumber(obj.customisedModelVersion)
+	)
 	return EncryptedInvoiceJs(js("{" +
 		"id:id," +
 		"rev:rev," +
@@ -1063,7 +1083,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 		"delegations:delegations," +
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
-		"securityMetadata:securityMetadata" +
+		"securityMetadata:securityMetadata," +
+		"extensions:extensions," +
+		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
 
@@ -1254,6 +1276,8 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedInvoice(
 		id = id,
 		rev = rev,
@@ -1328,6 +1352,8 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		extensions = extensions,
+		customisedModelVersion = customisedModelVersion,
 	)
 }
 

@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.HealthElementBasicApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -299,6 +301,19 @@ internal class HealthElementBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+				healthElement,
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementBasicApi.inGroup.getDataOwnersWithAccessTo(
+				healthElementConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createHealthElement(entity: GroupScopedJs<EncryptedHealthElementJs>): Promise<GroupScopedJs<EncryptedHealthElementJs>> = GlobalScope.promise {
@@ -697,6 +712,14 @@ internal class HealthElementBasicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(healthElement: HealthElementJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
+		val result = healthElementBasicApi.getDataOwnersWithAccessTo(
+			healthElementConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createHealthElement(entity: EncryptedHealthElementJs): Promise<EncryptedHealthElementJs> = GlobalScope.promise {

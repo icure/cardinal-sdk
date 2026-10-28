@@ -166,6 +166,8 @@ public external class DecryptedMessageJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedMessage")
@@ -257,4 +259,6 @@ public external class EncryptedMessageJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

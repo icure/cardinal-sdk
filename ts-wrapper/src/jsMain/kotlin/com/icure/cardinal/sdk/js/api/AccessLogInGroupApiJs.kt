@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.AccessLogJs
@@ -13,6 +14,7 @@ import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
@@ -43,6 +45,8 @@ public external interface AccessLogInGroupApiJs {
 
 	public fun getEncryptionKeysOf(accessLog: GroupScopedJs<AccessLogJs>): Promise<Array<String>>
 
+	public fun getSecretIdsOf(accessLog: GroupScopedJs<AccessLogJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(accessLog: GroupScopedJs<AccessLogJs>): Promise<Boolean>
 
 	public fun decryptPatientIdOf(accessLog: GroupScopedJs<AccessLogJs>): Promise<Array<EntityReferenceInGroupJs>>
@@ -72,6 +76,8 @@ public external interface AccessLogInGroupApiJs {
 	public fun purgeAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<Unit>
 
 	public fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

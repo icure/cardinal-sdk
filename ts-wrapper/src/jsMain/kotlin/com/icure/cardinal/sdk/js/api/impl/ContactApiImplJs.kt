@@ -16,10 +16,12 @@ import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOr
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.contactDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.contactShareOptions_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -28,6 +30,7 @@ import com.icure.cardinal.sdk.js.filters.sortableFilterOptions_fromJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
@@ -1563,6 +1566,32 @@ internal class ContactApiImplJs(
 			)
 		}
 
+		override fun getSecretIdsOf(contact: GroupScopedJs<ContactJs>): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
+				contact,
+				{ x1: ContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			val result = contactApi.inGroup.getSecretIdsOf(
+				contactConverted,
+			)
+			mapToObject(
+				result,
+				{ x1: String ->
+					x1
+				},
+				{ x1: Set<EntityReferenceInGroup> ->
+					setToArray(
+						x1,
+						{ x2: EntityReferenceInGroup ->
+							entityReferenceInGroup_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun hasWriteAccess(contact: GroupScopedJs<ContactJs>): Promise<Boolean> = GlobalScope.promise {
 			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
 				contact,
@@ -1963,6 +1992,32 @@ internal class ContactApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
+				contact,
+				{ x1: ContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			val result = contactApi.inGroup.getDataOwnersWithAccessTo(
+				contactConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
+		override fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val serviceConverted: GroupScoped<Service> = groupScoped_fromJs(
+				service,
+				{ x1: ServiceJs ->
+					service_fromJs(x1)
+				},
+			)
+			val result = contactApi.inGroup.getDataOwnersWithAccessToService(
+				serviceConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun shareWith(
@@ -2525,6 +2580,27 @@ internal class ContactApiImplJs(
 		)
 	}
 
+	override fun getSecretIdsOf(contact: ContactJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>> = GlobalScope.promise {
+		val contactConverted: Contact = contact_fromJs(contact)
+		val result = contactApi.getSecretIdsOf(
+			contactConverted,
+		)
+		mapToObject(
+			result,
+			{ x1: String ->
+				x1
+			},
+			{ x1: Set<EntityReferenceInGroup> ->
+				setToArray(
+					x1,
+					{ x2: EntityReferenceInGroup ->
+						entityReferenceInGroup_toJs(x2)
+					},
+				)
+			},
+		)
+	}
+
 	override fun hasWriteAccess(contact: ContactJs): Promise<Boolean> = GlobalScope.promise {
 		val contactConverted: Contact = contact_fromJs(contact)
 		val result = contactApi.hasWriteAccess(
@@ -2783,6 +2859,22 @@ internal class ContactApiImplJs(
 				labelledOccurence_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val contactConverted: Contact = contact_fromJs(contact)
+		val result = contactApi.getDataOwnersWithAccessTo(
+			contactConverted,
+		)
+		entityAccessInformation_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val serviceConverted: Service = service_fromJs(service)
+		val result = contactApi.getDataOwnersWithAccessToService(
+			serviceConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

@@ -96,6 +96,8 @@ public external class DecryptedTopicJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedTopic")
@@ -153,4 +155,6 @@ public external class EncryptedTopicJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

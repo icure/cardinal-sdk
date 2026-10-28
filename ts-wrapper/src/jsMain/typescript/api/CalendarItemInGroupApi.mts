@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {CalendarItemDelegateOptions} from '../crypto/entities/CalendarItemDelegateOptions.mjs';
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {CalendarItem, DecryptedCalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
 import {CalendarItemOccupancy} from '../model/CalendarItemOccupancy.mjs';
@@ -48,6 +49,12 @@ export interface CalendarItemInGroupApi {
 	 *  In-group version of [CalendarItemApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(calendarItem: GroupScoped<CalendarItem>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [CalendarItemApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(calendarItem: GroupScoped<CalendarItem>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -177,6 +184,12 @@ export interface CalendarItemInGroupApi {
 	 *  In-group version of [CalendarItemBasicFlavourlessApi.purgeCalendarItems]
 	 */
 	purgeCalendarItems(calendarItems: Array<GroupScoped<CalendarItem>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [CalendarItemBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(calendarItem: GroupScoped<CalendarItem>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

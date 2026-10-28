@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {EncryptedTopic, Topic} from '../model/Topic.mjs';
 import {TopicRole} from '../model/TopicRole.mjs';
@@ -139,6 +140,17 @@ export interface TopicBasicApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeTopics(topics: Array<Topic>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided topic, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param topic a topic
+	 *  @return information on users with access to the provided topic
+	 */
+	getDataOwnersWithAccessTo(topic: Topic): Promise<EntityAccessInformation>;
 
 	/**
 	 *

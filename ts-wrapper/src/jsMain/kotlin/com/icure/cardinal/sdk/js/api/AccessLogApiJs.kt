@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.AccessLogJs
@@ -40,6 +41,8 @@ public external interface AccessLogApiJs {
 
 	public fun getEncryptionKeysOf(accessLog: AccessLogJs): Promise<Array<String>>
 
+	public fun getSecretIdsOf(accessLog: AccessLogJs): Promise<Record<String, Array<EntityReferenceInGroupJs>>>
+
 	public fun hasWriteAccess(accessLog: AccessLogJs): Promise<Boolean>
 
 	public fun decryptPatientIdOf(accessLog: AccessLogJs): Promise<Array<EntityReferenceInGroupJs>>
@@ -69,6 +72,8 @@ public external interface AccessLogApiJs {
 	public fun purgeAccessLog(accessLog: AccessLogJs): Promise<Unit>
 
 	public fun purgeAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

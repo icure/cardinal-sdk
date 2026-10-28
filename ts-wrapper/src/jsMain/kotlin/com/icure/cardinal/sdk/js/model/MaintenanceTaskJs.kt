@@ -81,6 +81,8 @@ public external class DecryptedMaintenanceTaskJs(
 	override val securityMetadata: SecurityMetadataJs?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedMaintenanceTask")
@@ -130,4 +132,6 @@ public external class EncryptedMaintenanceTaskJs(
 	override val securityMetadata: SecurityMetadataJs?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

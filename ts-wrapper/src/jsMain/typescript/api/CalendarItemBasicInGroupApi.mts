@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {CalendarItem, EncryptedCalendarItem} from '../model/CalendarItem.mjs';
 import {CalendarItemOccupancy} from '../model/CalendarItemOccupancy.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
@@ -114,6 +115,12 @@ export interface CalendarItemBasicInGroupApi {
 	 *  In-group version of [CalendarItemBasicFlavourlessApi.purgeCalendarItems]
 	 */
 	purgeCalendarItems(calendarItems: Array<GroupScoped<CalendarItem>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [CalendarItemBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(calendarItem: GroupScoped<CalendarItem>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

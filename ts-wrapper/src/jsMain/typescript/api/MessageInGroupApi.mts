@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {MessageDelegateOptions} from '../crypto/entities/MessageDelegateOptions.mjs';
 import {MessageShareOptions} from '../crypto/entities/MessageShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -46,6 +47,12 @@ export interface MessageInGroupApi {
 	 *  In-group version of [MessageApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(message: GroupScoped<Message>): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  In-group version of [MessageApi.getSecretIdsOf]
+	 */
+	getSecretIdsOf(message: GroupScoped<Message>): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -138,6 +145,12 @@ export interface MessageInGroupApi {
 	 *  In-group version of [MessageBasicFlavourlessApi.purgeMessages]
 	 */
 	purgeMessages(messages: Array<GroupScoped<Message>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [MessageBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(message: GroupScoped<Message>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

@@ -149,6 +149,8 @@ public external class DecryptedContactJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedContact")
@@ -226,4 +228,6 @@ public external class EncryptedContactJs(
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

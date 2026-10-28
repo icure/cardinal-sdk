@@ -1,6 +1,7 @@
 // auto-generated file
 import {PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
 import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {InvoiceDelegateOptions} from '../crypto/entities/InvoiceDelegateOptions.mjs';
 import {InvoiceShareOptions} from '../crypto/entities/InvoiceShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -73,6 +74,15 @@ export interface InvoiceApi {
 	 *  @return the encryption keys extracted from the provided invoice.
 	 */
 	getEncryptionKeysOf(invoice: Invoice): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided invoice.
+	 *  @param invoice a invoice
+	 *  @return a map where the keys are the secret ids of the invoice and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(invoice: Invoice): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -254,6 +264,17 @@ export interface InvoiceApi {
 	 *  @return the occurrences for each invoicing code that is used at least [minOccurrence] times.
 	 */
 	getTarificationsCodesOccurrences(minOccurrence: number): Promise<Array<LabelledOccurence>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided invoice, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param invoice an invoice
+	 *  @return information on users with access to the provided invoice
+	 */
+	getDataOwnersWithAccessTo(invoice: Invoice): Promise<EntityAccessInformation>;
 
 	/**
 	 *

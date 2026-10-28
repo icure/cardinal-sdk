@@ -77,6 +77,8 @@ public external class DecryptedClassificationJs(
 	override val securityMetadata: SecurityMetadataJs?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }
 
 @JsName("EncryptedClassification")
@@ -124,4 +126,6 @@ public external class EncryptedClassificationJs(
 	override val securityMetadata: SecurityMetadataJs?
 
 	override val isEncrypted: Boolean
+
+	override val ktClass: String
 }

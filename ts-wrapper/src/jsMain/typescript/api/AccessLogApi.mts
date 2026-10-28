@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {AccessLogDelegateOptions} from '../crypto/entities/AccessLogDelegateOptions.mjs';
 import {AccessLogShareOptions} from '../crypto/entities/AccessLogShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {AccessLog, DecryptedAccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -67,6 +68,15 @@ export interface AccessLogApi {
 	 *  @return the encryption keys extracted from the provided access log.
 	 */
 	getEncryptionKeysOf(accessLog: AccessLog): Promise<Array<HexString>>;
+
+	/**
+	 *
+	 *  Get all the secret ids that the current data owner can access from the provided access log.
+	 *  @param accessLog a access log
+	 *  @return a map where the keys are the secret ids of the access log and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
+	 */
+	getSecretIdsOf(accessLog: AccessLog): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -241,6 +251,17 @@ export interface AccessLogApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeAccessLogs(accessLogs: Array<AccessLog>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided access log, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param accessLog an access log
+	 *  @return information on users with access to the provided access log
+	 */
+	getDataOwnersWithAccessTo(accessLog: AccessLog): Promise<EntityAccessInformation>;
 
 	/**
 	 *

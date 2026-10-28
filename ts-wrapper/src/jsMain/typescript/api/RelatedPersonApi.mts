@@ -1,7 +1,9 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {RelatedPersonDelegateOptions} from '../crypto/entities/RelatedPersonDelegateOptions.mjs';
 import {RelatedPersonShareOptions} from '../crypto/entities/RelatedPersonShareOptions.mjs';
+import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
 import {DecryptedRelatedPerson, EncryptedRelatedPerson, RelatedPerson} from '../model/RelatedPerson.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {User} from '../model/User.mjs';
@@ -81,12 +83,13 @@ export interface RelatedPersonApi {
 
 	/**
 	 *
-	 *  Attempts to extract the secret ids of a related person. Since a related person is a root entity these secret ids
-	 *  may be used to link other entities to it.
+	 *  Get all the secret ids that the current data owner can access from the provided related person. Since a related
+	 *  person is a root entity these secret ids may be used to link other entities to it.
 	 *  @param relatedPerson a related person
-	 *  @return the secret ids of the provided related person that the current user can access.
+	 *  @return a map where the keys are the secret ids of the related person and the value is a set of references
+	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
 	 */
-	getSecretIdsOf(relatedPerson: RelatedPerson): Promise<Array<string>>;
+	getSecretIdsOf(relatedPerson: RelatedPerson): Promise<{ [ key: string ]: Array<EntityReferenceInGroup> }>;
 
 	/**
 	 *
@@ -238,6 +241,17 @@ export interface RelatedPersonApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeRelatedPersons(relatedPersons: Array<RelatedPerson>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided related person, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param relatedPerson a related person
+	 *  @return information on users with access to the provided related person
+	 */
+	getDataOwnersWithAccessTo(relatedPerson: RelatedPerson): Promise<EntityAccessInformation>;
 
 	/**
 	 *

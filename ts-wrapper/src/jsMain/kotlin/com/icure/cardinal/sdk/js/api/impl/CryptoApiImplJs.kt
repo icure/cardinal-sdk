@@ -10,9 +10,11 @@ import com.icure.cardinal.sdk.js.api.CryptoInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.ShamirKeysManagerApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityWithEncryptionMetadataTypeNameJs
 import com.icure.cardinal.sdk.js.crypto.entities.ExchangeDataInjectionDetailsJs
 import com.icure.cardinal.sdk.js.crypto.entities.RawDecryptedExchangeDataJs
 import com.icure.cardinal.sdk.js.crypto.entities.ShamirUpdateRequestJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityWithEncryptionMetadataTypeName_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.exchangeDataInjectionDetails_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.rawDecryptedExchangeData_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.shamirUpdateRequest_fromJs
@@ -116,9 +118,9 @@ internal class CryptoApiImplJs(
 			rawDecryptedExchangeData_toJs(result)
 		}
 
-		override fun getAccessControlKeys(groupId: String?, entityType: String): Promise<Array<String>> = GlobalScope.promise {
+		override fun getAccessControlKeys(groupId: String?, entityType: EntityWithEncryptionMetadataTypeNameJs): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String? = undefinedToNull(groupId)
-			val entityTypeConverted: EntityWithEncryptionMetadataTypeName = EntityWithEncryptionMetadataTypeName.valueOf(entityType)
+			val entityTypeConverted: EntityWithEncryptionMetadataTypeName = entityWithEncryptionMetadataTypeName_fromJs(entityType)
 			val result = cryptoApi.inGroup.getAccessControlKeys(
 				groupIdConverted,
 				entityTypeConverted,
@@ -132,8 +134,8 @@ internal class CryptoApiImplJs(
 		}
 	}
 
-	override fun getAccessControlKeys(entityType: String): Promise<Array<String>> = GlobalScope.promise {
-		val entityTypeConverted: EntityWithEncryptionMetadataTypeName = EntityWithEncryptionMetadataTypeName.valueOf(entityType)
+	override fun getAccessControlKeys(entityType: EntityWithEncryptionMetadataTypeNameJs): Promise<Array<String>> = GlobalScope.promise {
+		val entityTypeConverted: EntityWithEncryptionMetadataTypeName = entityWithEncryptionMetadataTypeName_fromJs(entityType)
 		val result = cryptoApi.getAccessControlKeys(
 			entityTypeConverted,
 		)
