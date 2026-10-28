@@ -22,6 +22,7 @@ import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.generation.CustomEntityApiCategory.Attachments
 import com.icure.cardinal.sdk.utils.generation.CustomEntityApiCategory.Crud
 import com.icure.cardinal.sdk.utils.generation.CustomEntityApiCategory.Encryption
+import com.icure.cardinal.sdk.utils.generation.CustomEntityApiCategory.EncryptedLink
 import com.icure.cardinal.sdk.utils.generation.CustomEntityApiMethod
 import com.icure.cardinal.sdk.utils.generation.JsMapAsObjectArray
 
@@ -50,7 +51,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @return the id and revision of the deleted custom entity.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entity}}ById")
 	suspend fun deleteEntityById(entityId: String, rev: String): StoredDocumentIdentifier
 
 	/**
@@ -60,7 +61,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @return the id and revision of the deleted custom entities. If some entities couldn't be deleted (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entities}}ByIds")
 	suspend fun deleteEntitiesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
@@ -69,7 +70,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @param rev latest revision of the custom entity
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entity}}ById")
 	suspend fun purgeEntityById(id: String, rev: String)
 
 	/**
@@ -78,7 +79,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @return the id and revision of the purged custom entities. If some entities couldn't be purged (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entities}}ByIds")
 	suspend fun purgeEntitiesByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier>
 
 	/**
@@ -87,7 +88,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @return the id and revision of the deleted custom entity.
 	 * @throws RevisionConflictException if the provided custom entity doesn't match the latest known revision
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entity}}")
 	suspend fun deleteEntity(entity: CustomEntityBase): StoredDocumentIdentifier =
 		deleteEntityById(entity.id, requireNotNull(entity.rev) { "Can't delete a custom entity that has no rev" })
 
@@ -98,7 +99,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @return the id and revision of the deleted custom entities. If some entities couldn't be deleted they will not be
 	 * included in this list.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entities}}")
 	suspend fun deleteEntities(entities: List<CustomEntityBase>): List<StoredDocumentIdentifier> =
 		deleteEntitiesByIds(entities.map { it.toStoredDocumentIdentifier() })
 
@@ -107,7 +108,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @param entity the custom entity to purge.
 	 * @throws RevisionConflictException if the provided custom entity doesn't match the latest known revision
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entity}}")
 	suspend fun purgeEntity(entity: CustomEntityBase) {
 		purgeEntityById(entity.id, requireNotNull(entity.rev) { "Can't purge a custom entity that has no rev" })
 	}
@@ -118,7 +119,7 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @return the id and revision of the purged custom entities. If some entities couldn't be purged (for example
 	 * because you had no write access to them) they will not be included in this list.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entities}}")
 	suspend fun purgeEntities(entities: List<CustomEntityBase>): List<StoredDocumentIdentifier> =
 		purgeEntitiesByIds(entities.map { it.toStoredDocumentIdentifier() })
 
@@ -129,8 +130,18 @@ interface CustomEntityBasicFlavourlessApi {
 	 * @param key the key of the attachment to retrieve.
 	 * @return the attachment at [key] of the custom entity with id [entityId], as stored in the backend.
 	 */
-	@CustomEntityApiMethod(Attachments)
+	@CustomEntityApiMethod(Attachments, Encryption)
 	suspend fun getRawAttachment(entityId: String, key: String): ByteArray
+
+	/**
+	 * Get the attachment at [key] from the custom entity with the provided id.
+	 * Only for custom entities that don't support encryption: their attachments are never encrypted.
+	 * @param entityId a custom entity id
+	 * @param key the key of the attachment to retrieve.
+	 * @return the attachment at [key] of the custom entity with id [entityId].
+	 */
+	@CustomEntityApiMethod(Attachments, excludes = [Encryption])
+	suspend fun getAttachment(entityId: String, key: String): ByteArray
 
 	/**
 	 * Get all data owners with access to the provided custom entity, attempting to identify any unknown anonymous data
@@ -148,45 +159,45 @@ interface CustomEntityBasicFlavourlessInGroupApi {
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.deleteEntityById]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entity}}ById")
 	suspend fun deleteEntityById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.deleteEntitiesByIds]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entities}}ByIds")
 	suspend fun deleteEntitiesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.purgeEntityById]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entity}}ById")
 	suspend fun purgeEntityById(entityId: GroupScoped<StoredDocumentIdentifier>)
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.purgeEntitiesByIds]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entities}}ByIds")
 	suspend fun purgeEntitiesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<StoredDocumentIdentifier>>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.deleteEntity]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entity}}")
 	suspend fun deleteEntity(entity: GroupScoped<CustomEntityBase>): GroupScoped<StoredDocumentIdentifier> =
 		deleteEntityById(entity.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.deleteEntities]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "delete{{Entities}}")
 	suspend fun deleteEntities(entities: List<GroupScoped<CustomEntityBase>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		deleteEntitiesByIds(entities.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.purgeEntity]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entity}}")
 	suspend fun purgeEntity(entity: GroupScoped<CustomEntityBase>) {
 		purgeEntityById(entity.toStoredDocumentIdentifier())
 	}
@@ -194,7 +205,7 @@ interface CustomEntityBasicFlavourlessInGroupApi {
 	/**
 	 * In-group version of [CustomEntityBasicFlavourlessApi.purgeEntities]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "purge{{Entities}}")
 	suspend fun purgeEntities(entities: List<GroupScoped<CustomEntityBase>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeEntitiesByIds(entities.toStoredDocumentIdentifier())
 
@@ -215,7 +226,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * @throws IllegalArgumentException if the custom entity type is delegation-based and the encryption metadata of
 	 * the input was not initialized.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "create{{Entity}}")
 	suspend fun createEntity(entity: E): E
 
 	/**
@@ -227,7 +238,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * @throws IllegalArgumentException if the custom entity type is delegation-based and the encryption metadata was
 	 * not initialized in any of the entities.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "create{{Entities}}")
 	suspend fun createEntities(entities: List<E>): List<E>
 
 	/**
@@ -237,7 +248,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * @return the restored entity.
 	 * @throws RevisionConflictException if the provided revision doesn't match the latest known revision
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entity}}ById")
 	suspend fun undeleteEntityById(id: String, rev: String): E
 
 	/**
@@ -247,7 +258,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * access or the revision is not up-to-date), then those entities will not be restored and will not appear in this
 	 * list.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entities}}ByIds")
 	suspend fun undeleteEntitiesByIds(entityIds: List<StoredDocumentIdentifier>): List<E>
 
 	/**
@@ -256,7 +267,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * @return the restored custom entity.
 	 * @throws RevisionConflictException if the provided custom entity doesn't match the latest known revision
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entity}}")
 	suspend fun undeleteEntity(entity: CustomEntityBase): E =
 		undeleteEntityById(entity.id, requireNotNull(entity.rev) { "Can't undelete a custom entity that has no rev" })
 
@@ -267,7 +278,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * access or the revision is not up-to-date), then those entities will not be restored and will not appear in this
 	 * list.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entities}}")
 	suspend fun undeleteEntities(entities: List<CustomEntityBase>): List<E> =
 		undeleteEntitiesByIds(entities.map { it.toStoredDocumentIdentifier() })
 
@@ -278,7 +289,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * @param entity a custom entity with update content
 	 * @return the custom entity updated with the provided content and a new revision.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "modify{{Entity}}")
 	suspend fun modifyEntity(entity: E): E
 
 	/**
@@ -289,7 +300,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * does not have access or the revision is not up-to-date), then those entities will not be updated and will not
 	 * appear in this list.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "modify{{Entities}}")
 	suspend fun modifyEntities(entities: List<E>): List<E>
 
 	/**
@@ -299,7 +310,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * @return the custom entity with id [entityId], or null if the id does not correspond to any custom entity of
 	 * this type.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "get{{Entity}}")
 	suspend fun getEntity(entityId: String): E?
 
 	/**
@@ -310,7 +321,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * @param entityIds a list of custom entity ids
 	 * @return all custom entities that you can access with one of the provided ids.
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "get{{Entities}}")
 	suspend fun getEntities(entityIds: List<String>): List<E>
 
 	/**
@@ -330,7 +341,7 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 	 * entity won't be affected by this value.
 	 * @return the updated custom entity
 	 */
-	@CustomEntityApiMethod(Attachments)
+	@CustomEntityApiMethod(Attachments, Encryption)
 	suspend fun setRawAttachment(
 		entityId: String,
 		rev: String,
@@ -338,6 +349,28 @@ interface CustomEntityBasicFlavouredApi<E : CustomEntityBase> {
 		utis: List<String>?,
 		attachment: ByteArray,
 		encrypted: Boolean,
+	): E
+
+	/**
+	 * Sets the attachment at the provided key for a custom entity.
+	 * Only for custom entities that don't support encryption: their attachments are never encrypted.
+	 * If there is already an attachment for the provided key on the entity it will be replaced.
+	 * @param entityId the id of the custom entity.
+	 * @param rev the revision of the custom entity
+	 * @param key a key to distinguish the attachment from other attachments of the entity.
+	 * @param utis uniform type identifiers for the attachment (https://en.wikipedia.org/wiki/Uniform_Type_Identifier).
+	 * If null and there is already an attachment at key for the entity the current utis will be reused, otherwise
+	 * null will be considered as an empty list. In all other cases overwrites any existing value.
+	 * @param attachment the attachment to set
+	 * @return the updated custom entity
+	 */
+	@CustomEntityApiMethod(Attachments, excludes = [Encryption])
+	suspend fun setAttachment(
+		entityId: String,
+		rev: String,
+		key: String,
+		utis: List<String>?,
+		attachment: ByteArray,
 	): E
 
 	/**
@@ -357,63 +390,63 @@ interface CustomEntityBasicFlavouredInGroupApi<E : CustomEntityBase> {
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.createEntity]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "create{{Entity}}")
 	suspend fun createEntity(entity: GroupScoped<E>): GroupScoped<E>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.createEntities]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "create{{Entities}}")
 	suspend fun createEntities(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.undeleteEntityById]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entity}}ById")
 	suspend fun undeleteEntityById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<E>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.undeleteEntitiesByIds]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entities}}ByIds")
 	suspend fun undeleteEntitiesByIds(entityIds: List<GroupScoped<StoredDocumentIdentifier>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.undeleteEntity]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entity}}")
 	suspend fun undeleteEntity(entity: GroupScoped<CustomEntityBase>): GroupScoped<E> =
 		undeleteEntityById(entity.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.undeleteEntities]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "undelete{{Entities}}")
 	suspend fun undeleteEntities(entities: List<GroupScoped<CustomEntityBase>>): List<GroupScoped<E>> =
 		undeleteEntitiesByIds(entities.toStoredDocumentIdentifier())
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.modifyEntity]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "modify{{Entity}}")
 	suspend fun modifyEntity(entity: GroupScoped<E>): GroupScoped<E>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.modifyEntities]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "modify{{Entities}}")
 	suspend fun modifyEntities(entities: List<GroupScoped<E>>): List<GroupScoped<E>>
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.getEntity]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "get{{Entity}}")
 	suspend fun getEntity(groupId: String, entityId: String): GroupScoped<E>?
 
 	/**
 	 * In-group version of [CustomEntityBasicFlavouredApi.getEntities]
 	 */
-	@CustomEntityApiMethod(Crud)
+	@CustomEntityApiMethod(Crud, name = "get{{Entities}}")
 	suspend fun getEntities(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
 }
 
@@ -598,7 +631,7 @@ interface CustomEntityApi : CustomEntityBasicFlavourlessApi, CustomEntityFlavour
 	 * @return the id of the entity owning the custom entity, or empty if the custom entity has no owner or the current
 	 * user can't access the owning entity id.
 	 */
-	@CustomEntityApiMethod(Encryption)
+	@CustomEntityApiMethod(Encryption, EncryptedLink, name = "decrypt{{LinkedEntity}}IdOf")
 	suspend fun decryptOwningEntityIdsOf(entity: CustomEntityBase): Set<EntityReferenceInGroup>
 
 	/**
@@ -668,7 +701,7 @@ interface CustomEntityApi : CustomEntityBasicFlavourlessApi, CustomEntityFlavour
 	 * with each of them.
 	 * @return details on the outcome of the operation, for each requested id.
 	 */
-	@CustomEntityApiMethod(Encryption)
+	@CustomEntityApiMethod(Encryption, name = "share{{Entities}}ByIds")
 	suspend fun shareEntitiesByIds(
 		entityIds: List<String>,
 		delegates: Map<String, CustomEntityShareOptions>,
@@ -832,7 +865,7 @@ interface CustomEntityInGroupApi : CustomEntityBasicFlavourlessInGroupApi, Custo
 	/**
 	 * In-group version of [CustomEntityApi.decryptOwningEntityIdsOf]
 	 */
-	@CustomEntityApiMethod(Encryption)
+	@CustomEntityApiMethod(Encryption, EncryptedLink, name = "decrypt{{LinkedEntity}}IdOf")
 	suspend fun decryptOwningEntityIdsOf(entity: GroupScoped<CustomEntityBase>): Set<EntityReferenceInGroup>
 
 	/**

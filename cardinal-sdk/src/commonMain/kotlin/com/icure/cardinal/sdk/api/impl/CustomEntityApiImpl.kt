@@ -212,6 +212,21 @@ private class CustomEntityBasicFlavouredApiImpl<E : CustomEntityBase>(
 			encrypted = encrypted,
 		).successBodyOrThrowRevisionConflict().let { maybeDecrypt(null, it) }
 
+	override suspend fun setAttachment(
+		entityId: String,
+		rev: String,
+		key: String,
+		utis: List<String>?,
+		attachment: ByteArray,
+	): E = setRawAttachment(
+		entityId = entityId,
+		rev = rev,
+		key = key,
+		utis = utis,
+		attachment = attachment,
+		encrypted = false,
+	)
+
 	override suspend fun deleteAttachment(entityId: String, rev: String, key: String): E =
 		rawApi.deleteAttachment(
 			entityId = entityId,
@@ -423,6 +438,9 @@ private class CustomEntityBasicFlavourlessApiImpl(
 
 	override suspend fun getRawAttachment(entityId: String, key: String): ByteArray =
 		rawApi.getAttachment(entityId = entityId, key = key).successBody()
+
+	override suspend fun getAttachment(entityId: String, key: String): ByteArray =
+		getRawAttachment(entityId = entityId, key = key)
 
 	override suspend fun getDataOwnersWithAccessTo(entity: CustomEntityBase): EntityAccessInformation =
 		doGetDataOwnersWithAccessTo(groupId = null, entity = entity)
