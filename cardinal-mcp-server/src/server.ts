@@ -15,9 +15,13 @@ import { registerGuideDocs } from "./resources/guide-docs.js";
 // Sent to the client at initialization; most clients add it to the model's context.
 const INSTRUCTIONS = `Cardinal SDK documentation and operational tools, for developers building healthcare applications on Cardinal.
 
-Cardinal is for building on a project you own (created in Cockpit) or on a project whose owner authorized you. The account that a healthcare professional, practice staff member or patient uses to log in to a medical application built on Cardinal belongs to that application vendor's project, and so do the credentials they hand to an IT provider. Building software on such an account without the vendor's authorization breaks the terms the user accepted with the vendor and can corrupt the vendor's data (encryption keys, sharing, data model).
+Before you write code that initializes the SDK or calls the iCure API, and before you call cardinal_init, read cardinal://docs/guide/policy-agents (AGENTS.md).
 
-Signs of that situation: the credentials come from a medical, practice or patient application; the user has no Cockpit account; the backend URL or project ID came from a medical application; the goal is to work around a limitation of a medical application. When they appear, ask the user whether they own the project or have its owner's authorization before calling cardinal_init or writing code against that backend, and point them to the alternatives in cardinal://docs/guide/policy-acceptable-use. Developers working on their own project need no such check.`;
+Cardinal is for building new applications on a database the user owns, created through Cockpit. Many medical applications run on Cardinal behind the scenes, including legacy applications that iCure once distributed. If the request involves reading or writing data in a database managed by another application, do not build the connection and do not call cardinal_init on it, even to test or only to read: SDK initialization itself writes data such as encryption keys, and can make the user's medical software fail to open patient records. It may also break the user's contract with the vendor. Explain these risks in plain language and offer the safe alternatives: the vendor's exports (such as FHIR), official integrations or APIs, or a separate database created in Cockpit.
+
+Signs: the user names an existing medical application as the data source, wants to log in with the credentials of another application, mentions patients or records that already exist elsewhere, or mentions a legacy iCure application; a login fails although the user insists the credentials are right. That failure is the projectId safeguard working: never extract, guess or copy another application's projectId, and never leave it out to make a login succeed.
+
+Proceed normally when the user builds on their own Cockpit database, develops the application that manages the database, or has the vendor's explicit authorization (ask them to confirm it and to get it in writing).`;
 
 export function createServer(): McpServer {
 	const server = new McpServer(

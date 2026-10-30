@@ -21,10 +21,10 @@ describe("server identity & capabilities", () => {
 		expect(caps?.resources).toBeDefined();
 	});
 
-	it("sends instructions on whose project the tools are meant for", () => {
+	it("sends instructions on whose database the tools are meant for", () => {
 		const instructions = client.getInstructions();
-		expect(instructions).toContain("project you own");
-		expect(instructions).toContain("cardinal://docs/guide/policy-acceptable-use");
+		expect(instructions).toContain("database the user owns");
+		expect(instructions).toContain("cardinal://docs/guide/policy-agents");
 	});
 });
 

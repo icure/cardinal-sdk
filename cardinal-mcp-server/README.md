@@ -107,9 +107,10 @@ as `{ "_factory": "<Entity>Filters.<method>", "<param>": ... }` using the factor
 `cardinal://docs/filter/{entityName}`.
 
 **Keep the credentials you hand over in mind.** Everything you type reaches the model, and the assistant can call any
-method the SDK exposes with the rights of that user. Log in only to a project you own, or to a project whose owner
-authorized you: the account someone uses in a medical application built on Cardinal belongs to the vendor's project
-(see [Acceptable use](https://docs.icure.com/acceptable-use)). Use a test group or a dedicated user with the least
+method the SDK exposes with the rights of that user. Log in only to a database you own, or to a database whose owner
+authorized you: the account someone uses in a medical application built on Cardinal belongs to the vendor's database
+(see [Acceptable use](https://docs.icure.com/acceptable-use)). The server tells the assistant to follow
+[AGENTS.md](https://docs.icure.com/AGENTS.md), served as `cardinal://docs/guide/policy-agents`. Use a test group or a dedicated user with the least
 privileges that get the job done, never a production administrator. The `storageDir` holds the user's private keys:
 point it outside your repository and do not commit it.
 

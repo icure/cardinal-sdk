@@ -18,7 +18,7 @@ export function registerGuideDocs(server: McpServer) {
 		}),
 		{
 			title: "Guide Documentation",
-			description: "How-to guides, quickstart, encryption explanations, troubleshooting, and acceptable use from SDK.md",
+			description: "How-to guides, quickstart, encryption explanations, troubleshooting, AGENTS.md and acceptable use from SDK.md",
 			mimeType: "text/markdown",
 		},
 		async (uri, variables) => {

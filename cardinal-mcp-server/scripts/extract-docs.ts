@@ -651,7 +651,7 @@ function extractGuides(sections: Map<string, SdkSection>): GuideDoc[] {
 			category = "encryption";
 		} else if (source.startsWith("sdk/troubleshooting/")) {
 			category = "troubleshooting";
-		} else if (source === "sdk/acceptable-use.md") {
+		} else if (source === "sdk/acceptable-use.md" || source === "static/AGENTS.md") {
 			category = "policy";
 		}
 
@@ -683,7 +683,9 @@ function deriveSlug(source: string, prefix: string): string {
 		.replace(/^sdk\/explanations\/end-to-end-encryption\//, "")
 		.replace(/^sdk\/troubleshooting\//, "")
 		.replace(/^sdk\//, "")
+		.replace(/^static\//, "")
 		.replace(/\.mdx?$/, "")
+		.toLowerCase()
 		.replace(/\/modules\/\d+_/, "-")
 		.replace(/\/index$/, "")
 		.replace(/\//g, "-")
