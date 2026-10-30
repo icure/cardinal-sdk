@@ -28,6 +28,11 @@ export function registerOverview(server: McpServer) {
 Cardinal SDK is a multi-language healthcare platform SDK with built-in end-to-end encryption.
 It provides CRUD operations, filtering/querying, real-time event subscriptions, and cryptographic key management for medical data entities like Patients, Contacts, Services, HealthElements, Documents, and more.
 
+## Whose project you connect to
+Cardinal is for building applications on a project you own, created in Cockpit, or on a project whose owner authorized you.
+The account someone uses to log in to a medical application built on Cardinal belongs to the vendor's project: building software on it without the vendor's authorization breaks the terms that user accepted with the vendor and can corrupt the vendor's data.
+See \`cardinal://docs/guide/policy-acceptable-use\`.
+
 ## Initialization
 \`\`\`typescript
 import { CardinalSdk } from "@icure/cardinal-sdk/sdk/CardinalSdk.mjs";
@@ -67,7 +72,7 @@ ${nonEncryptable.map(n => `- **${n}Api** — ${manifest.apis[n].description}`).j
 - \`cardinal://docs/model/{modelName}\` — Model field documentation
 - \`cardinal://docs/filter/{entityName}\` — Filter factory methods
 - \`cardinal://docs/tutorial/{slug}\` — Tutorial sections (${manifest.tutorials.length} tutorials)
-- \`cardinal://docs/guide/{slug}\` — How-to guides, encryption docs, quickstart, troubleshooting (${manifest.guides.length} guides: ${guideSummary})
+- \`cardinal://docs/guide/{slug}\` — How-to guides, encryption docs, quickstart, troubleshooting, acceptable use (${manifest.guides.length} guides: ${guideSummary})
 
 ## Encryptable Entity Pattern
 Healthcare entities with sensitive data use sealed types:

@@ -82,7 +82,7 @@ interface GuideDoc {
 	slug: string;
 	title: string;
 	content: string;
-	category: "how-to" | "quickstart" | "encryption" | "troubleshooting";
+	category: "how-to" | "quickstart" | "encryption" | "troubleshooting" | "policy";
 }
 
 interface DocsManifest {
@@ -651,12 +651,14 @@ function extractGuides(sections: Map<string, SdkSection>): GuideDoc[] {
 			category = "encryption";
 		} else if (source.startsWith("sdk/troubleshooting/")) {
 			category = "troubleshooting";
+		} else if (source === "sdk/acceptable-use.md") {
+			category = "policy";
 		}
 
 		if (!category) continue;
 
-		const slug = deriveSlug(source, category === "encryption" ? "encryption" : category === "quickstart" ? "quickstart" : category === "troubleshooting" ? "troubleshooting" : "how-to");
-		const content = (category === "encryption" || category === "troubleshooting")
+		const slug = deriveSlug(source, category);
+		const content = (category === "encryption" || category === "troubleshooting" || category === "policy")
 			? section.body
 			: filterToTypescript(section.body);
 
@@ -680,6 +682,7 @@ function deriveSlug(source: string, prefix: string): string {
 		.replace(/^sdk\/quickstart\//, "")
 		.replace(/^sdk\/explanations\/end-to-end-encryption\//, "")
 		.replace(/^sdk\/troubleshooting\//, "")
+		.replace(/^sdk\//, "")
 		.replace(/\.mdx?$/, "")
 		.replace(/\/modules\/\d+_/, "-")
 		.replace(/\/index$/, "")

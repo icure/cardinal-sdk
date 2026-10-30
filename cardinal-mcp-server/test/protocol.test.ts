@@ -20,6 +20,12 @@ describe("server identity & capabilities", () => {
 		expect(caps?.tools).toBeDefined();
 		expect(caps?.resources).toBeDefined();
 	});
+
+	it("sends instructions on whose project the tools are meant for", () => {
+		const instructions = client.getInstructions();
+		expect(instructions).toContain("project you own");
+		expect(instructions).toContain("cardinal://docs/guide/policy-acceptable-use");
+	});
 });
 
 describe("tools/list", () => {
