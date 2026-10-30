@@ -239,8 +239,7 @@ Before start using the Cardinal SDK, you have to [create your account on the Coc
 > **INFO: Build on a database you own**
 Cardinal is for building applications on a database you own, created in Cockpit, or on a database whose owner
 authorized you. If you use a medical application built on Cardinal, your account in it belongs to the vendor's database:
-see [Acceptable use](/acceptable-use) before you build anything on it. If you code with an AI assistant, give it
-[AGENTS.md](https://docs.icure.com/AGENTS.md).
+see [Acceptable use](/acceptable-use) before you build anything on it.
 
 ---
 
@@ -256,11 +255,6 @@ Many medical applications run on Cardinal behind the scenes, often without their
 applications that iCure once distributed. This page covers their users, healthcare professionals, practice staff and
 patients, and the IT providers or developers who work for them, when they want to build their own application, script
 or AI-assisted tool on the data of such an application.
-
-> **TIP: Coding with an AI assistant**
-Put [AGENTS.md](https://docs.icure.com/AGENTS.md) at the root of your project. It gives Claude, Codex, Cursor, Copilot
-and other coding assistants the rules on this page, and tells them to stop before they connect to a database you don't
-own. The [MCP server](./mcp-server.md) gives them the same instructions.
 
 ## Who owns the database
 
