@@ -198,6 +198,16 @@ internal class UserApiImpl(
 		token: String?,
 	) = rawApi.getToken(userId = userId, key = key, tokenValidity = tokenValidity, token = token).successBody()
 
+	override suspend fun deleteToken(
+		userId: String,
+		key: String,
+	): User = rawApi.deleteToken(userId = userId, key = key).successBody()
+
+	override suspend fun deleteAllTokens(
+		userId: String,
+		skip: List<String>?,
+	): User = rawApi.deleteAllTokens(userId = userId, skip = skip).successBody()
+
 	override suspend fun matchUsersBy(filter: BaseFilterOptions<User>) =
 		doMatchUsersBy(groupId = null, filter = filter)
 
