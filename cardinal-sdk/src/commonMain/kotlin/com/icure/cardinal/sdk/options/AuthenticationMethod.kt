@@ -99,6 +99,9 @@ sealed interface AuthenticationMethod {
 		val existingJwt: String? = null,
 		/**
 		 * If not null the authentication provider will use the refresh jwt while valid.
+		 * If the refresh jwt is expired or not valid the authentication provider will silently fall back to the
+		 * [initialSecret] or to the [secretProvider]: if you want the initialization to fail instead, pass the refresh jwt
+		 * as [InitialSecret.RefreshToken].
 		 */
 		val existingRefreshJwt: String? = null,
 		/**
@@ -110,18 +113,7 @@ sealed interface AuthenticationMethod {
 		 * (in volatile memory).
 		 * This minimizes the interaction with the end user, but may not be suitable for your security policy.
 		 */
-		val cacheSecrets: Boolean = false,
-		/**
-		 * Only relevant if [existingRefreshJwt] is not null.
-		 *
-		 * If false (default) the refresh jwt is used lazily: if it is expired or not valid the authentication provider
-		 * will silently fall back to the [initialSecret] or to the [secretProvider].
-		 *
-		 * If true, unless [existingJwt] is still valid, the refresh jwt is used immediately during the initialization of
-		 * the SDK, and if it is expired or not valid the initialization will fall back to the [initialSecret], or fail with
-		 * an [IllegalArgumentException] if there is no [initialSecret]; the [secretProvider] is never invoked in this case.
-		 */
-		val failOnInvalidExistingRefreshJwt: Boolean = false,
+		val cacheSecrets: Boolean = false
 	) : AuthenticationMethod {
 		@Serializable
 		sealed interface InitialSecret {
@@ -131,6 +123,17 @@ sealed interface AuthenticationMethod {
 			data class LongLivedToken(val token: String) : InitialSecret
 			@Serializable
 			data class ExternalAuthenticationToken(val token: String, val configId: String, val doNotUseProjectIdForGroupSelection: Boolean?) : InitialSecret
+			/**
+			 * A refresh jwt, for example obtained from [com.icure.cardinal.sdk.api.AuthApi.getRefreshToken].
+			 *
+			 * Unless [existingJwt] is still valid, the refresh jwt is used immediately during the initialization of the SDK,
+			 * and if it is expired or not valid the initialization fails with an [IllegalArgumentException].
+			 * Once the refresh jwt expires the authentication provider will need to ask the [secretProvider] for a secret.
+			 *
+			 * Can't be used together with [existingRefreshJwt].
+			 */
+			@Serializable
+			data class RefreshToken(val token: String) : InitialSecret
 		}
 	}
 }
@@ -182,8 +185,13 @@ suspend fun AuthenticationMethod.getAuthProvider(
 		loginUsername = loginUsername,
 		secretProvider = secretProvider,
 		initialAuthToken = existingJwt,
-		initialRefreshToken = existingRefreshJwt,
-		failOnInvalidInitialRefreshToken = failOnInvalidExistingRefreshJwt,
+		initialRefreshToken = if (initialSecret is AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken) {
+			require(existingRefreshJwt == null) {
+				"Can't use both an existing refresh jwt and an initial secret of type RefreshToken."
+			}
+			initialSecret.token
+		} else existingRefreshJwt,
+		requireValidInitialRefreshToken = initialSecret is AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken,
 		initialSecret = when (initialSecret) {
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken ->
 				AuthSecretDetails.LongLivedTokenDetails(initialSecret.token)
@@ -191,6 +199,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 				AuthSecretDetails.ConfiguredExternalAuthenticationDetails(initialSecret.configId, initialSecret.token, AuthenticationClass.ExternalAuthentication, initialSecret.doNotUseProjectIdForGroupSelection ?: false)
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.Password ->
 				AuthSecretDetails.PasswordDetails(initialSecret.password)
+			is AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken -> null
 			null -> null
 		},
 		groupId = null,

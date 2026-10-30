@@ -11,6 +11,11 @@ external class InitialSecretLongLivedTokenJs : InitialSecretJs {
 	val token: String
 }
 
+@JsName("RefreshToken")
+external class InitialSecretRefreshTokenJs : InitialSecretJs {
+	val token: String
+}
+
 @JsName("ExternalAuthenticationToken")
 external class ExternalAuthenticationTokenJs : InitialSecretJs {
 	val token: String

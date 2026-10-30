@@ -154,6 +154,9 @@ export interface SecretProviderAuthenticationOptions {
   readonly existingJwt?: string
   /**
    * If not null the authentication provider will use the refresh jwt while valid.
+   * If the refresh jwt is expired or not valid the authentication provider will silently fall back to the
+   * {@link initialSecret} or to the secret provider: if you want the initialization to fail instead, pass the refresh
+   * jwt as {@link SecretProviderAuthenticationOptions.InitialSecret.RefreshToken}.
    */
   readonly existingRefreshJwt?: string
   /**
@@ -162,23 +165,22 @@ export interface SecretProviderAuthenticationOptions {
    * This minimizes the interaction with the end user, but may not be suitable for your security policy.
    */
   readonly cacheSecrets?: boolean
-  /**
-   * Only relevant if {@link existingRefreshJwt} is set.
-   *
-   * If false (default) the refresh jwt is used lazily: if it is expired or not valid the authentication provider
-   * will silently fall back to the {@link initialSecret} or to the secret provider.
-   *
-   * If true, unless {@link existingJwt} is still valid, the refresh jwt is used immediately during the initialization
-   * of the SDK, and if it is expired or not valid the initialization will fall back to the {@link initialSecret}, or
-   * fail if there is no {@link initialSecret}; the secret provider is never invoked in this case.
-   */
-  readonly failOnInvalidExistingRefreshJwt?: boolean
 }
 
 export namespace SecretProviderAuthenticationOptions {
   export namespace InitialSecret {
     export class Password { constructor(readonly password: string) {} }
     export class LongLivedToken { constructor(readonly token: string) {} }
+    /**
+     * A refresh jwt, for example obtained from {@link AuthApi.getRefreshToken}.
+     *
+     * Unless {@link SecretProviderAuthenticationOptions.existingJwt} is still valid, the refresh jwt is used immediately
+     * during the initialization of the SDK, and if it is expired or not valid the initialization fails.
+     * Once the refresh jwt expires the authentication provider will need to ask the secret provider for a secret.
+     *
+     * Can't be used together with {@link SecretProviderAuthenticationOptions.existingRefreshJwt}.
+     */
+    export class RefreshToken { constructor(readonly token: string) {} }
     export class ExternalAuthenticationToken {
       readonly doNotUseProjectIdForGroupSelection: boolean | undefined
 
@@ -188,7 +190,7 @@ export namespace SecretProviderAuthenticationOptions {
     }
   }
 
-  export type InitialSecret = InitialSecret.Password | InitialSecret.LongLivedToken | InitialSecret.ExternalAuthenticationToken
+  export type InitialSecret = InitialSecret.Password | InitialSecret.LongLivedToken | InitialSecret.ExternalAuthenticationToken | InitialSecret.RefreshToken
 }
 
 export interface AuthSecretProvider {

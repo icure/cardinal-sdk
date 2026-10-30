@@ -108,7 +108,7 @@ internal class SmartTokenProvider private constructor (
 			allowSecretRetry: Boolean,
 			krakenUrl: String,
 			refreshPadding: Duration = 30.seconds,
-			failOnInvalidInitialRefreshToken: Boolean = false,
+			requireValidInitialRefreshToken: Boolean = false,
 		): SmartTokenProvider {
 			val initialSecretCacheable = if (cacheSecrets) initializationSecret?.let { it as? AuthSecretDetails.Cacheable } else null
 			val provider = SmartTokenProvider(
@@ -128,29 +128,18 @@ internal class SmartTokenProvider private constructor (
 				krakenUrl = krakenUrl,
 				refreshPadding = refreshPadding
 			)
-			when {
-				!failOnInvalidInitialRefreshToken -> {
-					// Lazy usage of the initial refresh token: if not valid will fall back to the secret provider when needed
-					if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
-						provider.initializeWithSecret(initializationSecret)
+			if (requireValidInitialRefreshToken) {
+				require(initialRefreshToken != null) { "Initial refresh token is required" }
+				require(initializationSecret == null) { "Can't use an initialization secret together with a required initial refresh token" }
+				require(!isJwtExpiredOrInvalid(initialRefreshToken)) { "The provided initial refresh token is expired." }
+				if (initialBearerToken == null || isJwtExpiredOrInvalid(initialBearerToken, refreshPadding)) {
+					// Refresh immediately, to fail on initialization if the refresh token is not valid
+					provider.cachedToken = requireNotNull(provider.tryRefreshInitialToken(initialRefreshToken)) {
+						"Could not get a token with the provided initial refresh token."
 					}
 				}
-				initialRefreshToken != null && !isJwtExpiredOrInvalid(initialRefreshToken) -> {
-					if (initialBearerToken == null || isJwtExpiredOrInvalid(initialBearerToken, refreshPadding)) {
-						// Refresh immediately, to fail on initialization if the refresh token is not valid
-						val refreshed = provider.tryRefreshInitialToken(initialRefreshToken)
-						if (refreshed != null) {
-							provider.cachedToken = refreshed
-						} else if (initializationSecret != null) {
-							provider.cachedRefreshToken = null
-							provider.initializeWithSecret(initializationSecret)
-						} else {
-							throw IllegalArgumentException("Could not get a token with the provided initial refresh token.")
-						}
-					}
-				}
-				initializationSecret != null -> provider.initializeWithSecret(initializationSecret)
-				initialRefreshToken != null -> throw IllegalArgumentException("The provided initial refresh token is expired.")
+			} else if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
+				provider.initializeWithSecret(initializationSecret)
 			}
 			return provider
 		}

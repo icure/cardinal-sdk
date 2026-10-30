@@ -30,6 +30,7 @@ import com.icure.cardinal.sdk.js.options.external.ExternalAuthenticationTokenJs
 import com.icure.cardinal.sdk.js.options.external.InitialSecretJs
 import com.icure.cardinal.sdk.js.options.external.InitialSecretLongLivedTokenJs
 import com.icure.cardinal.sdk.js.options.external.InitialSecretPasswordJs
+import com.icure.cardinal.sdk.js.options.external.InitialSecretRefreshTokenJs
 import com.icure.cardinal.sdk.js.options.external.LongLivedTokenDetailsJs
 import com.icure.cardinal.sdk.js.options.external.PasswordDetailsJs
 import com.icure.cardinal.sdk.js.options.external.ShortLivedTokenDetailsJs
@@ -76,7 +77,6 @@ internal fun AuthenticationMethodJs.toKt() = when (this) {
 			existingRefreshJwt = options?.existingRefreshJwt,
 			secretProvider = AuthSecretProviderBridge(secretProvider),
 			cacheSecrets = options?.cacheSecrets ?: false,
-			failOnInvalidExistingRefreshJwt = options?.failOnInvalidExistingRefreshJwt ?: false,
 		)
 	else -> throw IllegalArgumentException("Unrecognised authentication method: ${this::class.simpleName}")
 }
@@ -92,6 +92,8 @@ private fun InitialSecretJs.toKt(): AuthenticationMethod.UsingSecretProvider.Ini
 		)
 	is InitialSecretLongLivedTokenJs ->
 		AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken(token)
+	is InitialSecretRefreshTokenJs ->
+		AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken(token)
 	else -> throw IllegalArgumentException("Unrecognised initial secret: ${this::class.simpleName}")
 }
 
