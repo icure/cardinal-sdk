@@ -69,7 +69,8 @@ Do not manually edit. Regenerate with `yarn run generate`.
   release tag, and publishes this package with npm trusted publishing (OIDC). It skips when that version is already
   on npm.
 - `SDK.md` is a snapshot of the `sdk/` pages of `icure/medtech-docs` (June 2026), split by `<!-- Source: sdk/... -->`
-  markers, plus sections the sync agent adds or extends to document features released since. Those additions live
-  only here; the PR body of each sync lists them so they can be ported to `medtech-docs`.
+  markers, and of its `static/AGENTS.md`, put first, plus sections the sync agent adds or extends to document features
+  released since. Those additions live only here; the PR body of each sync lists them so they can be ported to
+  `medtech-docs`.
 - The package version mirrors the SDK version. `yarn.lock` lags `package.json` by one SDK version between a sync
   and the next; `.github/scripts/mcp-check-yarn-lock-drift.sh` enforces that this is the only drift.

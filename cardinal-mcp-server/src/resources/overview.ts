@@ -28,6 +28,11 @@ export function registerOverview(server: McpServer) {
 Cardinal SDK is a multi-language healthcare platform SDK with built-in end-to-end encryption.
 It provides CRUD operations, filtering/querying, real-time event subscriptions, and cryptographic key management for medical data entities like Patients, Contacts, Services, HealthElements, Documents, and more.
 
+## Whose database you connect to
+Cardinal is for building new applications on a database you own, created through Cockpit, or on a database whose owner authorized you.
+Many medical applications run on Cardinal behind the scenes: do not initialize the SDK on the database of another application, even to test or only to read, and never work around its projectId.
+Read \`cardinal://docs/guide/policy-agents\` (AGENTS.md) before writing code that initializes the SDK; \`cardinal://docs/guide/policy-acceptable-use\` explains the same rules to end users.
+
 ## Initialization
 \`\`\`typescript
 import { CardinalSdk } from "@icure/cardinal-sdk/sdk/CardinalSdk.mjs";
@@ -35,14 +40,14 @@ import { AuthenticationMethod } from "@icure/cardinal-sdk/options/Authentication
 import { StorageFacade } from "@icure/cardinal-sdk/storage/StorageFacade.mjs";
 
 const sdk = await CardinalSdk.initialize(
-  undefined,  // projectId
+  "your-project-id",  // projectId: the ID of your own project, from Cockpit
   "https://api.icure.cloud",
   new AuthenticationMethod.UsingCredentials.UsernamePassword(username, password),
   StorageFacade.usingFileSystem("./storage")
 );
 \`\`\`
 
-Or via MCP: use the \`cardinal_init\` tool with baseUrl, username, and password.
+Or via MCP: use the \`cardinal_init\` tool with baseUrl, username, password and projectId.
 
 ## Available APIs (${apiNames.length} total)
 
@@ -67,7 +72,7 @@ ${nonEncryptable.map(n => `- **${n}Api** — ${manifest.apis[n].description}`).j
 - \`cardinal://docs/model/{modelName}\` — Model field documentation
 - \`cardinal://docs/filter/{entityName}\` — Filter factory methods
 - \`cardinal://docs/tutorial/{slug}\` — Tutorial sections (${manifest.tutorials.length} tutorials)
-- \`cardinal://docs/guide/{slug}\` — How-to guides, encryption docs, quickstart, troubleshooting (${manifest.guides.length} guides: ${guideSummary})
+- \`cardinal://docs/guide/{slug}\` — How-to guides, encryption docs, quickstart, troubleshooting, AGENTS.md and acceptable use (${manifest.guides.length} guides: ${guideSummary})
 
 ## Encryptable Entity Pattern
 Healthcare entities with sensitive data use sealed types:
