@@ -80,6 +80,17 @@ data class DataOwnerDetails private constructor (
 		initApi(baseJob, cryptoStrategies, storageFacade) { addInitialKeysToStorage(it) }
 
 	/**
+	 * Creates a new api with access to the original key of the user and his parents, authenticating with the provided method
+	 * instead of the username and password of the data owner.
+	 */
+	suspend fun apiWithAuthenticationMethod(
+		baseJob: Job,
+		authenticationMethod: AuthenticationMethod,
+		options: SdkOptions = SdkOptions()
+	): CardinalSdk =
+		initApi(baseJob, BasicCryptoStrategies, options = options, authenticationMethod = authenticationMethod) { addInitialKeysToStorage(it) }
+
+	/**
 	 * Creates a new api with access to the provided keys.
 	 * All the keys must be keys of the data owner and not of parents.
 	 */
@@ -175,12 +186,13 @@ data class DataOwnerDetails private constructor (
 		cryptoStrategies: CryptoStrategies,
 		storageFacade: StorageFacade = VolatileStorageFacade(),
 		options: SdkOptions = SdkOptions(),
+		authenticationMethod: AuthenticationMethod = AuthenticationMethod.UsingCredentials(UsernamePassword(username, password)),
 		fillStorage: suspend (storage: CardinalStorageFacade) -> Unit
 	): CardinalSdk =
 		CardinalSdk.initialize(
 			null,
 			baseUrl,
-			AuthenticationMethod.UsingCredentials(UsernamePassword(username, password)),
+			authenticationMethod,
 			storageFacade.also {
 				fillStorage(CardinalStorageFacade(
 					JsonAndBase64KeyStorage(it),

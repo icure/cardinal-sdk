@@ -167,15 +167,18 @@ internal class SmartTokenProvider private constructor (
 	}
 
 	suspend fun getCachedTokensOrLoad(): JwtBearerAndRefresh = tokenCacheMutex.withLock {
-		val bearer = this.cachedToken
-		val refresh = this.cachedRefreshToken
-		return if (bearer != null
-			&& refresh != null
-			&& !isJwtExpiredOrInvalid(bearer)
-			&& !isJwtExpiredOrInvalid(refresh)
-		) {
-			JwtBearerAndRefresh(JwtBearer(bearer), JwtRefresh(refresh))
-		} else getAndCacheNewTokens(null)
+		val bearer = this.cachedToken?.takeIf { !isJwtExpiredOrInvalid(it) }
+		val refresh = this.cachedRefreshToken?.takeIf { !isJwtExpiredOrInvalid(it) }
+		return when {
+			bearer != null && refresh != null -> JwtBearerAndRefresh(JwtBearer(bearer), JwtRefresh(refresh))
+			// Avoid asking for a secret if the bearer can be refreshed
+			refresh != null -> {
+				val refreshedBearer = refreshAndCacheToken(refresh).jwt
+				// If the refresh failed new tokens were cached, including a new refresh token
+				JwtBearerAndRefresh(JwtBearer(refreshedBearer), JwtRefresh(checkNotNull(cachedRefreshToken)))
+			}
+			else -> getAndCacheNewTokens(null)
+		}
 	}
 
 	suspend fun switchedGroup(newGroupId: String): SmartTokenProvider {
