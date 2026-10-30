@@ -108,6 +108,7 @@ internal class SmartTokenProvider private constructor (
 			allowSecretRetry: Boolean,
 			krakenUrl: String,
 			refreshPadding: Duration = 30.seconds,
+			failOnInvalidInitialRefreshToken: Boolean = false,
 		): SmartTokenProvider {
 			val initialSecretCacheable = if (cacheSecrets) initializationSecret?.let { it as? AuthSecretDetails.Cacheable } else null
 			val provider = SmartTokenProvider(
@@ -127,20 +128,49 @@ internal class SmartTokenProvider private constructor (
 				krakenUrl = krakenUrl,
 				refreshPadding = refreshPadding
 			)
-			if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
-				val token = provider.doGetTokenWithSecret(initializationSecret, null)
-				when (token) {
-					is DoGetTokenResult.Success -> {
-						provider.cachedToken = token.bearer.token
-						provider.cachedRefreshToken = token.refresh.token
+			when {
+				!failOnInvalidInitialRefreshToken -> {
+					// Lazy usage of the initial refresh token: if not valid will fall back to the secret provider when needed
+					if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
+						provider.initializeWithSecret(initializationSecret)
 					}
-					is DoGetTokenResult.Failure if token.reason == DoGetTokenResult.DoGetTokenResultFailureReason.Needs2FA -> {
-						// No caching token but no failure, will have to ask for 2fa
-					}
-					else -> throw IllegalArgumentException("Could not get a token with the provided initial secret of type ${initializationSecret::class.simpleName}.")
 				}
+				initialRefreshToken != null && !isJwtExpiredOrInvalid(initialRefreshToken) -> {
+					if (initialBearerToken == null || isJwtExpiredOrInvalid(initialBearerToken, refreshPadding)) {
+						// Refresh immediately, to fail on initialization if the refresh token is not valid
+						val refreshed = provider.tryRefreshInitialToken(initialRefreshToken)
+						if (refreshed != null) {
+							provider.cachedToken = refreshed
+						} else if (initializationSecret != null) {
+							provider.cachedRefreshToken = null
+							provider.initializeWithSecret(initializationSecret)
+						} else {
+							throw IllegalArgumentException("Could not get a token with the provided initial refresh token.")
+						}
+					}
+				}
+				initializationSecret != null -> provider.initializeWithSecret(initializationSecret)
+				initialRefreshToken != null -> throw IllegalArgumentException("The provided initial refresh token is expired.")
 			}
 			return provider
+		}
+	}
+
+	private suspend fun tryRefreshInitialToken(refreshToken: String): String? =
+		authApi.refresh(refreshToken).successBodyOrNull()?.let {
+			checkNotNull(it.token) { "Internal error: refresh succeeded but no token was returned. Unsupported backend version?" }
+		}
+
+	private suspend fun initializeWithSecret(initializationSecret: AuthSecretDetails) {
+		when (val token = doGetTokenWithSecret(initializationSecret, null)) {
+			is DoGetTokenResult.Success -> {
+				cachedToken = token.bearer.token
+				cachedRefreshToken = token.refresh.token
+			}
+			is DoGetTokenResult.Failure if token.reason == DoGetTokenResult.DoGetTokenResultFailureReason.Needs2FA -> {
+				// No caching token but no failure, will have to ask for 2fa
+			}
+			else -> throw IllegalArgumentException("Could not get a token with the provided initial secret of type ${initializationSecret::class.simpleName}.")
 		}
 	}
 

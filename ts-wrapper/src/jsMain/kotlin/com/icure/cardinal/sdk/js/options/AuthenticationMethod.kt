@@ -76,6 +76,7 @@ internal fun AuthenticationMethodJs.toKt() = when (this) {
 			existingRefreshJwt = options?.existingRefreshJwt,
 			secretProvider = AuthSecretProviderBridge(secretProvider),
 			cacheSecrets = options?.cacheSecrets ?: false,
+			failOnInvalidExistingRefreshJwt = options?.failOnInvalidExistingRefreshJwt ?: false,
 		)
 	else -> throw IllegalArgumentException("Unrecognised authentication method: ${this::class.simpleName}")
 }

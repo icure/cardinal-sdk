@@ -110,7 +110,18 @@ sealed interface AuthenticationMethod {
 		 * (in volatile memory).
 		 * This minimizes the interaction with the end user, but may not be suitable for your security policy.
 		 */
-		val cacheSecrets: Boolean = false
+		val cacheSecrets: Boolean = false,
+		/**
+		 * Only relevant if [existingRefreshJwt] is not null.
+		 *
+		 * If false (default) the refresh jwt is used lazily: if it is expired or not valid the authentication provider
+		 * will silently fall back to the [initialSecret] or to the [secretProvider].
+		 *
+		 * If true, unless [existingJwt] is still valid, the refresh jwt is used immediately during the initialization of
+		 * the SDK, and if it is expired or not valid the initialization will fall back to the [initialSecret], or fail with
+		 * an [IllegalArgumentException] if there is no [initialSecret]; the [secretProvider] is never invoked in this case.
+		 */
+		val failOnInvalidExistingRefreshJwt: Boolean = false,
 	) : AuthenticationMethod {
 		@Serializable
 		sealed interface InitialSecret {
@@ -172,6 +183,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 		secretProvider = secretProvider,
 		initialAuthToken = existingJwt,
 		initialRefreshToken = existingRefreshJwt,
+		failOnInvalidInitialRefreshToken = failOnInvalidExistingRefreshJwt,
 		initialSecret = when (initialSecret) {
 			is AuthenticationMethod.UsingSecretProvider.InitialSecret.LongLivedToken ->
 				AuthSecretDetails.LongLivedTokenDetails(initialSecret.token)

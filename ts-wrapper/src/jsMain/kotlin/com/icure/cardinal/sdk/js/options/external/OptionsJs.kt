@@ -20,6 +20,7 @@ external interface SecretProviderAuthenticationOptionsJs {
 	val existingJwt: String?
 	val existingRefreshJwt: String?
 	val cacheSecrets: Boolean?
+	val failOnInvalidExistingRefreshJwt: Boolean?
 }
 
 @JsName("AuthSecretProvider")

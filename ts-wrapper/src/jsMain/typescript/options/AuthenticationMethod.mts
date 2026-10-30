@@ -162,6 +162,17 @@ export interface SecretProviderAuthenticationOptions {
    * This minimizes the interaction with the end user, but may not be suitable for your security policy.
    */
   readonly cacheSecrets?: boolean
+  /**
+   * Only relevant if {@link existingRefreshJwt} is set.
+   *
+   * If false (default) the refresh jwt is used lazily: if it is expired or not valid the authentication provider
+   * will silently fall back to the {@link initialSecret} or to the secret provider.
+   *
+   * If true, unless {@link existingJwt} is still valid, the refresh jwt is used immediately during the initialization
+   * of the SDK, and if it is expired or not valid the initialization will fall back to the {@link initialSecret}, or
+   * fail if there is no {@link initialSecret}; the secret provider is never invoked in this case.
+   */
+  readonly failOnInvalidExistingRefreshJwt?: boolean
 }
 
 export namespace SecretProviderAuthenticationOptions {

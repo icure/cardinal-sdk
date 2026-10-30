@@ -617,6 +617,98 @@ class SmartAuthTest : StringSpec({
 		calls shouldBe 0
 	}
 
+	suspend fun authProviderWithInitialRefreshToken(
+		username: String,
+		refreshToken: String,
+		secretProvider: AuthSecretProvider,
+		initialSecret: AuthenticationMethod.UsingSecretProvider.InitialSecret? = null,
+		failOnInvalidExistingRefreshJwt: Boolean = true,
+	) = AuthenticationMethod.UsingSecretProvider(
+		loginUsername = username,
+		initialSecret = initialSecret,
+		existingRefreshJwt = refreshToken,
+		secretProvider = secretProvider,
+		failOnInvalidExistingRefreshJwt = failOnInvalidExistingRefreshJwt,
+	).getAuthProvider(
+		authApi,
+		defaultCryptoService,
+		null,
+		SdkOptions(),
+		RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+		krakenUrl = baseUrl
+	)
+
+	"If requested, initializing with an invalid refresh token should fail without invoking the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		val tamperedRefreshToken = refreshToken.substringBeforeLast(".") + ".invalidsignature"
+		var calls = 0
+		shouldThrow<IllegalArgumentException> {
+			authProviderWithInitialRefreshToken(hcpDetails.username, tamperedRefreshToken, secretProviderCountingCalls { calls++ })
+		}.message shouldBe "Could not get a token with the provided initial refresh token."
+		calls shouldBe 0
+	}
+
+	"If requested, initializing with an expired refresh token should fail without invoking the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		// Header {"alg":"none"}, payload {"exp":1}
+		val expiredRefreshToken = "eyJhbGciOiJub25lIn0.eyJleHAiOjF9.c2ln"
+		var calls = 0
+		shouldThrow<IllegalArgumentException> {
+			authProviderWithInitialRefreshToken(hcpDetails.username, expiredRefreshToken, secretProviderCountingCalls { calls++ })
+		}.message shouldBe "The provided initial refresh token is expired."
+		calls shouldBe 0
+	}
+
+	"If requested to fail on invalid refresh token, initializing with an invalid refresh token should still fall back to the initial secret if provided".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		val tamperedRefreshToken = refreshToken.substringBeforeLast(".") + ".invalidsignature"
+		var calls = 0
+		val authProvider = authProviderWithInitialRefreshToken(
+			hcpDetails.username,
+			tamperedRefreshToken,
+			secretProviderCountingCalls { calls++ },
+			initialSecret = AuthenticationMethod.UsingSecretProvider.InitialSecret.Password(hcpDetails.password),
+		)
+		getUserApiWithProvider(authProvider).getCurrentUser().successBody().healthcarePartyId shouldBe hcpDetails.dataOwnerId
+		AuthApiImpl(authProvider).getRefreshToken() shouldNotBe tamperedRefreshToken
+		calls shouldBe 0
+	}
+
+	"By default initializing with an invalid refresh token should not fail, and should fall back to the secret provider when needed".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		val tamperedRefreshToken = refreshToken.substringBeforeLast(".") + ".invalidsignature"
+		for (initialRefreshToken in listOf(tamperedRefreshToken, "eyJhbGciOiJub25lIn0.eyJleHAiOjF9.c2ln")) {
+			var calls = 0
+			val authProvider = authProviderWithInitialRefreshToken(
+				hcpDetails.username,
+				initialRefreshToken,
+				object : AuthSecretProvider {
+					override suspend fun getSecret(
+						acceptedSecrets: Set<AuthenticationClass>,
+						previousAttempts: List<AuthSecretDetails>,
+						authProcessApi: AuthenticationProcessApi
+					): AuthSecretDetails {
+						calls++
+						return AuthSecretDetails.PasswordDetails(hcpDetails.password)
+					}
+				},
+				failOnInvalidExistingRefreshJwt = false,
+			)
+			calls shouldBe 0
+			getUserApiWithProvider(authProvider).getCurrentUser().successBody().healthcarePartyId shouldBe hcpDetails.dataOwnerId
+			calls shouldBe 1
+		}
+	}
+
 	"Refresh token obtained from an sdk can be used to initialize a new sdk without invoking the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val hcpDetails = createHcpUser()
 		val sdk = hcpDetails.api(specJob)
