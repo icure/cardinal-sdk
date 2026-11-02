@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {ContactDelegateOptions} from '../crypto/entities/ContactDelegateOptions.mjs';
 import {ContactShareOptions} from '../crypto/entities/ContactShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {Contact, DecryptedContact, EncryptedContact} from '../model/Contact.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -170,6 +171,18 @@ export interface ContactInGroupApi {
 	 *  In-group version of [ContactBasicFlavourlessApi.purgeContacts]
 	 */
 	purgeContacts(contacts: Array<GroupScoped<Contact>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(contact: GroupScoped<Contact>): Promise<EntityAccessInformation>;
+
+	/**
+	 *
+	 *  In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessToService].
+	 */
+	getDataOwnersWithAccessToService(service: GroupScoped<Service>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

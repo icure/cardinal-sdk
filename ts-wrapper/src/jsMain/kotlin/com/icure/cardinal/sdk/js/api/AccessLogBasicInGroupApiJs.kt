@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.AccessLogJs
@@ -53,6 +54,9 @@ public external interface AccessLogBasicInGroupApiJs {
 
 	public fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun createAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>):
 			Promise<GroupScopedJs<EncryptedAccessLogJs>>

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.model.EncryptedInvoiceJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.InvoiceJs
@@ -37,6 +38,9 @@ public external interface InvoiceBasicInGroupApiJs {
 
 	public fun purgeInvoices(invoices: Array<GroupScopedJs<InvoiceJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun createInvoice(entity: GroupScopedJs<EncryptedInvoiceJs>):
 			Promise<GroupScopedJs<EncryptedInvoiceJs>>

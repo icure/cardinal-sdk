@@ -2,6 +2,7 @@
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {DocumentDelegateOptions} from '../crypto/entities/DocumentDelegateOptions.mjs';
 import {DocumentShareOptions} from '../crypto/entities/DocumentShareOptions.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
 import {DecryptedDocument, Document, EncryptedDocument} from '../model/Document.mjs';
 import {EntityReferenceInGroup} from '../model/EntityReferenceInGroup.mjs';
@@ -174,6 +175,12 @@ export interface DocumentInGroupApi {
 	 *  In-group version of [DocumentBasicFlavourlessApi.purgeDocuments]
 	 */
 	purgeDocuments(documents: Array<GroupScoped<Document>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [DocumentBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(document: GroupScoped<Document>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

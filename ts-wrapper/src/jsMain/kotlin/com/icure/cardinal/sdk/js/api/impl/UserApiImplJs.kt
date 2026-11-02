@@ -1051,6 +1051,41 @@ internal class UserApiImplJs(
 		}
 	}
 
+	override fun deleteToken(userId: String, key: String): Promise<UserJs> = GlobalScope.promise {
+		val userIdConverted: String = userId
+		val keyConverted: String = key
+		val result = userApi.deleteToken(
+			userIdConverted,
+			keyConverted,
+		)
+		user_toJs(result)
+	}
+
+	override fun deleteAllTokens(userId: String, options: dynamic): Promise<UserJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val userIdConverted: String = userId
+			val skipConverted: List<String>? = convertingOptionOrDefaultNullable(
+				_options,
+				"skip",
+				null
+			) { skip: Array<String>? ->
+				arrayToList(
+					skip,
+					"skip",
+					{ x1: String ->
+						x1
+					},
+				)
+			}
+			val result = userApi.deleteAllTokens(
+				userIdConverted,
+				skipConverted,
+			)
+			user_toJs(result)
+		}
+	}
+
 	override fun filterUsersBy(filter: BaseFilterOptionsJs<UserJs>):
 			Promise<PaginatedListIteratorJs<UserJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<User> = baseFilterOptions_fromJs(filter)

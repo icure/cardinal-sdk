@@ -15,9 +15,11 @@ import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOr
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.calendarItemDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.calendarItemShareOptions_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -1918,6 +1920,20 @@ internal class CalendarItemApiImplJs(
 			)
 		}
 
+		override fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
+				calendarItem,
+				{ x1: CalendarItemJs ->
+					calendarItem_fromJs(x1)
+				},
+			)
+			val result = calendarItemApi.inGroup.getDataOwnersWithAccessTo(
+				calendarItemConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			calendarItem: GroupScopedJs<DecryptedCalendarItemJs>,
@@ -2715,6 +2731,15 @@ internal class CalendarItemApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs):
+			Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
+		val result = calendarItemApi.getDataOwnersWithAccessTo(
+			calendarItemConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

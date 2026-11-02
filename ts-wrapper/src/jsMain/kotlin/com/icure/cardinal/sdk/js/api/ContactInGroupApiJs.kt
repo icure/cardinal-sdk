@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.ContactJs
@@ -105,6 +106,12 @@ public external interface ContactInGroupApiJs {
 
 	public fun purgeContacts(contacts: Array<GroupScopedJs<ContactJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>):
+			Promise<EntityAccessInformationJs>
+
+	public fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

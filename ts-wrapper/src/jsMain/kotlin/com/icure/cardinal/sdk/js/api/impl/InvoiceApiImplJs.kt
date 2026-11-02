@@ -11,9 +11,11 @@ import com.icure.cardinal.sdk.js.api.InvoiceApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.invoiceDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.invoiceShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -2594,6 +2596,20 @@ internal class InvoiceApiImplJs(
 			)
 		}
 
+		override fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
+				invoice,
+				{ x1: InvoiceJs ->
+					invoice_fromJs(x1)
+				},
+			)
+			val result = invoiceApi.inGroup.getDataOwnersWithAccessTo(
+				invoiceConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			invoice: GroupScopedJs<DecryptedInvoiceJs>,
@@ -3221,6 +3237,15 @@ internal class InvoiceApiImplJs(
 				labelledOccurence_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs> =
+			GlobalScope.promise {
+		val invoiceConverted: Invoice = invoice_fromJs(invoice)
+		val result = invoiceApi.getDataOwnersWithAccessTo(
+			invoiceConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

@@ -11,9 +11,11 @@ import com.icure.cardinal.sdk.js.api.ReceiptApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.receiptDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.receiptShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -1768,6 +1770,20 @@ internal class ReceiptApiImplJs(
 			result
 		}
 
+		override fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
+				receipt,
+				{ x1: ReceiptJs ->
+					receipt_fromJs(x1)
+				},
+			)
+			val result = receiptApi.inGroup.getDataOwnersWithAccessTo(
+				receiptConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			receipt: GroupScopedJs<DecryptedReceiptJs>,
@@ -2512,6 +2528,15 @@ internal class ReceiptApiImplJs(
 			attachmentConverted,
 		)
 		receipt_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessTo(receipt: ReceiptJs): Promise<EntityAccessInformationJs> =
+			GlobalScope.promise {
+		val receiptConverted: Receipt = receipt_fromJs(receipt)
+		val result = receiptApi.getDataOwnersWithAccessTo(
+			receiptConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

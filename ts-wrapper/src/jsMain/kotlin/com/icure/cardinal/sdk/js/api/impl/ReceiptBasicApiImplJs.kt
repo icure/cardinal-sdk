@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOr
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.ReceiptBasicApiJs
 import com.icure.cardinal.sdk.js.api.ReceiptBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
@@ -243,6 +245,20 @@ internal class ReceiptBasicApiImplJs(
 				attachmentIdConverted,
 			)
 			result
+		}
+
+		override fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
+				receipt,
+				{ x1: ReceiptJs ->
+					receipt_fromJs(x1)
+				},
+			)
+			val result = receiptBasicApi.inGroup.getDataOwnersWithAccessTo(
+				receiptConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createReceipt(entity: GroupScopedJs<EncryptedReceiptJs>):
@@ -681,6 +697,15 @@ internal class ReceiptBasicApiImplJs(
 			attachmentConverted,
 		)
 		receipt_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessTo(receipt: ReceiptJs): Promise<EntityAccessInformationJs> =
+			GlobalScope.promise {
+		val receiptConverted: Receipt = receipt_fromJs(receipt)
+		val result = receiptBasicApi.getDataOwnersWithAccessTo(
+			receiptConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createReceipt(entity: EncryptedReceiptJs): Promise<EncryptedReceiptJs> =

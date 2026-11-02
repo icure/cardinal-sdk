@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.AccessLogJs
@@ -12,6 +13,8 @@ import com.icure.cardinal.sdk.js.model.EntityReferenceInGroupJs
 import com.icure.cardinal.sdk.js.model.GroupScopedJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
 import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions
+import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions
+import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
@@ -82,6 +85,25 @@ public external interface AccessLogInGroupApiJs {
 
 	public fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>):
+			Promise<EntityAccessInformationJs>
+
+	public fun shareWith(
+		`delegate`: EntityReferenceInGroupJs,
+		accessLog: GroupScopedJs<DecryptedAccessLogJs>,
+		options: dynamic,
+	): Promise<GroupScopedJs<DecryptedAccessLogJs>>
+
+	public fun shareWithMany(accessLog: GroupScopedJs<DecryptedAccessLogJs>,
+			delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>):
+			Promise<GroupScopedJs<DecryptedAccessLogJs>>
+
+	public fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>):
+			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>>
+
+	public fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>):
+			Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>>
 
 	public fun createAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>):
 			Promise<GroupScopedJs<DecryptedAccessLogJs>>
