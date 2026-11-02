@@ -47,6 +47,8 @@ public external interface AccessLogBasicApiJs {
 
 	public fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs>
 
+	public fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs>
+
 	public fun createAccessLog(entity: EncryptedAccessLogJs): Promise<EncryptedAccessLogJs>
 
 	public fun createAccessLogs(entities: Array<EncryptedAccessLogJs>): Promise<Array<EncryptedAccessLogJs>>

@@ -66,6 +66,10 @@ public external interface ContactBasicApiJs {
 
 	public fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs>
 
+	public fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs>
+
+	public fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs>
+
 	public fun createContact(entity: EncryptedContactJs): Promise<EncryptedContactJs>
 
 	public fun createContacts(entities: Array<EncryptedContactJs>): Promise<Array<EncryptedContactJs>>

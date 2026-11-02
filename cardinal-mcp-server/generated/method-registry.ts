@@ -253,6 +253,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "accessLog",
+						"type": "AccessLog",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
+			},
+			{
 				"name": "shareWith",
 				"params": [
 					{
@@ -701,6 +712,11 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"name": "getBearerToken",
 				"params": [],
 				"returnType": "Promise<string>"
+			},
+			{
+				"name": "getRefreshToken",
+				"params": [],
+				"returnType": "Promise<string>"
 			}
 		]
 	},
@@ -1030,6 +1046,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "calendarItem",
+						"type": "CalendarItem",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
 			},
 			{
 				"name": "shareWith",
@@ -2224,6 +2251,28 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<LabelledOccurence>>"
+			},
+			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "contact",
+						"type": "Contact",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
+			},
+			{
+				"name": "getDataOwnersWithAccessToService",
+				"params": [
+					{
+						"name": "service",
+						"type": "Service",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
 			},
 			{
 				"name": "shareWith",
@@ -3504,6 +3553,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<EncryptedDocument>"
 			},
 			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "document",
+						"type": "Document",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
+			},
+			{
 				"name": "shareWith",
 				"params": [
 					{
@@ -3933,6 +3993,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "form",
+						"type": "Form",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
 			},
 			{
 				"name": "getFormTemplate",
@@ -5394,6 +5465,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "healthElement",
+						"type": "HealthElement",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
+			},
+			{
 				"name": "shareWith",
 				"params": [
 					{
@@ -6429,6 +6511,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<LabelledOccurence>>"
+			},
+			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "invoice",
+						"type": "Invoice",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
 			},
 			{
 				"name": "shareWith",
@@ -7547,6 +7640,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "message",
+						"type": "Message",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
 			},
 			{
 				"name": "shareWith",
@@ -8681,6 +8785,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<EncryptedReceipt>"
 			},
 			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "receipt",
+						"type": "Receipt",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
+			},
+			{
 				"name": "shareWith",
 				"params": [
 					{
@@ -9268,6 +9383,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
+			},
+			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "relatedPerson",
+						"type": "RelatedPerson",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
 			},
 			{
 				"name": "shareWith",
@@ -10041,6 +10167,17 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 				"returnType": "Promise<Array<StoredDocumentIdentifier>>"
 			},
 			{
+				"name": "getDataOwnersWithAccessTo",
+				"params": [
+					{
+						"name": "topic",
+						"type": "Topic",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<EntityAccessInformation>"
+			},
+			{
 				"name": "shareWith",
 				"params": [
 					{
@@ -10441,6 +10578,38 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<string>"
+			},
+			{
+				"name": "deleteToken",
+				"params": [
+					{
+						"name": "userId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "key",
+						"type": "string",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<User>"
+			},
+			{
+				"name": "deleteAllTokens",
+				"params": [
+					{
+						"name": "userId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ skip?: Array<string> | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<User>"
 			},
 			{
 				"name": "filterUsersBy",

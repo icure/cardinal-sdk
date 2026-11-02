@@ -84,6 +84,9 @@ public external interface HealthElementInGroupApiJs {
 
 	public fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>): Promise<EntityAccessInformationJs>
 
+	public fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>):
+			Promise<EntityAccessInformationJs>
+
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
 		healthElement: GroupScopedJs<DecryptedHealthElementJs>,

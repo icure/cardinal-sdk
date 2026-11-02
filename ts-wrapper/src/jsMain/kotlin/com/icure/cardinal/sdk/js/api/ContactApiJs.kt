@@ -106,6 +106,10 @@ public external interface ContactApiJs {
 
 	public fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs>
 
+	public fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs>
+
+	public fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs>
+
 	public fun shareWith(
 		delegateId: String,
 		contact: DecryptedContactJs,

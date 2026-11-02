@@ -75,6 +75,8 @@ public external interface AccessLogApiJs {
 
 	public fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs>
 
+	public fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs>
+
 	public fun shareWith(
 		delegateId: String,
 		accessLog: DecryptedAccessLogJs,

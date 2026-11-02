@@ -108,6 +108,7 @@ internal class SmartTokenProvider private constructor (
 			allowSecretRetry: Boolean,
 			krakenUrl: String,
 			refreshPadding: Duration = 30.seconds,
+			requireValidInitialRefreshToken: Boolean = false,
 		): SmartTokenProvider {
 			val initialSecretCacheable = if (cacheSecrets) initializationSecret?.let { it as? AuthSecretDetails.Cacheable } else null
 			val provider = SmartTokenProvider(
@@ -127,20 +128,38 @@ internal class SmartTokenProvider private constructor (
 				krakenUrl = krakenUrl,
 				refreshPadding = refreshPadding
 			)
-			if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
-				val token = provider.doGetTokenWithSecret(initializationSecret, null)
-				when (token) {
-					is DoGetTokenResult.Success -> {
-						provider.cachedToken = token.bearer.token
-						provider.cachedRefreshToken = token.refresh.token
+			if (requireValidInitialRefreshToken) {
+				require(initialRefreshToken != null) { "Initial refresh token is required" }
+				require(initializationSecret == null) { "Can't use an initialization secret together with a required initial refresh token" }
+				require(!isJwtExpiredOrInvalid(initialRefreshToken)) { "The provided initial refresh token is expired." }
+				if (initialBearerToken == null || isJwtExpiredOrInvalid(initialBearerToken, refreshPadding)) {
+					// Refresh immediately, to fail on initialization if the refresh token is not valid
+					provider.cachedToken = requireNotNull(provider.tryRefreshInitialToken(initialRefreshToken)) {
+						"Could not get a token with the provided initial refresh token."
 					}
-					is DoGetTokenResult.Failure if token.reason == DoGetTokenResult.DoGetTokenResultFailureReason.Needs2FA -> {
-						// No caching token but no failure, will have to ask for 2fa
-					}
-					else -> throw IllegalArgumentException("Could not get a token with the provided initial secret of type ${initializationSecret::class.simpleName}.")
 				}
+			} else if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
+				provider.initializeWithSecret(initializationSecret)
 			}
 			return provider
+		}
+	}
+
+	private suspend fun tryRefreshInitialToken(refreshToken: String): String? =
+		authApi.refresh(refreshToken).successBodyOrNull()?.let {
+			checkNotNull(it.token) { "Internal error: refresh succeeded but no token was returned. Unsupported backend version?" }
+		}
+
+	private suspend fun initializeWithSecret(initializationSecret: AuthSecretDetails) {
+		when (val token = doGetTokenWithSecret(initializationSecret, null)) {
+			is DoGetTokenResult.Success -> {
+				cachedToken = token.bearer.token
+				cachedRefreshToken = token.refresh.token
+			}
+			is DoGetTokenResult.Failure if token.reason == DoGetTokenResult.DoGetTokenResultFailureReason.Needs2FA -> {
+				// No caching token but no failure, will have to ask for 2fa
+			}
+			else -> throw IllegalArgumentException("Could not get a token with the provided initial secret of type ${initializationSecret::class.simpleName}.")
 		}
 	}
 
@@ -167,15 +186,18 @@ internal class SmartTokenProvider private constructor (
 	}
 
 	suspend fun getCachedTokensOrLoad(): JwtBearerAndRefresh = tokenCacheMutex.withLock {
-		val bearer = this.cachedToken
-		val refresh = this.cachedRefreshToken
-		return if (bearer != null
-			&& refresh != null
-			&& !isJwtExpiredOrInvalid(bearer)
-			&& !isJwtExpiredOrInvalid(refresh)
-		) {
-			JwtBearerAndRefresh(JwtBearer(bearer), JwtRefresh(refresh))
-		} else getAndCacheNewTokens(null)
+		val bearer = this.cachedToken?.takeIf { !isJwtExpiredOrInvalid(it) }
+		val refresh = this.cachedRefreshToken?.takeIf { !isJwtExpiredOrInvalid(it) }
+		return when {
+			bearer != null && refresh != null -> JwtBearerAndRefresh(JwtBearer(bearer), JwtRefresh(refresh))
+			// Avoid asking for a secret if the bearer can be refreshed
+			refresh != null -> {
+				val refreshedBearer = refreshAndCacheToken(refresh).jwt
+				// If the refresh failed new tokens were cached, including a new refresh token
+				JwtBearerAndRefresh(JwtBearer(refreshedBearer), JwtRefresh(checkNotNull(cachedRefreshToken)))
+			}
+			else -> getAndCacheNewTokens(null)
+		}
 	}
 
 	suspend fun switchedGroup(newGroupId: String): SmartTokenProvider {

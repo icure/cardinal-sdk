@@ -278,6 +278,7 @@ private val messageCase = EntityCase<Message>(
 	getDataOwnersWithAccessTo = { api, entity -> api.message.getDataOwnersWithAccessTo(entity) },
 	getDataOwnersWithAccessToInGroup = { api, entity -> api.message.inGroup.getDataOwnersWithAccessTo(entity) },
 	getDataOwnersWithAccessToFromBase = { api, entity -> api.message.getDataOwnersWithAccessTo(entity) },
+	localOnly = true,
 )
 
 private val patientCase = EntityCase<Patient>(

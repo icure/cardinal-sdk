@@ -47,6 +47,9 @@ public external interface RelatedPersonBasicApiJs {
 
 	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs>
 
+	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
+			Promise<EntityAccessInformationJs>
+
 	public fun createRelatedPerson(entity: EncryptedRelatedPersonJs): Promise<EncryptedRelatedPersonJs>
 
 	public fun createRelatedPersons(entities: Array<EncryptedRelatedPersonJs>): Promise<Array<EncryptedRelatedPersonJs>>

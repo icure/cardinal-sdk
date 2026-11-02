@@ -79,6 +79,9 @@ public external interface RelatedPersonInGroupApiJs {
 
 	public fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<EntityAccessInformationJs>
 
+	public fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>):
+			Promise<EntityAccessInformationJs>
+
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
 		relatedPerson: GroupScopedJs<DecryptedRelatedPersonJs>,

@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.FormApi
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.FormDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.FormShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -732,6 +733,44 @@ public fun purgeFormsAsync(
 				decodedParams.forms,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetDataOwnersWithAccessToParams(
+	public val form: Form,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getDataOwnersWithAccessToBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	runBlocking {
+		sdk.form.getDataOwnersWithAccessTo(
+			decodedParams.form,
+		)
+	}
+}.toPyString(EntityAccessInformation.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getDataOwnersWithAccessToAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.form.getDataOwnersWithAccessTo(
+				decodedParams.form,
+			)
+		}.toPyStringAsyncCallback(EntityAccessInformation.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

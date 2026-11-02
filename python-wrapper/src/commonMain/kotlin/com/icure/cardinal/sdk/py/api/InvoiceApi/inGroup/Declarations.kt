@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.InvoiceApi.inGroup
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.InvoiceDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.InvoiceShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -667,6 +668,44 @@ public fun purgeInvoicesAsync(
 			)
 		}.toPyStringAsyncCallback(ListSerializer(GroupScoped.serializer(StoredDocumentIdentifier.serializer())),
 				resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetDataOwnersWithAccessToParams(
+	public val invoice: GroupScoped<Invoice>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getDataOwnersWithAccessToBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	runBlocking {
+		sdk.invoice.inGroup.getDataOwnersWithAccessTo(
+			decodedParams.invoice,
+		)
+	}
+}.toPyString(EntityAccessInformation.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getDataOwnersWithAccessToAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.invoice.inGroup.getDataOwnersWithAccessTo(
+				decodedParams.invoice,
+			)
+		}.toPyStringAsyncCallback(EntityAccessInformation.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 
