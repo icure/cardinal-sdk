@@ -542,6 +542,84 @@ public fun getTokenAsync(
 }.failureToPyStringAsyncCallback(resultCallback)
 
 @Serializable
+private class DeleteTokenParams(
+	public val userId: String,
+	public val key: String,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun deleteTokenBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteTokenParams>(params)
+	runBlocking {
+		sdk.user.deleteToken(
+			decodedParams.userId,
+			decodedParams.key,
+		)
+	}
+}.toPyString(User.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun deleteTokenAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteTokenParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.deleteToken(
+				decodedParams.userId,
+				decodedParams.key,
+			)
+		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class DeleteAllTokensParams(
+	public val userId: String,
+	public val skip: List<String>? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun deleteAllTokensBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAllTokensParams>(params)
+	runBlocking {
+		sdk.user.deleteAllTokens(
+			decodedParams.userId,
+			decodedParams.skip,
+		)
+	}
+}.toPyString(User.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun deleteAllTokensAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<DeleteAllTokensParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.user.deleteAllTokens(
+				decodedParams.userId,
+				decodedParams.skip,
+			)
+		}.toPyStringAsyncCallback(User.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
 private class FilterUsersByParams(
 	public val filter: BaseFilterOptions<User>,
 )

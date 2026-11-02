@@ -36,3 +36,20 @@ public fun getBearerTokenAsync(sdk: CardinalNonCryptoApis,
 		}.toPyStringAsyncCallback(String.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
+
+public fun getRefreshTokenBlocking(sdk: CardinalNonCryptoApis): String = kotlin.runCatching {
+	runBlocking {
+		sdk.auth.getRefreshToken()
+	}
+}.toPyString(String.serializer())
+
+@OptIn(ExperimentalForeignApi::class)
+public fun getRefreshTokenAsync(sdk: CardinalNonCryptoApis,
+		resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+		CValues<ByteVarOf<Byte>>?) -> Unit>>): COpaquePointer? = kotlin.runCatching {
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.auth.getRefreshToken()
+		}.toPyStringAsyncCallback(String.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
