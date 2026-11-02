@@ -43,8 +43,6 @@ public external interface InvoiceBasicApiJs {
 
 	public fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs>
-
 	public fun createInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs>
 
 	public fun createInvoices(entities: Array<EncryptedInvoiceJs>): Promise<Array<EncryptedInvoiceJs>>

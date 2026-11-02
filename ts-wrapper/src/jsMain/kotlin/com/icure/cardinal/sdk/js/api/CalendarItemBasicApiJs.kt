@@ -71,9 +71,6 @@ public external interface CalendarItemBasicApiJs {
 
 	public fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs):
-			Promise<EntityAccessInformationJs>
-
 	public fun createCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
 
 	public fun createCalendarItems(entities: Array<EncryptedCalendarItemJs>): Promise<Array<EncryptedCalendarItemJs>>

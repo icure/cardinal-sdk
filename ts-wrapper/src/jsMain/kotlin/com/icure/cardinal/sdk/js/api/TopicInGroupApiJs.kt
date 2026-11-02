@@ -82,9 +82,6 @@ public external interface TopicInGroupApiJs {
 
 	public fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>):
-			Promise<EntityAccessInformationJs>
-
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
 		topic: GroupScopedJs<DecryptedTopicJs>,

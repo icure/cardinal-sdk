@@ -111,9 +111,6 @@ public external interface CalendarItemInGroupApiJs {
 
 	public fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>):
-			Promise<EntityAccessInformationJs>
-
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
 		calendarItem: GroupScopedJs<DecryptedCalendarItemJs>,

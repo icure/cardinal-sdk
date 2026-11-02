@@ -76,9 +76,6 @@ public external interface RelatedPersonApiJs {
 
 	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
-			Promise<EntityAccessInformationJs>
-
 	public fun shareWith(
 		delegateId: String,
 		relatedPerson: DecryptedRelatedPersonJs,

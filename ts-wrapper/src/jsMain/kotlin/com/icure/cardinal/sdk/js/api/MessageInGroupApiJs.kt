@@ -82,9 +82,6 @@ public external interface MessageInGroupApiJs {
 
 	public fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>):
-			Promise<EntityAccessInformationJs>
-
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,
 		message: GroupScopedJs<DecryptedMessageJs>,

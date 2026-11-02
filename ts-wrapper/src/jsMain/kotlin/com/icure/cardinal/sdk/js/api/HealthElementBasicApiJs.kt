@@ -48,9 +48,6 @@ public external interface HealthElementBasicApiJs {
 
 	public fun getDataOwnersWithAccessTo(healthElement: HealthElementJs): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessTo(healthElement: HealthElementJs):
-			Promise<EntityAccessInformationJs>
-
 	public fun createHealthElement(entity: EncryptedHealthElementJs): Promise<EncryptedHealthElementJs>
 
 	public fun createHealthElements(entities: Array<EncryptedHealthElementJs>): Promise<Array<EncryptedHealthElementJs>>
