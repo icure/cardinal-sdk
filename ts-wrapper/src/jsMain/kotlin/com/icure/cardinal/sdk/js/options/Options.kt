@@ -107,6 +107,9 @@ fun CustomisedSdkOptionsJs.toKt(): CustomisedSdkOptions {
 		knownCustomEntityTypes = knownCustomEntityTypes?.mapTo(mutableSetOf()) {
 			EntityWithEncryptionMetadataTypeName.Custom(it)
 		} ?: defaultSdkOptions.knownCustomEntityTypes,
+		hiddenBuiltinEntityTypes = hiddenBuiltinEntityTypes?.mapTo(mutableSetOf()) {
+			EntityWithEncryptionMetadataTypeName.Builtin.valueOf(it)
+		} ?: defaultSdkOptions.hiddenBuiltinEntityTypes,
 	)
 }
 
