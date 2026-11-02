@@ -6802,6 +6802,31 @@ Currently, this is the case only for the typescript SDK when it is used on react
 Refer to the boilerplate documentation for more information on how you can provide the appropriate crypto service to
 the SDK (:construction:).
 
+### Entity list decoding strategy
+
+The `entityListDecodingStrategy` option controls how the SDK decodes the lists of entities returned by read methods
+(get by ids, filter, find, list, ...). With the default, `EntityListDecodingStrategy.Strict`, the whole request fails if
+any entity in the list can't be deserialized. With `EntityListDecodingStrategy.DiscardMalformed`, the SDK drops those
+entities from the result and calls your handler once for each one. `BasicSdkOptions` and `AnonymousSdkOptions` accept
+the same option.
+
+```typescript
+import { EntityListDecodingStrategy, SdkOptions } from "@icure/cardinal-sdk";
+
+const options: SdkOptions = {
+	entityListDecodingStrategy: new EntityListDecodingStrategy.DiscardMalformed((entity) => {
+		// entity.json contains the non-encrypted data of the entity, including personal data: don't log it as is
+		console.warn(`Discarded ${entity.entityType} ${entity.entityId ?? "(unknown id)"}: ${entity.error}`)
+	})
+}
+```
+
+With `DiscardMalformed`, list methods may return fewer entities than you requested, and pages may contain fewer rows
+than their limit. The handler receives a `MalformedEntity` with `entityType`, `entityId` (when it can be read),
+`json`, `error` and `requestUrl`. If the handler throws, the request fails with that error. The strategy never applies to
+single entity reads, write operations or the entities that the crypto layer uses internally. It recovers only from type
+mismatches inside valid json: a response that isn't valid json still fails.
+
 ### Legacy support configurations
 
 The configuration options that were omitted from this page are used only to support the migration of legacy data.
@@ -7141,6 +7166,50 @@ long-lived token or the token from an OAuth authentication flow. If the initial 
 immediately ask for credentials using the secret provider.
 - `cacheSecret`: if true, the SDK instance will cache the secrets provided by the user in the volatile memory, to try 
 and minimize the secrets asked to the user.
+
+### Restore a session from a refresh token
+
+`sdk.auth.getRefreshToken()` returns the refresh token that an initialized SDK is currently using. You can pass it to
+a new SDK instance, which then authenticates without asking the secret provider for a secret while the refresh token is
+valid.
+
+```typescript
+import {
+	AuthenticationMethod,
+	CardinalSdk,
+	SecretProviderAuthenticationOptions,
+	StorageFacade
+} from "@icure/cardinal-sdk";
+
+// On the sdk that is already initialized
+const refreshToken = await sdk.auth.getRefreshToken()
+
+// Later, on a new sdk instance
+const restoredSdk = await CardinalSdk.initialize(
+	undefined,
+	"https://api.icure.cloud",
+	new AuthenticationMethod.UsingSecretProvider(
+		secretProvider,
+		{
+			loginUsername: username,
+			initialSecret: new SecretProviderAuthenticationOptions.InitialSecret.RefreshToken(refreshToken),
+		}
+	),
+	StorageFacade.usingBrowserLocalStorage()
+)
+```
+
+You can pass the refresh token in two ways:
+- `initialSecret: new SecretProviderAuthenticationOptions.InitialSecret.RefreshToken(token)`: unless `existingJwt` is
+  still valid, the SDK uses the refresh token right away during initialization. If the refresh token is expired or
+  not valid, initialization fails.
+- `existingRefreshJwt: token`: the SDK uses the refresh token while it is valid. If it is expired or not valid, the SDK
+  silently falls back to the `initialSecret` or to the secret provider.
+
+You can't use both options together. Once the refresh token expires, the SDK asks the secret provider for a secret.
+The refresh token is bound to the group and data owner scope of the SDK that issued it. If the user can access several
+groups, the new SDK still needs a `groupSelector`. It is bound to the group the selector chooses, whatever the group of
+the refresh token.
 
 ## Sensitive operations
 The different types of credentials that the secret provider can ask and use are not deemed equal in terms of security.
@@ -9314,6 +9383,35 @@ def share_health_element_for_statistics(
 		)
 	)
 ```
+
+### Check who has access to an entity
+
+To see who an entity is shared with, pass it to the `getDataOwnersWithAccessTo` method of its api. The method exists
+on the apis of access logs, calendar items, contacts, documents, forms, health elements, invoices, messages, patients,
+receipts, related persons and topics. The contact api also has `getDataOwnersWithAccessToService`. A service uses the
+security metadata of the contact that contains it, so the result is the access to that contact.
+
+```typescript
+import { AccessLevel, CardinalSdk, HealthElement } from "@icure/cardinal-sdk";
+
+async function printAccess(sdk: CardinalSdk, healthElement: HealthElement): Promise<void> {
+	const accessInfo = await sdk.healthElement.getDataOwnersWithAccessTo(healthElement)
+	for (const { delegate, accessLevel } of accessInfo.permissionsByDataOwnerId) {
+		console.log(`${delegate.entityId}: ${accessLevel === AccessLevel.Write ? "read and write" : "read only"}`)
+	}
+	if (accessInfo.hasUnknownAnonymousDataOwners) {
+		console.log("The entity is also shared with anonymous data owners that could not be identified")
+	}
+}
+```
+
+The returned `EntityAccessInformation` lists each data owner with access and their `AccessLevel` (`Read` or `Write`).
+The SDK uses the keys of the current user and any delegations de-anonymization metadata to identify anonymous data owners.
+Without that metadata, a user can only identify the anonymous data owners of delegations they are part of.
+`hasUnknownAnonymousDataOwners` is `true` when at least one delegation to an anonymous data owner could not be identified.
+On the basic apis, the SDK doesn't de-anonymize anything, so `hasUnknownAnonymousDataOwners` is `true` whenever the entity
+is shared with an anonymous data owner. Without intergroup sharing, `delegate.groupId` is always `undefined`.
+The `inGroup` apis have the same methods, taking a `GroupScoped` entity.
 
 ---
 
@@ -13724,6 +13822,25 @@ sdk = CardinalSdk(
 
 
 And that's it! You have successfully implemented a first version of persistent user session in your application.
+
+### Revoke the long-lived token
+
+When the user logs out, revoke the token of the device by its key with `deleteToken`. To log the user out on every
+device ("sign out everywhere"), use `deleteAllTokens`. Its `skip` option lists the keys of the tokens to keep.
+
+```typescript
+const currentUser = await sdk.user.getCurrentUser();
+
+// Log out from this device: revoke only the token created with this key
+await sdk.user.deleteToken(currentUser.id, deviceId);
+
+// Sign out everywhere: revoke all the tokens of the user
+await sdk.user.deleteAllTokens(currentUser.id);
+```
+
+Both methods return the updated user. If the user has no token with the given key, `deleteToken` returns the user
+unchanged. Revoking tokens can only reduce access, so it doesn't need an elevated security context. A user can revoke
+their own tokens however they authenticated, including with the long-lived token that you are revoking.
 
 ## Limitations
 
