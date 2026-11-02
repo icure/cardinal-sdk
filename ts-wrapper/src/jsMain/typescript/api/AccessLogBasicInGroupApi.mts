@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {AccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -77,6 +78,12 @@ export interface AccessLogBasicInGroupApi {
 	purgeAccessLog(accessLog: GroupScoped<AccessLog>): Promise<void>;
 
 	purgeAccessLogs(accessLogs: Array<GroupScoped<AccessLog>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [AccessLogBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(accessLog: GroupScoped<AccessLog>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.RelatedPersonBasicApiJs
 import com.icure.cardinal.sdk.js.api.RelatedPersonBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -311,6 +313,20 @@ internal class RelatedPersonBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
+				relatedPerson,
+				{ x1: RelatedPersonJs ->
+					relatedPerson_fromJs(x1)
+				},
+			)
+			val result = relatedPersonBasicApi.inGroup.getDataOwnersWithAccessTo(
+				relatedPersonConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createRelatedPerson(entity: GroupScopedJs<EncryptedRelatedPersonJs>):
@@ -734,6 +750,15 @@ internal class RelatedPersonBasicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
+			Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
+		val result = relatedPersonBasicApi.getDataOwnersWithAccessTo(
+			relatedPersonConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createRelatedPerson(entity: EncryptedRelatedPersonJs):

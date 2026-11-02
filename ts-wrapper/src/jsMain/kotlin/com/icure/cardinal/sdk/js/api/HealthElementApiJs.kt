@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -89,6 +90,9 @@ public external interface HealthElementApiJs {
 
 	public fun purgeHealthElements(healthElements: Array<HealthElementJs>):
 			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(healthElement: HealthElementJs):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

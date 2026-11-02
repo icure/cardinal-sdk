@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.crypto.entities.ContactDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.ContactShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.ContactJs
@@ -102,6 +103,10 @@ public external interface ContactApiJs {
 
 	public fun getServiceCodesOccurrences(codeType: String, minOccurrences: Double):
 			Promise<Array<LabelledOccurenceJs>>
+
+	public fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs>
+
+	public fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

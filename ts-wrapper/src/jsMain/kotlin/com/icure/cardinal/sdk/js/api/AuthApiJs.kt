@@ -11,4 +11,6 @@ import kotlin.js.Promise
 @JsName("AuthApi")
 public external interface AuthApiJs {
 	public fun getBearerToken(): Promise<String>
+
+	public fun getRefreshToken(): Promise<String>
 }

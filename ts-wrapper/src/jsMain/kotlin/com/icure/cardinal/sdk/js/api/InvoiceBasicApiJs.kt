@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.model.EncryptedInvoiceJs
 import com.icure.cardinal.sdk.js.model.InvoiceJs
 import com.icure.cardinal.sdk.js.model.PaginatedListJs
@@ -42,6 +43,8 @@ public external interface InvoiceBasicApiJs {
 
 	public fun getTarificationsCodesOccurrences(minOccurrence: Double):
 			Promise<Array<LabelledOccurenceJs>>
+
+	public fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs>
 
 	public fun createInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs>
 

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DocumentJs
@@ -53,6 +54,9 @@ public external interface DocumentBasicInGroupApiJs {
 
 	public fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun createDocument(entity: GroupScopedJs<EncryptedDocumentJs>):
 			Promise<GroupScopedJs<EncryptedDocumentJs>>
