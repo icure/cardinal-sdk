@@ -20,6 +20,12 @@ describe("server identity & capabilities", () => {
 		expect(caps?.tools).toBeDefined();
 		expect(caps?.resources).toBeDefined();
 	});
+
+	it("sends instructions on whose database the tools are meant for", () => {
+		const instructions = client.getInstructions();
+		expect(instructions).toContain("database the user owns");
+		expect(instructions).toContain("cardinal://docs/guide/policy-agents");
+	});
 });
 
 describe("tools/list", () => {

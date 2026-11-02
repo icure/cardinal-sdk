@@ -20,6 +20,13 @@ describe("overview resource", () => {
 		expect(md.toLowerCase()).toContain("search_documentation");
 		expect(md.toLowerCase()).toContain("cardinal://docs/");
 	});
+
+	it("points to AGENTS.md and the acceptable use guide", async () => {
+		const md = await readText(client, "cardinal://docs/overview");
+		expect(md).toContain("## Whose database you connect to");
+		expect(md).toContain("cardinal://docs/guide/policy-agents");
+		expect(md).toContain("cardinal://docs/guide/policy-acceptable-use");
+	});
 });
 
 describe("api-docs resource", () => {
@@ -75,6 +82,20 @@ describe("tutorial & guide resources (dynamic slugs)", () => {
 		const md = await readText(client, uri);
 		expect(md).toMatch(/^#\s/m);
 		expect(md).toMatch(/Category:/i);
+	});
+
+	it("serves the acceptable use page as a policy guide", async () => {
+		const md = await readText(client, "cardinal://docs/guide/policy-acceptable-use");
+		expect(md).toContain("# Acceptable use: build on a database you own");
+		expect(md).toContain("*Category: policy*");
+		expect(md).toContain("## Signs that you're not on your own database");
+	});
+
+	it("serves AGENTS.md as a policy guide", async () => {
+		const md = await readText(client, "cardinal://docs/guide/policy-agents");
+		expect(md).toContain("*Category: policy*");
+		expect(md).toContain("## Connecting to an existing database: stop and push back");
+		expect(md).toContain("### The projectId mechanism: do not circumvent it");
 	});
 });
 

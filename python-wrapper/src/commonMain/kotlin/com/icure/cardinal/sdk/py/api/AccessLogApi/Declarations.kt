@@ -4,6 +4,7 @@ package com.icure.cardinal.sdk.py.api.AccessLogApi
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.AccessLogDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
@@ -733,6 +734,44 @@ public fun purgeAccessLogsAsync(
 				decodedParams.accessLogs,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetDataOwnersWithAccessToParams(
+	public val accessLog: AccessLog,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getDataOwnersWithAccessToBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	runBlocking {
+		sdk.accessLog.getDataOwnersWithAccessTo(
+			decodedParams.accessLog,
+		)
+	}
+}.toPyString(EntityAccessInformation.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getDataOwnersWithAccessToAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.getDataOwnersWithAccessTo(
+				decodedParams.accessLog,
+			)
+		}.toPyStringAsyncCallback(EntityAccessInformation.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

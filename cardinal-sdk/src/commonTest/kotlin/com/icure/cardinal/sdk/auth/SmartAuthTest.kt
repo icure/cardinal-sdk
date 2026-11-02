@@ -1,17 +1,21 @@
 package com.icure.cardinal.sdk.auth
 
 import com.icure.cardinal.sdk.CardinalSdk
+import com.icure.cardinal.sdk.api.impl.AuthApiImpl
 import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
 import com.icure.cardinal.sdk.auth.services.AuthProvider
+import com.icure.cardinal.sdk.auth.services.JwtBasedAuthProvider
 import com.icure.cardinal.sdk.auth.services.SmartAuthProvider
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
 import com.icure.cardinal.sdk.model.security.AuthenticationToken
+import com.icure.cardinal.sdk.model.LoginCredentials
 import com.icure.cardinal.sdk.model.security.Enable2faRequest
 import com.icure.cardinal.sdk.options.AuthenticationMethod
 import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.getAuthProvider
+import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.MockMessageGatewayUtils
 import com.icure.cardinal.sdk.test.autoCancelJob
@@ -36,9 +40,11 @@ import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldHaveAtLeastSize
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.maps.shouldNotBeEmpty
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.ktor.http.isSuccess
@@ -58,6 +64,17 @@ class SmartAuthTest : StringSpec({
 		authProvider = authProvider,
 		DefaultRawApiConfig
 	)
+
+	fun secretProviderCountingCalls(onCall: () -> Unit) = object : AuthSecretProvider {
+		override suspend fun getSecret(
+			acceptedSecrets: Set<AuthenticationClass>,
+			previousAttempts: List<AuthSecretDetails>,
+			authProcessApi: AuthenticationProcessApi
+		): AuthSecretDetails {
+			onCall()
+			throw IllegalStateException("Secret provider should not be invoked")
+		}
+	}
 
 	beforeSpec {
 		initializeTestEnvironment()
@@ -557,5 +574,227 @@ class SmartAuthTest : StringSpec({
 		)).successBody()
 		updatedDefault.rev shouldBeNextRevOf switchedUser.rev
 		updatedDefault.authenticationTokens.shouldNotBeEmpty()
+	}
+
+	"Initializing with a valid refresh token should not invoke the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		var calls = 0
+		val authProvider = AuthenticationMethod.UsingSecretProvider(
+			loginUsername = hcpDetails.username,
+			existingRefreshJwt = refreshToken,
+			secretProvider = secretProviderCountingCalls { calls++ },
+		).getAuthProvider(
+			authApi,
+			defaultCryptoService,
+			null,
+			SdkOptions(),
+			RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+			krakenUrl = baseUrl
+		)
+		getUserApiWithProvider(authProvider).getCurrentUser().successBody().healthcarePartyId shouldBe hcpDetails.dataOwnerId
+		calls shouldBe 0
+	}
+
+	"Sdk initialized with only a valid refresh token should not invoke the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		var calls = 0
+		val sdk = hcpDetails.apiWithAuthenticationMethod(
+			specJob,
+			AuthenticationMethod.UsingSecretProvider(
+				loginUsername = hcpDetails.username,
+				existingRefreshJwt = refreshToken,
+				secretProvider = secretProviderCountingCalls { calls++ },
+			)
+		)
+		sdk.user.getCurrentUser().healthcarePartyId shouldBe hcpDetails.dataOwnerId
+		sdk.healthcareParty.getCurrentHealthcareParty().id shouldBe hcpDetails.dataOwnerId
+		calls shouldBe 0
+	}
+
+	suspend fun AuthenticationMethod.authProvider() = getAuthProvider(
+		authApi,
+		defaultCryptoService,
+		null,
+		SdkOptions(),
+		RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+		krakenUrl = baseUrl
+	)
+
+	"Sdk initialized with a valid refresh token as initial secret should not invoke the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = hcpDetails.api(specJob).auth.getRefreshToken()
+		var calls = 0
+		val sdk = hcpDetails.apiWithAuthenticationMethod(
+			specJob,
+			AuthenticationMethod.UsingSecretProvider(
+				loginUsername = hcpDetails.username,
+				initialSecret = AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken(refreshToken),
+				secretProvider = secretProviderCountingCalls { calls++ },
+			)
+		)
+		sdk.user.getCurrentUser().healthcarePartyId shouldBe hcpDetails.dataOwnerId
+		calls shouldBe 0
+	}
+
+	"Initializing with an invalid refresh token as initial secret should fail without invoking the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		val tamperedRefreshToken = refreshToken.substringBeforeLast(".") + ".invalidsignature"
+		var calls = 0
+		shouldThrow<IllegalArgumentException> {
+			AuthenticationMethod.UsingSecretProvider(
+				loginUsername = hcpDetails.username,
+				initialSecret = AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken(tamperedRefreshToken),
+				secretProvider = secretProviderCountingCalls { calls++ },
+			).authProvider()
+		}.message shouldBe "Could not get a token with the provided initial refresh token."
+		calls shouldBe 0
+	}
+
+	"Initializing with an expired refresh token as initial secret should fail without invoking the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		// Header {"alg":"none"}, payload {"exp":1}
+		val expiredRefreshToken = "eyJhbGciOiJub25lIn0.eyJleHAiOjF9.c2ln"
+		var calls = 0
+		shouldThrow<IllegalArgumentException> {
+			AuthenticationMethod.UsingSecretProvider(
+				loginUsername = hcpDetails.username,
+				initialSecret = AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken(expiredRefreshToken),
+				secretProvider = secretProviderCountingCalls { calls++ },
+			).authProvider()
+		}.message shouldBe "The provided initial refresh token is expired."
+		calls shouldBe 0
+	}
+
+	"Initializing with both an existing refresh token and a refresh token as initial secret should fail".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		shouldThrow<IllegalArgumentException> {
+			AuthenticationMethod.UsingSecretProvider(
+				loginUsername = hcpDetails.username,
+				initialSecret = AuthenticationMethod.UsingSecretProvider.InitialSecret.RefreshToken(refreshToken),
+				existingRefreshJwt = refreshToken,
+				secretProvider = secretProviderCountingCalls { },
+			).authProvider()
+		}.message shouldBe "Can't use both an existing refresh jwt and an initial secret of type RefreshToken."
+	}
+
+	"Initializing with an invalid existing refresh token should not fail, and should fall back to the secret provider when needed".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val refreshToken = authApi.login(
+			loginCredentials = LoginCredentials(username = hcpDetails.username, password = hcpDetails.password)
+		).successBody().refreshToken.shouldNotBeNull()
+		val tamperedRefreshToken = refreshToken.substringBeforeLast(".") + ".invalidsignature"
+		for (initialRefreshToken in listOf(tamperedRefreshToken, "eyJhbGciOiJub25lIn0.eyJleHAiOjF9.c2ln")) {
+			var calls = 0
+			val authProvider = AuthenticationMethod.UsingSecretProvider(
+				loginUsername = hcpDetails.username,
+				existingRefreshJwt = initialRefreshToken,
+				secretProvider = object : AuthSecretProvider {
+					override suspend fun getSecret(
+						acceptedSecrets: Set<AuthenticationClass>,
+						previousAttempts: List<AuthSecretDetails>,
+						authProcessApi: AuthenticationProcessApi
+					): AuthSecretDetails {
+						calls++
+						return AuthSecretDetails.PasswordDetails(hcpDetails.password)
+					}
+				},
+			).authProvider()
+			calls shouldBe 0
+			getUserApiWithProvider(authProvider).getCurrentUser().successBody().healthcarePartyId shouldBe hcpDetails.dataOwnerId
+			calls shouldBe 1
+		}
+	}
+
+	"Refresh token obtained from an sdk can be used to initialize a new sdk without invoking the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val sdk = hcpDetails.api(specJob)
+		val refreshToken = sdk.auth.getRefreshToken()
+		var calls = 0
+		val newSdk = hcpDetails.apiWithAuthenticationMethod(
+			specJob,
+			AuthenticationMethod.UsingSecretProvider(
+				loginUsername = hcpDetails.username,
+				existingRefreshJwt = refreshToken,
+				secretProvider = secretProviderCountingCalls { calls++ },
+			)
+		)
+		newSdk.user.getCurrentUser().healthcarePartyId shouldBe hcpDetails.dataOwnerId
+		calls shouldBe 0
+	}
+
+	"Refresh token obtained after switching group should stay bound to the switched group, but sdk initialization still requires a group selector".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val details = createUserInMultipleGroups()
+		val (firstGroupUser, secondGroupUser) = details.groupBy { it.password }.values.first { it.size > 1 }
+		val (initialGroupId, initialProvider) = AuthenticationMethod.UsingSecretProvider(
+			loginUsername = firstGroupUser.username,
+			initialSecret = AuthenticationMethod.UsingSecretProvider.InitialSecret.Password(firstGroupUser.password),
+			secretProvider = secretProviderCountingCalls { },
+		).getGroupAndAuthProvider(
+			baseUrl = baseUrl,
+			apiUrl = baseUrl,
+			cryptoService = defaultCryptoService,
+			projectId = null,
+			options = SdkOptions(groupSelector = { firstGroupUser.groupId }),
+			rawApiConfig = DefaultRawApiConfig,
+		)
+		initialGroupId shouldBe firstGroupUser.groupId
+		val switchedProvider = initialProvider.switchGroup(secondGroupUser.groupId) as JwtBasedAuthProvider
+		getUserApiWithProvider(switchedProvider).getCurrentUser().successBody().groupId shouldBe secondGroupUser.groupId
+		val switchedRefreshToken = AuthApiImpl(switchedProvider).getRefreshToken()
+		var calls = 0
+		fun authMethodWithSwitchedRefresh() = AuthenticationMethod.UsingSecretProvider(
+			loginUsername = firstGroupUser.username,
+			existingRefreshJwt = switchedRefreshToken,
+			secretProvider = secretProviderCountingCalls { calls++ },
+		)
+		// The token obtained by refreshing is bound to the group of the refresh token
+		getUserApiWithProvider(
+			authMethodWithSwitchedRefresh().getAuthProvider(
+				authApi,
+				defaultCryptoService,
+				null,
+				SdkOptions(),
+				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
+				krakenUrl = baseUrl
+			)
+		).getCurrentUser().successBody().groupId shouldBe secondGroupUser.groupId
+		// But on initialization the sdk does not use the group of the refresh token: the user can still access multiple groups,
+		// so a group selector is needed, and the group of the sdk is the one chosen by the selector.
+		shouldThrow<IllegalArgumentException> {
+			authMethodWithSwitchedRefresh().getGroupAndAuthProvider(
+				baseUrl = baseUrl,
+				apiUrl = baseUrl,
+				cryptoService = defaultCryptoService,
+				projectId = null,
+				options = SdkOptions(),
+				rawApiConfig = DefaultRawApiConfig,
+			)
+		}
+		val (chosenGroupId, chosenProvider) = authMethodWithSwitchedRefresh().getGroupAndAuthProvider(
+			baseUrl = baseUrl,
+			apiUrl = baseUrl,
+			cryptoService = defaultCryptoService,
+			projectId = null,
+			options = SdkOptions(groupSelector = { groups ->
+				groups.map { it.groupId } shouldContainAll listOf(firstGroupUser.groupId, secondGroupUser.groupId)
+				secondGroupUser.groupId
+			}),
+			rawApiConfig = DefaultRawApiConfig,
+		)
+		chosenGroupId shouldBe secondGroupUser.groupId
+		getUserApiWithProvider(chosenProvider).getCurrentUser().successBody().groupId shouldBe secondGroupUser.groupId
+		calls shouldBe 0
 	}
 })

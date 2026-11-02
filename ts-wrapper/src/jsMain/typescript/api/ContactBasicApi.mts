@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {Contact, EncryptedContact} from '../model/Contact.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {LabelledOccurence} from '../model/data/LabelledOccurence.mjs';
@@ -218,6 +219,29 @@ export interface ContactBasicApi {
 	 */
 	getServiceCodesOccurrences(codeType: string,
 			minOccurrences: number): Promise<Array<LabelledOccurence>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided contact, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param contact a contact
+	 *  @return information on users with access to the provided contact
+	 */
+	getDataOwnersWithAccessTo(contact: Contact): Promise<EntityAccessInformation>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided service, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata. Services share the security metadata of the contact containing them,
+	 *  so this reflects the access to that contact.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param service a service
+	 *  @return information on users with access to the provided service
+	 */
+	getDataOwnersWithAccessToService(service: Service): Promise<EntityAccessInformation>;
 
 	/**
 	 *

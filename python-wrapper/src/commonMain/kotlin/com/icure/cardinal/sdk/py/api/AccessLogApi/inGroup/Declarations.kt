@@ -3,6 +3,8 @@ package com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup
 
 import com.icure.cardinal.sdk.CardinalApis
 import com.icure.cardinal.sdk.crypto.entities.AccessLogDelegateOptions
+import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.SortableFilterOptions
@@ -16,10 +18,15 @@ import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
+import com.icure.cardinal.sdk.py.utils.PyResult
+import com.icure.cardinal.sdk.py.utils.failureToPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.failureToPyStringAsyncCallback
+import com.icure.cardinal.sdk.py.utils.toPyResult
+import com.icure.cardinal.sdk.py.utils.toPyResultAsyncCallback
 import com.icure.cardinal.sdk.py.utils.toPyString
 import com.icure.cardinal.sdk.py.utils.toPyStringAsyncCallback
 import com.icure.cardinal.sdk.serialization.MapAsArraySerializer
+import com.icure.cardinal.sdk.serialization.PaginatedListIteratorWithSerializer
 import com.icure.cardinal.sdk.utils.Serialization.fullLanguageInteropJson
 import com.icure.utils.InternalIcureApi
 import kotlin.Boolean
@@ -749,6 +756,207 @@ public fun purgeAccessLogsAsync(
 				resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetDataOwnersWithAccessToParams(
+	public val accessLog: GroupScoped<AccessLog>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getDataOwnersWithAccessToBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	runBlocking {
+		sdk.accessLog.inGroup.getDataOwnersWithAccessTo(
+			decodedParams.accessLog,
+		)
+	}
+}.toPyString(EntityAccessInformation.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getDataOwnersWithAccessToAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.inGroup.getDataOwnersWithAccessTo(
+				decodedParams.accessLog,
+			)
+		}.toPyStringAsyncCallback(EntityAccessInformation.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ShareWithParams(
+	public val `delegate`: EntityReferenceInGroup,
+	public val accessLog: GroupScoped<DecryptedAccessLog>,
+	public val options: AccessLogShareOptions? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun shareWithBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ShareWithParams>(params)
+	runBlocking {
+		sdk.accessLog.inGroup.shareWith(
+			decodedParams.delegate,
+			decodedParams.accessLog,
+			decodedParams.options,
+		)
+	}
+}.toPyString(GroupScoped.serializer(DecryptedAccessLog.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun shareWithAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ShareWithParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.inGroup.shareWith(
+				decodedParams.delegate,
+				decodedParams.accessLog,
+				decodedParams.options,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedAccessLog.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class ShareWithManyParams(
+	public val accessLog: GroupScoped<DecryptedAccessLog>,
+	@Serializable(MapAsArraySerializer::class)
+	@OptIn(InternalIcureApi::class)
+	public val delegates: Map<EntityReferenceInGroup, AccessLogShareOptions>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun shareWithManyBlocking(sdk: CardinalApis, params: String): String = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ShareWithManyParams>(params)
+	runBlocking {
+		sdk.accessLog.inGroup.shareWithMany(
+			decodedParams.accessLog,
+			decodedParams.delegates,
+		)
+	}
+}.toPyString(GroupScoped.serializer(DecryptedAccessLog.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun shareWithManyAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<ShareWithManyParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.inGroup.shareWithMany(
+				decodedParams.accessLog,
+				decodedParams.delegates,
+			)
+		}.toPyStringAsyncCallback(GroupScoped.serializer(DecryptedAccessLog.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class FilterAccessLogsByParams(
+	public val groupId: String,
+	public val filter: FilterOptions<AccessLog>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun filterAccessLogsByBlocking(sdk: CardinalApis, params: String): PyResult =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<FilterAccessLogsByParams>(params)
+	runBlocking {
+		sdk.accessLog.inGroup.filterAccessLogsBy(
+			decodedParams.groupId,
+			decodedParams.filter,
+		)
+	}
+}.toPyResult {
+	PaginatedListIteratorWithSerializer(it, GroupScoped.serializer(DecryptedAccessLog.serializer()))}
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun filterAccessLogsByAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<FilterAccessLogsByParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.inGroup.filterAccessLogsBy(
+				decodedParams.groupId,
+				decodedParams.filter,
+			)
+		}.toPyResultAsyncCallback(resultCallback) {
+			PaginatedListIteratorWithSerializer(it, GroupScoped.serializer(DecryptedAccessLog.serializer()))}
+	}
+}.failureToPyResultAsyncCallback(resultCallback)
+
+@Serializable
+private class FilterAccessLogsBySortedParams(
+	public val groupId: String,
+	public val filter: SortableFilterOptions<AccessLog>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun filterAccessLogsBySortedBlocking(sdk: CardinalApis, params: String): PyResult =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<FilterAccessLogsBySortedParams>(params)
+	runBlocking {
+		sdk.accessLog.inGroup.filterAccessLogsBySorted(
+			decodedParams.groupId,
+			decodedParams.filter,
+		)
+	}
+}.toPyResult {
+	PaginatedListIteratorWithSerializer(it, GroupScoped.serializer(DecryptedAccessLog.serializer()))}
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun filterAccessLogsBySortedAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(COpaquePointer?, CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<FilterAccessLogsBySortedParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.accessLog.inGroup.filterAccessLogsBySorted(
+				decodedParams.groupId,
+				decodedParams.filter,
+			)
+		}.toPyResultAsyncCallback(resultCallback) {
+			PaginatedListIteratorWithSerializer(it, GroupScoped.serializer(DecryptedAccessLog.serializer()))}
+	}
+}.failureToPyResultAsyncCallback(resultCallback)
 
 @Serializable
 private class CreateAccessLogParams(

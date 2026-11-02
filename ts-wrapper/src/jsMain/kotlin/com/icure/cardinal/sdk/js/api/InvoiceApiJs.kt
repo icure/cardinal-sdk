@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.InvoiceShareOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedInvoiceJs
@@ -79,6 +80,8 @@ public external interface InvoiceApiJs {
 
 	public fun getTarificationsCodesOccurrences(minOccurrence: Double):
 			Promise<Array<LabelledOccurenceJs>>
+
+	public fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

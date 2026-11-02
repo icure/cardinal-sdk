@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.RelatedPersonDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.RelatedPersonShareOptions
 import com.icure.cardinal.sdk.exceptions.RevisionConflictException
@@ -97,6 +98,16 @@ interface RelatedPersonBasicFlavourlessApi {
 	 */
 	suspend fun purgeRelatedPersons(relatedPersons: List<RelatedPerson>): List<StoredDocumentIdentifier> =
 		purgeRelatedPersonsByIds(relatedPersons.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * Get all data owners with access to the provided related person, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param relatedPerson a related person
+	 * @return information on users with access to the provided related person
+	 */
+	suspend fun getDataOwnersWithAccessTo(relatedPerson: RelatedPerson): EntityAccessInformation
 }
 
 interface RelatedPersonBasicFlavourlessInGroupApi {
@@ -144,6 +155,11 @@ interface RelatedPersonBasicFlavourlessInGroupApi {
 	 */
 	suspend fun purgeRelatedPersons(relatedPersons: List<GroupScoped<RelatedPerson>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeRelatedPersonsByIds(relatedPersons.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [RelatedPersonBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(relatedPerson: GroupScoped<RelatedPerson>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */

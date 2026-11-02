@@ -87,7 +87,6 @@ jobs:
             SDK_VERSION: ${{ inputs.version || needs.check-open-pr.outputs.version }}
         permissions:
             contents: read
-            id-token: write # claude-code-action OIDC
         steps:
             -   name: Check the SDK version is known
                 env:
@@ -293,21 +292,51 @@ jobs:
                         echo "needs-agent=true" >> $GITHUB_OUTPUT
                     fi
 
+            -   name: Install Claude Code
+                if: steps.gate.outputs.needs-agent == 'true'
+                run: |
+                    npm install -g @anthropic-ai/claude-code
+                    claude --version
+
             -   name: Sync the MCP server with Claude
+                # The Claude Code CLI, not anthropics/claude-code-action: the action rejects `push` events
+                # ("Unsupported event type: push"), which is how this workflow normally runs. The CLI also keeps
+                # GitHub tokens out of the agent's environment: only the Claude token is passed.
                 id: claude
                 if: steps.gate.outputs.needs-agent == 'true'
                 continue-on-error: true
-                uses: anthropics/claude-code-action@v1
-                with:
-                    claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-                    github_token: ${{ secrets.GITHUB_TOKEN }}
-                    prompt: '/mcp-sync SDK_VERSION=${{ steps.versions.outputs.sdk-version }} PREVIOUS_SDK_VERSION=${{ steps.versions.outputs.previous-sdk-version }} SYNC_DIR=${{ env.SYNC_DIR }} CHANGES_PATH=${{ env.SYNC_DIR }}/changes.md PR_BODY_PATH=${{ env.SYNC_DIR }}/pr-body.md'
+                env:
+                    CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+                    PROMPT: '/mcp-sync SDK_VERSION=${{ steps.versions.outputs.sdk-version }} PREVIOUS_SDK_VERSION=${{ steps.versions.outputs.previous-sdk-version }} SYNC_DIR=${{ env.SYNC_DIR }} CHANGES_PATH=${{ env.SYNC_DIR }}/changes.md PR_BODY_PATH=${{ env.SYNC_DIR }}/pr-body.md'
                     # Edit-only guardrails: no git mutation, no gh, no package manager mutation, no arbitrary network.
                     # The PR is opened by the create-pull-request step below, from cardinal-mcp-server/ only.
-                    claude_args: >-
-                        --model opus
-                        --effort xhigh
-                        --allowedTools "Read,Grep,Glob,Edit,Write,Bash(yarn run:*),Bash(yarn test:*),Bash(yarn tsx:*),Bash(npx tsx:*),Bash(node:*),Bash(git diff:*),Bash(git status:*),Bash(git log:*),Bash(git show:*),Bash(cat:*),Bash(ls:*),Bash(wc:*),Bash(diff:*),Bash(mkdir:*)"
+                    ALLOWED_TOOLS: 'Read,Grep,Glob,Edit,Write,Bash(yarn run:*),Bash(yarn test:*),Bash(yarn tsx:*),Bash(npx tsx:*),Bash(node:*),Bash(git diff:*),Bash(git status:*),Bash(git log:*),Bash(git show:*),Bash(cat:*),Bash(ls:*),Bash(wc:*),Bash(diff:*),Bash(mkdir:*)'
+                run: |
+                    mkdir -p "$SYNC_DIR"
+                    # The full transcript goes to SYNC_DIR, which is uploaded as an artifact when the run fails.
+                    LOG="$SYNC_DIR/claude.jsonl"
+                    STATUS=0
+                    claude -p "$PROMPT" \
+                        --model opus \
+                        --effort xhigh \
+                        --allowedTools "$ALLOWED_TOOLS" \
+                        --output-format stream-json \
+                        --verbose > "$LOG" || STATUS=$?
+                    # The last line of a completed run is the `result` message.
+                    node -e '
+                        const lines = require("fs").readFileSync(process.argv[1], "utf8").trim().split("\n");
+                        let result;
+                        try { result = JSON.parse(lines[lines.length - 1]); } catch {}
+                        if (result?.type !== "result") {
+                            console.log("::error::Claude produced no result. End of the transcript:");
+                            console.log(lines.slice(-20).join("\n"));
+                            process.exit(1);
+                        }
+                        console.log(`Claude finished: ${result.subtype}, ${result.num_turns} turns, $${result.total_cost_usd ?? "?"}`);
+                        console.log(result.result ?? "");
+                        if (result.is_error) process.exit(1);
+                    ' "$LOG" || STATUS=1
+                    exit $STATUS
 
             -   name: Verify the result
                 # Source of truth for the PR: the agent cannot mark its own work as passing.
@@ -315,7 +344,16 @@ jobs:
                 if: steps.gate.outputs.has-changes == 'true'
                 continue-on-error: true
                 working-directory: ${{ env.MCP_DIR }}
+                env:
+                    NEEDS_AGENT: ${{ steps.gate.outputs.needs-agent }}
+                    CLAUDE_OUTCOME: ${{ steps.claude.outcome }}
                 run: |
+                    # The mechanical regeneration passes on its own, so verification alone would let a PR through
+                    # without the allow-list, SDK.md and PR body work: a failed agent run fails the sync.
+                    if [ "$NEEDS_AGENT" == "true" ] && [ "$CLAUDE_OUTCOME" != "success" ]; then
+                        echo "::error::Claude was needed but the 'Sync the MCP server with Claude' step ended with '$CLAUDE_OUTCOME'."
+                        exit 1
+                    fi
                     yarn run generate
                     yarn run build
                     yarn test

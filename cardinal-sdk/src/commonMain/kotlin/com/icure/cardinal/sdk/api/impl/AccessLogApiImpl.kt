@@ -16,6 +16,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.AccessLogDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.AccessLogShareOptions
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -374,7 +375,8 @@ private class AccessLogFlavouredInGroupApiImpl<E : AccessLog>(
 
 @InternalIcureApi
 private abstract class AbstractAccessLogBasicFlavourless(
-	protected val rawApi: RawAccessLogApi
+	protected val rawApi: RawAccessLogApi,
+	protected val config: BasicApiConfiguration
 ) {
 	protected suspend fun doDeleteAccessLogById(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
 		(
@@ -410,10 +412,20 @@ private abstract class AbstractAccessLogBasicFlavourless(
 				rawApi.purgeAccessLogsInGroup(groupId = groupId, accessLogIdsAndRevs = ListOfIdsAndRev(ids))
 			}.successBody().toStoredDocumentIdentifier()
 		}
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, accessLog: AccessLog): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			accessLog,
+			EntityWithEncryptionMetadataTypeName.AccessLog,
+		)
 }
 
 @InternalIcureApi
-private class AbstractAccessLogBasicFlavourlessApi(rawApi: RawAccessLogApi) : AbstractAccessLogBasicFlavourless(rawApi), AccessLogBasicFlavourlessApi {
+private class AbstractAccessLogBasicFlavourlessApi(
+	rawApi: RawAccessLogApi,
+	config: BasicApiConfiguration
+) : AbstractAccessLogBasicFlavourless(rawApi, config), AccessLogBasicFlavourlessApi {
 
 	override suspend fun deleteAccessLogById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteAccessLogById(groupId = null, entityId, rev)
@@ -427,10 +439,16 @@ private class AbstractAccessLogBasicFlavourlessApi(rawApi: RawAccessLogApi) : Ab
 
 	override suspend fun purgeAccessLogsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		doPurgeAccessLogsByIds(groupId = null, entityIds)
+
+	override suspend fun getDataOwnersWithAccessTo(accessLog: AccessLog): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, accessLog = accessLog)
 }
 
 @InternalIcureApi
-private class AccessLogBasicFlavourlessInGroupApiImpl(rawApi: RawAccessLogApi) : AbstractAccessLogBasicFlavourless(rawApi), AccessLogBasicFlavourlessInGroupApi {
+private class AccessLogBasicFlavourlessInGroupApiImpl(
+	rawApi: RawAccessLogApi,
+	config: BasicApiConfiguration
+) : AbstractAccessLogBasicFlavourless(rawApi, config), AccessLogBasicFlavourlessInGroupApi {
 	override suspend fun deleteAccessLogById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		GroupScoped(doDeleteAccessLogById(entityId.groupId, entityId.entity.id, entityId.entity.rev), entityId.groupId)
 
@@ -447,6 +465,9 @@ private class AccessLogBasicFlavourlessInGroupApiImpl(rawApi: RawAccessLogApi) :
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeAccessLogsByIds(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(accessLog: GroupScoped<AccessLog>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = accessLog.groupId, accessLog = accessLog.entity)
 }
 
 @InternalIcureApi
@@ -469,7 +490,7 @@ private class AccessLogApiImpl(
 	private val decryptedFlavour: FlavouredApi<EncryptedAccessLog, DecryptedAccessLog>,
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedAccessLog, AccessLog>
 ) : AccessLogApi,
-	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi),
+	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi, config),
 	AccessLogFlavouredApi<DecryptedAccessLog> by AccessLogFlavouredApiImpl(rawApi, config, decryptedFlavour) {
 
 	override val encrypted: AccessLogFlavouredApi<EncryptedAccessLog> = AccessLogFlavouredApiImpl(rawApi, config, encryptedFlavour)
@@ -477,7 +498,7 @@ private class AccessLogApiImpl(
 	override val tryAndRecover: AccessLogFlavouredApi<AccessLog> = AccessLogFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 
 	override val inGroup: AccessLogInGroupApi = object : AccessLogInGroupApi,
-		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi),
+		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi, config),
 		AccessLogFlavouredInGroupApi<DecryptedAccessLog> by AccessLogFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour) {
 		override val encrypted: AccessLogFlavouredInGroupApi<EncryptedAccessLog> =
 			AccessLogFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
@@ -750,10 +771,10 @@ private class AccessLogBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedAccessLog, EncryptedAccessLog>,
 ) : AccessLogBasicApi,
 	AccessLogBasicFlavouredApi<EncryptedAccessLog> by AccessLogBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi) {
+	AccessLogBasicFlavourlessApi by AbstractAccessLogBasicFlavourlessApi(rawApi, config) {
 
 	override val inGroup: AccessLogBasicInGroupApi = object : AccessLogBasicInGroupApi,
-		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi),
+		AccessLogBasicFlavourlessInGroupApi by AccessLogBasicFlavourlessInGroupApiImpl(rawApi, config),
 		AccessLogBasicFlavouredInGroupApi<EncryptedAccessLog> by AccessLogBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour) {
 
 		override suspend fun matchAccessLogsBy(

@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.FormBasicApiJs
 import com.icure.cardinal.sdk.js.api.FormBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -309,6 +311,20 @@ internal class FormBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(form: GroupScopedJs<FormJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
+				form,
+				{ x1: FormJs ->
+					form_fromJs(x1)
+				},
+			)
+			val result = formBasicApi.inGroup.getDataOwnersWithAccessTo(
+				formConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>):
@@ -1172,6 +1188,15 @@ internal class FormBasicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(form: FormJs): Promise<EntityAccessInformationJs> =
+			GlobalScope.promise {
+		val formConverted: Form = form_fromJs(form)
+		val result = formBasicApi.getDataOwnersWithAccessTo(
+			formConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun getFormTemplate(formTemplateId: String, options: dynamic): Promise<FormTemplateJs> {
