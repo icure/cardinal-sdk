@@ -386,6 +386,7 @@ internal class SmartTokenProvider private constructor (
 					minimumAuthenticationClass = secret.minimumAuthenticationClass.dtoSerialName,
 					scopeDataOwner = scopeDataOwnerId,
 					doNotUseApplicationIdForGroupSelection = secret.doNotUseProjectIdForGroupSelection,
+					requestedSchemaVersion = designDocSchemaVersion
 				)
 			}
 
@@ -407,6 +408,7 @@ internal class SmartTokenProvider private constructor (
 						groupId = groupId,
 						applicationId = projectId,
 						scopeDataOwner = scopeDataOwnerId,
+						requestedSchemaVersion = designDocSchemaVersion
 					)
 				}
 			}
@@ -416,6 +418,7 @@ internal class SmartTokenProvider private constructor (
 				groupId = groupId,
 				applicationId = projectId,
 				scopeDataOwner = scopeDataOwnerId,
+				requestedSchemaVersion = designDocSchemaVersion
 			)
 		}
 		return try {
