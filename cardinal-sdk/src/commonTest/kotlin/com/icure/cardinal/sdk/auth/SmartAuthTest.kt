@@ -105,7 +105,8 @@ class SmartAuthTest : StringSpec({
 			cacheSecrets = true,
 			allowSecretRetry = true,
 			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			krakenUrl = baseUrl,
+			designDocSchemaVersion = null
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -175,7 +176,8 @@ class SmartAuthTest : StringSpec({
 			cacheSecrets = true,
 			allowSecretRetry = true,
 			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			krakenUrl = baseUrl,
+			designDocSchemaVersion = null
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -283,7 +285,8 @@ class SmartAuthTest : StringSpec({
 			cacheSecrets = true,
 			allowSecretRetry = true,
 			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			krakenUrl = baseUrl,
+			designDocSchemaVersion = null
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -339,7 +342,8 @@ class SmartAuthTest : StringSpec({
 			cacheSecrets = true,
 			allowSecretRetry = true,
 			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			krakenUrl = baseUrl,
+			designDocSchemaVersion = null
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -390,7 +394,8 @@ class SmartAuthTest : StringSpec({
 			cacheSecrets = true,
 			allowSecretRetry = true,
 			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			krakenUrl = baseUrl,
+			designDocSchemaVersion = null
 		)
 		val userApi = getUserApiWithProvider(authProvider)
 		userApi.getCurrentUser().response.status.isSuccess() shouldBe true
@@ -467,7 +472,8 @@ class SmartAuthTest : StringSpec({
 			cacheSecrets = true,
 			allowSecretRetry = true,
 			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			krakenUrl = baseUrl,
+			designDocSchemaVersion = null
 		)
 
 		val userApi = getUserApiWithProvider(authProvider)
@@ -535,7 +541,8 @@ class SmartAuthTest : StringSpec({
 			cacheSecrets = true,
 			allowSecretRetry = true,
 			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			krakenUrl = baseUrl,
+			designDocSchemaVersion = null
 		)
 		val defaultGroupUserApi = getUserApiWithProvider(authProvider)
 		val defaultGroupUser = defaultGroupUserApi.getCurrentUser().successBody()

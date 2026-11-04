@@ -89,6 +89,7 @@ internal class SmartTokenProvider private constructor (
 	private val cacheSecrets: Boolean,
 	private val allowSecretRetry: Boolean,
 	private val krakenUrl: String,
+	private val designDocSchemaVersion: Int?,
 	private val refreshPadding: Duration = 30.seconds,
 ) {
 	companion object {
@@ -107,6 +108,7 @@ internal class SmartTokenProvider private constructor (
 			cacheSecrets: Boolean,
 			allowSecretRetry: Boolean,
 			krakenUrl: String,
+			designDocSchemaVersion: Int?,
 			refreshPadding: Duration = 30.seconds,
 		): SmartTokenProvider {
 			val initialSecretCacheable = if (cacheSecrets) initializationSecret?.let { it as? AuthSecretDetails.Cacheable } else null
@@ -125,11 +127,11 @@ internal class SmartTokenProvider private constructor (
 				cacheSecrets = cacheSecrets,
 				allowSecretRetry = allowSecretRetry,
 				krakenUrl = krakenUrl,
+				designDocSchemaVersion = designDocSchemaVersion,
 				refreshPadding = refreshPadding
 			)
 			if (initializationSecret != null && (initialRefreshToken == null || isJwtExpiredOrInvalid(initialRefreshToken))) {
-				val token = provider.doGetTokenWithSecret(initializationSecret, null)
-				when (token) {
+				when (val token = provider.doGetTokenWithSecret(initializationSecret, null)) {
 					is DoGetTokenResult.Success -> {
 						provider.cachedToken = token.bearer.token
 						provider.cachedRefreshToken = token.refresh.token
@@ -158,7 +160,7 @@ internal class SmartTokenProvider private constructor (
 
 
 	suspend fun getTokenForClass(minimumAuthenticationClass: AuthenticationClass): String = tokenCacheMutex.withLock {
-		// By the time the lock is taken another coroutine may have refreshed the cached token and it could now be valid
+		// By the time the lock is taken another coroutine may have refreshed the cached token, and it could now be valid
 		this.cachedToken?.takeIf { cachedToken ->
 			kotlin.runCatching {
 				decodeClaims(cachedToken).isValidForAuthClass(minimumAuthenticationClass, refreshPadding)
@@ -206,6 +208,7 @@ internal class SmartTokenProvider private constructor (
 			refreshPadding = refreshPadding,
 			allowSecretRetry = allowSecretRetry,
 			krakenUrl = krakenUrl,
+			designDocSchemaVersion = designDocSchemaVersion,
 			scopeDataOwnerId = null, // Reset scope on group switch
 		)
 	}
@@ -238,6 +241,7 @@ internal class SmartTokenProvider private constructor (
 			refreshPadding = refreshPadding,
 			allowSecretRetry = allowSecretRetry,
 			krakenUrl = krakenUrl,
+			designDocSchemaVersion = designDocSchemaVersion,
 			scopeDataOwnerId = dataOwnerId,
 		)
 	}
@@ -264,11 +268,11 @@ internal class SmartTokenProvider private constructor (
 	}?.let { secret ->
 		val result = doGetTokenWithSecret(secret, secret.type)
 		if (!cacheSecrets) currentLongLivedSecret = null
-		when {
-			result is DoGetTokenResult.Success -> JwtBearerAndRefresh(result.bearer, result.refresh)
-			result is DoGetTokenResult.Failure
-				&& result.reason == DoGetTokenResult.DoGetTokenResultFailureReason.Needs2FA
+		when (result) {
+			is DoGetTokenResult.Success -> JwtBearerAndRefresh(result.bearer, result.refresh)
+			is DoGetTokenResult.Failure if result.reason == DoGetTokenResult.DoGetTokenResultFailureReason.Needs2FA
 				&& (minimumAuthenticationClass?.level ?: 0) <= AuthenticationClass.TwoFactorAuthentication.level -> askTotpAndGetToken(secret.secret, minimumAuthenticationClass)
+
 			else -> askSecretAndGetToken(minimumAuthenticationClass, true)
 		}
 	} ?: askSecretAndGetToken(minimumAuthenticationClass, true)
@@ -320,16 +324,18 @@ internal class SmartTokenProvider private constructor (
 			throw IllegalStateException("Was expecting a 2fa token but got a secret of type ${details::class.simpleName}.")
 		}
 		val result = doGetTokenWithSecret(AuthSecretDetails.TwoFactorAuthTokenDetails(secret = "${password}|${details.secret}"), minimumAuthenticationClass)
-		return when {
-			result is DoGetTokenResult.Success -> {
+		return when (result) {
+			is DoGetTokenResult.Success -> {
 				if (cacheSecrets) {
 					this.currentLongLivedSecret = AuthSecretDetails.PasswordDetails(password)
 				}
 				JwtBearerAndRefresh(result.bearer, result.refresh)
 			}
-			result is DoGetTokenResult.Failure && result.reason != DoGetTokenResult.DoGetTokenResultFailureReason.Invalid2FA -> {
+
+			is DoGetTokenResult.Failure if result.reason != DoGetTokenResult.DoGetTokenResultFailureReason.Invalid2FA -> {
 				throw IllegalStateException("Unexpected error while trying to login with (previously) valid password and 2fa token ${result.reason}.")
 			}
+
 			else -> {
 				askTotpAndGetToken(password, minimumAuthenticationClass, previousAttempts + details)
 			}
@@ -345,8 +351,8 @@ internal class SmartTokenProvider private constructor (
 		secret: AuthSecretDetails,
 		minimumAuthenticationClass: AuthenticationClass?,
 	): DoGetTokenResult {
-		val authResponse = when {
-			secret is AuthSecretDetails.ConfiguredExternalAuthenticationDetails -> {
+		val authResponse = when (secret) {
+			is AuthSecretDetails.ConfiguredExternalAuthenticationDetails -> {
 				authApi.loginWithExternalJwt(
 					configId = secret.configId,
 					token = secret.secret,
@@ -359,7 +365,8 @@ internal class SmartTokenProvider private constructor (
 					doNotUseApplicationIdForGroupSelection = secret.doNotUseProjectIdForGroupSelection,
 				)
 			}
-			secret is AuthSecretDetails.ShortLivedTokenDetails -> {
+
+			is AuthSecretDetails.ShortLivedTokenDetails -> {
 				messageGatewayApi.completeProcess(
 					messageGatewayUrl = secret.authenticationProcessInfo.messageGwUrl,
 					externalServicesSpecId = secret.authenticationProcessInfo.specId,
@@ -381,13 +388,12 @@ internal class SmartTokenProvider private constructor (
 				}
 			}
 
-			else ->
-				authApi.login(
-					loginCredentials = LoginCredentials(username = requireLoginUsername, password = secret.secret),
-					groupId = groupId,
-					applicationId = projectId,
-					scopeDataOwner = scopeDataOwnerId,
-				)
+			else -> authApi.login(
+				loginCredentials = LoginCredentials(username = requireLoginUsername, password = secret.secret),
+				groupId = groupId,
+				applicationId = projectId,
+				scopeDataOwner = scopeDataOwnerId,
+			)
 		}
 		return try {
 			val authPayload = authResponse.successBody()

@@ -21,7 +21,7 @@ interface HttpSdkOptions {
 	 * Specify which client to use for performing http requests (rest).
 	 * You will be responsible for closing the client after you are done using the sdk.
 	 *
-	 * This client must support json serialization.
+	 * This client must support JSON serialization.
 	 *
 	 * If null an http client instance shared across all sdks will be used.
 	 */
@@ -74,6 +74,11 @@ interface CommonSdkOptions : HttpSdkOptions, SerializationOptions {
 	 * Service for encryption primitives
 	 */
 	val cryptoService: CryptoService
+
+	/**
+	 * The version of the design doc schema to use. If null, it will use the latest available on the group.
+	 */
+	val designDocSchemaVersion: Int?
 }
 
 interface BoundSdkOptions : CommonSdkOptions {
@@ -164,7 +169,7 @@ data class BasicToFullSdkOptions(
 data class SdkOptions(
 	override val encryptedFields: EncryptedFieldsConfiguration = EncryptedFieldsConfiguration(),
 	/**
-	 * Has only effect when logging in as an hcp user.
+	 * Has only effect when logging in as a hcp user.
 	 *
 	 * If true the api will be initialized in a hierarchical mode, where each data owner is considered to have access
 	 * to all data of his parents (requires corresponding permission on the server side).
@@ -205,7 +210,7 @@ data class SdkOptions(
 	 */
 	val cryptoStrategies: CryptoStrategies? = null,
 	/**
-	 * Patcher for the decrypted entities json.
+	 * Patcher for the decrypted entities JSON.
 	 * This allows adapting to changes in the data model of entities even if the changes are done to the encrypted part
 	 * of the entity.
 	 */
@@ -216,6 +221,7 @@ data class SdkOptions(
 	 * The SDK shouldn't be used anymore after this job is canceled.
 	 */
 	val parentJob: Job? = null,
+	override val designDocSchemaVersion: Int? = null,
 	override val requestTimeout: Duration? = null,
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val dataOwnerScope: String? = null,
@@ -275,6 +281,7 @@ data class BasicSdkOptions(
 	override val dataOwnerScope: String? = null,
 	override val ignoreUnknownFields: Boolean? = null,
 	override val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
+	override val designDocSchemaVersion: Int? = null,
 ): BoundSdkOptions {
 	init {
 		validateHttpAndSerializationOptions()
@@ -347,6 +354,12 @@ data class UnboundBasicSdkOptions(
 		requestTimeout = requestTimeout,
 		requestRetryConfiguration = requestRetryConfiguration,
 	)
+
+	/**
+	 * The unbound uses the token directly, so the required schema version is already encoded there.
+	 */
+	override val designDocSchemaVersion: Int?
+		get() = null
 }
 
 @Serializable
