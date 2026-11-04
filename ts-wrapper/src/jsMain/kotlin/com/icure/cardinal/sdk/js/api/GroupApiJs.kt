@@ -146,4 +146,29 @@ public external interface GroupApiJs {
 		rev: String,
 		tagId: String,
 	): Promise<GroupJs>
+
+	public fun createApplicationGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs>
+
+	public fun createTenantGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs>
+
+	public fun addSchemaVersionOnGroups(
+		applicationGroupId: String,
+		schemaVersion: Double,
+		groupIds: Array<String>,
+	): Promise<Array<GroupJs>>
+
+	public fun removeSchemaVersionFromGroups(
+		applicationGroupId: String,
+		schemaVersion: Double,
+		groupIds: Array<String>,
+		options: dynamic,
+	): Promise<Array<GroupJs>>
 }
