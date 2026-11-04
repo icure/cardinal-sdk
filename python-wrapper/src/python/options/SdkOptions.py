@@ -110,6 +110,7 @@ class SdkOptions:
     crypto_strategies: Optional[CryptoStrategies] = None
     json_patcher: Optional[JsonPatcher] = None
     ignoreUnknownFields: bool = False
+    designDocSchemaVersion: Optional[int] = None
 
 
 def _serialize_encrypted_fields(fields: EncryptedFieldsConfiguration):

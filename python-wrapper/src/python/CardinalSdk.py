@@ -65,6 +65,7 @@ class CardinalSdk:
             'createTransferKeys': options.create_transfer_keys,
             'keyStorage': key_storage_info[0],
             'ignoreUnknownFields': options.ignoreUnknownFields,
+            'designDocSchemaVersion': options.designDocSchemaVersion
         }
 
         # need to keep a reference to avoid GC
