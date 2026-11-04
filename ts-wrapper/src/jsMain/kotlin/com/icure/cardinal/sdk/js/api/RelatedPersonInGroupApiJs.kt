@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedRelatedPersonJs
@@ -74,6 +75,9 @@ public external interface RelatedPersonInGroupApiJs {
 	public fun purgeRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Unit>
 
 	public fun purgeRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {Contact, EncryptedContact} from '../model/Contact.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -109,6 +110,18 @@ export interface ContactBasicInGroupApi {
 	 *  In-group version of [ContactBasicFlavourlessApi.purgeContacts]
 	 */
 	purgeContacts(contacts: Array<GroupScoped<Contact>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(contact: GroupScoped<Contact>): Promise<EntityAccessInformation>;
+
+	/**
+	 *
+	 *  In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessToService].
+	 */
+	getDataOwnersWithAccessToService(service: GroupScoped<Service>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

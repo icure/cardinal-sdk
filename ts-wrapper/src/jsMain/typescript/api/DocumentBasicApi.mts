@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {Document, EncryptedDocument} from '../model/Document.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {DocumentBasicInGroupApi} from './DocumentBasicInGroupApi.mjs';
@@ -226,6 +227,17 @@ export interface DocumentBasicApi {
 	 */
 	deleteSecondaryAttachment(documentId: string, key: string,
 			rev: string): Promise<EncryptedDocument>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided document, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param document a document
+	 *  @return information on users with access to the provided document
+	 */
+	getDataOwnersWithAccessTo(document: Document): Promise<EntityAccessInformation>;
 
 	/**
 	 *

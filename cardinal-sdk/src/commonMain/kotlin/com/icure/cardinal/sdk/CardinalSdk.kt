@@ -178,6 +178,9 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * Entry point for using cardinal, official documentation at https://docs.icure.com/
+ */
 interface CardinalSdk : CardinalApis {
 	/**
 	 * The id of the group this SDK is bound to. Always `null` when working with kraken-lite instances.

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.ReceiptDelegateOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.EncryptedReceiptJs
@@ -76,6 +77,9 @@ public external interface ReceiptInGroupApiJs {
 		receiptId: String,
 		attachmentId: String,
 	): Promise<ByteArray>
+
+	public fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

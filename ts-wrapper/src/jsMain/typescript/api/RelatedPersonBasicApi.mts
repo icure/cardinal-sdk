@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {EncryptedRelatedPerson, RelatedPerson} from '../model/RelatedPerson.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {RelatedPersonBasicInGroupApi} from './RelatedPersonBasicInGroupApi.mjs';
@@ -135,6 +136,17 @@ export interface RelatedPersonBasicApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeRelatedPersons(relatedPersons: Array<RelatedPerson>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided related person, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param relatedPerson a related person
+	 *  @return information on users with access to the provided related person
+	 */
+	getDataOwnersWithAccessTo(relatedPerson: RelatedPerson): Promise<EntityAccessInformation>;
 
 	/**
 	 *

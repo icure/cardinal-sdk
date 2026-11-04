@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {AccessLog, EncryptedAccessLog} from '../model/AccessLog.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {AccessLogBasicInGroupApi} from './AccessLogBasicInGroupApi.mjs';
@@ -135,6 +136,17 @@ export interface AccessLogBasicApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeAccessLogs(accessLogs: Array<AccessLog>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided access log, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param accessLog an access log
+	 *  @return information on users with access to the provided access log
+	 */
+	getDataOwnersWithAccessTo(accessLog: AccessLog): Promise<EntityAccessInformation>;
 
 	/**
 	 *

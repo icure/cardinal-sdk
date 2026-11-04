@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {EncryptedMessage, Message} from '../model/Message.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
 import {EntitySubscription} from '../subscription/EntitySubscription.mjs';
@@ -138,6 +139,17 @@ export interface MessageBasicApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeMessages(messages: Array<Message>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided message, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param message a message
+	 *  @return information on users with access to the provided message
+	 */
+	getDataOwnersWithAccessTo(message: Message): Promise<EntityAccessInformation>;
 
 	/**
 	 *

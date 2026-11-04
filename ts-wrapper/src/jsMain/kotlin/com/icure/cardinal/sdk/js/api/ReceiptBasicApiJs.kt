@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.model.EncryptedReceiptJs
 import com.icure.cardinal.sdk.js.model.ReceiptJs
 import com.icure.cardinal.sdk.js.model.StoredDocumentIdentifierJs
@@ -42,6 +43,8 @@ public external interface ReceiptBasicApiJs {
 		blobType: String,
 		attachment: ByteArray,
 	): Promise<EncryptedReceiptJs>
+
+	public fun getDataOwnersWithAccessTo(receipt: ReceiptJs): Promise<EntityAccessInformationJs>
 
 	public fun createReceipt(entity: EncryptedReceiptJs): Promise<EncryptedReceiptJs>
 

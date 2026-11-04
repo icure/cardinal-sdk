@@ -4,6 +4,7 @@
 package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedDocumentJs
@@ -105,6 +106,9 @@ public external interface DocumentInGroupApiJs {
 	public fun purgeDocument(document: GroupScopedJs<DocumentJs>): Promise<Unit>
 
 	public fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

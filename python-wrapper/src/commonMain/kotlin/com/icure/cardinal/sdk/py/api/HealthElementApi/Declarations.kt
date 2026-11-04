@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.py.api.HealthElementApi
 
 import com.icure.cardinal.sdk.CardinalApis
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -782,6 +783,44 @@ public fun purgeHealthElementsAsync(
 				decodedParams.healthElements,
 			)
 		}.toPyStringAsyncCallback(ListSerializer(StoredDocumentIdentifier.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class GetDataOwnersWithAccessToParams(
+	public val healthElement: HealthElement,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun getDataOwnersWithAccessToBlocking(sdk: CardinalApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	runBlocking {
+		sdk.healthElement.getDataOwnersWithAccessTo(
+			decodedParams.healthElement,
+		)
+	}
+}.toPyString(EntityAccessInformation.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun getDataOwnersWithAccessToAsync(
+	sdk: CardinalApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<GetDataOwnersWithAccessToParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.healthElement.getDataOwnersWithAccessTo(
+				decodedParams.healthElement,
+			)
+		}.toPyStringAsyncCallback(EntityAccessInformation.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
 

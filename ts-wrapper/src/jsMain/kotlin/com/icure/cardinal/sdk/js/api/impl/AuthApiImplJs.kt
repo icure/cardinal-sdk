@@ -19,4 +19,10 @@ internal class AuthApiImplJs(
 		)
 		result
 	}
+
+	override fun getRefreshToken(): Promise<String> = GlobalScope.promise {
+		val result = authApi.getRefreshToken(
+		)
+		result
+	}
 }

@@ -30,8 +30,10 @@ internal class SmartAuthProvider private constructor(
 			allowSecretRetry: Boolean,
 			messageGatewayApi: RawMessageGatewayApi,
 			krakenUrl: String,
+			requireValidInitialRefreshToken: Boolean = false,
 		) = SmartAuthProvider(
 			SmartTokenProvider(
+				requireValidInitialRefreshToken = requireValidInitialRefreshToken,
 				loginUsername = loginUsername,
 				groupId = groupId,
 				projectId = projectId,

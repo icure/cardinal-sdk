@@ -12,8 +12,10 @@ import com.icure.cardinal.sdk.js.api.RelatedPersonApiJs
 import com.icure.cardinal.sdk.js.api.RelatedPersonFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.RelatedPersonFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.RelatedPersonInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.relatedPersonDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.relatedPersonShareOptions_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -1647,6 +1649,20 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
+		override fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
+				relatedPerson,
+				{ x1: RelatedPersonJs ->
+					relatedPerson_fromJs(x1)
+				},
+			)
+			val result = relatedPersonApi.inGroup.getDataOwnersWithAccessTo(
+				relatedPersonConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			relatedPerson: GroupScopedJs<DecryptedRelatedPersonJs>,
@@ -2315,6 +2331,15 @@ internal class RelatedPersonApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
+			Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
+		val result = relatedPersonApi.getDataOwnersWithAccessTo(
+			relatedPersonConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

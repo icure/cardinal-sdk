@@ -51,6 +51,43 @@ interface UserApi: Subscribable<User, User, FilterOptions<User>> {
 		token: String? = null,
 	): String
 
+	/**
+	 * Revokes an authentication token of a user, by removing the token with the provided [key] from the user.
+	 * If the user has no token with the provided key, the user is returned unchanged.
+	 *
+	 * This method requires the same permissions as other modifications of the user secrets, but since revoking tokens
+	 * can only reduce access it does not require an elevated security context. This means that a user can revoke
+	 * their own tokens regardless of how they authenticated, including through a long-lived token (e.g. to log out
+	 * from a session restored through a "remember me" token).
+	 *
+	 * @param userId id of the user owning the token.
+	 * @param key the key of the token to revoke.
+	 * @return the updated user.
+	 */
+	suspend fun deleteToken(
+		userId: String,
+		key: String,
+	): User
+
+	/**
+	 * Revokes all the authentication tokens of a user, by removing them from the user, except for the tokens with a key
+	 * in [skip].
+	 *
+	 * This method requires the same permissions as other modifications of the user secrets, but since revoking tokens
+	 * can only reduce access it does not require an elevated security context. This means that a user can revoke
+	 * their own tokens regardless of how they authenticated, including through a long-lived token.
+	 * This can be used for example to implement a "sign out everywhere" functionality.
+	 *
+	 * @param userId id of the user owning the tokens.
+	 * @param skip keys of the tokens that should not be revoked. If null all tokens will be revoked.
+	 * @return the updated user.
+	 */
+	suspend fun deleteAllTokens(
+		userId: String,
+		@DefaultValue("null")
+		skip: List<String>? = null,
+	): User
+
 	suspend fun filterUsersBy(filter: BaseFilterOptions<User>): PaginatedListIterator<User>
 	suspend fun matchUsersBy(filter: BaseFilterOptions<User>): List<String>
 	suspend fun filterUsersBySorted(filter: BaseSortableFilterOptions<User>): PaginatedListIterator<User>

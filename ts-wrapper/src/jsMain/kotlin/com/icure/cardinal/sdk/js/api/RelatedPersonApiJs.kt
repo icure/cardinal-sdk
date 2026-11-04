@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.RelatedPersonShareOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -71,6 +72,9 @@ public external interface RelatedPersonApiJs {
 	public fun purgeRelatedPerson(relatedPerson: RelatedPersonJs): Promise<Unit>
 
 	public fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

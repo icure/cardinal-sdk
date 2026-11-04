@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DocumentJs
@@ -74,6 +75,8 @@ public external interface DocumentBasicApiJs {
 		key: String,
 		rev: String,
 	): Promise<EncryptedDocumentJs>
+
+	public fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs>
 
 	public fun createDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs>
 

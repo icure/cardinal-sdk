@@ -5,6 +5,7 @@ package com.icure.cardinal.sdk.js.api
 
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedDocumentJs
@@ -156,6 +157,8 @@ public external interface DocumentApiJs {
 		key: String,
 		rev: String,
 	): Promise<EncryptedDocumentJs>
+
+	public fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

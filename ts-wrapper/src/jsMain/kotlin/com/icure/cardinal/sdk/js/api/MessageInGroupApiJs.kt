@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedMessageJs
@@ -75,6 +76,9 @@ public external interface MessageInGroupApiJs {
 	public fun purgeMessage(message: GroupScopedJs<MessageJs>): Promise<Unit>
 
 	public fun purgeMessages(messages: Array<GroupScopedJs<MessageJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

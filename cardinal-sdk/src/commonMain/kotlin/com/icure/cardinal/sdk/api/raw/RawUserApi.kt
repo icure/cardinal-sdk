@@ -99,6 +99,16 @@ public interface RawUserApi {
 		propertyTypeIdentifiers: List<String>,
 	): HttpResponse<User>
 
+	suspend fun deleteToken(
+		userId: String,
+		key: String,
+	): HttpResponse<User>
+
+	suspend fun deleteAllTokens(
+		userId: String,
+		skip: List<String>? = null,
+	): HttpResponse<User>
+
 	suspend fun getToken(
 		userId: String,
 		key: String,

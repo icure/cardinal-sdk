@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EncryptedMessageJs
@@ -46,6 +47,8 @@ public external interface MessageBasicApiJs {
 	public fun purgeMessage(message: MessageJs): Promise<Unit>
 
 	public fun purgeMessages(messages: Array<MessageJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(message: MessageJs): Promise<EntityAccessInformationJs>
 
 	public fun createMessage(entity: EncryptedMessageJs): Promise<EncryptedMessageJs>
 

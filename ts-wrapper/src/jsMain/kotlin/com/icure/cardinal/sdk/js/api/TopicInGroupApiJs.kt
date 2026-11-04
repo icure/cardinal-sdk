@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.DecryptedTopicJs
@@ -75,6 +76,9 @@ public external interface TopicInGroupApiJs {
 	public fun purgeTopic(topic: GroupScopedJs<TopicJs>): Promise<Unit>
 
 	public fun purgeTopics(topics: Array<GroupScopedJs<TopicJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

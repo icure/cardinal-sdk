@@ -15,9 +15,11 @@ import com.icure.cardinal.sdk.js.api.DocumentFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DocumentInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.DocumentShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.documentDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.documentShareOptions_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -1924,6 +1926,20 @@ internal class DocumentApiImplJs(
 			)
 		}
 
+		override fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
+				document,
+				{ x1: DocumentJs ->
+					document_fromJs(x1)
+				},
+			)
+			val result = documentApi.inGroup.getDataOwnersWithAccessTo(
+				documentConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			document: GroupScopedJs<DecryptedDocumentJs>,
@@ -3047,6 +3063,15 @@ internal class DocumentApiImplJs(
 			revConverted,
 		)
 		document_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs> =
+			GlobalScope.promise {
+		val documentConverted: Document = document_fromJs(document)
+		val result = documentApi.getDataOwnersWithAccessTo(
+			documentConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(
