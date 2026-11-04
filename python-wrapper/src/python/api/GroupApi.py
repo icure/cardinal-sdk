@@ -987,3 +987,161 @@ class GroupApi:
 		else:
 			return_value = Group._deserialize(result_info.success)
 			return return_value
+
+	async def create_application_group_async(self, id: str, name: str, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, project_id: Optional[str] = None) -> Group:
+		def do_decode(raw_result):
+			return Group._deserialize(raw_result)
+		payload = {
+			"id": id,
+			"name": name,
+			"server": server,
+			"q": q,
+			"n": n,
+			"superGroup": super_group,
+			"projectId": project_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.createApplicationGroupAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_application_group_blocking(self, id: str, name: str, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, project_id: Optional[str] = None) -> Group:
+		payload = {
+			"id": id,
+			"name": name,
+			"server": server,
+			"q": q,
+			"n": n,
+			"superGroup": super_group,
+			"projectId": project_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.createApplicationGroupBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = Group._deserialize(result_info.success)
+			return return_value
+
+	async def create_tenant_group_async(self, id: str, name: str, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, project_id: Optional[str] = None) -> Group:
+		def do_decode(raw_result):
+			return Group._deserialize(raw_result)
+		payload = {
+			"id": id,
+			"name": name,
+			"server": server,
+			"q": q,
+			"n": n,
+			"superGroup": super_group,
+			"projectId": project_id,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.createTenantGroupAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def create_tenant_group_blocking(self, id: str, name: str, server: Optional[str] = None, q: Optional[int] = None, n: Optional[int] = None, super_group: Optional[str] = None, project_id: Optional[str] = None) -> Group:
+		payload = {
+			"id": id,
+			"name": name,
+			"server": server,
+			"q": q,
+			"n": n,
+			"superGroup": super_group,
+			"projectId": project_id,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.createTenantGroupBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = Group._deserialize(result_info.success)
+			return return_value
+
+	async def add_schema_version_on_groups_async(self, application_group_id: str, schema_version: int, group_ids: list[str]) -> list[Group]:
+		def do_decode(raw_result):
+			return [Group._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"applicationGroupId": application_group_id,
+			"schemaVersion": schema_version,
+			"groupIds": [x0 for x0 in group_ids],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.addSchemaVersionOnGroupsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def add_schema_version_on_groups_blocking(self, application_group_id: str, schema_version: int, group_ids: list[str]) -> list[Group]:
+		payload = {
+			"applicationGroupId": application_group_id,
+			"schemaVersion": schema_version,
+			"groupIds": [x0 for x0 in group_ids],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.addSchemaVersionOnGroupsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [Group._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def remove_schema_version_from_groups_async(self, application_group_id: str, schema_version: int, group_ids: list[str], fail_if_single_schema: bool = True) -> list[Group]:
+		def do_decode(raw_result):
+			return [Group._deserialize(x1) for x1 in raw_result]
+		payload = {
+			"applicationGroupId": application_group_id,
+			"schemaVersion": schema_version,
+			"groupIds": [x0 for x0 in group_ids],
+			"failIfSingleSchema": fail_if_single_schema,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.removeSchemaVersionFromGroupsAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def remove_schema_version_from_groups_blocking(self, application_group_id: str, schema_version: int, group_ids: list[str], fail_if_single_schema: bool = True) -> list[Group]:
+		payload = {
+			"applicationGroupId": application_group_id,
+			"schemaVersion": schema_version,
+			"groupIds": [x0 for x0 in group_ids],
+			"failIfSingleSchema": fail_if_single_schema,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.GroupApi.removeSchemaVersionFromGroupsBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = [Group._deserialize(x1) for x1 in result_info.success]
+			return return_value

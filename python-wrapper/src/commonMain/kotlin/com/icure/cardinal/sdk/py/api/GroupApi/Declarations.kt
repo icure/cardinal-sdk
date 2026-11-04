@@ -1286,3 +1286,202 @@ public fun removeTagFromGroupAsync(
 		}.toPyStringAsyncCallback(Group.serializer(), resultCallback)
 	}
 }.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class CreateApplicationGroupParams(
+	public val id: String,
+	public val name: String,
+	public val server: String? = null,
+	public val q: Int? = null,
+	public val n: Int? = null,
+	public val superGroup: String? = null,
+	public val projectId: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createApplicationGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateApplicationGroupParams>(params)
+	runBlocking {
+		sdk.group.createApplicationGroup(
+			decodedParams.id,
+			decodedParams.name,
+			decodedParams.server,
+			decodedParams.q,
+			decodedParams.n,
+			decodedParams.superGroup,
+			decodedParams.projectId,
+		)
+	}
+}.toPyString(Group.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createApplicationGroupAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateApplicationGroupParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.createApplicationGroup(
+				decodedParams.id,
+				decodedParams.name,
+				decodedParams.server,
+				decodedParams.q,
+				decodedParams.n,
+				decodedParams.superGroup,
+				decodedParams.projectId,
+			)
+		}.toPyStringAsyncCallback(Group.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class CreateTenantGroupParams(
+	public val id: String,
+	public val name: String,
+	public val server: String? = null,
+	public val q: Int? = null,
+	public val n: Int? = null,
+	public val superGroup: String? = null,
+	public val projectId: String? = null,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun createTenantGroupBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateTenantGroupParams>(params)
+	runBlocking {
+		sdk.group.createTenantGroup(
+			decodedParams.id,
+			decodedParams.name,
+			decodedParams.server,
+			decodedParams.q,
+			decodedParams.n,
+			decodedParams.superGroup,
+			decodedParams.projectId,
+		)
+	}
+}.toPyString(Group.serializer())
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun createTenantGroupAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams = fullLanguageInteropJson.decodeFromString<CreateTenantGroupParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.createTenantGroup(
+				decodedParams.id,
+				decodedParams.name,
+				decodedParams.server,
+				decodedParams.q,
+				decodedParams.n,
+				decodedParams.superGroup,
+				decodedParams.projectId,
+			)
+		}.toPyStringAsyncCallback(Group.serializer(), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class AddSchemaVersionOnGroupsParams(
+	public val applicationGroupId: String,
+	public val schemaVersion: Int,
+	public val groupIds: List<String>,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun addSchemaVersionOnGroupsBlocking(sdk: CardinalNonCryptoApis, params: String): String =
+		kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<AddSchemaVersionOnGroupsParams>(params)
+	runBlocking {
+		sdk.group.addSchemaVersionOnGroups(
+			decodedParams.applicationGroupId,
+			decodedParams.schemaVersion,
+			decodedParams.groupIds,
+		)
+	}
+}.toPyString(ListSerializer(Group.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun addSchemaVersionOnGroupsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<AddSchemaVersionOnGroupsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.addSchemaVersionOnGroups(
+				decodedParams.applicationGroupId,
+				decodedParams.schemaVersion,
+				decodedParams.groupIds,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Group.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
+
+@Serializable
+private class RemoveSchemaVersionFromGroupsParams(
+	public val applicationGroupId: String,
+	public val schemaVersion: Int,
+	public val groupIds: List<String>,
+	public val failIfSingleSchema: Boolean = true,
+)
+
+@OptIn(InternalIcureApi::class)
+public fun removeSchemaVersionFromGroupsBlocking(sdk: CardinalNonCryptoApis, params: String): String
+		= kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<RemoveSchemaVersionFromGroupsParams>(params)
+	runBlocking {
+		sdk.group.removeSchemaVersionFromGroups(
+			decodedParams.applicationGroupId,
+			decodedParams.schemaVersion,
+			decodedParams.groupIds,
+			decodedParams.failIfSingleSchema,
+		)
+	}
+}.toPyString(ListSerializer(Group.serializer()))
+
+@OptIn(
+	ExperimentalForeignApi::class,
+	InternalIcureApi::class,
+)
+public fun removeSchemaVersionFromGroupsAsync(
+	sdk: CardinalNonCryptoApis,
+	params: String,
+	resultCallback: CPointer<CFunction<(CValues<ByteVarOf<Byte>>?,
+			CValues<ByteVarOf<Byte>>?) -> Unit>>,
+): COpaquePointer? = kotlin.runCatching {
+	val decodedParams =
+			fullLanguageInteropJson.decodeFromString<RemoveSchemaVersionFromGroupsParams>(params)
+	GlobalScope.launch {
+		kotlin.runCatching {
+			sdk.group.removeSchemaVersionFromGroups(
+				decodedParams.applicationGroupId,
+				decodedParams.schemaVersion,
+				decodedParams.groupIds,
+				decodedParams.failIfSingleSchema,
+			)
+		}.toPyStringAsyncCallback(ListSerializer(Group.serializer()), resultCallback)
+	}
+}.failureToPyStringAsyncCallback(resultCallback)
