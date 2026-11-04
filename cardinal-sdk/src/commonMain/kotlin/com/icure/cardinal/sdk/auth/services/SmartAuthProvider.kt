@@ -31,8 +31,10 @@ internal class SmartAuthProvider private constructor(
 			messageGatewayApi: RawMessageGatewayApi,
 			krakenUrl: String,
 			designDocSchemaVersion: Int?,
+			requireValidInitialRefreshToken: Boolean = false,
 		) = SmartAuthProvider(
 			SmartTokenProvider(
+				requireValidInitialRefreshToken = requireValidInitialRefreshToken,
 				loginUsername = loginUsername,
 				groupId = groupId,
 				projectId = projectId,

@@ -68,7 +68,7 @@ export interface GuideDoc {
 	slug: string;
 	title: string;
 	content: string;
-	category: "how-to" | "quickstart" | "encryption" | "troubleshooting";
+	category: "how-to" | "quickstart" | "encryption" | "troubleshooting" | "policy";
 }
 
 export interface DocsManifest {

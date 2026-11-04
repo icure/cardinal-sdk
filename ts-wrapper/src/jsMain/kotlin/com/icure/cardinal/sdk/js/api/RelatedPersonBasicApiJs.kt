@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EncryptedRelatedPersonJs
@@ -52,6 +53,9 @@ public external interface RelatedPersonBasicApiJs {
 
 	public fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
 			Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
+			Promise<EntityAccessInformationJs>
 
 	public fun createRelatedPerson(entity: EncryptedRelatedPersonJs): Promise<EncryptedRelatedPersonJs>
 

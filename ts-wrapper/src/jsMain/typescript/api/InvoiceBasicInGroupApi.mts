@@ -1,4 +1,5 @@
 // auto-generated file
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {EncryptedInvoice, Invoice} from '../model/Invoice.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -53,6 +54,12 @@ export interface InvoiceBasicInGroupApi {
 	 *  In-group version of [InvoiceBasicFlavourlessApi.purgeInvoices]
 	 */
 	purgeInvoices(invoices: Array<GroupScoped<Invoice>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [InvoiceBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(invoice: GroupScoped<Invoice>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

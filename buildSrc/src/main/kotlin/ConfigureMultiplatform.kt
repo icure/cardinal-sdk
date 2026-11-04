@@ -36,6 +36,9 @@ fun Project.configureKotlinJs(
             }
         }
 
+        compilations["main"].packageJson {
+            customField("engines", mapOf("node" to ">=24"))
+        }
     }
 }
 

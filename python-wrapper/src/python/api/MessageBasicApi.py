@@ -1,7 +1,7 @@
 # auto-generated file
 import json
 from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, BaseSortableFilterOptions
-from cardinal_sdk.model import Message, EncryptedMessage, StoredDocumentIdentifier, serialize_message, SubscriptionEventType, EntitySubscriptionConfiguration, GroupScoped
+from cardinal_sdk.model import Message, EncryptedMessage, StoredDocumentIdentifier, serialize_message, EntityAccessInformation, SubscriptionEventType, EntitySubscriptionConfiguration, GroupScoped
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
@@ -407,6 +407,37 @@ class MessageBasicApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def get_data_owners_with_access_to_async(self, message: Message) -> EntityAccessInformation:
+		def do_decode(raw_result):
+			return EntityAccessInformation._deserialize(raw_result)
+		payload = {
+			"message": serialize_message(message),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.MessageBasicApi.getDataOwnersWithAccessToAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_data_owners_with_access_to_blocking(self, message: Message) -> EntityAccessInformation:
+		payload = {
+			"message": serialize_message(message),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.MessageBasicApi.getDataOwnersWithAccessToBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = EntityAccessInformation._deserialize(result_info.success)
 			return return_value
 
 	async def create_message_async(self, entity: EncryptedMessage) -> EncryptedMessage:
@@ -1235,6 +1266,37 @@ class MessageBasicApiInGroup:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def get_data_owners_with_access_to_async(self, message: GroupScoped[Message]) -> EntityAccessInformation:
+		def do_decode(raw_result):
+			return EntityAccessInformation._deserialize(raw_result)
+		payload = {
+			"message": message.__serialize__(lambda x0: serialize_message(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.MessageBasicApi.inGroup.getDataOwnersWithAccessToAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_data_owners_with_access_to_blocking(self, message: GroupScoped[Message]) -> EntityAccessInformation:
+		payload = {
+			"message": message.__serialize__(lambda x0: serialize_message(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.MessageBasicApi.inGroup.getDataOwnersWithAccessToBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = EntityAccessInformation._deserialize(result_info.success)
 			return return_value
 
 	async def create_message_async(self, entity: GroupScoped[EncryptedMessage]) -> GroupScoped[EncryptedMessage]:

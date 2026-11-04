@@ -178,6 +178,9 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.Duration.Companion.seconds
 
+/**
+ * Entry point for using cardinal, official documentation at https://docs.icure.com/
+ */
 interface CardinalSdk : CardinalApis {
 	/**
 	 * The id of the group this SDK is bound to. Always `null` when working with kraken-lite instances.
@@ -504,12 +507,13 @@ internal suspend fun initializeApiCrypto(
 		retryConfiguration = options.requestRetryConfiguration,
 		entityListDecodingStrategy = options.entityListDecodingStrategy,
 	)
+	val rawDataOwnerApi = RawDataOwnerApiImpl(
+		apiUrl,
+		authProvider,
+		rawApiConfig
+	)
 	val dataOwnerApi = DataOwnerApiImpl(
-		RawDataOwnerApiImpl(
-			apiUrl,
-			authProvider,
-			rawApiConfig
-		),
+		rawDataOwnerApi,
 		boundGroup
 	)
 	val self = dataOwnerApi.getCurrentDataOwner()
@@ -537,6 +541,7 @@ internal suspend fun initializeApiCrypto(
 	val baseExchangeKeysManager = BaseExchangeKeysManagerImpl(
 		cryptoService,
 		dataOwnerApi,
+		rawDataOwnerApi,
 		rawPatientApiNoAccessKeys,
 		rawDeviceApi,
 		rawHealthcarePartyApi,

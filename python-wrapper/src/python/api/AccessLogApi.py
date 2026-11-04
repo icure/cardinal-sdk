@@ -1,7 +1,7 @@
 # auto-generated file
 import json
 from typing import Optional
-from cardinal_sdk.model import DecryptedAccessLog, Patient, User, AccessLevel, SecretIdUseOption, SecretIdUseOptionUseAnySharedWithParent, serialize_patient, serialize_secret_id_use_option, AccessLogDelegateOptions, AccessLog, serialize_access_log, EntityReferenceInGroup, EncryptedAccessLog, deserialize_access_log, StoredDocumentIdentifier, AccessLogShareOptions, GroupScoped
+from cardinal_sdk.model import DecryptedAccessLog, Patient, User, AccessLevel, SecretIdUseOption, SecretIdUseOptionUseAnySharedWithParent, serialize_patient, serialize_secret_id_use_option, AccessLogDelegateOptions, AccessLog, serialize_access_log, EntityReferenceInGroup, EncryptedAccessLog, deserialize_access_log, StoredDocumentIdentifier, EntityAccessInformation, AccessLogShareOptions, GroupScoped
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
@@ -592,6 +592,37 @@ class AccessLogApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def get_data_owners_with_access_to_async(self, access_log: AccessLog) -> EntityAccessInformation:
+		def do_decode(raw_result):
+			return EntityAccessInformation._deserialize(raw_result)
+		payload = {
+			"accessLog": serialize_access_log(access_log),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.getDataOwnersWithAccessToAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_data_owners_with_access_to_blocking(self, access_log: AccessLog) -> EntityAccessInformation:
+		payload = {
+			"accessLog": serialize_access_log(access_log),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.getDataOwnersWithAccessToBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = EntityAccessInformation._deserialize(result_info.success)
 			return return_value
 
 	async def share_with_async(self, delegate_id: str, access_log: DecryptedAccessLog, options: Optional[AccessLogShareOptions] = None) -> DecryptedAccessLog:
@@ -2584,6 +2615,193 @@ class AccessLogApiInGroup:
 		else:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
 			return return_value
+
+	async def get_data_owners_with_access_to_async(self, access_log: GroupScoped[AccessLog]) -> EntityAccessInformation:
+		def do_decode(raw_result):
+			return EntityAccessInformation._deserialize(raw_result)
+		payload = {
+			"accessLog": access_log.__serialize__(lambda x0: serialize_access_log(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.getDataOwnersWithAccessToAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_data_owners_with_access_to_blocking(self, access_log: GroupScoped[AccessLog]) -> EntityAccessInformation:
+		payload = {
+			"accessLog": access_log.__serialize__(lambda x0: serialize_access_log(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.getDataOwnersWithAccessToBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = EntityAccessInformation._deserialize(result_info.success)
+			return return_value
+
+	async def share_with_async(self, delegate: EntityReferenceInGroup, access_log: GroupScoped[DecryptedAccessLog], options: Optional[AccessLogShareOptions] = None) -> GroupScoped[DecryptedAccessLog]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedAccessLog._deserialize(x1))
+		payload = {
+			"delegate": delegate.__serialize__(),
+			"accessLog": access_log.__serialize__(lambda x0: x0.__serialize__()),
+			"options": options.__serialize__() if options is not None else None,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.shareWithAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def share_with_blocking(self, delegate: EntityReferenceInGroup, access_log: GroupScoped[DecryptedAccessLog], options: Optional[AccessLogShareOptions] = None) -> GroupScoped[DecryptedAccessLog]:
+		payload = {
+			"delegate": delegate.__serialize__(),
+			"accessLog": access_log.__serialize__(lambda x0: x0.__serialize__()),
+			"options": options.__serialize__() if options is not None else None,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.shareWithBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedAccessLog._deserialize(x1))
+			return return_value
+
+	async def share_with_many_async(self, access_log: GroupScoped[DecryptedAccessLog], delegates: dict[EntityReferenceInGroup, AccessLogShareOptions]) -> GroupScoped[DecryptedAccessLog]:
+		def do_decode(raw_result):
+			return GroupScoped._deserialize(raw_result, lambda x1: DecryptedAccessLog._deserialize(x1))
+		payload = {
+			"accessLog": access_log.__serialize__(lambda x0: x0.__serialize__()),
+			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.shareWithManyAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def share_with_many_blocking(self, access_log: GroupScoped[DecryptedAccessLog], delegates: dict[EntityReferenceInGroup, AccessLogShareOptions]) -> GroupScoped[DecryptedAccessLog]:
+		payload = {
+			"accessLog": access_log.__serialize__(lambda x0: x0.__serialize__()),
+			"delegates": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in delegates.items()],
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.shareWithManyBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = GroupScoped._deserialize(result_info.success, lambda x1: DecryptedAccessLog._deserialize(x1))
+			return return_value
+
+	async def filter_access_logs_by_async(self, group_id: str, filter: FilterOptions[AccessLog]) -> PaginatedListIterator[GroupScoped[DecryptedAccessLog]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[DecryptedAccessLog]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedAccessLog._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.filterAccessLogsByAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_access_logs_by_blocking(self, group_id: str, filter: FilterOptions[AccessLog]) -> PaginatedListIterator[GroupScoped[DecryptedAccessLog]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.filterAccessLogsByBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[DecryptedAccessLog]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedAccessLog._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+
+	async def filter_access_logs_by_sorted_async(self, group_id: str, filter: SortableFilterOptions[AccessLog]) -> PaginatedListIterator[GroupScoped[DecryptedAccessLog]]:
+		def do_decode(raw_result):
+			return PaginatedListIterator[GroupScoped[DecryptedAccessLog]](
+				producer = raw_result,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedAccessLog._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			False,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.filterAccessLogsBySortedAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def filter_access_logs_by_sorted_blocking(self, group_id: str, filter: SortableFilterOptions[AccessLog]) -> PaginatedListIterator[GroupScoped[DecryptedAccessLog]]:
+		payload = {
+			"groupId": group_id,
+			"filter": filter.__serialize__(),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.AccessLogApi.inGroup.filterAccessLogsBySortedBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		error_str_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_failure(call_result)
+		if error_str_pointer is not None:
+			error_data_str = cast(error_str_pointer, c_char_p).value.decode('utf_8')
+			symbols.DisposeString(error_str_pointer)
+			symbols.DisposeStablePointer(call_result.pinned)
+			raise interpret_kt_error(json.loads(error_data_str))
+		else:
+			class_pointer = symbols.kotlin.root.com.icure.cardinal.sdk.py.utils.PyResult.get_success(call_result)
+			symbols.DisposeStablePointer(call_result.pinned)
+			return PaginatedListIterator[GroupScoped[DecryptedAccessLog]](
+				producer = class_pointer,
+				deserializer = lambda x: GroupScoped._deserialize(x, lambda x1: DecryptedAccessLog._deserialize(x1)),
+				executor = self.cardinal_sdk._executor
+			)
 
 	async def create_access_log_async(self, entity: GroupScoped[DecryptedAccessLog]) -> GroupScoped[DecryptedAccessLog]:
 		def do_decode(raw_result):

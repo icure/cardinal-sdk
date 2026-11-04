@@ -61,6 +61,16 @@ describe("search_documentation", () => {
 		expect(out.results.some(r => /calendaritem/i.test(r.uri) || /calendaritem/i.test(r.name))).toBe(true);
 	});
 
+	it("finds the acceptable use guide from a question about medical application credentials", async () => {
+		const out = await search({ query: "own app with my medical application credentials", category: "guides" });
+		expect(out.results.some(r => r.uri === "cardinal://docs/guide/policy-acceptable-use")).toBe(true);
+	});
+
+	it("finds AGENTS.md from a request to connect to an existing EHR", async () => {
+		const out = await search({ query: "connect app to my EHR existing database", category: "guides" });
+		expect(out.results.some(r => r.uri === "cardinal://docs/guide/policy-agents")).toBe(true);
+	});
+
 	it("filters can be discovered via search", async () => {
 		const out = await search({ query: "filter", category: "filters" });
 		expect(out.resultCount).toBeGreaterThan(0);

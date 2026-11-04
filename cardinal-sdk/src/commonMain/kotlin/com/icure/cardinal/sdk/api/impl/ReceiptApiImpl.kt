@@ -15,6 +15,7 @@ import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
 import com.icure.cardinal.sdk.crypto.entities.DelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.OwningEntityDetails
 import com.icure.cardinal.sdk.crypto.entities.ReceiptDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ReceiptShareOptions
@@ -341,7 +342,8 @@ private class ReceiptFlavouredInGroupApiImpl<E : Receipt>(
 
 @InternalIcureApi
 private abstract class AbstractReceiptBasicFlavourless(
-	protected val rawApi: RawReceiptApi
+	protected val rawApi: RawReceiptApi,
+	protected val config: BasicApiConfiguration
 ) {
 
 	protected suspend fun doDeleteReceipt(groupId: String?, entityId: String, rev: String): StoredDocumentIdentifier =
@@ -385,10 +387,20 @@ private abstract class AbstractReceiptBasicFlavourless(
 
 	suspend fun setRawReceiptAttachment(receiptId: String, rev: String, blobType: String, attachment: ByteArray): EncryptedReceipt =
 		rawApi.setReceiptAttachment(receiptId = receiptId, blobType = blobType, rev = rev, payload = attachment).successBody()
+
+	protected suspend fun doGetDataOwnersWithAccessTo(groupId: String?, receipt: Receipt): EntityAccessInformation =
+		config.crypto.entityAccessInformationProvider.getDataOwnersWithAccessTo(
+			groupId,
+			receipt,
+			EntityWithEncryptionMetadataTypeName.Receipt,
+		)
 }
 
 @InternalIcureApi
-private class ReceiptBasicFlavourlessApiImpl(rawApi: RawReceiptApi) : AbstractReceiptBasicFlavourless(rawApi), ReceiptBasicFlavourlessApi {
+private class ReceiptBasicFlavourlessApiImpl(
+	rawApi: RawReceiptApi,
+	config: BasicApiConfiguration
+) : AbstractReceiptBasicFlavourless(rawApi, config), ReceiptBasicFlavourlessApi {
 
 	override suspend fun deleteReceiptById(entityId: String, rev: String): StoredDocumentIdentifier =
 		doDeleteReceipt(groupId = null, entityId, rev)
@@ -402,10 +414,16 @@ private class ReceiptBasicFlavourlessApiImpl(rawApi: RawReceiptApi) : AbstractRe
 
 	override suspend fun purgeReceiptsByIds(entityIds: List<StoredDocumentIdentifier>): List<StoredDocumentIdentifier> =
 		doPurgeReceipts(groupId = null, entityIds = entityIds)
+
+	override suspend fun getDataOwnersWithAccessTo(receipt: Receipt): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = null, receipt = receipt)
 }
 
 @InternalIcureApi
-private class ReceiptBasicFlavourlessInGroupApiImpl(rawApi: RawReceiptApi) : AbstractReceiptBasicFlavourless(rawApi), ReceiptBasicFlavourlessInGroupApi {
+private class ReceiptBasicFlavourlessInGroupApiImpl(
+	rawApi: RawReceiptApi,
+	config: BasicApiConfiguration
+) : AbstractReceiptBasicFlavourless(rawApi, config), ReceiptBasicFlavourlessInGroupApi {
 	override suspend fun deleteReceiptById(entityId: GroupScoped<StoredDocumentIdentifier>): GroupScoped<StoredDocumentIdentifier> =
 		groupScopedWith(entityId) { groupId, it ->
 			doDeleteReceipt(groupId, it.id, it.rev)
@@ -424,6 +442,9 @@ private class ReceiptBasicFlavourlessInGroupApiImpl(rawApi: RawReceiptApi) : Abs
 		entityIds.mapUniqueIdentifiablesChunkedByGroup { groupId, batch ->
 			doPurgeReceipts(groupId, batch)
 		}
+
+	override suspend fun getDataOwnersWithAccessTo(receipt: GroupScoped<Receipt>): EntityAccessInformation =
+		doGetDataOwnersWithAccessTo(groupId = receipt.groupId, receipt = receipt.entity)
 }
 
 @InternalIcureApi
@@ -452,12 +473,12 @@ private class ReceiptApiImpl(
 	private val tryAndRecoverFlavour: FlavouredApi<EncryptedReceipt, Receipt>,
 ) : ReceiptApi,
 	ReceiptFlavouredApi<DecryptedReceipt> by ReceiptFlavouredApiImpl(rawApi, config, decryptedFlavour),
-	ReceiptBasicFlavourlessApi by ReceiptBasicFlavourlessApiImpl(rawApi) {
+	ReceiptBasicFlavourlessApi by ReceiptBasicFlavourlessApiImpl(rawApi, config) {
 	override val encrypted: ReceiptFlavouredApi<EncryptedReceipt> = ReceiptFlavouredApiImpl(rawApi, config, encryptedFlavour)
 	override val tryAndRecover: ReceiptFlavouredApi<Receipt> = ReceiptFlavouredApiImpl(rawApi, config, tryAndRecoverFlavour)
 	override val inGroup: ReceiptInGroupApi = object : ReceiptInGroupApi,
 		ReceiptFlavouredInGroupApi<DecryptedReceipt> by ReceiptFlavouredInGroupApiImpl(rawApi, config, decryptedFlavour),
-		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi) {
+		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi, config) {
 
 		override val encrypted: ReceiptFlavouredInGroupApi<EncryptedReceipt> =
 			ReceiptFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour)
@@ -709,10 +730,10 @@ private class ReceiptApiImpl(
 			?: throw EntityEncryptionException("Cannot extract encryption key from receipt")
 		val payload = config.crypto.primitives.aes.encrypt(attachment, aesKey)
 		return rawApi.setReceiptAttachment(
-			receipt.id,
-			receipt.rev ?: throw IllegalArgumentException("Receipt must have a revision set before setting the attachment"),
-			blobType,
-			payload,
+			receiptId = receipt.id,
+			rev = receipt.rev ?: throw IllegalArgumentException("Receipt must have a revision set before setting the attachment"),
+			blobType = blobType,
+			payload = payload,
 		).successBody()
 	}
 
@@ -740,8 +761,8 @@ private class ReceiptBasicApiImpl(
 	private val encryptedFlavour: FlavouredApi<EncryptedReceipt, EncryptedReceipt>,
 ) : ReceiptBasicApi,
 	ReceiptBasicFlavouredApi<EncryptedReceipt> by ReceiptBasicFlavouredApiImpl(rawApi, config, encryptedFlavour),
-	ReceiptBasicFlavourlessApi by ReceiptBasicFlavourlessApiImpl(rawApi) {
+	ReceiptBasicFlavourlessApi by ReceiptBasicFlavourlessApiImpl(rawApi, config) {
 	override val inGroup: ReceiptBasicInGroupApi = object : ReceiptBasicInGroupApi,
 		ReceiptBasicFlavouredInGroupApi<EncryptedReceipt> by ReceiptBasicFlavouredInGroupApiImpl(rawApi, config, encryptedFlavour),
-		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi) {}
+		ReceiptBasicFlavourlessInGroupApi by ReceiptBasicFlavourlessInGroupApiImpl(rawApi, config) {}
 }

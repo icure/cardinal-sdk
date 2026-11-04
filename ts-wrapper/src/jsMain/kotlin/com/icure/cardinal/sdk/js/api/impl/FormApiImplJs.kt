@@ -14,9 +14,11 @@ import com.icure.cardinal.sdk.js.api.FormApiJs
 import com.icure.cardinal.sdk.js.api.FormFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.FormFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.FormInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.formDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.formShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -1740,6 +1742,20 @@ internal class FormApiImplJs(
 			)
 		}
 
+		override fun getDataOwnersWithAccessTo(form: GroupScopedJs<FormJs>):
+				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
+				form,
+				{ x1: FormJs ->
+					form_fromJs(x1)
+				},
+			)
+			val result = formApi.inGroup.getDataOwnersWithAccessTo(
+				formConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
 		override fun createFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>):
 				Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
 			val formTemplateConverted: GroupScoped<FormTemplate> = groupScoped_fromJs(
@@ -2862,6 +2878,15 @@ internal class FormApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(form: FormJs): Promise<EntityAccessInformationJs> =
+			GlobalScope.promise {
+		val formConverted: Form = form_fromJs(form)
+		val result = formApi.getDataOwnersWithAccessTo(
+			formConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun getFormTemplate(formTemplateId: String, options: dynamic): Promise<FormTemplateJs> {

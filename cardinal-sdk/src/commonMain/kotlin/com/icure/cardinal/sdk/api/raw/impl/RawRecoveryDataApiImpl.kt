@@ -77,7 +77,7 @@ class RawRecoveryDataApiImpl(
 		delete(authProvider) {
 			url {
 				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "recoverydata", "forRecipient", recipientId, "ofType", "$type")
+				appendPathSegments("rest", "v2", "recoverydata", "forRecipient", recipientId, "ofType", type.dtoSerialName)
 			}
 			accept(Application.Json)
 		}.wrap()

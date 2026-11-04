@@ -138,13 +138,15 @@ stop. The workflow's verification step fails the run and attaches your partial d
 To do a sync by hand, from the repository root:
 
 ```bash
-./gradlew :ts-wrapper:prepareDistributionPackage
+# The version comes from the release tag, not from a file: take it from the release PR title ("Release 2.14.20" →
+# 2.14.20, "Release ts-2.14.11" → 2.14.11), or ask the user.
+SDK_VERSION=<version>
+./gradlew :ts-wrapper:prepareDistributionPackage -PsdkVersion="$SDK_VERSION"
 cd cardinal-mcp-server
 corepack enable
 yarn install
 rm -rf node_modules/@icure/cardinal-sdk
 cp -R ../ts-wrapper/build/tsPackage node_modules/@icure/cardinal-sdk
-SDK_VERSION=$(grep -E '^val version = "' ../cardinal-sdk/build.gradle.kts | sed -E 's/.*"(.*)".*/\1/')
 npm pkg set "version=$SDK_VERSION" "dependencies.@icure/cardinal-sdk=^$SDK_VERSION"
 mkdir -p /tmp/mcp-sync && : > /tmp/mcp-sync/outcomes.txt
 yarn run generate > /tmp/mcp-sync/generate.log 2>&1 || echo generate=failed >> /tmp/mcp-sync/outcomes.txt
@@ -163,6 +165,7 @@ and follow the procedure above.
 
 The sync bumps `dependencies["@icure/cardinal-sdk"]` to a version that is not on npm yet, so `yarn install` cannot
 refresh the lockfile entry for it. The committed `yarn.lock` therefore keeps the previous SDK resolution until the
-next sync. The update workflow here and the `publish-mcp-server` job of `publish-cardinal-sdk.yml` in `icure/the-forge`
-both run a mutable `yarn install` followed by `.github/scripts/mcp-check-yarn-lock-drift.sh`, which allows that single
-entry to move and fails on anything else. Do not try to fix this in a sync.
+next sync. The update workflow here and the `publish-mcp-server` job of `publish-cardinal-sdk-ts.yml` (called by
+`release-cardinal-sdk.yml`) in `icure/the-forge` both run a mutable `yarn install` followed by
+`.github/scripts/mcp-check-yarn-lock-drift.sh`, which allows that single entry to move and fails on anything else. Do
+not try to fix this in a sync.

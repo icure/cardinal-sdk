@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {GroupScoped} from '../model/GroupScoped.mjs';
 import {EncryptedHealthElement, HealthElement} from '../model/HealthElement.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -82,6 +83,12 @@ export interface HealthElementBasicInGroupApi {
 	 *  In-group version of [HealthElementBasicFlavourlessApi.purgeHealthElements]
 	 */
 	purgeHealthElements(healthElements: Array<GroupScoped<HealthElement>>): Promise<Array<GroupScoped<StoredDocumentIdentifier>>>;
+
+	/**
+	 *
+	 *  In-group version of [HealthElementBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	getDataOwnersWithAccessTo(healthElement: GroupScoped<HealthElement>): Promise<EntityAccessInformation>;
 
 	/**
 	 *

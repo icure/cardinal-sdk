@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.crypto.entities.TopicDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.TopicShareOptions
@@ -98,6 +99,16 @@ interface TopicBasicFlavourlessApi {
 	 */
 	suspend fun purgeTopics(topics: List<Topic>): List<StoredDocumentIdentifier> =
 		purgeTopicsByIds(topics.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * Get all data owners with access to the provided topic, attempting to identify any unknown anonymous data owners
+	 * using delegations de-anonymization metadata.
+	 * See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 * anonymous data owners and the behaviour of basic apis.
+	 * @param topic a topic
+	 * @return information on users with access to the provided topic
+	 */
+	suspend fun getDataOwnersWithAccessTo(topic: Topic): EntityAccessInformation
 }
 
 interface TopicBasicFlavourlessInGroupApi {
@@ -145,6 +156,11 @@ interface TopicBasicFlavourlessInGroupApi {
 	 */
 	suspend fun purgeTopics(topics: List<GroupScoped<Topic>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeTopicsByIds(topics.map { it.toStoredDocumentIdentifier() })
+
+	/**
+	 * In-group version of [TopicBasicFlavourlessApi.getDataOwnersWithAccessTo].
+	 */
+	suspend fun getDataOwnersWithAccessTo(topic: GroupScoped<Topic>): EntityAccessInformation
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */

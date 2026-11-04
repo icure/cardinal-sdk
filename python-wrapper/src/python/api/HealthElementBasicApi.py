@@ -1,7 +1,7 @@
 # auto-generated file
 import json
 from cardinal_sdk.filters.FilterOptions import BaseFilterOptions, BaseSortableFilterOptions
-from cardinal_sdk.model import HealthElement, EncryptedHealthElement, StoredDocumentIdentifier, serialize_health_element, SubscriptionEventType, EntitySubscriptionConfiguration, GroupScoped
+from cardinal_sdk.model import HealthElement, EncryptedHealthElement, StoredDocumentIdentifier, serialize_health_element, EntityAccessInformation, SubscriptionEventType, EntitySubscriptionConfiguration, GroupScoped
 from cardinal_sdk.async_utils import execute_async_method_job
 from cardinal_sdk.kotlin_types import symbols
 from cardinal_sdk.model.CallResult import create_result_from_json, interpret_kt_error
@@ -407,6 +407,37 @@ class HealthElementBasicApi:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [StoredDocumentIdentifier._deserialize(x1) for x1 in result_info.success]
+			return return_value
+
+	async def get_data_owners_with_access_to_async(self, health_element: HealthElement) -> EntityAccessInformation:
+		def do_decode(raw_result):
+			return EntityAccessInformation._deserialize(raw_result)
+		payload = {
+			"healthElement": serialize_health_element(health_element),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementBasicApi.getDataOwnersWithAccessToAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_data_owners_with_access_to_blocking(self, health_element: HealthElement) -> EntityAccessInformation:
+		payload = {
+			"healthElement": serialize_health_element(health_element),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementBasicApi.getDataOwnersWithAccessToBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = EntityAccessInformation._deserialize(result_info.success)
 			return return_value
 
 	async def create_health_element_async(self, entity: EncryptedHealthElement) -> EncryptedHealthElement:
@@ -1167,6 +1198,37 @@ class HealthElementBasicApiInGroup:
 			raise interpret_kt_error(result_info.failure)
 		else:
 			return_value = [GroupScoped._deserialize(x1, lambda x2: StoredDocumentIdentifier._deserialize(x2)) for x1 in result_info.success]
+			return return_value
+
+	async def get_data_owners_with_access_to_async(self, health_element: GroupScoped[HealthElement]) -> EntityAccessInformation:
+		def do_decode(raw_result):
+			return EntityAccessInformation._deserialize(raw_result)
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementBasicApi.inGroup.getDataOwnersWithAccessToAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def get_data_owners_with_access_to_blocking(self, health_element: GroupScoped[HealthElement]) -> EntityAccessInformation:
+		payload = {
+			"healthElement": health_element.__serialize__(lambda x0: serialize_health_element(x0)),
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.HealthElementBasicApi.inGroup.getDataOwnersWithAccessToBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = EntityAccessInformation._deserialize(result_info.success)
 			return return_value
 
 	async def create_health_element_async(self, entity: GroupScoped[EncryptedHealthElement]) -> GroupScoped[EncryptedHealthElement]:

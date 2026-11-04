@@ -451,6 +451,72 @@ class UserApi:
 			return_value = result_info.success
 			return return_value
 
+	async def delete_token_async(self, user_id: str, key: str) -> User:
+		def do_decode(raw_result):
+			return User._deserialize(raw_result)
+		payload = {
+			"userId": user_id,
+			"key": key,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteTokenAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_token_blocking(self, user_id: str, key: str) -> User:
+		payload = {
+			"userId": user_id,
+			"key": key,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteTokenBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = User._deserialize(result_info.success)
+			return return_value
+
+	async def delete_all_tokens_async(self, user_id: str, skip: Optional[list[str]] = None) -> User:
+		def do_decode(raw_result):
+			return User._deserialize(raw_result)
+		payload = {
+			"userId": user_id,
+			"skip": [x0 for x0 in skip] if skip is not None else None,
+		}
+		return await execute_async_method_job(
+			self.cardinal_sdk._executor,
+			True,
+			do_decode,
+			symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteAllTokensAsync,
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+
+	def delete_all_tokens_blocking(self, user_id: str, skip: Optional[list[str]] = None) -> User:
+		payload = {
+			"userId": user_id,
+			"skip": [x0 for x0 in skip] if skip is not None else None,
+		}
+		call_result = symbols.kotlin.root.com.icure.cardinal.sdk.py.api.UserApi.deleteAllTokensBlocking(
+			self.cardinal_sdk._native,
+			json.dumps(payload).encode('utf-8'),
+		)
+		result_info = create_result_from_json(cast(call_result, c_char_p).value.decode('utf-8'))
+		symbols.DisposeString(call_result)
+		if result_info.failure is not None:
+			raise interpret_kt_error(result_info.failure)
+		else:
+			return_value = User._deserialize(result_info.success)
+			return return_value
+
 	async def filter_users_by_async(self, filter: BaseFilterOptions[User]) -> PaginatedListIterator[User]:
 		def do_decode(raw_result):
 			return PaginatedListIterator[User](

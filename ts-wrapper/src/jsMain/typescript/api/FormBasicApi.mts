@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, BaseSortableFilterOptions, PaginatedListIterator} from '../cardinal-sdk-ts.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {EncryptedForm, Form} from '../model/Form.mjs';
 import {FormTemplate} from '../model/FormTemplate.mjs';
 import {StoredDocumentIdentifier} from '../model/StoredDocumentIdentifier.mjs';
@@ -136,6 +137,17 @@ export interface FormBasicApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeForms(forms: Array<Form>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided form, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param form a form
+	 *  @return information on users with access to the provided form
+	 */
+	getDataOwnersWithAccessTo(form: Form): Promise<EntityAccessInformation>;
 
 	getFormTemplate(formTemplateId: string,
 			options?: { raw?: boolean | undefined }): Promise<FormTemplate>;

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EncryptedTopicJs
@@ -52,6 +53,9 @@ public external interface TopicBasicInGroupApiJs {
 
 	public fun purgeTopics(topics: Array<GroupScopedJs<TopicJs>>):
 			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>):
+			Promise<EntityAccessInformationJs>
 
 	public fun createTopic(entity: GroupScopedJs<EncryptedTopicJs>):
 			Promise<GroupScopedJs<EncryptedTopicJs>>
