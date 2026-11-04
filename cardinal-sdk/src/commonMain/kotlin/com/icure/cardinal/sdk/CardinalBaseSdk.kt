@@ -523,7 +523,7 @@ private class CardinalBaseApisImpl(
 		)
 	}
 
-	@Deprecated("The invoice API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
+	@Deprecated("The invoice API and model are highly specialised for the Belgian market. They will be provided as a separate package in future")
 	override val invoice by lazy {
 		initInvoiceBasicApi(
 			rawApi = RawInvoiceApiImpl(
@@ -569,7 +569,7 @@ private class CardinalBaseApisImpl(
 		)
 	}
 
-	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
+	@Deprecated("The receipt API and model are highly specialised for the Belgian market. They will be provided as a separate package in future")
 	override val receipt by lazy {
 		initReceiptBasicApi(
 			RawReceiptApiImpl(

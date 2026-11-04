@@ -157,7 +157,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			login = null,
 			messageGatewayApi = messageGatewayApi,
 			projectId = projectId,
-			krakenUrl = krakenUrl
+			krakenUrl = krakenUrl,
+			designDocSchemaVersion = options.designDocSchemaVersion
 		)
 		is UsernameLongToken -> smartAuthWithConstantSecret(
 			authApi = authApi,
@@ -166,7 +167,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			login = this.credentials.username,
 			messageGatewayApi = messageGatewayApi,
 			projectId = projectId,
-			krakenUrl = krakenUrl
+			krakenUrl = krakenUrl,
+			designDocSchemaVersion = options.designDocSchemaVersion
 		)
 		is UsernamePassword -> smartAuthWithConstantSecret(
 			authApi = authApi,
@@ -175,7 +177,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			login = this.credentials.username,
 			messageGatewayApi = messageGatewayApi,
 			projectId = projectId,
-			krakenUrl = krakenUrl
+			krakenUrl = krakenUrl,
+			designDocSchemaVersion = options.designDocSchemaVersion
 		)
 		is JwtCredentials -> JwtAuthProvider(authApi, this.credentials.initialBearer, this.credentials.refresh)
 	}
@@ -208,7 +211,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 		cacheSecrets = this.cacheSecrets,
 		allowSecretRetry = true,
 		messageGatewayApi = messageGatewayApi,
-		krakenUrl = krakenUrl
+		krakenUrl = krakenUrl,
+		designDocSchemaVersion = options.designDocSchemaVersion
 	)
 }
 
@@ -257,7 +261,7 @@ private suspend fun AuthProvider.changeScope(scope: String?) =
 	}
 
 @InternalIcureApi
-private suspend fun  smartAuthWithConstantSecret(
+private suspend fun smartAuthWithConstantSecret(
 	authApi: RawAnonymousAuthApi,
 	cryptoService: CryptoService,
 	authSecretDetails: AuthSecretDetails,
@@ -265,6 +269,7 @@ private suspend fun  smartAuthWithConstantSecret(
 	messageGatewayApi: RawMessageGatewayApi,
 	projectId: String?,
 	krakenUrl: String,
+	designDocSchemaVersion: Int?
 ) = SmartAuthProvider.initialize(
 	authApi = authApi,
 	loginUsername = login,
@@ -279,6 +284,7 @@ private suspend fun  smartAuthWithConstantSecret(
 	allowSecretRetry = false,
 	messageGatewayApi = messageGatewayApi,
 	krakenUrl = krakenUrl,
+	designDocSchemaVersion = designDocSchemaVersion
 )
 
 private class ConstantSecretProvider(

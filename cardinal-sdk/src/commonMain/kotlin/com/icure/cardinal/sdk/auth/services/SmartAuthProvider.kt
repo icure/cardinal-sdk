@@ -30,6 +30,7 @@ internal class SmartAuthProvider private constructor(
 			allowSecretRetry: Boolean,
 			messageGatewayApi: RawMessageGatewayApi,
 			krakenUrl: String,
+			designDocSchemaVersion: Int?,
 			requireValidInitialRefreshToken: Boolean = false,
 		) = SmartAuthProvider(
 			SmartTokenProvider(
@@ -48,6 +49,7 @@ internal class SmartAuthProvider private constructor(
 				messageGatewayApi = messageGatewayApi,
 				krakenUrl = krakenUrl,
 				scopeDataOwnerId = null,
+				designDocSchemaVersion = designDocSchemaVersion
 			),
 			groupId
 		)
