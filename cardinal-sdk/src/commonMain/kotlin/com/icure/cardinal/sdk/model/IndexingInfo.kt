@@ -14,8 +14,7 @@ import kotlin.collections.Map
 @Serializable
 data class IndexingInfo(
 	/**
-	 * A map of indexing statuses, keyed by view name, where the value represents the indexing progress
-	 * percentage.
+	 * A map of indexing statuses, keyed by view name, where the value represents the indexing progress percentage.
 	 */
 	public val statuses: Map<String, Int>? = null,
 ) {

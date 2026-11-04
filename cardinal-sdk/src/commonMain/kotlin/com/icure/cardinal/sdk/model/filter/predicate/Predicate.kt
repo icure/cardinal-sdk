@@ -8,8 +8,7 @@ import kotlinx.serialization.json.JsonClassDiscriminator
 import kotlin.OptIn
 
 /**
- * Sealed interface for filter predicates that can be used to post-filter results from a filter
- * chain.
+ * Sealed interface for filter predicates that can be used to post-filter results from a filter chain.
  * /
  */
 @OptIn(ExperimentalSerializationApi::class)

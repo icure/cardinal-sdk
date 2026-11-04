@@ -21,7 +21,10 @@ import kotlin.js.JsQualifier
 @JsName("Agenda")
 public external class AgendaJs(
 	partial: dynamic,
-) : StoredDocumentJs, ICureDocumentJs<String>, HasMedicalLocationJs, HasEndOfLifeJs {
+) : StoredDocumentJs,
+    ICureDocumentJs<String>,
+    HasMedicalLocationJs,
+    HasEndOfLifeJs {
 	override val id: String
 
 	override val rev: String?

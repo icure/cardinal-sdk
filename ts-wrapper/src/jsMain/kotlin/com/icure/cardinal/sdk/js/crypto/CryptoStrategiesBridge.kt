@@ -37,13 +37,15 @@ internal class CryptoStrategiesBridge(
 	private val xCryptoService: XCryptoService
 ) : CryptoStrategies {
 	override suspend fun recoverAndVerifySelfHierarchyKeys(
-		keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+		currentDataOwnerId: String,
+		keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 		cryptoPrimitives: CryptoService,
 		keyPairRecoverer: KeyPairRecoverer
 	): Map<String, CryptoStrategies.RecoveredKeyData> =
 		coroutineScope {
 			val jsResult = cryptoStrategiesJs.recoverAndVerifySelfHierarchyKeys(
-				keysData.map { it.toJs() }.toTypedArray(),
+				currentDataOwnerId,
+				CheckedConverters.mapToObject(keysData, { it }, { it.toJs() }),
 				xCryptoService,
 				KeyPairRecovererBridge(keyPairRecoverer, this)
 			).await()
@@ -63,25 +65,24 @@ internal class CryptoStrategiesBridge(
 			dataOwnerWithType_toJs(self),
 			xCryptoService
 		).await()
-		@Suppress("UNCHECKED_CAST_TO_EXTERNAL_INTERFACE")
-		return when {
-			jsResult === true ->
+		return when (jsResult.kind) {
+			"Allow" ->
 				CryptoStrategies.KeyGenerationRequestResult.Allow
-			jsResult === false ->
+			"Deny" ->
 				CryptoStrategies.KeyGenerationRequestResult.Deny
-			jsResult === "keyless" ->
+			"Keyless" ->
 				CryptoStrategies.KeyGenerationRequestResult.Keyless
-			jsResult === "parent-delegator" ->
-				CryptoStrategies.KeyGenerationRequestResult.ParentDelegator
-			jsTypeOf(jsResult.public) === "object" && jsTypeOf(jsResult.private) === "object" -> {
-				val xKeypair = jsResult as XRsaKeypair
+			"ParentDelegator" ->
+				CryptoStrategies.KeyGenerationRequestResult.ParentDelegator((jsResult as KeyGenerationRequestResultParentDelegatorJs).parentId)
+			"Use" -> {
+				val xKeypair = (jsResult as KeyGenerationRequestResultUseJs).keyPair
 				require(xKeypair.private.algorithm == RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256.identifier) {
 					"Newly generated key should be for OaepWithSha256"
 				}
 				CryptoStrategies.KeyGenerationRequestResult.Use(xKeypair.toKryptom(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha256))
 			}
 			else ->
-				throw IllegalArgumentException("Unexpected value received from generateNewKeyForDataOwner: only boolean, the string \"keyless\" or a key are accepted. $jsResult")
+				throw IllegalArgumentException("Unexpected value received from generateNewKeyForDataOwner: unknown kind \"${jsResult.kind}\"")
 		}
 	}
 
@@ -97,6 +98,26 @@ internal class CryptoStrategiesBridge(
 			xCryptoService,
 			groupId
 		).await().map { SpkiHexString(it) }
+
+	override suspend fun getDelegatesPublicKeys(
+		delegates: Set<String>,
+		groupId: String?,
+	): Map<String, Map<SpkiHexString, RsaAlgorithm.RsaEncryptionAlgorithm>>? =
+		cryptoStrategiesJs.getDelegatesPublicKeys(delegates.toTypedArray(), groupId).await()?.let { res ->
+			CheckedConverters.objectToMap(
+				res,
+				"getDelegatesPublicKeysResult",
+				{ it },
+				{ keys ->
+					CheckedConverters.objectToMap(
+						keys,
+						"getDelegatesPublicKeysResultEntry",
+						{ SpkiHexString(it) },
+						{ RsaAlgorithm.RsaEncryptionAlgorithm.fromIdentifier(it) },
+					)
+				},
+			)
+		}
 
 	override suspend fun dataOwnerRequiresAnonymousDelegation(
 		dataOwner: CryptoActorStubWithType,

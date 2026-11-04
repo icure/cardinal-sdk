@@ -5,8 +5,7 @@ import {randomUuid} from '../../utils/Id.mjs';
 
 /**
  *
- *  Data transfer object containing information about a CouchDB database, including size metrics and
- *  cluster configuration.
+ *  Data transfer object containing information about a CouchDB database, including size metrics and cluster configuration.
  *  /
  */
 export class DatabaseInfo {

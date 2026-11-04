@@ -46,12 +46,10 @@ class RawReceiptApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawReceiptApi {
+) : BaseRawApi(rawApiConfig),
+	RawReceiptApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.Receipt,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Receipt)
 
 	// region common endpoints
 

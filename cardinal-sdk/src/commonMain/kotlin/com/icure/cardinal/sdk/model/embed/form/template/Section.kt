@@ -7,8 +7,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Represents a section within a form template layout, containing a set of structure elements
- * (fields and groups).
+ * Represents a section within a form template layout, containing a set of structure elements (fields and groups).
  * /
  */
 @Serializable

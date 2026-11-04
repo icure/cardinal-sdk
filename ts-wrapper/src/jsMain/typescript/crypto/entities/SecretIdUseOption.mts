@@ -5,32 +5,20 @@
  *  Configuration for which secret id to use for linking to a owning entity (e.g. which secret id of patient to use
  *  when linking a contact to the patient)
  */
-export type SecretIdUseOption = typeof SecretIdUseOption.UseAnyConfidential | typeof SecretIdUseOption.UseAllConfidential | typeof SecretIdUseOption.UseAnySharedWithParent | typeof SecretIdUseOption.UseAllSharedWithParent | SecretIdUseOption.Use | typeof SecretIdUseOption.UseNone;
+export type SecretIdUseOption = typeof SecretIdUseOption.UseAnySharedWithHierarchy | typeof SecretIdUseOption.UseAllSharedWithHierarchy | SecretIdUseOption.Use | typeof SecretIdUseOption.UseNone;
 
 export namespace SecretIdUseOption {
 
-	export const UseAnyConfidential: {
-		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnyConfidential'
+	export const UseAnySharedWithHierarchy: {
+		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy'
 	} = {
-		$ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnyConfidential'
+		$ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy'
 	}
 
-	export const UseAllConfidential: {
-		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllConfidential'
+	export const UseAllSharedWithHierarchy: {
+		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithHierarchy'
 	} = {
-		$ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllConfidential'
-	}
-
-	export const UseAnySharedWithParent: {
-		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent'
-	} = {
-		$ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent'
-	}
-
-	export const UseAllSharedWithParent: {
-		readonly $ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent'
-	} = {
-		$ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent'
+		$ktClass: 'com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithHierarchy'
 	}
 
 	/**

@@ -122,8 +122,7 @@ public object InternalAccessLogFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsDateForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<AccessLogJs> {
+	public fun byPatientsDateForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<AccessLogJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -207,8 +206,7 @@ public object InternalAccessLogFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientSecretIdsDateForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<AccessLogJs> {
+	public fun byPatientSecretIdsDateForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<AccessLogJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -278,8 +276,7 @@ public object InternalAccessLogFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byUserTypeDate(userId: String, options: dynamic):
-			BaseSortableFilterOptionsJs<AccessLogJs> {
+	public fun byUserTypeDate(userId: String, options: dynamic): BaseSortableFilterOptionsJs<AccessLogJs> {
 		val _options = options ?: js("{}")
 		val userIdConverted: String = userId
 		val accessTypeConverted: String? = convertingOptionOrDefaultNullable(

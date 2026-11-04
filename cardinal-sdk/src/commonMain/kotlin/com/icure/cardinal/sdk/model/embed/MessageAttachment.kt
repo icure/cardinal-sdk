@@ -8,8 +8,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Represents an attachment associated with a message, specifying its location type and document
- * identifiers.
+ * Represents an attachment associated with a message, specifying its location type and document identifiers.
  * /
  */
 @Serializable

@@ -33,7 +33,8 @@ class RawDocumentTemplateApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawDocumentTemplateApi {
+) : BaseRawApi(rawApiConfig),
+	RawDocumentTemplateApi {
 	// region common endpoints
 
 	override suspend fun getDocumentTemplate(documentTemplateId: String): HttpResponse<DocumentTemplate> =

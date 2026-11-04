@@ -27,8 +27,7 @@ import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun patientHealthCareParty_toJs(obj: DecryptedPatientHealthCareParty):
-		DecryptedPatientHealthCarePartyJs {
+public fun patientHealthCareParty_toJs(obj: DecryptedPatientHealthCareParty): DecryptedPatientHealthCarePartyJs {
 	val type = nullToUndefined(
 		obj.type?.let { nonNull1 ->
 			nonNull1.name
@@ -75,8 +74,7 @@ public fun patientHealthCareParty_toJs(obj: DecryptedPatientHealthCareParty):
 	"}"))
 }
 
-public fun patientHealthCareParty_fromJs(obj: DecryptedPatientHealthCarePartyJs):
-		DecryptedPatientHealthCareParty {
+public fun patientHealthCareParty_fromJs(obj: DecryptedPatientHealthCarePartyJs): DecryptedPatientHealthCareParty {
 	val type = obj.type?.let { nonNull1 ->
 		PatientHealthCarePartyType.valueOf(nonNull1)
 	}
@@ -119,8 +117,7 @@ public fun patientHealthCareParty_fromJs(obj: DecryptedPatientHealthCarePartyJs)
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun patientHealthCareParty_toJs(obj: EncryptedPatientHealthCareParty):
-		EncryptedPatientHealthCarePartyJs {
+public fun patientHealthCareParty_toJs(obj: EncryptedPatientHealthCareParty): EncryptedPatientHealthCarePartyJs {
 	val type = nullToUndefined(
 		obj.type?.let { nonNull1 ->
 			nonNull1.name
@@ -167,8 +164,7 @@ public fun patientHealthCareParty_toJs(obj: EncryptedPatientHealthCareParty):
 	"}"))
 }
 
-public fun patientHealthCareParty_fromJs(obj: EncryptedPatientHealthCarePartyJs):
-		EncryptedPatientHealthCareParty {
+public fun patientHealthCareParty_fromJs(obj: EncryptedPatientHealthCarePartyJs): EncryptedPatientHealthCareParty {
 	val type = obj.type?.let { nonNull1 ->
 		PatientHealthCarePartyType.valueOf(nonNull1)
 	}
@@ -211,14 +207,12 @@ public fun patientHealthCareParty_fromJs(obj: EncryptedPatientHealthCarePartyJs)
 }
 
 @Suppress("UNUSED_VARIABLE")
-public fun patientHealthCareParty_toJs(obj: PatientHealthCareParty): PatientHealthCarePartyJs = when
-		(obj) {
+public fun patientHealthCareParty_toJs(obj: PatientHealthCareParty): PatientHealthCarePartyJs = when (obj) {
 	is EncryptedPatientHealthCareParty -> patientHealthCareParty_toJs(obj)
 	is DecryptedPatientHealthCareParty -> patientHealthCareParty_toJs(obj)
 }
 
-public fun patientHealthCareParty_fromJs(obj: PatientHealthCarePartyJs): PatientHealthCareParty = if
-		(obj.isEncrypted) {
+public fun patientHealthCareParty_fromJs(obj: PatientHealthCarePartyJs): PatientHealthCareParty = if (obj.isEncrypted) {
 	patientHealthCareParty_fromJs(obj as EncryptedPatientHealthCarePartyJs)
 } else {
 	patientHealthCareParty_fromJs(obj as DecryptedPatientHealthCarePartyJs)

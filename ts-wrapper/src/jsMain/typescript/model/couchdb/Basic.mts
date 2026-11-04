@@ -4,8 +4,7 @@ import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 /**
  *
- *  Data transfer object representing basic authentication credentials for a CouchDB remote
- *  connection.
+ *  Data transfer object representing basic authentication credentials for a CouchDB remote connection.
  *  /
  */
 export class Basic {

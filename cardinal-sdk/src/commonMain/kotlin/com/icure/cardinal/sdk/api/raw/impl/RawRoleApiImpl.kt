@@ -31,7 +31,8 @@ class RawRoleApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawRoleApi {
+) : BaseRawApi(rawApiConfig),
+	RawRoleApi {
 	// region cloud endpoints
 
 	override suspend fun getRoles(): HttpResponse<List<Role>> =

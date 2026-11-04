@@ -25,13 +25,11 @@ public external interface InvoiceBasicApiJs {
 
 	public fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeInvoiceById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteInvoice(invoice: InvoiceJs): Promise<StoredDocumentIdentifierJs>
 
@@ -41,8 +39,7 @@ public external interface InvoiceBasicApiJs {
 
 	public fun purgeInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getTarificationsCodesOccurrences(minOccurrence: Double):
-			Promise<Array<LabelledOccurenceJs>>
+	public fun getTarificationsCodesOccurrences(minOccurrence: Double): Promise<Array<LabelledOccurenceJs>>
 
 	public fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs>
 
@@ -52,8 +49,7 @@ public external interface InvoiceBasicApiJs {
 
 	public fun undeleteInvoiceById(id: String, rev: String): Promise<EncryptedInvoiceJs>
 
-	public fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedInvoiceJs>>
+	public fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedInvoiceJs>>
 
 	public fun undeleteInvoice(invoice: InvoiceJs): Promise<EncryptedInvoiceJs>
 
@@ -93,11 +89,9 @@ public external interface InvoiceBasicApiJs {
 		tarificationIds: Array<String>,
 	): Promise<Array<EncryptedInvoiceJs>>
 
-	public fun findInvoicesByAuthor(hcPartyId: String, options: dynamic):
-			Promise<PaginatedListJs<EncryptedInvoiceJs>>
+	public fun findInvoicesByAuthor(hcPartyId: String, options: dynamic): Promise<PaginatedListJs<EncryptedInvoiceJs>>
 
-	public fun listInvoicesByHcPartyAndGroupId(hcPartyId: String, groupId: String):
-			Promise<Array<EncryptedInvoiceJs>>
+	public fun listInvoicesByHcPartyAndGroupId(hcPartyId: String, groupId: String): Promise<Array<EncryptedInvoiceJs>>
 
 	public fun listInvoicesByHcPartySentMediumTypeInvoiceTypeSentDate(
 		hcPartyId: String,
@@ -109,8 +103,7 @@ public external interface InvoiceBasicApiJs {
 
 	public fun listInvoicesByContactIds(contactIds: Array<String>): Promise<Array<EncryptedInvoiceJs>>
 
-	public fun listInvoicesByRecipientsIds(recipientsIds: Array<String>):
-			Promise<Array<EncryptedInvoiceJs>>
+	public fun listInvoicesByRecipientsIds(recipientsIds: Array<String>): Promise<Array<EncryptedInvoiceJs>>
 
 	public fun listToInsurances(userIds: Array<String>): Promise<Array<EncryptedInvoiceJs>>
 

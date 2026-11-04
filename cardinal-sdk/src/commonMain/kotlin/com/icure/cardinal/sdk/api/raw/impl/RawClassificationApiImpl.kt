@@ -41,12 +41,10 @@ class RawClassificationApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawClassificationApi {
+) : BaseRawApi(rawApiConfig),
+	RawClassificationApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.Classification,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.Classification)
 
 	// region common endpoints
 

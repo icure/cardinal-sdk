@@ -8,8 +8,7 @@ import kotlin.ByteArray
 import kotlin.String
 
 /**
- * Data transfer object representing a MIME attachment with binary data, a file name, and a content
- * type.
+ * Data transfer object representing a MIME attachment with binary data, a file name, and a content type.
  * /
  */
 @Serializable

@@ -21,13 +21,11 @@ public external interface ReceiptBasicApiJs {
 
 	public fun deleteReceiptById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeReceiptById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteReceipt(receipt: ReceiptJs): Promise<StoredDocumentIdentifierJs>
 
@@ -54,8 +52,7 @@ public external interface ReceiptBasicApiJs {
 
 	public fun undeleteReceiptById(id: String, rev: String): Promise<EncryptedReceiptJs>
 
-	public fun undeleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedReceiptJs>>
+	public fun undeleteReceiptsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedReceiptJs>>
 
 	public fun undeleteReceipt(receipt: ReceiptJs): Promise<EncryptedReceiptJs>
 

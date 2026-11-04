@@ -47,12 +47,10 @@ class RawAccessLogApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawAccessLogApi {
+) : BaseRawApi(rawApiConfig),
+	RawAccessLogApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.AccessLog,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.AccessLog)
 
 	// region common endpoints
 
@@ -494,10 +492,7 @@ class RawAccessLogApiImpl(
 		groupId: String,
 		accessLogIdsAndRevs: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "accesslog", "inGroup", groupId, "delete", "batch")

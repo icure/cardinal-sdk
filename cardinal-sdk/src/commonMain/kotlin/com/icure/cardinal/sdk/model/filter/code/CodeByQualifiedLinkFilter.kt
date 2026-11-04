@@ -9,8 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Filter that matches codes by their qualified link type and optionally by linked entity
- * identifier.
+ * Filter that matches codes by their qualified link type and optionally by linked entity identifier.
  * /
  */
 @SerialName("CodeByQualifiedLinkFilter")

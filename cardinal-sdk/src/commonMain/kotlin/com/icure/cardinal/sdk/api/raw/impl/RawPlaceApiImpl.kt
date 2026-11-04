@@ -35,7 +35,8 @@ class RawPlaceApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawPlaceApi {
+) : BaseRawApi(rawApiConfig),
+	RawPlaceApi {
 	// region common endpoints
 
 	override suspend fun createPlace(placeDto: Place): HttpResponse<Place> =

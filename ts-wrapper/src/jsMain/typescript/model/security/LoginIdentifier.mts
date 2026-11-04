@@ -4,8 +4,7 @@ import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 /**
  *
- *  A structured identifier used to match a user during login, composed of an assigner system and a
- *  value within that system.
+ *  A structured identifier used to match a user during login, composed of an assigner system and a value within that system.
  *  /
  */
 export class LoginIdentifier {

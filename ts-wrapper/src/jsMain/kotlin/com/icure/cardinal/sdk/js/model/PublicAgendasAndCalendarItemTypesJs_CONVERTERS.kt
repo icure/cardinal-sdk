@@ -9,8 +9,7 @@ import com.icure.cardinal.sdk.model.PublicAgendasAndCalendarItemTypes
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun publicAgendasAndCalendarItemTypes_toJs(obj: PublicAgendasAndCalendarItemTypes):
-		PublicAgendasAndCalendarItemTypesJs {
+public fun publicAgendasAndCalendarItemTypes_toJs(obj: PublicAgendasAndCalendarItemTypes): PublicAgendasAndCalendarItemTypesJs {
 	val agendas = listToArray(
 		obj.agendas,
 		{ x1: Agenda ->
@@ -29,8 +28,7 @@ public fun publicAgendasAndCalendarItemTypes_toJs(obj: PublicAgendasAndCalendarI
 	"}"))
 }
 
-public fun publicAgendasAndCalendarItemTypes_fromJs(obj: PublicAgendasAndCalendarItemTypesJs):
-		PublicAgendasAndCalendarItemTypes {
+public fun publicAgendasAndCalendarItemTypes_fromJs(obj: PublicAgendasAndCalendarItemTypesJs): PublicAgendasAndCalendarItemTypes {
 	val agendas = arrayToList(
 		obj.agendas,
 		"obj.agendas",

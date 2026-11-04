@@ -22,8 +22,7 @@ import kotlinx.coroutines.promise
 internal class FilterApiImplJs(
 	private val filterApi: FilterApi,
 ) : FilterApiJs {
-	override fun getFilterOptionsDefinitions():
-			Promise<Record<String, Array<FilterOptionGroupWithViewsJs>>> = GlobalScope.promise {
+	override fun getFilterOptionsDefinitions(): Promise<Record<String, Array<FilterOptionGroupWithViewsJs>>> = GlobalScope.promise {
 		val result = filterApi.getFilterOptionsDefinitions(
 		)
 		mapToObject(

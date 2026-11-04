@@ -14,11 +14,11 @@ import com.icure.cardinal.sdk.js.api.FormApiJs
 import com.icure.cardinal.sdk.js.api.FormFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.FormFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.FormInGroupApiJs
-import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.FormShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
-import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
+import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.formDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.formShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -95,8 +95,8 @@ import kotlinx.coroutines.promise
 internal class FormApiImplJs(
 	private val formApi: FormApi,
 ) : FormApiJs {
-	override val encrypted: FormFlavouredApiJs<EncryptedFormJs> = object :
-			FormFlavouredApiJs<EncryptedFormJs> {
+	override val encrypted: FormFlavouredApiJs<EncryptedFormJs> =
+			object : FormFlavouredApiJs<EncryptedFormJs> {
 		override fun shareWith(
 			delegateId: String,
 			form: EncryptedFormJs,
@@ -124,8 +124,7 @@ internal class FormApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(form: EncryptedFormJs, delegates: Record<String, FormShareOptionsJs>):
-				Promise<EncryptedFormJs> = GlobalScope.promise {
+		override fun shareWithMany(form: EncryptedFormJs, delegates: Record<String, FormShareOptionsJs>): Promise<EncryptedFormJs> = GlobalScope.promise {
 			val formConverted: EncryptedForm = form_fromJs(form)
 			val delegatesConverted: Map<String, FormShareOptions> = objectToMap(
 				delegates,
@@ -144,8 +143,7 @@ internal class FormApiImplJs(
 			form_toJs(result)
 		}
 
-		override fun filterFormsBy(filter: FilterOptionsJs<FormJs>):
-				Promise<PaginatedListIteratorJs<EncryptedFormJs>> = GlobalScope.promise {
+		override fun filterFormsBy(filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<EncryptedFormJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 			val result = formApi.encrypted.filterFormsBy(
 				filterConverted,
@@ -158,8 +156,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>):
-				Promise<PaginatedListIteratorJs<EncryptedFormJs>> = GlobalScope.promise {
+		override fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<EncryptedFormJs>> = GlobalScope.promise {
 			val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 			val result = formApi.encrypted.filterFormsBySorted(
 				filterConverted,
@@ -180,8 +177,7 @@ internal class FormApiImplJs(
 			form_toJs(result)
 		}
 
-		override fun createForms(entities: Array<EncryptedFormJs>): Promise<Array<EncryptedFormJs>> =
-				GlobalScope.promise {
+		override fun createForms(entities: Array<EncryptedFormJs>): Promise<Array<EncryptedFormJs>> = GlobalScope.promise {
 			val entitiesConverted: List<EncryptedForm> = arrayToList(
 				entities,
 				"entities",
@@ -208,8 +204,7 @@ internal class FormApiImplJs(
 			form_toJs(result)
 		}
 
-		override fun modifyForms(entities: Array<EncryptedFormJs>): Promise<Array<EncryptedFormJs>> =
-				GlobalScope.promise {
+		override fun modifyForms(entities: Array<EncryptedFormJs>): Promise<Array<EncryptedFormJs>> = GlobalScope.promise {
 			val entitiesConverted: List<EncryptedForm> = arrayToList(
 				entities,
 				"entities",
@@ -228,8 +223,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteFormById(id: String, rev: String): Promise<EncryptedFormJs> =
-				GlobalScope.promise {
+		override fun undeleteFormById(id: String, rev: String): Promise<EncryptedFormJs> = GlobalScope.promise {
 			val idConverted: String = id
 			val revConverted: String = rev
 			val result = formApi.encrypted.undeleteFormById(
@@ -239,8 +233,7 @@ internal class FormApiImplJs(
 			form_toJs(result)
 		}
 
-		override fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-				Promise<Array<EncryptedFormJs>> = GlobalScope.promise {
+		override fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedFormJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -267,8 +260,7 @@ internal class FormApiImplJs(
 			form_toJs(result)
 		}
 
-		override fun undeleteForms(forms: Array<FormJs>): Promise<Array<EncryptedFormJs>> =
-				GlobalScope.promise {
+		override fun undeleteForms(forms: Array<FormJs>): Promise<Array<EncryptedFormJs>> = GlobalScope.promise {
 			val formsConverted: List<Form> = arrayToList(
 				forms,
 				"forms",
@@ -299,8 +291,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun getForms(entityIds: Array<String>): Promise<Array<EncryptedFormJs>> =
-				GlobalScope.promise {
+		override fun getForms(entityIds: Array<String>): Promise<Array<EncryptedFormJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -319,8 +310,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun getLatestFormByUniqueId(uniqueId: String): Promise<EncryptedFormJs> =
-				GlobalScope.promise {
+		override fun getLatestFormByUniqueId(uniqueId: String): Promise<EncryptedFormJs> = GlobalScope.promise {
 			val uniqueIdConverted: String = uniqueId
 			val result = formApi.encrypted.getLatestFormByUniqueId(
 				uniqueIdConverted,
@@ -357,8 +347,7 @@ internal class FormApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(form: FormJs, delegates: Record<String, FormShareOptionsJs>):
-				Promise<FormJs> = GlobalScope.promise {
+		override fun shareWithMany(form: FormJs, delegates: Record<String, FormShareOptionsJs>): Promise<FormJs> = GlobalScope.promise {
 			val formConverted: Form = form_fromJs(form)
 			val delegatesConverted: Map<String, FormShareOptions> = objectToMap(
 				delegates,
@@ -377,8 +366,7 @@ internal class FormApiImplJs(
 			form_toJs(result)
 		}
 
-		override fun filterFormsBy(filter: FilterOptionsJs<FormJs>):
-				Promise<PaginatedListIteratorJs<FormJs>> = GlobalScope.promise {
+		override fun filterFormsBy(filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<FormJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 			val result = formApi.tryAndRecover.filterFormsBy(
 				filterConverted,
@@ -391,8 +379,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>):
-				Promise<PaginatedListIteratorJs<FormJs>> = GlobalScope.promise {
+		override fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<FormJs>> = GlobalScope.promise {
 			val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 			val result = formApi.tryAndRecover.filterFormsBySorted(
 				filterConverted,
@@ -469,8 +456,7 @@ internal class FormApiImplJs(
 			form_toJs(result)
 		}
 
-		override fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-				Promise<Array<FormJs>> = GlobalScope.promise {
+		override fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<FormJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -557,8 +543,8 @@ internal class FormApiImplJs(
 	}
 
 	override val inGroup: FormInGroupApiJs = object : FormInGroupApiJs {
-		override val encrypted: FormFlavouredInGroupApiJs<EncryptedFormJs> = object :
-				FormFlavouredInGroupApiJs<EncryptedFormJs> {
+		override val encrypted: FormFlavouredInGroupApiJs<EncryptedFormJs> =
+				object : FormFlavouredInGroupApiJs<EncryptedFormJs> {
 			override fun shareWith(
 				`delegate`: EntityReferenceInGroupJs,
 				form: GroupScopedJs<EncryptedFormJs>,
@@ -596,17 +582,14 @@ internal class FormApiImplJs(
 				}
 			}
 
-			override fun shareWithMany(form: GroupScopedJs<EncryptedFormJs>,
-					delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>):
-					Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
+			override fun shareWithMany(form: GroupScopedJs<EncryptedFormJs>, delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
 				val formConverted: GroupScoped<EncryptedForm> = groupScoped_fromJs(
 					form,
 					{ x1: EncryptedFormJs ->
 						form_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<EntityReferenceInGroup, FormShareOptions> =
-						EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, FormShareOptions> = EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 				val result = formApi.inGroup.encrypted.shareWithMany(
 					formConverted,
 					delegatesConverted,
@@ -619,8 +602,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
+			override fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 				val result = formApi.inGroup.encrypted.filterFormsBy(
@@ -640,8 +622,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
+			override fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 				val result = formApi.inGroup.encrypted.filterFormsBySorted(
@@ -661,8 +642,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun createForm(entity: GroupScopedJs<EncryptedFormJs>):
-					Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
+			override fun createForm(entity: GroupScopedJs<EncryptedFormJs>): Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedForm> = groupScoped_fromJs(
 					entity,
 					{ x1: EncryptedFormJs ->
@@ -680,8 +660,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun createForms(entities: Array<GroupScopedJs<EncryptedFormJs>>):
-					Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
+			override fun createForms(entities: Array<GroupScopedJs<EncryptedFormJs>>): Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<EncryptedForm>> = arrayToList(
 					entities,
 					"entities",
@@ -710,8 +689,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-					Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
+			override fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
 				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 					entityId,
 					{ x1: StoredDocumentIdentifierJs ->
@@ -729,8 +707,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-					Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
+			override fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
 				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 					entityIds,
 					"entityIds",
@@ -759,8 +736,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<EncryptedFormJs>> =
-					GlobalScope.promise {
+			override fun undeleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
 				val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 					form,
 					{ x1: FormJs ->
@@ -778,8 +754,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteForms(forms: Array<GroupScopedJs<EncryptedFormJs>>):
-					Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
+			override fun undeleteForms(forms: Array<GroupScopedJs<EncryptedFormJs>>): Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
 				val formsConverted: List<GroupScoped<EncryptedForm>> = arrayToList(
 					forms,
 					"forms",
@@ -808,8 +783,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun modifyForm(entity: GroupScopedJs<EncryptedFormJs>):
-					Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
+			override fun modifyForm(entity: GroupScopedJs<EncryptedFormJs>): Promise<GroupScopedJs<EncryptedFormJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedForm> = groupScoped_fromJs(
 					entity,
 					{ x1: EncryptedFormJs ->
@@ -827,8 +801,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun modifyForms(entities: Array<GroupScopedJs<EncryptedFormJs>>):
-					Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
+			override fun modifyForms(entities: Array<GroupScopedJs<EncryptedFormJs>>): Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<EncryptedForm>> = arrayToList(
 					entities,
 					"entities",
@@ -857,8 +830,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun getForm(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedFormJs>?>
-					= GlobalScope.promise {
+			override fun getForm(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedFormJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdConverted: String = entityId
 				val result = formApi.inGroup.encrypted.getForm(
@@ -877,8 +849,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun getForms(groupId: String, entityIds: Array<String>):
-					Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
+			override fun getForms(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedFormJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdsConverted: List<String> = arrayToList(
 					entityIds,
@@ -905,8 +876,8 @@ internal class FormApiImplJs(
 			}
 		}
 
-		override val tryAndRecover: FormFlavouredInGroupApiJs<FormJs> = object :
-				FormFlavouredInGroupApiJs<FormJs> {
+		override val tryAndRecover: FormFlavouredInGroupApiJs<FormJs> =
+				object : FormFlavouredInGroupApiJs<FormJs> {
 			override fun shareWith(
 				`delegate`: EntityReferenceInGroupJs,
 				form: GroupScopedJs<FormJs>,
@@ -944,17 +915,14 @@ internal class FormApiImplJs(
 				}
 			}
 
-			override fun shareWithMany(form: GroupScopedJs<FormJs>,
-					delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>):
-					Promise<GroupScopedJs<FormJs>> = GlobalScope.promise {
+			override fun shareWithMany(form: GroupScopedJs<FormJs>, delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<FormJs>> = GlobalScope.promise {
 				val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 					form,
 					{ x1: FormJs ->
 						form_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<EntityReferenceInGroup, FormShareOptions> =
-						EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, FormShareOptions> = EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 				val result = formApi.inGroup.tryAndRecover.shareWithMany(
 					formConverted,
 					delegatesConverted,
@@ -967,8 +935,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+			override fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 				val result = formApi.inGroup.tryAndRecover.filterFormsBy(
@@ -988,8 +955,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+			override fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 				val result = formApi.inGroup.tryAndRecover.filterFormsBySorted(
@@ -1009,8 +975,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun createForm(entity: GroupScopedJs<FormJs>): Promise<GroupScopedJs<FormJs>> =
-					GlobalScope.promise {
+			override fun createForm(entity: GroupScopedJs<FormJs>): Promise<GroupScopedJs<FormJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<Form> = groupScoped_fromJs(
 					entity,
 					{ x1: FormJs ->
@@ -1028,8 +993,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun createForms(entities: Array<GroupScopedJs<FormJs>>):
-					Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+			override fun createForms(entities: Array<GroupScopedJs<FormJs>>): Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<Form>> = arrayToList(
 					entities,
 					"entities",
@@ -1058,8 +1022,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-					Promise<GroupScopedJs<FormJs>> = GlobalScope.promise {
+			override fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<FormJs>> = GlobalScope.promise {
 				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 					entityId,
 					{ x1: StoredDocumentIdentifierJs ->
@@ -1077,8 +1040,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-					Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+			override fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 					entityIds,
 					"entityIds",
@@ -1107,8 +1069,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<FormJs>> =
-					GlobalScope.promise {
+			override fun undeleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<FormJs>> = GlobalScope.promise {
 				val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 					form,
 					{ x1: FormJs ->
@@ -1126,8 +1087,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun undeleteForms(forms: Array<GroupScopedJs<FormJs>>):
-					Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+			override fun undeleteForms(forms: Array<GroupScopedJs<FormJs>>): Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 				val formsConverted: List<GroupScoped<Form>> = arrayToList(
 					forms,
 					"forms",
@@ -1156,8 +1116,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun modifyForm(entity: GroupScopedJs<FormJs>): Promise<GroupScopedJs<FormJs>> =
-					GlobalScope.promise {
+			override fun modifyForm(entity: GroupScopedJs<FormJs>): Promise<GroupScopedJs<FormJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<Form> = groupScoped_fromJs(
 					entity,
 					{ x1: FormJs ->
@@ -1175,8 +1134,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun modifyForms(entities: Array<GroupScopedJs<FormJs>>):
-					Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+			override fun modifyForms(entities: Array<GroupScopedJs<FormJs>>): Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<Form>> = arrayToList(
 					entities,
 					"entities",
@@ -1205,8 +1163,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun getForm(groupId: String, entityId: String): Promise<GroupScopedJs<FormJs>?> =
-					GlobalScope.promise {
+			override fun getForm(groupId: String, entityId: String): Promise<GroupScopedJs<FormJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdConverted: String = entityId
 				val result = formApi.inGroup.tryAndRecover.getForm(
@@ -1225,8 +1182,7 @@ internal class FormApiImplJs(
 				)
 			}
 
-			override fun getForms(groupId: String, entityIds: Array<String>):
-					Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+			override fun getForms(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdsConverted: List<String> = arrayToList(
 					entityIds,
@@ -1282,8 +1238,7 @@ internal class FormApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> =
-						convertingOptionOrDefaultNonNull(
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> = convertingOptionOrDefaultNonNull(
 					_options,
 					"delegates",
 					emptyMap()
@@ -1293,12 +1248,11 @@ internal class FormApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
-						convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
 					"alternateRootDelegateReference",
 					null
@@ -1346,8 +1300,7 @@ internal class FormApiImplJs(
 						},
 					)
 				}
-				val delegatesConverted: Map<EntityReferenceInGroup, FormDelegateOptions> =
-						EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, FormDelegateOptions> = EntityReferenceInGroupToFormDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1360,12 +1313,11 @@ internal class FormApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
-						convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
 					"alternateRootDelegateReference",
 					null
@@ -1392,8 +1344,7 @@ internal class FormApiImplJs(
 			}
 		}
 
-		override fun getEncryptionKeysOf(form: GroupScopedJs<FormJs>): Promise<Array<String>> =
-				GlobalScope.promise {
+		override fun getEncryptionKeysOf(form: GroupScopedJs<FormJs>): Promise<Array<String>> = GlobalScope.promise {
 			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 				form,
 				{ x1: FormJs ->
@@ -1424,8 +1375,7 @@ internal class FormApiImplJs(
 			result
 		}
 
-		override fun decryptPatientIdOf(form: GroupScopedJs<FormJs>):
-				Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
+		override fun decryptPatientIdOf(form: GroupScopedJs<FormJs>): Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
 			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 				form,
 				{ x1: FormJs ->
@@ -1443,8 +1393,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<FormJs>,
-				delegates: Array<EntityReferenceInGroupJs>): Promise<Unit> = GlobalScope.promise {
+		override fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<FormJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit> = GlobalScope.promise {
 			val entityConverted: GroupScoped<Form> = groupScoped_fromJs(
 				entity,
 				{ x1: FormJs ->
@@ -1465,8 +1414,7 @@ internal class FormApiImplJs(
 
 		}
 
-		override fun decrypt(forms: Array<GroupScopedJs<EncryptedFormJs>>):
-				Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun decrypt(forms: Array<GroupScopedJs<EncryptedFormJs>>): Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val formsConverted: List<GroupScoped<EncryptedForm>> = arrayToList(
 				forms,
 				"forms",
@@ -1495,8 +1443,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun tryDecrypt(forms: Array<GroupScopedJs<EncryptedFormJs>>):
-				Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
+		override fun tryDecrypt(forms: Array<GroupScopedJs<EncryptedFormJs>>): Promise<Array<GroupScopedJs<FormJs>>> = GlobalScope.promise {
 			val formsConverted: List<GroupScoped<EncryptedForm>> = arrayToList(
 				forms,
 				"forms",
@@ -1525,8 +1472,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun matchFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 			val result = formApi.inGroup.matchFormsBy(
@@ -1541,8 +1487,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun matchFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 			val result = formApi.inGroup.matchFormsBySorted(
@@ -1557,8 +1502,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1576,8 +1520,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1606,8 +1549,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun purgeFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1620,8 +1562,7 @@ internal class FormApiImplJs(
 
 		}
 
-		override fun purgeFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1650,8 +1591,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteForm(form: GroupScopedJs<FormJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 				form,
 				{ x1: FormJs ->
@@ -1669,8 +1609,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteForms(forms: Array<GroupScopedJs<FormJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteForms(forms: Array<GroupScopedJs<FormJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val formsConverted: List<GroupScoped<Form>> = arrayToList(
 				forms,
 				"forms",
@@ -1712,8 +1651,7 @@ internal class FormApiImplJs(
 
 		}
 
-		override fun purgeForms(forms: Array<GroupScopedJs<FormJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeForms(forms: Array<GroupScopedJs<FormJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val formsConverted: List<GroupScoped<Form>> = arrayToList(
 				forms,
 				"forms",
@@ -1742,22 +1680,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(form: GroupScopedJs<FormJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
-			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
-				form,
-				{ x1: FormJs ->
-					form_fromJs(x1)
-				},
-			)
-			val result = formApi.inGroup.getDataOwnersWithAccessTo(
-				formConverted,
-			)
-			entityAccessInformation_toJs(result)
-		}
-
-		override fun createFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>):
-				Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
+		override fun createFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
 			val formTemplateConverted: GroupScoped<FormTemplate> = groupScoped_fromJs(
 				formTemplate,
 				{ x1: FormTemplateJs ->
@@ -1775,8 +1698,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun createFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>):
-				Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
+		override fun createFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>): Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
 			val formTemplatesConverted: List<GroupScoped<FormTemplate>> = arrayToList(
 				formTemplates,
 				"formTemplates",
@@ -1805,8 +1727,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun getFormTemplate(groupId: String, formTemplateId: String):
-				Promise<GroupScopedJs<FormTemplateJs>?> = GlobalScope.promise {
+		override fun getFormTemplate(groupId: String, formTemplateId: String): Promise<GroupScopedJs<FormTemplateJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val formTemplateIdConverted: String = formTemplateId
 			val result = formApi.inGroup.getFormTemplate(
@@ -1825,8 +1746,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun getFormTemplates(groupId: String, formTemplatesIds: Array<String>):
-				Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
+		override fun getFormTemplates(groupId: String, formTemplatesIds: Array<String>): Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val formTemplatesIdsConverted: List<String> = arrayToList(
 				formTemplatesIds,
@@ -1852,8 +1772,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun modifyFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>):
-				Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
+		override fun modifyFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
 			val formTemplateConverted: GroupScoped<FormTemplate> = groupScoped_fromJs(
 				formTemplate,
 				{ x1: FormTemplateJs ->
@@ -1871,8 +1790,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun modifyFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>):
-				Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
+		override fun modifyFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>): Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
 			val formTemplatesConverted: List<GroupScoped<FormTemplate>> = arrayToList(
 				formTemplates,
 				"formTemplates",
@@ -1901,8 +1819,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteFormTemplateById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteFormTemplateById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1920,8 +1837,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteFormTemplateByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteFormTemplateByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1950,8 +1866,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val formTemplateConverted: GroupScoped<FormTemplate> = groupScoped_fromJs(
 				formTemplate,
 				{ x1: FormTemplateJs ->
@@ -1969,8 +1884,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun deleteFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val formTemplatesConverted: List<GroupScoped<FormTemplate>> = arrayToList(
 				formTemplates,
 				"formTemplates",
@@ -1999,8 +1913,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteFormTemplateById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
+		override fun undeleteFormTemplateById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -2018,9 +1931,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override
-				fun undeleteFormTemplateByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
+		override fun undeleteFormTemplateByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -2049,8 +1960,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>):
-				Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
+		override fun undeleteFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<GroupScopedJs<FormTemplateJs>> = GlobalScope.promise {
 			val formTemplateConverted: GroupScoped<FormTemplate> = groupScoped_fromJs(
 				formTemplate,
 				{ x1: FormTemplateJs ->
@@ -2068,8 +1978,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>):
-				Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
+		override fun undeleteFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>): Promise<Array<GroupScopedJs<FormTemplateJs>>> = GlobalScope.promise {
 			val formTemplatesConverted: List<GroupScoped<FormTemplate>> = arrayToList(
 				formTemplates,
 				"formTemplates",
@@ -2098,8 +2007,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun purgeFormTemplateById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<Unit> = GlobalScope.promise {
+		override fun purgeFormTemplateById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -2112,8 +2020,7 @@ internal class FormApiImplJs(
 
 		}
 
-		override fun purgeFormTemplateByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeFormTemplateByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -2142,8 +2049,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun purgeFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<Unit> = GlobalScope.promise {
 			val formTemplateConverted: GroupScoped<FormTemplate> = groupScoped_fromJs(
 				formTemplate,
 				{ x1: FormTemplateJs ->
@@ -2156,8 +2062,7 @@ internal class FormApiImplJs(
 
 		}
 
-		override fun purgeFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeFormTemplates(formTemplates: Array<GroupScopedJs<FormTemplateJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val formTemplatesConverted: List<GroupScoped<FormTemplate>> = arrayToList(
 				formTemplates,
 				"formTemplates",
@@ -2186,8 +2091,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptionsJs<FormTemplateJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchFormTemplateBy(groupId: String, filter: BaseFilterOptionsJs<FormTemplateJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
 			val result = formApi.inGroup.matchFormTemplateBy(
@@ -2239,17 +2143,14 @@ internal class FormApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(form: GroupScopedJs<DecryptedFormJs>,
-				delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>):
-				Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
+		override fun shareWithMany(form: GroupScopedJs<DecryptedFormJs>, delegates: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
 			val formConverted: GroupScoped<DecryptedForm> = groupScoped_fromJs(
 				form,
 				{ x1: DecryptedFormJs ->
 					form_fromJs(x1)
 				},
 			)
-			val delegatesConverted: Map<EntityReferenceInGroup, FormShareOptions> =
-					EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+			val delegatesConverted: Map<EntityReferenceInGroup, FormShareOptions> = EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 			val result = formApi.inGroup.shareWithMany(
 				formConverted,
 				delegatesConverted,
@@ -2262,8 +2163,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun filterFormsBy(groupId: String, filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 			val result = formApi.inGroup.filterFormsBy(
@@ -2283,8 +2183,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun filterFormsBySorted(groupId: String, filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 			val result = formApi.inGroup.filterFormsBySorted(
@@ -2304,8 +2203,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun createForm(entity: GroupScopedJs<DecryptedFormJs>):
-				Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
+		override fun createForm(entity: GroupScopedJs<DecryptedFormJs>): Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedForm> = groupScoped_fromJs(
 				entity,
 				{ x1: DecryptedFormJs ->
@@ -2323,8 +2221,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun createForms(entities: Array<GroupScopedJs<DecryptedFormJs>>):
-				Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun createForms(entities: Array<GroupScopedJs<DecryptedFormJs>>): Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<DecryptedForm>> = arrayToList(
 				entities,
 				"entities",
@@ -2353,8 +2250,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
+		override fun undeleteFormById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -2372,8 +2268,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun undeleteFormsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -2402,8 +2297,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<DecryptedFormJs>> =
-				GlobalScope.promise {
+		override fun undeleteForm(form: GroupScopedJs<FormJs>): Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
 			val formConverted: GroupScoped<Form> = groupScoped_fromJs(
 				form,
 				{ x1: FormJs ->
@@ -2421,8 +2315,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun undeleteForms(forms: Array<GroupScopedJs<DecryptedFormJs>>):
-				Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun undeleteForms(forms: Array<GroupScopedJs<DecryptedFormJs>>): Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val formsConverted: List<GroupScoped<DecryptedForm>> = arrayToList(
 				forms,
 				"forms",
@@ -2451,8 +2344,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun modifyForm(entity: GroupScopedJs<DecryptedFormJs>):
-				Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
+		override fun modifyForm(entity: GroupScopedJs<DecryptedFormJs>): Promise<GroupScopedJs<DecryptedFormJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedForm> = groupScoped_fromJs(
 				entity,
 				{ x1: DecryptedFormJs ->
@@ -2470,8 +2362,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun modifyForms(entities: Array<GroupScopedJs<DecryptedFormJs>>):
-				Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun modifyForms(entities: Array<GroupScopedJs<DecryptedFormJs>>): Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<DecryptedForm>> = arrayToList(
 				entities,
 				"entities",
@@ -2500,8 +2391,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun getForm(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedFormJs>?>
-				= GlobalScope.promise {
+		override fun getForm(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedFormJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = formApi.inGroup.getForm(
@@ -2520,8 +2410,7 @@ internal class FormApiImplJs(
 			)
 		}
 
-		override fun getForms(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
+		override fun getForms(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedFormJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -2587,7 +2476,7 @@ internal class FormApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2644,7 +2533,7 @@ internal class FormApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2688,8 +2577,7 @@ internal class FormApiImplJs(
 		result
 	}
 
-	override fun decryptPatientIdOf(form: FormJs): Promise<Array<EntityReferenceInGroupJs>> =
-			GlobalScope.promise {
+	override fun decryptPatientIdOf(form: FormJs): Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
 		val formConverted: Form = form_fromJs(form)
 		val result = formApi.decryptPatientIdOf(
 			formConverted,
@@ -2702,8 +2590,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun createDelegationDeAnonymizationMetadata(entity: FormJs, delegates: Array<String>):
-			Promise<Unit> = GlobalScope.promise {
+	override fun createDelegationDeAnonymizationMetadata(entity: FormJs, delegates: Array<String>): Promise<Unit> = GlobalScope.promise {
 		val entityConverted: Form = form_fromJs(entity)
 		val delegatesConverted: Set<String> = arrayToSet(
 			delegates,
@@ -2735,8 +2622,7 @@ internal class FormApiImplJs(
 		form_toJs(result)
 	}
 
-	override fun matchFormsBy(filter: FilterOptionsJs<FormJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchFormsBy(filter: FilterOptionsJs<FormJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 		val result = formApi.matchFormsBy(
 			filterConverted,
@@ -2749,8 +2635,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun matchFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 		val result = formApi.matchFormsBySorted(
 			filterConverted,
@@ -2763,8 +2648,32 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun deleteFormById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun shareFormsByIds(formIds: Array<String>, delegates: Record<String, FormShareOptionsJs>): Promise<BulkShareByIdsResultJs> = GlobalScope.promise {
+		val formIdsConverted: List<String> = arrayToList(
+			formIds,
+			"formIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val delegatesConverted: Map<String, FormShareOptions> = objectToMap(
+			delegates,
+			"delegates",
+			{ x1: String ->
+				x1
+			},
+			{ x1: FormShareOptionsJs ->
+				formShareOptions_fromJs(x1)
+			},
+		)
+		val result = formApi.shareFormsByIds(
+			formIdsConverted,
+			delegatesConverted,
+		)
+		bulkShareByIdsResult_toJs(result)
+	}
+
+	override fun deleteFormById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = formApi.deleteFormById(
@@ -2774,8 +2683,7 @@ internal class FormApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2804,8 +2712,7 @@ internal class FormApiImplJs(
 
 	}
 
-	override fun purgeFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2832,8 +2739,7 @@ internal class FormApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteForms(forms: Array<FormJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun deleteForms(forms: Array<FormJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val formsConverted: List<Form> = arrayToList(
 			forms,
 			"forms",
@@ -2860,8 +2766,7 @@ internal class FormApiImplJs(
 
 	}
 
-	override fun purgeForms(forms: Array<FormJs>): Promise<Array<StoredDocumentIdentifierJs>> =
-			GlobalScope.promise {
+	override fun purgeForms(forms: Array<FormJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val formsConverted: List<Form> = arrayToList(
 			forms,
 			"forms",
@@ -2878,15 +2783,6 @@ internal class FormApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
-	}
-
-	override fun getDataOwnersWithAccessTo(form: FormJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
-		val formConverted: Form = form_fromJs(form)
-		val result = formApi.getDataOwnersWithAccessTo(
-			formConverted,
-		)
-		entityAccessInformation_toJs(result)
 	}
 
 	override fun getFormTemplate(formTemplateId: String, options: dynamic): Promise<FormTemplateJs> {
@@ -2908,8 +2804,7 @@ internal class FormApiImplJs(
 		}
 	}
 
-	override fun getFormTemplates(formTemplateIds: Array<String>): Promise<Array<FormTemplateJs>> =
-			GlobalScope.promise {
+	override fun getFormTemplates(formTemplateIds: Array<String>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplateIdsConverted: List<String> = arrayToList(
 			formTemplateIds,
 			"formTemplateIds",
@@ -2928,8 +2823,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun createFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun createFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formApi.createFormTemplate(
 			formTemplateConverted,
@@ -2937,8 +2831,7 @@ internal class FormApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun createFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun createFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -2957,8 +2850,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun modifyFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun modifyFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formApi.modifyFormTemplate(
 			formTemplateConverted,
@@ -2966,8 +2858,7 @@ internal class FormApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun modifyFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun modifyFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -2986,8 +2877,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun deleteFormTemplateById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteFormTemplateById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = formApi.deleteFormTemplateById(
@@ -2997,8 +2887,7 @@ internal class FormApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -3017,8 +2906,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun deleteFormTemplate(formTemplate: FormTemplateJs): Promise<StoredDocumentIdentifierJs>
-			= GlobalScope.promise {
+	override fun deleteFormTemplate(formTemplate: FormTemplateJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formApi.deleteFormTemplate(
 			formTemplateConverted,
@@ -3026,8 +2914,7 @@ internal class FormApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -3046,8 +2933,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun undeleteFormTemplateById(id: String, rev: String): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun undeleteFormTemplateById(id: String, rev: String): Promise<FormTemplateJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = formApi.undeleteFormTemplateById(
@@ -3057,8 +2943,7 @@ internal class FormApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun undeleteFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -3077,8 +2962,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun undeleteFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> =
-			GlobalScope.promise {
+	override fun undeleteFormTemplate(formTemplate: FormTemplateJs): Promise<FormTemplateJs> = GlobalScope.promise {
 		val formTemplateConverted: FormTemplate = formTemplate_fromJs(formTemplate)
 		val result = formApi.undeleteFormTemplate(
 			formTemplateConverted,
@@ -3086,8 +2970,7 @@ internal class FormApiImplJs(
 		formTemplate_toJs(result)
 	}
 
-	override fun undeleteFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<FormTemplateJs>> = GlobalScope.promise {
+	override fun undeleteFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<FormTemplateJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -3116,8 +2999,7 @@ internal class FormApiImplJs(
 
 	}
 
-	override fun purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeFormTemplatesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -3144,8 +3026,7 @@ internal class FormApiImplJs(
 
 	}
 
-	override fun purgeFormTemplates(formTemplates: Array<FormTemplateJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeFormTemplates(formTemplates: Array<FormTemplateJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val formTemplatesConverted: List<FormTemplate> = arrayToList(
 			formTemplates,
 			"formTemplates",
@@ -3164,8 +3045,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String> =
-			GlobalScope.promise {
+	override fun setTemplateAttachment(formTemplateId: String, payload: ByteArray): Promise<String> = GlobalScope.promise {
 		val formTemplateIdConverted: String = formTemplateId
 		val payloadConverted: ByteArray = payload
 		val result = formApi.setTemplateAttachment(
@@ -3175,8 +3055,7 @@ internal class FormApiImplJs(
 		result
 	}
 
-	override fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchFormTemplateBy(filter: BaseFilterOptionsJs<FormTemplateJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<FormTemplate> = baseFilterOptions_fromJs(filter)
 		val result = formApi.matchFormTemplateBy(
 			filterConverted,
@@ -3216,8 +3095,7 @@ internal class FormApiImplJs(
 		}
 	}
 
-	override fun shareWithMany(form: DecryptedFormJs, delegates: Record<String, FormShareOptionsJs>):
-			Promise<DecryptedFormJs> = GlobalScope.promise {
+	override fun shareWithMany(form: DecryptedFormJs, delegates: Record<String, FormShareOptionsJs>): Promise<DecryptedFormJs> = GlobalScope.promise {
 		val formConverted: DecryptedForm = form_fromJs(form)
 		val delegatesConverted: Map<String, FormShareOptions> = objectToMap(
 			delegates,
@@ -3236,8 +3114,7 @@ internal class FormApiImplJs(
 		form_toJs(result)
 	}
 
-	override fun filterFormsBy(filter: FilterOptionsJs<FormJs>):
-			Promise<PaginatedListIteratorJs<DecryptedFormJs>> = GlobalScope.promise {
+	override fun filterFormsBy(filter: FilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<DecryptedFormJs>> = GlobalScope.promise {
 		val filterConverted: FilterOptions<Form> = filterOptions_fromJs(filter)
 		val result = formApi.filterFormsBy(
 			filterConverted,
@@ -3250,8 +3127,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>):
-			Promise<PaginatedListIteratorJs<DecryptedFormJs>> = GlobalScope.promise {
+	override fun filterFormsBySorted(filter: SortableFilterOptionsJs<FormJs>): Promise<PaginatedListIteratorJs<DecryptedFormJs>> = GlobalScope.promise {
 		val filterConverted: SortableFilterOptions<Form> = sortableFilterOptions_fromJs(filter)
 		val result = formApi.filterFormsBySorted(
 			filterConverted,
@@ -3272,8 +3148,7 @@ internal class FormApiImplJs(
 		form_toJs(result)
 	}
 
-	override fun createForms(entities: Array<DecryptedFormJs>): Promise<Array<DecryptedFormJs>> =
-			GlobalScope.promise {
+	override fun createForms(entities: Array<DecryptedFormJs>): Promise<Array<DecryptedFormJs>> = GlobalScope.promise {
 		val entitiesConverted: List<DecryptedForm> = arrayToList(
 			entities,
 			"entities",
@@ -3300,8 +3175,7 @@ internal class FormApiImplJs(
 		form_toJs(result)
 	}
 
-	override fun modifyForms(entities: Array<DecryptedFormJs>): Promise<Array<DecryptedFormJs>> =
-			GlobalScope.promise {
+	override fun modifyForms(entities: Array<DecryptedFormJs>): Promise<Array<DecryptedFormJs>> = GlobalScope.promise {
 		val entitiesConverted: List<DecryptedForm> = arrayToList(
 			entities,
 			"entities",
@@ -3320,8 +3194,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun undeleteFormById(id: String, rev: String): Promise<DecryptedFormJs> =
-			GlobalScope.promise {
+	override fun undeleteFormById(id: String, rev: String): Promise<DecryptedFormJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = formApi.undeleteFormById(
@@ -3331,8 +3204,7 @@ internal class FormApiImplJs(
 		form_toJs(result)
 	}
 
-	override fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedFormJs>> = GlobalScope.promise {
+	override fun undeleteFormsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedFormJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -3359,8 +3231,7 @@ internal class FormApiImplJs(
 		form_toJs(result)
 	}
 
-	override fun undeleteForms(forms: Array<FormJs>): Promise<Array<DecryptedFormJs>> =
-			GlobalScope.promise {
+	override fun undeleteForms(forms: Array<FormJs>): Promise<Array<DecryptedFormJs>> = GlobalScope.promise {
 		val formsConverted: List<Form> = arrayToList(
 			forms,
 			"forms",
@@ -3391,8 +3262,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun getForms(entityIds: Array<String>): Promise<Array<DecryptedFormJs>> =
-			GlobalScope.promise {
+	override fun getForms(entityIds: Array<String>): Promise<Array<DecryptedFormJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -3411,8 +3281,7 @@ internal class FormApiImplJs(
 		)
 	}
 
-	override fun getLatestFormByUniqueId(uniqueId: String): Promise<DecryptedFormJs> =
-			GlobalScope.promise {
+	override fun getLatestFormByUniqueId(uniqueId: String): Promise<DecryptedFormJs> = GlobalScope.promise {
 		val uniqueIdConverted: String = uniqueId
 		val result = formApi.getLatestFormByUniqueId(
 			uniqueIdConverted,

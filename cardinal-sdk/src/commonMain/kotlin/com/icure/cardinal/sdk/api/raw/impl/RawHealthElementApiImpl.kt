@@ -49,12 +49,10 @@ class RawHealthElementApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawHealthElementApi {
+) : BaseRawApi(rawApiConfig),
+	RawHealthElementApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.HealthElement,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.HealthElement)
 
 	// region common endpoints
 
@@ -445,10 +443,7 @@ class RawHealthElementApiImpl(
 		groupId: String,
 		healthElementIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "delete", "batch")
@@ -505,10 +500,7 @@ class RawHealthElementApiImpl(
 		groupId: String,
 		healthElementIds: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "purge", "batch")
@@ -522,10 +514,7 @@ class RawHealthElementApiImpl(
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedHealthElement>>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "helement", "inGroup", groupId, "bulkSharedMetadataUpdate")

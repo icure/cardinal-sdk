@@ -20,7 +20,8 @@ data class AllInsurancesFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Insurance>, Filter.AllFilter<Insurance> {
+) : AbstractFilter<Insurance>,
+	Filter.AllFilter<Insurance> {
 	// region AllInsurancesFilter-AllInsurancesFilter
 
 	// endregion

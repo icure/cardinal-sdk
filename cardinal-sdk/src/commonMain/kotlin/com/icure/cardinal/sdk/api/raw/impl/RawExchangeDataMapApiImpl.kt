@@ -26,7 +26,8 @@ class RawExchangeDataMapApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawExchangeDataMapApi {
+) : BaseRawApi(rawApiConfig),
+	RawExchangeDataMapApi {
 	// region common endpoints
 
 	override suspend fun createOrUpdateExchangeDataMapBatch(batch: ExchangeDataMapCreationBatch): HttpResponse<String> =

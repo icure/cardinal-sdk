@@ -7,6 +7,7 @@ import com.icure.cardinal.sdk.api.raw.RawGroupApi
 import com.icure.cardinal.sdk.api.raw.wrap
 import com.icure.cardinal.sdk.auth.services.AuthProvider
 import com.icure.cardinal.sdk.model.DatabaseInitialisation
+import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.GroupDeletionReport
 import com.icure.cardinal.sdk.model.IdWithRev
@@ -20,6 +21,7 @@ import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.couchdb.DesignDocument
 import com.icure.cardinal.sdk.model.couchdb.DocIdentifier
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
+import com.icure.cardinal.sdk.model.embed.EncryptedTypedValue
 import com.icure.cardinal.sdk.model.embed.GroupType
 import com.icure.cardinal.sdk.model.embed.RoleConfiguration
 import com.icure.cardinal.sdk.model.embed.UserType
@@ -53,7 +55,8 @@ class RawGroupApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawGroupApi {
+) : BaseRawApi(rawApiConfig),
+	RawGroupApi {
 	// region cloud endpoints
 
 	override suspend fun createGroup(
@@ -381,6 +384,31 @@ class RawGroupApiImpl(
 				appendPathSegments("rest", "v2", "group", "hard", id)
 			}
 			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun getInternalPropertiesOfGroup(id: String): HttpResponse<List<EncryptedPropertyStub>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", id, "internalProperties")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun setInternalPropertyInGroup(
+		id: String,
+		propertyIdentifier: String,
+		`value`: EncryptedTypedValue?,
+	): HttpResponse<Group> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", id, "internalProperties", propertyIdentifier)
+			}
+			contentType(Application.Json)
+			accept(Application.Json)
+			setBody(value)
 		}.wrap()
 
 	override suspend fun modifyGroupProperties(

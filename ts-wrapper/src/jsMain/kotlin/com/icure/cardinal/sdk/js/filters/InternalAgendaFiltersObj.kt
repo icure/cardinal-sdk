@@ -45,8 +45,7 @@ public object InternalAgendaFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun readableByUserInGroup(userReference: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<AgendaJs> {
+	public fun readableByUserInGroup(userReference: EntityReferenceInGroupJs): BaseFilterOptionsJs<AgendaJs> {
 		val userReferenceConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(userReference)
 		val result = AgendaFilters.readableByUserInGroup(
 			userReferenceConverted,
@@ -62,8 +61,7 @@ public object InternalAgendaFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun readableByUserRightsInGroup(userReference: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<AgendaJs> {
+	public fun readableByUserRightsInGroup(userReference: EntityReferenceInGroupJs): BaseFilterOptionsJs<AgendaJs> {
 		val userReferenceConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(userReference)
 		val result = AgendaFilters.readableByUserRightsInGroup(
 			userReferenceConverted,
@@ -71,8 +69,7 @@ public object InternalAgendaFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byStringProperty(propertyId: String, propertyValue: String):
-			BaseFilterOptionsJs<AgendaJs> {
+	public fun byStringProperty(propertyId: String, propertyValue: String): BaseFilterOptionsJs<AgendaJs> {
 		val propertyIdConverted: String = propertyId
 		val propertyValueConverted: String = propertyValue
 		val result = AgendaFilters.byStringProperty(
@@ -82,8 +79,7 @@ public object InternalAgendaFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byBooleanProperty(propertyId: String, propertyValue: Boolean):
-			BaseFilterOptionsJs<AgendaJs> {
+	public fun byBooleanProperty(propertyId: String, propertyValue: Boolean): BaseFilterOptionsJs<AgendaJs> {
 		val propertyIdConverted: String = propertyId
 		val propertyValueConverted: Boolean = propertyValue
 		val result = AgendaFilters.byBooleanProperty(
@@ -93,8 +89,7 @@ public object InternalAgendaFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byLongProperty(propertyId: String, propertyValue: Double):
-			BaseFilterOptionsJs<AgendaJs> {
+	public fun byLongProperty(propertyId: String, propertyValue: Double): BaseFilterOptionsJs<AgendaJs> {
 		val propertyIdConverted: String = propertyId
 		val propertyValueConverted: Long = numberToLong(propertyValue, "propertyValue")
 		val result = AgendaFilters.byLongProperty(
@@ -104,8 +99,7 @@ public object InternalAgendaFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byDoubleProperty(propertyId: String, propertyValue: Double):
-			BaseFilterOptionsJs<AgendaJs> {
+	public fun byDoubleProperty(propertyId: String, propertyValue: Double): BaseFilterOptionsJs<AgendaJs> {
 		val propertyIdConverted: String = propertyId
 		val propertyValueConverted: Double = propertyValue
 		val result = AgendaFilters.byDoubleProperty(

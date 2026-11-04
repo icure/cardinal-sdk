@@ -26,25 +26,19 @@ public external interface ContactFlavouredInGroupApiJs<E : ContactJs, S : Servic
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(contact: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToContactShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(contact: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToContactShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterContactsBy(groupId: String, filter: FilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterContactsBy(groupId: String, filter: FilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterContactsBySorted(groupId: String, filter: SortableFilterOptionsJs<ContactJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterContactsBySorted(groupId: String, filter: SortableFilterOptionsJs<ContactJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createContact(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createContacts(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteContactById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteContactsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteContact(contact: GroupScopedJs<ContactJs>): Promise<GroupScopedJs<E>>
 

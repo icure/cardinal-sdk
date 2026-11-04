@@ -19,8 +19,7 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents a document entity stored in CouchDB. Documents can have main and secondary data
- *  attachments,
+ *  Represents a document entity stored in CouchDB. Documents can have main and secondary data attachments,
  *  and support various storage backends (CouchDB attachments, object storage).
  *  /
  */
@@ -126,8 +125,7 @@ export interface Document extends StoredDocument, ICureDocument<string>, HasMedi
 
 /**
  *
- *  Represents a document entity stored in CouchDB. Documents can have main and secondary data
- *  attachments,
+ *  Represents a document entity stored in CouchDB. Documents can have main and secondary data attachments,
  *  and support various storage backends (CouchDB attachments, object storage).
  *  /
  */
@@ -461,8 +459,7 @@ export class DecryptedDocument {
 
 /**
  *
- *  Represents a document entity stored in CouchDB. Documents can have main and secondary data
- *  attachments,
+ *  Represents a document entity stored in CouchDB. Documents can have main and secondary data attachments,
  *  and support various storage backends (CouchDB attachments, object storage).
  *  /
  */

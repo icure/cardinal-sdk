@@ -20,15 +20,13 @@ export interface Service extends Encryptable, ICureDocument<string>, HasMedicalL
 
 	/**
 	 *
-	 *  The transactionId is used when a single service had to be split into parts for technical
-	 *  reasons. Several services with the same non null transaction id form one single service
+	 *  The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	transactionId: string | undefined;
 
 	/**
 	 *
-	 *  Id of the contact during which the service is provided. Only used when the Service is emitted
-	 *  outside of its contact
+	 *  Id of the contact during which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	contactId: string | undefined;
 
@@ -36,29 +34,25 @@ export interface Service extends Encryptable, ICureDocument<string>, HasMedicalL
 
 	/**
 	 *
-	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
-	 *  provided. Only used when the Service is emitted outside of its contact
+	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	plansOfActionIds: Array<string> | undefined;
 
 	/**
 	 *
-	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the
-	 *  Service is emitted outside of its contact
+	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	healthElementsIds: Array<string> | undefined;
 
 	/**
 	 *
-	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 *  its contact.
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	formIds: Array<string> | undefined;
 
 	/**
 	 *
-	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 *  its contact.
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	secretForeignKeys: Array<string> | undefined;
 
@@ -76,15 +70,13 @@ export interface Service extends Encryptable, ICureDocument<string>, HasMedicalL
 
 	/**
 	 *
-	 *  The contact secret encryption key used to encrypt the secured properties (like services for
-	 *  example), encrypted for separate Crypto Actors.
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> };
 
 	/**
 	 *
-	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the
-	 *  service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the service. Could be a code to qualify temperature, complaint, diagnostic, ...
 	 */
 	label: string | undefined;
 
@@ -108,8 +100,7 @@ export interface Service extends Encryptable, ICureDocument<string>, HasMedicalL
 
 	/**
 	 *
-	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
-	 *  date
+	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same date
 	 */
 	valueDate: number | undefined;
 
@@ -167,22 +158,19 @@ export class DecryptedService {
 
 	/**
 	 *
-	 *  The transactionId is used when a single service had to be split into parts for technical
-	 *  reasons. Several services with the same non null transaction id form one single service
+	 *  The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	transactionId: string | undefined = undefined;
 
 	/**
 	 *
-	 *  The transactionId is used when a single service had to be split into parts for technical
-	 *  reasons. Several services with the same non null transaction id form one single service
+	 *  The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	identifier: Array<Identifier> = [];
 
 	/**
 	 *
-	 *  Id of the contact during which the service is provided. Only used when the Service is emitted
-	 *  outside of its contact
+	 *  Id of the contact during which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	contactId: string | undefined = undefined;
 
@@ -190,29 +178,25 @@ export class DecryptedService {
 
 	/**
 	 *
-	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
-	 *  provided. Only used when the Service is emitted outside of its contact
+	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	plansOfActionIds: Array<string> | undefined = undefined;
 
 	/**
 	 *
-	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the
-	 *  Service is emitted outside of its contact
+	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	healthElementsIds: Array<string> | undefined = undefined;
 
 	/**
 	 *
-	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 *  its contact.
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	formIds: Array<string> | undefined = undefined;
 
 	/**
 	 *
-	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 *  its contact.
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	secretForeignKeys: Array<string> | undefined = [];
 
@@ -230,15 +214,13 @@ export class DecryptedService {
 
 	/**
 	 *
-	 *  The contact secret encryption key used to encrypt the secured properties (like services for
-	 *  example), encrypted for separate Crypto Actors.
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
 	/**
 	 *
-	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the
-	 *  service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the service. Could be a code to qualify temperature, complaint, diagnostic, ...
 	 */
 	label: string | undefined = undefined;
 
@@ -262,8 +244,7 @@ export class DecryptedService {
 
 	/**
 	 *
-	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
-	 *  date
+	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same date
 	 */
 	valueDate: number | undefined = undefined;
 
@@ -281,15 +262,13 @@ export class DecryptedService {
 
 	/**
 	 *
-	 *  The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if
-	 *  missing. Not enforced by the application server.
+	 *  The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	created: number | undefined = undefined;
 
 	/**
 	 *
-	 *  The date (unix epoch in ms) of the latest modification of the service, will be filled
-	 *  automatically if missing. Not enforced by the application server.
+	 *  The date (unix epoch in ms) of the latest modification of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	modified: number | undefined = undefined;
 
@@ -303,8 +282,7 @@ export class DecryptedService {
 
 	/**
 	 *
-	 *  The id of the HealthcareParty that is responsible for this service, if absent, falls back on the
-	 *  contact's responsible
+	 *  The id of the HealthcareParty that is responsible for this service, if absent, falls back on the contact's responsible
 	 */
 	responsible: string | undefined = undefined;
 
@@ -519,22 +497,19 @@ export class EncryptedService {
 
 	/**
 	 *
-	 *  The transactionId is used when a single service had to be split into parts for technical
-	 *  reasons. Several services with the same non null transaction id form one single service
+	 *  The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	transactionId: string | undefined = undefined;
 
 	/**
 	 *
-	 *  The transactionId is used when a single service had to be split into parts for technical
-	 *  reasons. Several services with the same non null transaction id form one single service
+	 *  The transactionId is used when a single service had to be split into parts for technical reasons. Several services with the same non null transaction id form one single service
 	 */
 	identifier: Array<Identifier> = [];
 
 	/**
 	 *
-	 *  Id of the contact during which the service is provided. Only used when the Service is emitted
-	 *  outside of its contact
+	 *  Id of the contact during which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	contactId: string | undefined = undefined;
 
@@ -542,29 +517,25 @@ export class EncryptedService {
 
 	/**
 	 *
-	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is
-	 *  provided. Only used when the Service is emitted outside of its contact
+	 *  List of IDs of all plans of actions (healthcare approaches) as a part of which the Service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	plansOfActionIds: Array<string> | undefined = undefined;
 
 	/**
 	 *
-	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the
-	 *  Service is emitted outside of its contact
+	 *  List of IDs of all healthcare elements for which the service is provided. Only used when the Service is emitted outside of its contact
 	 */
 	healthElementsIds: Array<string> | undefined = undefined;
 
 	/**
 	 *
-	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 *  its contact.
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	formIds: Array<string> | undefined = undefined;
 
 	/**
 	 *
-	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of
-	 *  its contact.
+	 *  List of Ids of all forms linked to the Service. Only used when the Service is emitted outside of its contact.
 	 */
 	secretForeignKeys: Array<string> | undefined = [];
 
@@ -582,15 +553,13 @@ export class EncryptedService {
 
 	/**
 	 *
-	 *  The contact secret encryption key used to encrypt the secured properties (like services for
-	 *  example), encrypted for separate Crypto Actors.
+	 *  The contact secret encryption key used to encrypt the secured properties (like services for example), encrypted for separate Crypto Actors.
 	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
 	/**
 	 *
-	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the
-	 *  service. Could be a code to qualify temperature, complaint, diagnostic, ...
+	 *  Description / Unambiguous qualification (LOINC code) of the type of information contained in the service. Could be a code to qualify temperature, complaint, diagnostic, ...
 	 */
 	label: string | undefined = undefined;
 
@@ -614,8 +583,7 @@ export class EncryptedService {
 
 	/**
 	 *
-	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same
-	 *  date
+	 *  The date (YYYYMMDDhhmmss) when the Service is noted to have started and also closes on the same date
 	 */
 	valueDate: number | undefined = undefined;
 
@@ -633,15 +601,13 @@ export class EncryptedService {
 
 	/**
 	 *
-	 *  The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if
-	 *  missing. Not enforced by the application server.
+	 *  The timestamp (unix epoch in ms) of creation of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	created: number | undefined = undefined;
 
 	/**
 	 *
-	 *  The date (unix epoch in ms) of the latest modification of the service, will be filled
-	 *  automatically if missing. Not enforced by the application server.
+	 *  The date (unix epoch in ms) of the latest modification of the service, will be filled automatically if missing. Not enforced by the application server.
 	 */
 	modified: number | undefined = undefined;
 
@@ -655,8 +621,7 @@ export class EncryptedService {
 
 	/**
 	 *
-	 *  The id of the HealthcareParty that is responsible for this service, if absent, falls back on the
-	 *  contact's responsible
+	 *  The id of the HealthcareParty that is responsible for this service, if absent, falls back on the contact's responsible
 	 */
 	responsible: string | undefined = undefined;
 

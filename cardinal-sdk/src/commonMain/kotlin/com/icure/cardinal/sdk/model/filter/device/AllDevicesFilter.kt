@@ -20,7 +20,8 @@ data class AllDevicesFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Device>, Filter.AllFilter<Device> {
+) : AbstractFilter<Device>,
+	Filter.AllFilter<Device> {
 	// region AllDevicesFilter-AllDevicesFilter
 
 	// endregion

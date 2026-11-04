@@ -8,8 +8,6 @@ import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.js.api.CalendarItemBasicApiJs
 import com.icure.cardinal.sdk.js.api.CalendarItemBasicInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
-import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
-import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
@@ -66,8 +64,7 @@ internal class CalendarItemBasicApiImplJs(
 	private val calendarItemBasicApi: CalendarItemBasicApi,
 ) : CalendarItemBasicApiJs {
 	override val inGroup: CalendarItemBasicInGroupApiJs = object : CalendarItemBasicInGroupApiJs {
-		override fun matchCalendarItemsBy(groupId: String, filter: BaseFilterOptionsJs<CalendarItemJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchCalendarItemsBy(groupId: String, filter: BaseFilterOptionsJs<CalendarItemJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<CalendarItem> = baseFilterOptions_fromJs(filter)
 			val result = calendarItemBasicApi.inGroup.matchCalendarItemsBy(
@@ -82,12 +79,9 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun matchCalendarItemsBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<CalendarItemJs>): Promise<Array<String>> =
-				GlobalScope.promise {
+		override fun matchCalendarItemsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<CalendarItemJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<CalendarItem> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<CalendarItem> = baseSortableFilterOptions_fromJs(filter)
 			val result = calendarItemBasicApi.inGroup.matchCalendarItemsBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -100,8 +94,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun filterCalendarItemsBy(groupId: String, filter: BaseFilterOptionsJs<CalendarItemJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
+		override fun filterCalendarItemsBy(groupId: String, filter: BaseFilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<CalendarItem> = baseFilterOptions_fromJs(filter)
 			val result = calendarItemBasicApi.inGroup.filterCalendarItemsBy(
@@ -121,12 +114,9 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun filterCalendarItemsBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<CalendarItemJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
+		override fun filterCalendarItemsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<CalendarItem> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<CalendarItem> = baseSortableFilterOptions_fromJs(filter)
 			val result = calendarItemBasicApi.inGroup.filterCalendarItemsBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -222,8 +212,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun deleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -241,9 +230,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override
-				fun deleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -272,8 +259,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun purgeCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<Unit> = GlobalScope.promise {
+		override fun purgeCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -286,8 +272,7 @@ internal class CalendarItemBasicApiImplJs(
 
 		}
 
-		override fun purgeCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -316,8 +301,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun deleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
 				calendarItem,
 				{ x1: CalendarItemJs ->
@@ -335,8 +319,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun deleteCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val calendarItemsConverted: List<GroupScoped<CalendarItem>> = arrayToList(
 				calendarItems,
 				"calendarItems",
@@ -365,8 +348,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun purgeCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<Unit> = GlobalScope.promise {
 			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
 				calendarItem,
 				{ x1: CalendarItemJs ->
@@ -379,8 +361,7 @@ internal class CalendarItemBasicApiImplJs(
 
 		}
 
-		override fun purgeCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val calendarItemsConverted: List<GroupScoped<CalendarItem>> = arrayToList(
 				calendarItems,
 				"calendarItems",
@@ -409,22 +390,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
-			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
-				calendarItem,
-				{ x1: CalendarItemJs ->
-					calendarItem_fromJs(x1)
-				},
-			)
-			val result = calendarItemBasicApi.inGroup.getDataOwnersWithAccessTo(
-				calendarItemConverted,
-			)
-			entityAccessInformation_toJs(result)
-		}
-
-		override fun createCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>):
-				Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
+		override fun createCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>): Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedCalendarItem> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedCalendarItemJs ->
@@ -442,8 +408,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun createCalendarItems(entities: Array<GroupScopedJs<EncryptedCalendarItemJs>>):
-				Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
+		override fun createCalendarItems(entities: Array<GroupScopedJs<EncryptedCalendarItemJs>>): Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedCalendarItem>> = arrayToList(
 				entities,
 				"entities",
@@ -472,8 +437,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
+		override fun undeleteCalendarItemById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -491,9 +455,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override
-				fun undeleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
+		override fun undeleteCalendarItemsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -522,8 +484,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>):
-				Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
+		override fun undeleteCalendarItem(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
 			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
 				calendarItem,
 				{ x1: CalendarItemJs ->
@@ -541,8 +502,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteCalendarItems(calendarItems: Array<GroupScopedJs<EncryptedCalendarItemJs>>):
-				Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
+		override fun undeleteCalendarItems(calendarItems: Array<GroupScopedJs<EncryptedCalendarItemJs>>): Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
 			val calendarItemsConverted: List<GroupScoped<EncryptedCalendarItem>> = arrayToList(
 				calendarItems,
 				"calendarItems",
@@ -571,8 +531,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun modifyCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>):
-				Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
+		override fun modifyCalendarItem(entity: GroupScopedJs<EncryptedCalendarItemJs>): Promise<GroupScopedJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedCalendarItem> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedCalendarItemJs ->
@@ -590,8 +549,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun modifyCalendarItems(entities: Array<GroupScopedJs<EncryptedCalendarItemJs>>):
-				Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
+		override fun modifyCalendarItems(entities: Array<GroupScopedJs<EncryptedCalendarItemJs>>): Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedCalendarItem>> = arrayToList(
 				entities,
 				"entities",
@@ -620,8 +578,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun getCalendarItem(groupId: String, entityId: String):
-				Promise<GroupScopedJs<EncryptedCalendarItemJs>?> = GlobalScope.promise {
+		override fun getCalendarItem(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedCalendarItemJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = calendarItemBasicApi.inGroup.getCalendarItem(
@@ -640,8 +597,7 @@ internal class CalendarItemBasicApiImplJs(
 			)
 		}
 
-		override fun getCalendarItems(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
+		override fun getCalendarItems(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedCalendarItemJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -668,8 +624,7 @@ internal class CalendarItemBasicApiImplJs(
 		}
 	}
 
-	override fun matchCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<CalendarItem> = baseFilterOptions_fromJs(filter)
 		val result = calendarItemBasicApi.matchCalendarItemsBy(
 			filterConverted,
@@ -682,10 +637,8 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun matchCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>):
-			Promise<Array<String>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<CalendarItem> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun matchCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>): Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<CalendarItem> = baseSortableFilterOptions_fromJs(filter)
 		val result = calendarItemBasicApi.matchCalendarItemsBySorted(
 			filterConverted,
 		)
@@ -697,8 +650,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun filterCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>):
-			Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
+	override fun filterCalendarItemsBy(filter: BaseFilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<CalendarItem> = baseFilterOptions_fromJs(filter)
 		val result = calendarItemBasicApi.filterCalendarItemsBy(
 			filterConverted,
@@ -711,10 +663,8 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun filterCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>):
-			Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<CalendarItem> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun filterCalendarItemsBySorted(filter: BaseSortableFilterOptionsJs<CalendarItemJs>): Promise<PaginatedListIteratorJs<EncryptedCalendarItemJs>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<CalendarItem> = baseSortableFilterOptions_fromJs(filter)
 		val result = calendarItemBasicApi.filterCalendarItemsBySorted(
 			filterConverted,
 		)
@@ -795,8 +745,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun deleteCalendarItemById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteCalendarItemById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = calendarItemBasicApi.deleteCalendarItemById(
@@ -806,8 +755,7 @@ internal class CalendarItemBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -836,8 +784,7 @@ internal class CalendarItemBasicApiImplJs(
 
 	}
 
-	override fun purgeCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -856,8 +803,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun deleteCalendarItem(calendarItem: CalendarItemJs): Promise<StoredDocumentIdentifierJs>
-			= GlobalScope.promise {
+	override fun deleteCalendarItem(calendarItem: CalendarItemJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
 		val result = calendarItemBasicApi.deleteCalendarItem(
 			calendarItemConverted,
@@ -865,8 +811,7 @@ internal class CalendarItemBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteCalendarItems(calendarItems: Array<CalendarItemJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val calendarItemsConverted: List<CalendarItem> = arrayToList(
 			calendarItems,
 			"calendarItems",
@@ -893,8 +838,7 @@ internal class CalendarItemBasicApiImplJs(
 
 	}
 
-	override fun purgeCalendarItems(calendarItems: Array<CalendarItemJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val calendarItemsConverted: List<CalendarItem> = arrayToList(
 			calendarItems,
 			"calendarItems",
@@ -913,17 +857,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs):
-			Promise<EntityAccessInformationJs> = GlobalScope.promise {
-		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
-		val result = calendarItemBasicApi.getDataOwnersWithAccessTo(
-			calendarItemConverted,
-		)
-		entityAccessInformation_toJs(result)
-	}
-
-	override fun createCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
-			= GlobalScope.promise {
+	override fun createCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
 		val entityConverted: EncryptedCalendarItem = calendarItem_fromJs(entity)
 		val result = calendarItemBasicApi.createCalendarItem(
 			entityConverted,
@@ -931,8 +865,7 @@ internal class CalendarItemBasicApiImplJs(
 		calendarItem_toJs(result)
 	}
 
-	override fun createCalendarItems(entities: Array<EncryptedCalendarItemJs>):
-			Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
+	override fun createCalendarItems(entities: Array<EncryptedCalendarItemJs>): Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedCalendarItem> = arrayToList(
 			entities,
 			"entities",
@@ -951,8 +884,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun bookCalendarItemCheckingAvailability(entity: EncryptedCalendarItemJs):
-			Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
+	override fun bookCalendarItemCheckingAvailability(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
 		val entityConverted: EncryptedCalendarItem = calendarItem_fromJs(entity)
 		val result = calendarItemBasicApi.bookCalendarItemCheckingAvailability(
 			entityConverted,
@@ -960,8 +892,7 @@ internal class CalendarItemBasicApiImplJs(
 		calendarItem_toJs(result)
 	}
 
-	override fun undeleteCalendarItemById(id: String, rev: String): Promise<EncryptedCalendarItemJs> =
-			GlobalScope.promise {
+	override fun undeleteCalendarItemById(id: String, rev: String): Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = calendarItemBasicApi.undeleteCalendarItemById(
@@ -971,8 +902,7 @@ internal class CalendarItemBasicApiImplJs(
 		calendarItem_toJs(result)
 	}
 
-	override fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
+	override fun undeleteCalendarItemsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -991,8 +921,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<EncryptedCalendarItemJs> =
-			GlobalScope.promise {
+	override fun undeleteCalendarItem(calendarItem: CalendarItemJs): Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
 		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
 		val result = calendarItemBasicApi.undeleteCalendarItem(
 			calendarItemConverted,
@@ -1000,8 +929,7 @@ internal class CalendarItemBasicApiImplJs(
 		calendarItem_toJs(result)
 	}
 
-	override fun undeleteCalendarItems(calendarItems: Array<CalendarItemJs>):
-			Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
+	override fun undeleteCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
 		val calendarItemsConverted: List<CalendarItem> = arrayToList(
 			calendarItems,
 			"calendarItems",
@@ -1020,8 +948,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun modifyCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
-			= GlobalScope.promise {
+	override fun modifyCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs> = GlobalScope.promise {
 		val entityConverted: EncryptedCalendarItem = calendarItem_fromJs(entity)
 		val result = calendarItemBasicApi.modifyCalendarItem(
 			entityConverted,
@@ -1029,8 +956,7 @@ internal class CalendarItemBasicApiImplJs(
 		calendarItem_toJs(result)
 	}
 
-	override fun modifyCalendarItems(entities: Array<EncryptedCalendarItemJs>):
-			Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
+	override fun modifyCalendarItems(entities: Array<EncryptedCalendarItemJs>): Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedCalendarItem> = arrayToList(
 			entities,
 			"entities",
@@ -1049,8 +975,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun getCalendarItem(entityId: String): Promise<EncryptedCalendarItemJs?> =
-			GlobalScope.promise {
+	override fun getCalendarItem(entityId: String): Promise<EncryptedCalendarItemJs?> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val result = calendarItemBasicApi.getCalendarItem(
 			entityIdConverted,
@@ -1062,8 +987,7 @@ internal class CalendarItemBasicApiImplJs(
 		)
 	}
 
-	override fun getCalendarItems(entityIds: Array<String>): Promise<Array<EncryptedCalendarItemJs>> =
-			GlobalScope.promise {
+	override fun getCalendarItems(entityIds: Array<String>): Promise<Array<EncryptedCalendarItemJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -1097,8 +1021,7 @@ internal class CalendarItemBasicApiImplJs(
 				},
 			)
 			val filterConverted: FilterOptions<CalendarItem> = filterOptions_fromJs(filter)
-			val subscriptionConfigConverted: EntitySubscriptionConfiguration? =
-					convertingOptionOrDefaultNullable(
+			val subscriptionConfigConverted: EntitySubscriptionConfiguration? = convertingOptionOrDefaultNullable(
 				_options,
 				"subscriptionConfig",
 				null

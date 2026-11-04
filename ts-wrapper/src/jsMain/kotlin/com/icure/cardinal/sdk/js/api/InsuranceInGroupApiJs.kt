@@ -18,67 +18,47 @@ import kotlin.js.Promise
 
 @JsName("InsuranceInGroupApi")
 public external interface InsuranceInGroupApiJs {
-	public fun createInsurance(insurance: GroupScopedJs<InsuranceJs>):
-			Promise<GroupScopedJs<InsuranceJs>>
+	public fun createInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<InsuranceJs>>
 
-	public fun createInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-			Promise<Array<GroupScopedJs<InsuranceJs>>>
+	public fun createInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>>
 
 	public fun getInsurance(groupId: String, insuranceId: String): Promise<GroupScopedJs<InsuranceJs>?>
 
-	public fun getInsurances(groupId: String, insurancesIds: Array<String>):
-			Promise<Array<GroupScopedJs<InsuranceJs>>>
+	public fun getInsurances(groupId: String, insurancesIds: Array<String>): Promise<Array<GroupScopedJs<InsuranceJs>>>
 
-	public fun modifyInsurance(insurance: GroupScopedJs<InsuranceJs>):
-			Promise<GroupScopedJs<InsuranceJs>>
+	public fun modifyInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<InsuranceJs>>
 
-	public fun modifyInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-			Promise<Array<GroupScopedJs<InsuranceJs>>>
+	public fun modifyInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>>
 
-	public fun deleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteInsurance(insurance: GroupScopedJs<InsuranceJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun undeleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<InsuranceJs>>
+	public fun undeleteInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<InsuranceJs>>
 
-	public fun undeleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<InsuranceJs>>>
+	public fun undeleteInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>>
 
-	public fun undeleteInsurance(insurance: GroupScopedJs<InsuranceJs>):
-			Promise<GroupScopedJs<InsuranceJs>>
+	public fun undeleteInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<GroupScopedJs<InsuranceJs>>
 
-	public fun undeleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-			Promise<Array<GroupScopedJs<InsuranceJs>>>
+	public fun undeleteInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<InsuranceJs>>>
 
 	public fun purgeInsuranceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeInsuranceByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeInsurance(insurance: GroupScopedJs<InsuranceJs>): Promise<Unit>
 
-	public fun purgeInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeInsurances(insurances: Array<GroupScopedJs<InsuranceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun matchInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
-			Promise<Array<String>>
+	public fun matchInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>): Promise<Array<String>>
 
-	public fun matchInsurancesBySorted(groupId: String,
-			filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>>
+	public fun matchInsurancesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>>
 
-	public fun filterInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>>
+	public fun filterInsurancesBy(groupId: String, filter: BaseFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>>
 
-	public fun filterInsurancesBySorted(groupId: String,
-			filter: BaseSortableFilterOptionsJs<InsuranceJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>>
+	public fun filterInsurancesBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<InsuranceJs>>>
 }

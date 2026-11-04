@@ -19,8 +19,7 @@ import kotlin.collections.Set
 @Serializable
 data class BulkAttachmentUpdateOptions(
 	/**
-	 * Metadata for attachments to add or update, keyed by attachment key (the document id for the main
-	 * attachment).
+	 * Metadata for attachments to add or update, keyed by attachment key (the document id for the main attachment).
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val updateAttachmentsMetadata: Map<String, AttachmentMetadata> = emptyMap(),

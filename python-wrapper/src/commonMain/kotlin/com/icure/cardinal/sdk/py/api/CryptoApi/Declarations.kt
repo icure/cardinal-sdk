@@ -95,7 +95,7 @@ public fun currentDataOwnerKeysBlocking(sdk: CardinalApis, params: String): Stri
 		kotlin.runCatching {
 	val decodedParams = fullLanguageInteropJson.decodeFromString<CurrentDataOwnerKeysParams>(params)
 	runBlocking {
-		sdk.crypto.currentDataOwnerKeys(
+		sdk.crypto.availableKeys(
 			decodedParams.filterTrustedKeys,
 		)
 	}
@@ -115,7 +115,7 @@ public fun currentDataOwnerKeysAsync(
 	val decodedParams = fullLanguageInteropJson.decodeFromString<CurrentDataOwnerKeysParams>(params)
 	GlobalScope.launch {
 		kotlin.runCatching {
-			sdk.crypto.currentDataOwnerKeys(
+			sdk.crypto.availableKeys(
 				decodedParams.filterTrustedKeys,
 			)
 		}.toPyStringAsyncCallback(MapSerializer(String.serializer(),

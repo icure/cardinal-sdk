@@ -7,8 +7,7 @@ import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun healthElementShareOptions_toJs(obj: HealthElementShareOptions):
-		HealthElementShareOptionsJs {
+public fun healthElementShareOptions_toJs(obj: HealthElementShareOptions): HealthElementShareOptionsJs {
 	val requestedPermissions = obj.requestedPermissions.name
 	val shareEncryptionKey = obj.shareEncryptionKey.name
 	val sharePatientId = obj.sharePatientId.name
@@ -21,8 +20,7 @@ public fun healthElementShareOptions_toJs(obj: HealthElementShareOptions):
 	"}"))
 }
 
-public fun healthElementShareOptions_fromJs(obj: HealthElementShareOptionsJs):
-		HealthElementShareOptions {
+public fun healthElementShareOptions_fromJs(obj: HealthElementShareOptionsJs): HealthElementShareOptions {
 	val requestedPermissions = RequestedPermission.valueOf(obj.requestedPermissions)
 	val shareEncryptionKey = ShareMetadataBehaviour.valueOf(obj.shareEncryptionKey)
 	val sharePatientId = ShareMetadataBehaviour.valueOf(obj.sharePatientId)

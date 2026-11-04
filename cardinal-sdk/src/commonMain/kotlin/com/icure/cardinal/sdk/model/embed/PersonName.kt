@@ -9,8 +9,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Represents name information for a person, following FHIR HumanName conventions. Includes family
- * name,
+ * Represents name information for a person, following FHIR HumanName conventions. Includes family name,
  * given names, prefixes, suffixes, and a validity period.
  * /
  */

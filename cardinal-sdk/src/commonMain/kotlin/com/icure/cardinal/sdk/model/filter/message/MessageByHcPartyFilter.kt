@@ -24,7 +24,8 @@ data class MessageByHcPartyFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Message>, Filter.ByHcpartyFilter<Message> {
+) : AbstractFilter<Message>,
+	Filter.ByHcpartyFilter<Message> {
 	// region MessageByHcPartyFilter-MessageByHcPartyFilter
 
 	// endregion

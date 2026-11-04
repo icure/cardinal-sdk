@@ -7,8 +7,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Represents a database synchronization configuration between a source and a target, with optional
- * filtering.
+ * Represents a database synchronization configuration between a source and a target, with optional filtering.
  * /
  */
 @Serializable

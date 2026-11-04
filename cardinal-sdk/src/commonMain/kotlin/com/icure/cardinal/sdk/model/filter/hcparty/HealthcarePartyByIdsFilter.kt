@@ -25,7 +25,8 @@ data class HealthcarePartyByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthcareParty>, Filter.IdsFilter<String, HealthcareParty> {
+) : AbstractFilter<HealthcareParty>,
+	Filter.IdsFilter<String, HealthcareParty> {
 	// region HealthcarePartyByIdsFilter-HealthcarePartyByIdsFilter
 
 	// endregion
