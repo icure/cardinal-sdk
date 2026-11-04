@@ -202,6 +202,7 @@ data class DataOwnerDetails private constructor (
 		cryptoStrategies: CryptoStrategies,
 		storageFacade: StorageFacade = VolatileStorageFacade(),
 		options: SdkOptions = SdkOptions(),
+		useHierarchicalDataOwners: Boolean = true,
 		authenticationMethod: AuthenticationMethod = AuthenticationMethod.UsingCredentials(UsernamePassword(username, password)),
 		customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
 		useHierarchicalDataOwners: Boolean = true,
