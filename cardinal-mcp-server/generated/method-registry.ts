@@ -5207,6 +5207,95 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Group>"
+			},
+			{
+				"name": "createApplicationGroup",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "name",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ server?: string | undefined; q?: number | undefined; n?: number | undefined; superGroup?: string | undefined; projectId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Group>"
+			},
+			{
+				"name": "createTenantGroup",
+				"params": [
+					{
+						"name": "id",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "name",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ server?: string | undefined; q?: number | undefined; n?: number | undefined; superGroup?: string | undefined; projectId?: string | undefined; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Group>"
+			},
+			{
+				"name": "addSchemaVersionOnGroups",
+				"params": [
+					{
+						"name": "applicationGroupId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "schemaVersion",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "groupIds",
+						"type": "Array<string>",
+						"optional": false
+					}
+				],
+				"returnType": "Promise<Array<Group>>"
+			},
+			{
+				"name": "removeSchemaVersionFromGroups",
+				"params": [
+					{
+						"name": "applicationGroupId",
+						"type": "string",
+						"optional": false
+					},
+					{
+						"name": "schemaVersion",
+						"type": "number",
+						"optional": false
+					},
+					{
+						"name": "groupIds",
+						"type": "Array<string>",
+						"optional": false
+					},
+					{
+						"name": "options",
+						"type": "{ failIfSingleSchema?: boolean; }",
+						"optional": true
+					}
+				],
+				"returnType": "Promise<Array<Group>>"
 			}
 		]
 	},

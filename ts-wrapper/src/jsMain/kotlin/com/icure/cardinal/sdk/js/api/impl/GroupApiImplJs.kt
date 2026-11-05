@@ -2,6 +2,7 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.GroupApi
+import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.GroupApiJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
@@ -679,5 +680,185 @@ internal class GroupApiImplJs(
 			tagIdConverted,
 		)
 		group_toJs(result)
+	}
+
+	override fun createApplicationGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val idConverted: String = id
+			val nameConverted: String = name
+			val serverConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"server",
+				null
+			) { server: String? ->
+				undefinedToNull(server)
+			}
+			val qConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"q",
+				null
+			) { q: Double? ->
+				numberToInt(q, "q")
+			}
+			val nConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"n",
+				null
+			) { n: Double? ->
+				numberToInt(n, "n")
+			}
+			val superGroupConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"superGroup",
+				null
+			) { superGroup: String? ->
+				undefinedToNull(superGroup)
+			}
+			val projectIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"projectId",
+				null
+			) { projectId: String? ->
+				undefinedToNull(projectId)
+			}
+			val result = groupApi.createApplicationGroup(
+				idConverted,
+				nameConverted,
+				serverConverted,
+				qConverted,
+				nConverted,
+				superGroupConverted,
+				projectIdConverted,
+			)
+			group_toJs(result)
+		}
+	}
+
+	override fun createTenantGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val idConverted: String = id
+			val nameConverted: String = name
+			val serverConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"server",
+				null
+			) { server: String? ->
+				undefinedToNull(server)
+			}
+			val qConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"q",
+				null
+			) { q: Double? ->
+				numberToInt(q, "q")
+			}
+			val nConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"n",
+				null
+			) { n: Double? ->
+				numberToInt(n, "n")
+			}
+			val superGroupConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"superGroup",
+				null
+			) { superGroup: String? ->
+				undefinedToNull(superGroup)
+			}
+			val projectIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"projectId",
+				null
+			) { projectId: String? ->
+				undefinedToNull(projectId)
+			}
+			val result = groupApi.createTenantGroup(
+				idConverted,
+				nameConverted,
+				serverConverted,
+				qConverted,
+				nConverted,
+				superGroupConverted,
+				projectIdConverted,
+			)
+			group_toJs(result)
+		}
+	}
+
+	override fun addSchemaVersionOnGroups(
+		applicationGroupId: String,
+		schemaVersion: Double,
+		groupIds: Array<String>,
+	): Promise<Array<GroupJs>> = GlobalScope.promise {
+		val applicationGroupIdConverted: String = applicationGroupId
+		val schemaVersionConverted: Int = numberToInt(schemaVersion, "schemaVersion")
+		val groupIdsConverted: List<String> = arrayToList(
+			groupIds,
+			"groupIds",
+			{ x1: String ->
+				x1
+			},
+		)
+		val result = groupApi.addSchemaVersionOnGroups(
+			applicationGroupIdConverted,
+			schemaVersionConverted,
+			groupIdsConverted,
+		)
+		listToArray(
+			result,
+			{ x1: Group ->
+				group_toJs(x1)
+			},
+		)
+	}
+
+	override fun removeSchemaVersionFromGroups(
+		applicationGroupId: String,
+		schemaVersion: Double,
+		groupIds: Array<String>,
+		options: dynamic,
+	): Promise<Array<GroupJs>> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val applicationGroupIdConverted: String = applicationGroupId
+			val schemaVersionConverted: Int = numberToInt(schemaVersion, "schemaVersion")
+			val groupIdsConverted: List<String> = arrayToList(
+				groupIds,
+				"groupIds",
+				{ x1: String ->
+					x1
+				},
+			)
+			val failIfSingleSchemaConverted: Boolean = convertingOptionOrDefaultNonNull(
+				_options,
+				"failIfSingleSchema",
+				true
+			) { failIfSingleSchema: Boolean ->
+				failIfSingleSchema
+			}
+			val result = groupApi.removeSchemaVersionFromGroups(
+				applicationGroupIdConverted,
+				schemaVersionConverted,
+				groupIdsConverted,
+				failIfSingleSchemaConverted,
+			)
+			listToArray(
+				result,
+				{ x1: Group ->
+					group_toJs(x1)
+				},
+			)
+		}
 	}
 }

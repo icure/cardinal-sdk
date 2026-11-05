@@ -1,13 +1,13 @@
 # auto-generated file
 
 
-type HexString = str
-
-
 type KeypairFingerprintV1String = str
 
 
 type Pkcs8Bytes = bytearray
+
+
+type HexString = str
 
 
 type Base64String = str

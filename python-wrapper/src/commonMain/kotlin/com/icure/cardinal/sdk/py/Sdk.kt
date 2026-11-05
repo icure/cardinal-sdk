@@ -37,6 +37,7 @@ private data class PySdkParams(
 	val createTransferKeys: Boolean = true,
 	val keyStorage: StorageFacadeOptions? = null,
 	val ignoreUnknownFields: Boolean = true,
+	val designDocSchemaVersion: Int? = null
 ) {
 	@OptIn(ExperimentalForeignApi::class)
 	suspend fun getStorageAndApiOptions(
@@ -70,7 +71,8 @@ private data class PySdkParams(
 				keyStorage = keyStorage,
 				cryptoStrategies = strategies,
 				jsonPatcher = customJsonPatcher?.asStableRef<JsonPatcher>()?.get(),
-				ignoreUnknownFields = ignoreUnknownFields
+				ignoreUnknownFields = ignoreUnknownFields,
+				designDocSchemaVersion = designDocSchemaVersion
 			),
 			loadedStorageFacade,
 			authenticationMethod.toKt()

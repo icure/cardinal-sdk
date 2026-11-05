@@ -127,4 +127,61 @@ interface GroupApi {
 	suspend fun modifyGroupApplicationId(id: String, applicationId: String): Group
 	suspend fun addTagToGroup(id: String, rev: String, tag: CodeStub): Group
 	suspend fun removeTagFromGroup(id: String, rev: String, tagId: String): Group
+	suspend fun createApplicationGroup(
+		id: String,
+		name: String,
+		@DefaultValue("null")
+		server: String? = null,
+		@DefaultValue("null")
+		q: Int? = null,
+		@DefaultValue("null")
+		n: Int?= null,
+		@DefaultValue("null")
+		superGroup: String? = null,
+		@DefaultValue("null")
+		projectId: String? = null,
+	): Group
+
+	suspend fun createTenantGroup(
+		id: String,
+		name: String,
+		@DefaultValue("null")
+		server: String? = null,
+		@DefaultValue("null")
+		q: Int? = null,
+		@DefaultValue("null")
+		n: Int?= null,
+		@DefaultValue("null")
+		superGroup: String? = null,
+		@DefaultValue("null")
+		projectId: String? = null,
+	): Group
+
+	/**
+	 * Sets a design doc schema version as available on or more groups. This operation will fail if the schema version [schemaVersion]
+	 * does not exist for the application or if there is at least one group among [groupIds] where the indexation task were not run.
+	 *
+	 * @param applicationGroupId the id of the application group. All the groups specified in [groupIds] must be children of this group.
+	 * @param schemaVersion the version of the schema to enable.
+	 * @param groupIds the ids of the groups to update.
+	 */
+	suspend fun addSchemaVersionOnGroups(applicationGroupId: String, schemaVersion: Int, groupIds: List<String>): List<Group>
+
+	/**
+	 * Removes a design doc schema version as available on or more groups. This operation will fail if that schema version is the only one
+	 * to be enabled on at least one group, unless [failIfSingleSchema] is set to false.
+	 *
+	 * @param applicationGroupId the id of the application group. All the groups specified in [groupIds] must be children of this group.
+	 * @param schemaVersion the version of the schema to enable.
+	 * @param groupIds the ids of the groups to update.
+	 * @param failIfSingleSchema if false, the operation will not fail if the specified version is the only one enabled on one or more of the
+	 * groups.
+	 */
+	suspend fun removeSchemaVersionFromGroups(
+		applicationGroupId: String,
+		schemaVersion: Int,
+		groupIds: List<String>,
+		@DefaultValue("true")
+		failIfSingleSchema: Boolean = true
+	): List<Group>
 }
