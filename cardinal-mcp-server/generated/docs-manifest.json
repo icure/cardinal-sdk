@@ -7789,6 +7789,124 @@
           "flavours": [
             "none"
           ]
+        },
+        {
+          "name": "createApplicationGroup",
+          "description": "",
+          "params": [
+            {
+              "name": "id",
+              "type": "string",
+              "optional": false,
+              "description": ""
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "optional": false,
+              "description": ""
+            },
+            {
+              "name": "options",
+              "type": "{ server?: string | undefined; q?: number | undefined; n?: number | undefined; superGroup?: string | undefined; projectId?: string | undefined; }",
+              "optional": true,
+              "description": ""
+            }
+          ],
+          "returnType": "Group",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "createTenantGroup",
+          "description": "",
+          "params": [
+            {
+              "name": "id",
+              "type": "string",
+              "optional": false,
+              "description": ""
+            },
+            {
+              "name": "name",
+              "type": "string",
+              "optional": false,
+              "description": ""
+            },
+            {
+              "name": "options",
+              "type": "{ server?: string | undefined; q?: number | undefined; n?: number | undefined; superGroup?: string | undefined; projectId?: string | undefined; }",
+              "optional": true,
+              "description": ""
+            }
+          ],
+          "returnType": "Group",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "addSchemaVersionOnGroups",
+          "description": "Sets a design doc schema version as available on or more groups. This operation will fail if the schema version [schemaVersion] does not exist for the application or if there is at least one group among [groupIds] where the indexation task were not run.",
+          "params": [
+            {
+              "name": "applicationGroupId",
+              "type": "string",
+              "optional": false,
+              "description": "the id of the application group. All the groups specified in [groupIds] must be children of this group."
+            },
+            {
+              "name": "schemaVersion",
+              "type": "number",
+              "optional": false,
+              "description": "the version of the schema to enable."
+            },
+            {
+              "name": "groupIds",
+              "type": "Array<string>",
+              "optional": false,
+              "description": "the ids of the groups to update."
+            }
+          ],
+          "returnType": "Array<Group>",
+          "flavours": [
+            "none"
+          ]
+        },
+        {
+          "name": "removeSchemaVersionFromGroups",
+          "description": "Removes a design doc schema version as available on or more groups. This operation will fail if that schema version is the only one to be enabled on at least one group, unless [failIfSingleSchema] is set to false.",
+          "params": [
+            {
+              "name": "applicationGroupId",
+              "type": "string",
+              "optional": false,
+              "description": "the id of the application group. All the groups specified in [groupIds] must be children of this group."
+            },
+            {
+              "name": "schemaVersion",
+              "type": "number",
+              "optional": false,
+              "description": "the version of the schema to enable."
+            },
+            {
+              "name": "groupIds",
+              "type": "Array<string>",
+              "optional": false,
+              "description": "the ids of the groups to update."
+            },
+            {
+              "name": "options",
+              "type": "{ failIfSingleSchema?: boolean; }",
+              "optional": true,
+              "description": ""
+            }
+          ],
+          "returnType": "Array<Group>",
+          "flavours": [
+            "none"
+          ]
         }
       ]
     },
@@ -38350,7 +38468,13 @@
     {
       "slug": "how-to-health-element-asserters",
       "title": "Recording who asserts a health element",
-      "content": "# Recording who asserts a health element\n\nA health element carries two fields for provenance and cross-references: `asserters` and `qualifiedLinks`. The\n[HealthElement data model page](/explanations/data-model/healthelement) describes both fields; this page shows how to\nset them.\n\n`asserters` records on whose word the health element is held to be true, which is not the same as who authored or\nrecorded it. Each `HealthElementAsserter` names its party through exactly one of two mutually exclusive branches, and\nsetting both or neither is rejected by the backend with a `400`.\n\n\n```typescript no-test\n\nconst healthElement = await sdk.healthElement.withEncryptionMetadata(\n\tnew DecryptedHealthElement({\n\t\tid: randomUuid(),\n\t\tdescr: \"Peanut allergy\",\n\t\tasserters: [\n\t\t\t// A party stored in this instance: the id plus the kind of record it points at.\n\t\t\tnew HealthElementAsserter({\n\t\t\t\tlocalAsserterIdentifier: new HealthElementAsserter.LocalAsserterIdentifier({\n\t\t\t\t\tid: patient.id,\n\t\t\t\t\ttype: AsserterType.Patient,\n\t\t\t\t}),\n\t\t\t}),\n\t\t\t// A party with no record here, named by a business identifier from another system.\n\t\t\tnew HealthElementAsserter({\n\t\t\t\texternalAsserterIdentifier: new HealthElementAsserter.ExternalAsserterIdentifier({\n\t\t\t\t\tidentifier: new Identifier({\n\t\t\t\t\t\tsystem: \"urn:oid:1.2.3.4\",\n\t\t\t\t\t\tvalue: \"hcp-88213\",\n\t\t\t\t\t}),\n\t\t\t\t}),\n\t\t\t}),\n\t\t],\n\t}),\n\tpatient\n)\nawait sdk.healthElement.createHealthElement(healthElement)\n```\n\n`asserters` is encrypted by default, so it is only readable by the data owners the health element is shared with.\n\nUse `qualifiedLinks` to point at other health elements — for example to say that a health element is a complication of\nan earlier one. Create the link in one direction only; the reverse is resolved through a view.\n\n\n```typescript no-test\n\nconst complication = new HealthElementQualifiedLink({\n\ttype: \"complicates\",\n\thealthElementId: earlierHealthElement.id,\n\tassociationId: episodeCorrelationId,\n})\n```\n\n\n> **caution:**\nThe shape of `HealthElementAsserter` changed twice in the 2.13 line. Up to 2.13.1 it was a flat\n`asserterId`/`asserterType` pair, 2.13.2 replaced it with the two nullable branches, and 2.13.3 wrapped the external\nbranch in `ExternalAsserterIdentifier` instead of holding a bare `Identifier`. Code written against 2.13.0 to 2.13.2\nneeds updating.\n\n\n---\n\n\n================================================================================\n# PART 5: DATA MODEL REFERENCE\n================================================================================",
+      "content": "# Recording who asserts a health element\n\nA health element carries two fields for provenance and cross-references: `asserters` and `qualifiedLinks`. The\n[HealthElement data model page](/explanations/data-model/healthelement) describes both fields; this page shows how to\nset them.\n\n`asserters` records on whose word the health element is held to be true, which is not the same as who authored or\nrecorded it. Each `HealthElementAsserter` names its party through exactly one of two mutually exclusive branches, and\nsetting both or neither is rejected by the backend with a `400`.\n\n\n```typescript no-test\n\nconst healthElement = await sdk.healthElement.withEncryptionMetadata(\n\tnew DecryptedHealthElement({\n\t\tid: randomUuid(),\n\t\tdescr: \"Peanut allergy\",\n\t\tasserters: [\n\t\t\t// A party stored in this instance: the id plus the kind of record it points at.\n\t\t\tnew HealthElementAsserter({\n\t\t\t\tlocalAsserterIdentifier: new HealthElementAsserter.LocalAsserterIdentifier({\n\t\t\t\t\tid: patient.id,\n\t\t\t\t\ttype: AsserterType.Patient,\n\t\t\t\t}),\n\t\t\t}),\n\t\t\t// A party with no record here, named by a business identifier from another system.\n\t\t\tnew HealthElementAsserter({\n\t\t\t\texternalAsserterIdentifier: new HealthElementAsserter.ExternalAsserterIdentifier({\n\t\t\t\t\tidentifier: new Identifier({\n\t\t\t\t\t\tsystem: \"urn:oid:1.2.3.4\",\n\t\t\t\t\t\tvalue: \"hcp-88213\",\n\t\t\t\t\t}),\n\t\t\t\t}),\n\t\t\t}),\n\t\t],\n\t}),\n\tpatient\n)\nawait sdk.healthElement.createHealthElement(healthElement)\n```\n\n`asserters` is encrypted by default, so it is only readable by the data owners the health element is shared with.\n\nUse `qualifiedLinks` to point at other health elements — for example to say that a health element is a complication of\nan earlier one. Create the link in one direction only; the reverse is resolved through a view.\n\n\n```typescript no-test\n\nconst complication = new HealthElementQualifiedLink({\n\ttype: \"complicates\",\n\thealthElementId: earlierHealthElement.id,\n\tassociationId: episodeCorrelationId,\n})\n```\n\n\n> **caution:**\nThe shape of `HealthElementAsserter` changed twice in the 2.13 line. Up to 2.13.1 it was a flat\n`asserterId`/`asserterType` pair, 2.13.2 replaced it with the two nullable branches, and 2.13.3 wrapped the external\nbranch in `ExternalAsserterIdentifier` instead of holding a bare `Identifier`. Code written against 2.13.0 to 2.13.2\nneeds updating.\n\n\n---",
+      "category": "how-to"
+    },
+    {
+      "slug": "how-to-application-groups-and-schema-versions",
+      "title": "Creating application and tenant groups and managing their schema versions",
+      "content": "# Creating application and tenant groups and managing their schema versions\n\nGroups form a hierarchy whose levels are listed by `GroupType`: `Root`, `App` and `Database`. Besides the generic\n`createGroup`, `GroupApi` has two dedicated creation methods, `createApplicationGroup` and `createTenantGroup`. Both\ntake an `id` and a `name`, plus an optional object with `server`, `q`, `n`, `superGroup` and `projectId`; unlike\n`createGroup`, they take no password and no `DatabaseInitialisation`. Each one returns the created `Group`.\n\nA group records the versions of the custom design doc schema applied to it in `Group.designDocSchemaVersions`, and\n`Group.defaultChildrenSchemaVersion` holds the version applied by default to its child groups when they are created.\n`addSchemaVersionOnGroups` and `removeSchemaVersionFromGroups` change the versions available on child groups of an\napplication group.\n\n```typescript\nconst applicationGroup = await sdk.group.createApplicationGroup(\n\t\"my-application\",\n\t\"My application\",\n\t{ projectId: \"my-project\" }\n)\nconst tenantGroup = await sdk.group.createTenantGroup(\n\t\"clinic-a\",\n\t\"Clinic A\",\n\t{ superGroup: applicationGroup.id }\n)\n\nconst updated = await sdk.group.addSchemaVersionOnGroups(applicationGroup.id, 2, [tenantGroup.id])\nfor (const group of updated) {\n\tconsole.log(`${group.id}: schema versions ${group.designDocSchemaVersions.join(\", \")}`)\n}\n\nawait sdk.group.removeSchemaVersionFromGroups(applicationGroup.id, 1, [tenantGroup.id])\n```\n\nEvery id in `groupIds` must be a child of `applicationGroupId`, and both methods return the updated groups.\n`addSchemaVersionOnGroups` fails if the schema version does not exist for the application, or if the indexation task\nhas not been run on at least one of the groups. `removeSchemaVersionFromGroups` fails if the version is the only one\nenabled on at least one of the groups; pass `{ failIfSingleSchema: false }` as the last argument to remove it anyway.\n\n---\n\n\n================================================================================\n# PART 5: DATA MODEL REFERENCE\n================================================================================",
       "category": "how-to"
     },
     {

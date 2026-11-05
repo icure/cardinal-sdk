@@ -268,7 +268,7 @@ const ALLOWED_APIS = new Set([
 	// crypto-tools
 	"Crypto", "Recovery", "ShamirKeysManager", "DataOwner", "CardinalMaintenanceTask",
 	// Supporting entities
-	"CalendarItemType", "FormTemplate", "DocumentTemplate",
+	"CalendarItemType", "FormTemplate",
 	// Encryptable entity APIs (used via dispatch)
 	"AccessLog", "Agenda", "CalendarItem", "Code", "Contact",
 	"Document", "Form", "HealthElement", "Insurance", "Invoice",
