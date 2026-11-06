@@ -3,7 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
@@ -22,6 +22,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a conversation
@@ -35,7 +36,7 @@ sealed interface Topic :
 	HasMedicalLocation,
 	HasEncryptionMetadata,
 	Encryptable,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	/**
 	 * The unique identifier of the topic.
@@ -159,6 +160,8 @@ sealed interface Topic :
 	 */
 	override val extensions: JsonObject?
 
+	override val customisedTypeId: String?
+
 	override val customisedModelVersion: Int?
 	// region Topic-Topic
 	companion object {
@@ -281,6 +284,7 @@ data class DecryptedTopic(
 	 * Set of ids of services linked to this topic.
 	 */
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Topic {
 	// region Topic-DecryptedTopic
@@ -403,6 +407,7 @@ data class EncryptedTopic(
 	 * Set of ids of services linked to this topic.
 	 */
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Topic {
 	// region Topic-EncryptedTopic

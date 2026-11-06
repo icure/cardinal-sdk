@@ -3,7 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
@@ -31,6 +31,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  *
@@ -44,7 +45,7 @@ sealed interface CalendarItem :
 	HasMedicalLocation,
 	HasEncryptionMetadata,
 	Encryptable,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	/**
 	 * The Id of the calendar item. We encourage using either a v4 UUID or a HL7 Id.
@@ -277,6 +278,8 @@ sealed interface CalendarItem :
 
 	override val extensions: JsonObject?
 
+	override val customisedTypeId: String?
+
 	override val customisedModelVersion: Int?
 
 	@Serializable
@@ -498,6 +501,7 @@ data class DecryptedCalendarItem(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : CalendarItem {
 	// region CalendarItem-DecryptedCalendarItem
@@ -721,6 +725,7 @@ data class EncryptedCalendarItem(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : CalendarItem {
 	// region CalendarItem-EncryptedCalendarItem

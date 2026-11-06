@@ -3,7 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
@@ -24,6 +24,7 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  * Represents an access log entry that records access to medical data or resources within the system.
@@ -36,7 +37,7 @@ sealed interface AccessLog :
 	HasMedicalLocation,
 	HasEncryptionMetadata,
 	Encryptable,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	/**
 	 * The Id of the access log. We encourage using either a v4 UUID or a HL7 Id.
@@ -158,6 +159,8 @@ sealed interface AccessLog :
 
 	override val extensions: JsonObject?
 
+	override val customisedTypeId: String?
+
 	override val customisedModelVersion: Int?
 	// region AccessLog-AccessLog
 
@@ -273,6 +276,7 @@ data class DecryptedAccessLog(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : AccessLog {
 	// region AccessLog-DecryptedAccessLog
@@ -390,6 +394,7 @@ data class EncryptedAccessLog(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : AccessLog {
 	// region AccessLog-EncryptedAccessLog

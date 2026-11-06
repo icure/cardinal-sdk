@@ -28,6 +28,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
+import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
@@ -93,6 +94,7 @@ internal object RelatedPersonEncryptorFactory : RootEntityEncryptorFactory<Encry
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 			currentVersion = manifest.currentVersion,
+			customisedTypeId = manifest.customisedTypeId,
 		)
 	}
 }
@@ -119,13 +121,17 @@ private class RelatedPersonEncryptor(
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 	private val currentVersion: Int?,
+	private val customisedTypeId: String?,
 ) : AbstractEntityEncryptor<EncryptedRelatedPerson, DecryptedRelatedPerson>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedRelatedPerson,
 	): EncryptedRelatedPerson {
-		require(clearEntity.customisedModelVersion == currentVersion) {
-			"""Can't encrypt RelatedPerson with customised model version ${clearEntity.customisedModelVersion}: only entities at the current customised model version $currentVersion can be encrypted, the entity must be migrated first"""
+		require(
+			clearEntity.customisedTypeId == customisedTypeId &&
+				clearEntity.customisedModelVersion == currentVersion,
+		) {
+			"""Can't encrypt RelatedPerson with customised type ${clearEntity.customisedTypeId} and version ${clearEntity.customisedModelVersion}: only entities of the current customised type $customisedTypeId at the current version $currentVersion can be encrypted, the entity must be migrated first"""
 		}
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (identifier_e && clearEntity.identifier.isNotEmpty()) {
@@ -219,6 +225,7 @@ private class RelatedPersonEncryptor(
 			encryptionKeys = clearEntity.encryptionKeys,
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
+			customisedTypeId = clearEntity.customisedTypeId,
 			customisedModelVersion = clearEntity.customisedModelVersion,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
 		)

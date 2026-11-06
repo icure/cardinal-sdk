@@ -2,7 +2,7 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.Named
 import com.icure.cardinal.sdk.model.base.StoredDocument
@@ -12,6 +12,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  * DTO representing a physical place or location, such as a clinic or office.
@@ -43,10 +44,11 @@ data class Place(
 	 * The address of the place.
 	 */
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : StoredDocument,
 	Named,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	// region Place-Place
 

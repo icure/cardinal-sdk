@@ -3,7 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
@@ -24,6 +24,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  *
@@ -130,12 +131,13 @@ data class Agenda(
 	@param:DefaultValue("emptyList()")
 	public val schedules: List<ResourceGroupAllocationSchedule> = emptyList(),
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : StoredDocument,
 	ICureDocument<String>,
 	HasMedicalLocation,
 	HasEndOfLife,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	// region Agenda-Agenda
 

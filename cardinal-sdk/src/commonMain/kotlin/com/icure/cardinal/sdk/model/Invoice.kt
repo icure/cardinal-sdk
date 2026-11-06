@@ -3,7 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasIdentifier
@@ -36,6 +36,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
@@ -50,7 +51,7 @@ sealed interface Invoice :
 	HasEncryptionMetadata,
 	Encryptable,
 	HasIdentifier,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	/**
 	 * The Id of the Invoice. We encourage using either a v4 UUID or a HL7 Id.
@@ -430,6 +431,8 @@ sealed interface Invoice :
 
 	override val extensions: JsonObject?
 
+	override val customisedTypeId: String?
+
 	override val customisedModelVersion: Int?
 	// region Invoice-Invoice
 
@@ -757,6 +760,7 @@ data class DecryptedInvoice(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Invoice {
 	// region Invoice-DecryptedInvoice
@@ -1086,6 +1090,7 @@ data class EncryptedInvoice(
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Invoice {
 	// region Invoice-EncryptedInvoice
