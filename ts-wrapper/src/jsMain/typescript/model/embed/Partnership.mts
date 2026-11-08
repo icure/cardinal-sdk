@@ -9,8 +9,7 @@ import {PartnershipType} from './PartnershipType.mjs';
 
 /**
  *
- *  Represents a relationship between a patient and another person (contact person or another
- *  patient).
+ *  Represents a relationship between a patient and another person (contact person or another patient).
  *  /
  */
 export interface Partnership extends Encryptable {
@@ -35,8 +34,7 @@ export interface Partnership extends Encryptable {
 
 	/**
 	 *
-	 *  The type of entity partnerId refers to. When null the partner is either a patient or a
-	 *  healthcare party (legacy behavior).
+	 *  The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	partnerType: PartnerType | undefined;
 
@@ -48,8 +46,7 @@ export interface Partnership extends Encryptable {
 
 /**
  *
- *  Represents a relationship between a patient and another person (contact person or another
- *  patient).
+ *  Represents a relationship between a patient and another person (contact person or another patient).
  *  /
  */
 export class DecryptedPartnership {
@@ -74,8 +71,7 @@ export class DecryptedPartnership {
 
 	/**
 	 *
-	 *  The type of entity partnerId refers to. When null the partner is either a patient or a
-	 *  healthcare party (legacy behavior).
+	 *  The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	partnerType: PartnerType | undefined = undefined;
 
@@ -129,8 +125,7 @@ export class DecryptedPartnership {
 
 /**
  *
- *  Represents a relationship between a patient and another person (contact person or another
- *  patient).
+ *  Represents a relationship between a patient and another person (contact person or another patient).
  *  /
  */
 export class EncryptedPartnership {
@@ -155,8 +150,7 @@ export class EncryptedPartnership {
 
 	/**
 	 *
-	 *  The type of entity partnerId refers to. When null the partner is either a patient or a
-	 *  healthcare party (legacy behavior).
+	 *  The type of entity partnerId refers to. When null the partner is either a patient or a healthcare party (legacy behavior).
 	 */
 	partnerType: PartnerType | undefined = undefined;
 

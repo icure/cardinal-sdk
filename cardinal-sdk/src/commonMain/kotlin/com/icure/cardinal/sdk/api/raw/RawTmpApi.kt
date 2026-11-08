@@ -65,8 +65,7 @@ public interface RawTmpApi {
 
 	suspend fun listTmpHealthElements(
 		firstHealthElementId: String? = null,
-		pageSize: Int? =
-			null,
+		pageSize: Int? = null,
 	): HttpResponse<PaginatedList<EncryptedHealthElement>>
 
 	suspend fun getTmpForm(id: String): HttpResponse<EncryptedForm>
@@ -183,8 +182,7 @@ public interface RawTmpApi {
 
 	suspend fun listTmpClassifications(
 		firstClassificationId: String? = null,
-		pageSize: Int? =
-			null,
+		pageSize: Int? = null,
 	): HttpResponse<PaginatedList<EncryptedClassification>>
 
 	suspend fun getTmpEntityTemplate(id: String): HttpResponse<EntityTemplate>
@@ -201,8 +199,7 @@ public interface RawTmpApi {
 
 	suspend fun listTmpEntityTemplates(
 		firstEntityTemplateId: String? = null,
-		pageSize: Int? =
-			null,
+		pageSize: Int? = null,
 	): HttpResponse<PaginatedList<EntityTemplate>>
 
 	suspend fun deleteTmpItems(ids: List<String>): HttpResponse<List<DocIdentifier>>

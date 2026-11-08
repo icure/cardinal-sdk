@@ -5,8 +5,7 @@ import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun rawDecryptedExchangeData_toJs(obj: RawDecryptedExchangeData):
-		RawDecryptedExchangeDataJs {
+public fun rawDecryptedExchangeData_toJs(obj: RawDecryptedExchangeData): RawDecryptedExchangeDataJs {
 	val exchangeDataId = obj.exchangeDataId
 	val exchangeKey = obj.exchangeKey
 	val accessControlSecret = obj.accessControlSecret
@@ -19,8 +18,7 @@ public fun rawDecryptedExchangeData_toJs(obj: RawDecryptedExchangeData):
 	"}"))
 }
 
-public fun rawDecryptedExchangeData_fromJs(obj: RawDecryptedExchangeDataJs):
-		RawDecryptedExchangeData {
+public fun rawDecryptedExchangeData_fromJs(obj: RawDecryptedExchangeDataJs): RawDecryptedExchangeData {
 	val exchangeDataId = obj.exchangeDataId
 	val exchangeKey = obj.exchangeKey
 	val accessControlSecret = obj.accessControlSecret

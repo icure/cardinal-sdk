@@ -14,8 +14,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a type of calendar item, defining properties like duration, color, and name for
- * appointments.
+ * Represents a type of calendar item, defining properties like duration, color, and name for appointments.
  * Calendar item types are used to categorize calendar items within an agenda.
  * /
  */
@@ -26,8 +25,7 @@ data class CalendarItemType(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the calendar item type in the database, used for conflict management /
-	 * optimistic locking.
+	 * The revision of the calendar item type in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

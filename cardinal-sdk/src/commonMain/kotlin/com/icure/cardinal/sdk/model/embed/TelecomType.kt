@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumerates the types of telecommunication channels available for contacting a person or
- * organization.
+ *  Enumerates the types of telecommunication channels available for contacting a person or organization.
  */
 @Serializable
 enum class TelecomType(

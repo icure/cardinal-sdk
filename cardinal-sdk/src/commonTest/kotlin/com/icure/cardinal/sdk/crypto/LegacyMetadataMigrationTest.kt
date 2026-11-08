@@ -2,15 +2,23 @@
 
 package com.icure.cardinal.sdk.crypto
 
+import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.api.raw.impl.RawHealthcarePartyApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawPatientApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
+import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
+import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
 import com.icure.cardinal.sdk.model.EncryptedPatient
 import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
+import com.icure.cardinal.sdk.model.requests.RequestedPermission
 import com.icure.cardinal.sdk.test.DataOwnerDetails
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
+import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.baseUrl
+import com.icure.cardinal.sdk.test.createHcpUser
+import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
@@ -22,19 +30,40 @@ import com.icure.kryptom.crypto.defaultCryptoService
 import com.icure.kryptom.utils.hexToByteArray
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.collections.shouldHaveSingleElement
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import kotlinx.coroutines.Job
+
+private data class TestApis(
+	val a: CardinalSdk,
+	val b: CardinalSdk,
+	val p: CardinalSdk,
+	val x: CardinalSdk,
+	val x2: CardinalSdk
+)
+
+private data class TestIds(
+	val a: String,
+	val b: String,
+	val p: String,
+	val x: String,
+	val x2: String
+)
 
 private data class TestData(
-	val p: DataOwnerDetails,
-	val a: DataOwnerDetails,
-	val b: DataOwnerDetails,
-	val patientId: String,
+	val apis: TestApis,
+	val ids: TestIds,
+	val patient: EncryptedPatient,
 	val patientConfidentialSecretId: String,
 	val patientNote: String
 )
 
 // The following data was created for test purposes only and does not contain any real key / secrets.
 @InternalIcureApi
-private suspend fun createTestDataAndApis(): TestData {
+private suspend fun createTestDataAndApis(job: Job, useFakeKeyForAesExchangeKeyEntry: Boolean = false): TestData {
 	val pId = defaultCryptoService.strongRandom.randomUUID().toString()
 	val pLogin = "parent-${defaultCryptoService.strongRandom.randomUUID()}"
 	val pPassword = defaultCryptoService.strongRandom.randomUUID().toString()
@@ -68,9 +97,9 @@ private suspend fun createTestDataAndApis(): TestData {
       "id": "$aId",
       "lastName": "6144e2",
       "firstName": "6ca3b4",
-      "parentId": "$pId",
+      "dataOwnerGroups": [{ "dataOwnerId": "$pId" }],
       "aesExchangeKeys": {
-        "$aPublicKey": 
+        "${if (useFakeKeyForAesExchangeKeyEntry) "x0" else aPublicKey}":
           {
             "$pId": {
               "3b42514690fbb161a5179d0203010001": 
@@ -103,13 +132,15 @@ private suspend fun createTestDataAndApis(): TestData {
 	val bPassword = defaultCryptoService.strongRandom.randomUUID().toString()
 	val bPrivateKey =
 		"308204bc020100300d06092a864886f70d0101010500048204a6308204a20201000282010100982330dc464b3e9c583affbfece209976bc045f07b22fb44bcb0ebc27bc9d8406b54e380d195e107c1728499a64012b3251c1c85a2516e73b89a07b1929f0c12d44828677135082e8170b9831dd4ff9e988d098731eadd1443813cb5f6af2fe4c2a2706ba6aeb5bb6bb7889be51eebd83bebbb2a0b55a6d69fdeb66894af47edd6f82a8d30629814b82f17cfd1ef75f47d192eb9577c58f14a5e0d2782b13b796b5a3be780a38b0f69f3d00179d13cc23fcec1e919ac05d88c08c693c711384ad9fc7a21ed28d0e5d3865c15db239a5d727d4c52a344975c97379cc5a195ff4f8c1aacbaa67d6d0fd358b6b5d1a4d0575bc57b2d7736108978e3371e9aa0ae8f0203010001028201002a9bac7afc9ae5399f4242cf4b36110e9de8570e1f46704dd374cf4a8425c7115f9e022b59475b23336bf1b4208a1052a8e183217010d358c88a26fe75fc6242c1be45c696bf8dff8c53f838bef9a0ef9774e486bf15b27e12dbd69775b3a1bbb5410e303019fd1eb4efcd6c2fd2a5a5c53e6388466d6210f8ec4474ecb35c76d2c4269d3a585cdce972673c56818015b9f097ff528e26272b76810cb4f8a1ee5ea04ea26f4cf3c6f78b77c5f58d80628f513a4da76cc1e35a6867af1ab76fe0354e549340221d19bfe04783e34f84eca7bd80867134710adc0665a52eb689d2cf6ecb38ca77d84f4feb8c23539e92ac870b3175c174d8f5643aabc0e7ef3cd102818100ba44b38b24e28d9fb85279c0098b4505e0852ba88b54d2cb8b0e77368c1600bb40b4c0f6dee8b97788e082af0f9045dd54f05ee583fffabc473d16272d03c1aef301541176e7a95f948f8d77b6aad087c54f2de713909efdd5d90a8bbec61067172a97480ba844c25cf64a8b1f0698e2f4dd73af798dd8ab329f7f9bf9a0f9ff02818100d11781567bde00a256ac7ef2c4bf10a5b8b2ebab77c941b7665817f17aa496f166ecd89bb4c50c53d4e836b3369edc2f0f49e64f8dbe7ddaf0fb3898075f6e82ab2c69bc925368904ba459ce08a40ce621dceefa78b64d8eb68752d1cc2a53a1db9718ab1a8703333065cf9b8407174c18f8b085e4aebf32a5bf9b259a6bab71028180492352b04f025a039df75c70e80e7442b37ef6be8e3ef72a0ee6d62e67e0f7d68eb8aa9004c4b29659fb75b4d1529fec213ee4b4101981d54dcf91943e5b9c405a9069f7158e2ef625ba1c1d266f79c3e5d88a38927915c4aba4363cdae2a06c2a2f82093af28e5516f56a1da84809de0bb1ac8bf919963ada7cc039795218f70281802b0aceaa31f78263e8b9bbac580a08f04474388564b43e5df5a87ecd4bf4e3c9afe963b1b1e5ba62eb7a1e008866ed66969c1cd81592b82fc0d9c64dad7edcadf374c2137a7fc70fa532a0f603db59786a5223b3d5f399459e977eda0750534507823426cce02c2d76720ee9b1a5100baf3c4a8255900f75ea9ee5de38ca9f510281802c19faaa1e08ac6337c48af1529f8b8685d2582586986b180377aee8cf4eaadcdbb5869c6f994275b0ae3ecc6aa0ead81296ab9a96eecb44f14fcd9e50ef34d9725e97809b3ed2ed6105102c96ea55a096f292a8d9769c05779f303dc6ad3b30c3c9bea749d58636b3977c9c593557c048b2f82e90fead32b5b510966e548e7a"
+	val bPublicKey =
+		"30820122300d06092a864886f70d01010105000382010f003082010a0282010100982330dc464b3e9c583affbfece209976bc045f07b22fb44bcb0ebc27bc9d8406b54e380d195e107c1728499a64012b3251c1c85a2516e73b89a07b1929f0c12d44828677135082e8170b9831dd4ff9e988d098731eadd1443813cb5f6af2fe4c2a2706ba6aeb5bb6bb7889be51eebd83bebbb2a0b55a6d69fdeb66894af47edd6f82a8d30629814b82f17cfd1ef75f47d192eb9577c58f14a5e0d2782b13b796b5a3be780a38b0f69f3d00179d13cc23fcec1e919ac05d88c08c693c711384ad9fc7a21ed28d0e5d3865c15db239a5d727d4c52a344975c97379cc5a195ff4f8c1aacbaa67d6d0fd358b6b5d1a4d0575bc57b2d7736108978e3371e9aa0ae8f0203010001" // pragma: allowlist secret
 	val bHcpBase: HealthcareParty = Serialization.json.decodeFromString("""{
 		"id": "$bId",
 		"lastName": "95ee22",
 		"firstName": "2af696",
-		"parentId": "$pId",
+		"dataOwnerGroups": [{ "dataOwnerId": "$pId" }]
 		"aesExchangeKeys": {
-			"30820122300d06092a864886f70d01010105000382010f003082010a0282010100982330dc464b3e9c583affbfece209976bc045f07b22fb44bcb0ebc27bc9d8406b54e380d195e107c1728499a64012b3251c1c85a2516e73b89a07b1929f0c12d44828677135082e8170b9831dd4ff9e988d098731eadd1443813cb5f6af2fe4c2a2706ba6aeb5bb6bb7889be51eebd83bebbb2a0b55a6d69fdeb66894af47edd6f82a8d30629814b82f17cfd1ef75f47d192eb9577c58f14a5e0d2782b13b796b5a3be780a38b0f69f3d00179d13cc23fcec1e919ac05d88c08c693c711384ad9fc7a21ed28d0e5d3865c15db239a5d727d4c52a344975c97379cc5a195ff4f8c1aacbaa67d6d0fd358b6b5d1a4d0575bc57b2d7736108978e3371e9aa0ae8f0203010001":
+			"${if (useFakeKeyForAesExchangeKeyEntry) "x0" else bPublicKey}":
 				{
 					"$pId": {
 					"3b42514690fbb161a5179d0203010001": 
@@ -119,8 +150,7 @@ private suspend fun createTestDataAndApis(): TestData {
 				}
 			}
 		},
-		"publicKey":
-		"30820122300d06092a864886f70d01010105000382010f003082010a0282010100982330dc464b3e9c583affbfece209976bc045f07b22fb44bcb0ebc27bc9d8406b54e380d195e107c1728499a64012b3251c1c85a2516e73b89a07b1929f0c12d44828677135082e8170b9831dd4ff9e988d098731eadd1443813cb5f6af2fe4c2a2706ba6aeb5bb6bb7889be51eebd83bebbb2a0b55a6d69fdeb66894af47edd6f82a8d30629814b82f17cfd1ef75f47d192eb9577c58f14a5e0d2782b13b796b5a3be780a38b0f69f3d00179d13cc23fcec1e919ac05d88c08c693c711384ad9fc7a21ed28d0e5d3865c15db239a5d727d4c52a344975c97379cc5a195ff4f8c1aacbaa67d6d0fd358b6b5d1a4d0575bc57b2d7736108978e3371e9aa0ae8f0203010001"
+		"publicKey": "$bPublicKey"
 	}""")
 	val bUserBase: User = Serialization.json.decodeFromString("""{
 		"id": "${defaultCryptoService.strongRandom.randomUUID()}",
@@ -189,7 +219,7 @@ private suspend fun createTestDataAndApis(): TestData {
 	userApi.createUser(pUserBase)
 	userApi.createUser(aUserBase)
 	userApi.createUser(bUserBase)
-	patientApi.createPatient(patientBase)
+	val createdPatient = patientApi.createPatient(patientBase).successBody()
 	val keyP = defaultCryptoService.rsa.loadKeyPairPkcs8(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1, hexToByteArray(pPrivateKey))
 	val keyA = defaultCryptoService.rsa.loadKeyPairPkcs8(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1, hexToByteArray(aPrivateKey))
 	val keyB = defaultCryptoService.rsa.loadKeyPairPkcs8(RsaAlgorithm.RsaEncryptionAlgorithm.OaepWithSha1, hexToByteArray(bPrivateKey))
@@ -198,37 +228,178 @@ private suspend fun createTestDataAndApis(): TestData {
 		username = pLogin,
 		password = pPassword,
 		keypair = keyP,
-		parent = null,
-		groupId = testGroupId
+		parents = emptyList(),
+		groupId = testGroupId,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.Parent,
 	)
 	val aDataOwnerDetails = DataOwnerDetails(
 		dataOwnerId = aId,
 		username = aLogin,
 		password = aPassword,
 		keypair = keyA,
-		parent = pDataOwnerDetails,
-		groupId = testGroupId
+		parents = listOf(pDataOwnerDetails),
+		groupId = testGroupId,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.Parent,
 	)
 	val bDataOwnerDetails = DataOwnerDetails(
 		dataOwnerId = bId,
 		username = bLogin,
 		password = bPassword,
 		keypair = keyB,
-		parent = pDataOwnerDetails,
-		groupId = testGroupId
+		parents = listOf(pDataOwnerDetails),
+		groupId = testGroupId,
+		effectiveGroupLinkType = DataOwnerGroupLinkType.Parent,
 	)
+	// X, X2: external hcps, not related to A/B/P.
+	val xDataOwnerDetails = createHcpUser()
+	val x2DataOwnerDetails = createHcpUser()
 	return TestData(
-		p = pDataOwnerDetails,
-		a = aDataOwnerDetails,
-		b = bDataOwnerDetails,
-		patientId = patientBase.id,
+		apis = TestApis(
+			a = aDataOwnerDetails.api(job),
+			b = bDataOwnerDetails.api(job),
+			p = pDataOwnerDetails.api(job),
+			x = xDataOwnerDetails.api(job),
+			x2 = x2DataOwnerDetails.api(job)
+		),
+		ids = TestIds(
+			a = aId,
+			b = bId,
+			p = pId,
+			x = xDataOwnerDetails.dataOwnerId,
+			x2 = x2DataOwnerDetails.dataOwnerId
+		),
+		patient = createdPatient,
 		patientConfidentialSecretId = "24cd8cf5-0958-4ee9-8e90-95f3d25a47d7",
 		patientNote = "This is just a test patient"
 	)
 }
 
 class LegacyMetadataMigrationTest : StringSpec({
-	"TODO: actually implement this test".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY && SKIP_IN_CANARY) {
-		TODO("Adapt the ts test")
+	val specJob = autoCancelJob()
+
+	beforeSpec {
+		initializeTestEnvironment()
+	}
+
+	/*
+	 * Entity E with legacy metadata created by A and shared with P. There is also a confidential
+	 * secret id (known by A but not P). B (a sibling of A under the same parent P, holding P's key
+	 * locally) wants to share with X as read only.
+	 * Expected outcome:
+	 * - A root secure delegation B->B
+	 * - A delegation B->P
+	 * - Through the delegation B->P, A and P can access all the legacy metadata available to P (but
+	 *   not the confidential secret id known by A)
+	 * - A delegation from B->X
+	 * - Through B->X, X can access only the shared information and has read access only
+	 *
+	 * Now A wants to share with X2.
+	 * Expected outcome:
+	 * - A new root secure delegation A->A is available, which gives access to the confidential secret id
+	 * - A delegation A->X2 with the shared information
+	 * - Parents of the new delegation are the new A->A root delegation and the existing A->P delegation
+	 * - B and P still can't access the confidential secret id
+	 */
+	"sharing data as a child of a parent with legacy access should work".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val data = createTestDataAndApis(specJob)
+		val secretIdsKnownByA = data.apis.a.patient.getSecretIdsOf(data.patient).keys
+		val secretIdsKnownByB = data.apis.b.patient.getSecretIdsOf(data.patient).keys
+		secretIdsKnownByB shouldHaveSize 1
+		(data.patientConfidentialSecretId in secretIdsKnownByB) shouldBe false
+		secretIdsKnownByA shouldHaveSize 2
+		(data.patientConfidentialSecretId in secretIdsKnownByA) shouldBe true
+		(secretIdsKnownByB.single() in secretIdsKnownByA) shouldBe true
+
+		val sharedPatient = data.apis.b.patient.encrypted.shareWith(
+			data.ids.x,
+			data.patient,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(secretIdsKnownByB, false)
+			)
+		)
+		val secureDelegations = sharedPatient.securityMetadata.shouldNotBeNull().secureDelegations
+		secureDelegations.values shouldHaveSize 3
+		secureDelegations.values.shouldHaveSingleElement { it.delegator == data.ids.b && it.delegate == data.ids.b }
+		val bToP = secureDelegations.entries.single { it.value.delegator == data.ids.b && it.value.delegate == data.ids.p }
+		secureDelegations.values.shouldHaveSingleElement { it.delegator == data.ids.b && it.delegate == data.ids.x }
+
+		// Stripping the legacy delegations/encryptionKeys off shows that the newly created (v8) security
+		// metadata alone is already enough for A (through B->P, reachable via P's key) to access
+		// everything that was shared with P - but not the confidential secret id, which only ever
+		// existed in the legacy metadata.
+		val strippedPatient = sharedPatient.copy(delegations = emptyMap(), encryptionKeys = emptyMap())
+		data.apis.a.patient.getEncryptionKeysOf(strippedPatient) shouldHaveSize 1
+		data.apis.a.patient.getSecretIdsOf(strippedPatient).keys shouldBe secretIdsKnownByB
+
+		data.apis.x.patient.getPatient(data.patient.id).shouldNotBeNull().note shouldBe data.patientNote
+		data.apis.x.patient.hasWriteAccess(sharedPatient) shouldBe false
+		val decryptedForX = data.apis.x.patient.getPatient(data.patient.id).shouldNotBeNull()
+		kotlin.runCatching {
+			data.apis.x.patient.modifyPatient(decryptedForX.copy(firstName = "New name"))
+		}.isSuccess shouldBe false
+		data.apis.x.patient.getSecretIdsOf(sharedPatient).keys shouldBe secretIdsKnownByB
+
+		val sharedPatient2 = data.apis.a.patient.encrypted.shareWith(
+			data.ids.x2,
+			sharedPatient,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(secretIdsKnownByB, false)
+			)
+		)
+		val secureDelegations2 = sharedPatient2.securityMetadata.shouldNotBeNull().secureDelegations
+		secureDelegations2.values shouldHaveSize 5
+		val aToA = secureDelegations2.entries.single { it.value.delegator == data.ids.a && it.value.delegate == data.ids.a }
+		// A's own migration entry is a fresh, independent root: it has no parents of its own.
+		aToA.value.parentDelegations.shouldBeEmpty()
+		val aToX2 = secureDelegations2.values.single { it.delegator == data.ids.a && it.delegate == data.ids.x2 }
+		// Parented on both the new A->A root and the pre-existing B->P delegation, since that's the
+		// (only) existing delegation reachable through A's hierarchy (via P) prior to this share.
+		aToX2.parentDelegations shouldBe setOf(aToA.key, bToP.key)
+
+		data.apis.b.patient.getSecretIdsOf(sharedPatient2).keys shouldBe secretIdsKnownByB
+	}
+
+	/*
+	 * Entity E with legacy metadata created by A and shared with P. There is also a confidential
+	 * secret id (known by A but not P). A wants to share with X as read only.
+	 * Expected outcome:
+	 * - A root secure delegation for A
+	 * - A->A includes the confidential secret id known by A
+	 * - A delegation from A to P
+	 * - Through the delegation A->P, A and P can access all the legacy metadata available to P (but
+	 *   not the confidential secret id)
+	 */
+	"sharing data created with legacy api by the same user".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val data = createTestDataAndApis(specJob)
+		val secretIdsKnownByA = data.apis.a.patient.getSecretIdsOf(data.patient).keys
+		val secretIdsKnownByB = data.apis.b.patient.getSecretIdsOf(data.patient).keys
+
+		val sharedPatient = data.apis.a.patient.encrypted.shareWith(
+			data.ids.x,
+			data.patient,
+			PatientShareOptions(
+				requestedPermissions = RequestedPermission.FullRead,
+				shareSecretIds = SecretIdShareOptions.UseExactly(secretIdsKnownByB, false)
+			)
+		)
+		val secureDelegations = sharedPatient.securityMetadata.shouldNotBeNull().secureDelegations.values
+		secureDelegations shouldHaveSize 3
+		secureDelegations.shouldHaveSingleElement { it.delegator == data.ids.a && it.delegate == data.ids.a }
+		secureDelegations.shouldHaveSingleElement { it.delegator == data.ids.a && it.delegate == data.ids.p }
+		secureDelegations.shouldHaveSingleElement { it.delegator == data.ids.a && it.delegate == data.ids.x }
+
+		val strippedPatient = sharedPatient.copy(delegations = emptyMap(), encryptionKeys = emptyMap())
+		data.apis.a.patient.getSecretIdsOf(strippedPatient).keys shouldBe secretIdsKnownByA
+		data.apis.b.patient.getSecretIdsOf(sharedPatient).keys shouldBe secretIdsKnownByB
+		data.apis.b.patient.getSecretIdsOf(strippedPatient).keys shouldBe secretIdsKnownByB
+		data.apis.x.patient.getSecretIdsOf(sharedPatient).keys shouldBe secretIdsKnownByB
+	}
+
+	"should be able to use aesExchangeKeysEntries with fake public key".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val data = createTestDataAndApis(specJob, useFakeKeyForAesExchangeKeyEntry = true)
+		data.apis.a.patient.getPatient(data.patient.id).shouldNotBeNull().note shouldBe data.patientNote
+		data.apis.b.patient.getPatient(data.patient.id).shouldNotBeNull().note shouldBe data.patientNote
 	}
 })

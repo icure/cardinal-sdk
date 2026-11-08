@@ -9,8 +9,7 @@ import com.icure.cardinal.sdk.subscription.EntitySubscriptionConfiguration
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
-public fun entitySubscriptionConfiguration_toJs(obj: EntitySubscriptionConfiguration):
-		EntitySubscriptionConfigurationJs {
+public fun entitySubscriptionConfiguration_toJs(obj: EntitySubscriptionConfiguration): EntitySubscriptionConfigurationJs {
 	val channelBufferCapacity = intToNumber(obj.channelBufferCapacity)
 	val onBufferFull = obj.onBufferFull.name
 	val reconnectionDelay = durationToNumber(obj.reconnectionDelay)
@@ -25,8 +24,7 @@ public fun entitySubscriptionConfiguration_toJs(obj: EntitySubscriptionConfigura
 	"}"))
 }
 
-public fun entitySubscriptionConfiguration_fromJs(obj: EntitySubscriptionConfigurationJs):
-		EntitySubscriptionConfiguration {
+public fun entitySubscriptionConfiguration_fromJs(obj: EntitySubscriptionConfigurationJs): EntitySubscriptionConfiguration {
 	val channelBufferCapacity = numberToInt(obj.channelBufferCapacity, "obj.channelBufferCapacity")
 	val onBufferFull = EntitySubscriptionConfiguration.FullBufferBehaviour.valueOf(obj.onBufferFull)
 	val reconnectionDelay = numberToDuration(obj.reconnectionDelay, "obj.reconnectionDelay")

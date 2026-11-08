@@ -28,11 +28,9 @@ public external interface MessageFlavouredApiJs<E : MessageJs> {
 
 	public fun shareWithMany(message: E, delegates: Record<String, MessageShareOptionsJs>): Promise<E>
 
-	public fun filterMessagesBy(filter: FilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterMessagesBy(filter: FilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterMessagesBySorted(filter: SortableFilterOptionsJs<MessageJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterMessagesBySorted(filter: SortableFilterOptionsJs<MessageJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createMessage(entity: E): Promise<E>
 

@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.test
 
+import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 import com.icure.kryptom.utils.toHexString
 import io.kotest.assertions.fail
 import io.kotest.matchers.shouldBe
@@ -36,4 +37,8 @@ fun Random.nextUuid(): String {
 			20
 		)
 	}"
+}
+
+suspend fun <T : Any> PaginatedListIterator<T>.toList(): List<T> = buildList {
+	while (hasNext()) addAll(next(100))
 }

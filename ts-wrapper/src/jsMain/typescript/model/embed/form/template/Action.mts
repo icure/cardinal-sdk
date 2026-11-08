@@ -6,8 +6,7 @@ import {State} from './State.mjs';
 
 /**
  *
- *  Represents an action in a form template, combining launchers, a conditional expression, and
- *  target states.
+ *  Represents an action in a form template, combining launchers, a conditional expression, and target states.
  *  /
  */
 export class Action {

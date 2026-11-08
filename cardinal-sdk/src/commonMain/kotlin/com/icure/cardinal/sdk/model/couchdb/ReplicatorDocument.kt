@@ -13,8 +13,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 
 /**
- * Data transfer object representing a CouchDB replicator document that tracks the state of a
- * replication task.
+ * Data transfer object representing a CouchDB replicator document that tracks the state of a replication task.
  * /
  */
 @Serializable

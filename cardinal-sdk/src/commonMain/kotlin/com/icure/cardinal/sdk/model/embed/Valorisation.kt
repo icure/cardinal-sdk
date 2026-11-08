@@ -13,8 +13,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 
 /**
- * Represents the financial valorisation of a flat rate tarification, including validity period and
- * amount breakdown.
+ * Represents the financial valorisation of a flat rate tarification, including validity period and amount breakdown.
  * /
  */
 
@@ -79,8 +78,7 @@ sealed interface Valorisation : Encryptable {
 }
 
 /**
- * Represents the financial valorisation of a flat rate tarification, including validity period and
- * amount breakdown.
+ * Represents the financial valorisation of a flat rate tarification, including validity period and amount breakdown.
  * /
  */
 @Serializable
@@ -137,8 +135,7 @@ data class DecryptedValorisation(
 }
 
 /**
- * Represents the financial valorisation of a flat rate tarification, including validity period and
- * amount breakdown.
+ * Represents the financial valorisation of a flat rate tarification, including validity period and amount breakdown.
  * /
  */
 @Serializable

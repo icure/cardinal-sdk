@@ -8,8 +8,7 @@ import kotlin.String
 import kotlin.collections.Map
 
 /**
- * DTO representing a medical location with only publicly accessible information, stripped of
- * sensitive data.
+ * DTO representing a medical location with only publicly accessible information, stripped of sensitive data.
  * /
  */
 @Serializable

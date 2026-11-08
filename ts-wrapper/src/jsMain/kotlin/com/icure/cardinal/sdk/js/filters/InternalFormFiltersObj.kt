@@ -26,8 +26,7 @@ import kotlin.js.JsExport
 
 @JsExport
 public object InternalFormFiltersObj {
-	public fun byParentIdForDataOwner(dataOwnerId: String, parentId: String):
-			BaseFilterOptionsJs<FormJs> {
+	public fun byParentIdForDataOwner(dataOwnerId: String, parentId: String): BaseFilterOptionsJs<FormJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val parentIdConverted: String = parentId
 		val result = FormFilters.byParentIdForDataOwner(
@@ -37,8 +36,7 @@ public object InternalFormFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byParentIdForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, parentId: String):
-			BaseFilterOptionsJs<FormJs> {
+	public fun byParentIdForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, parentId: String): BaseFilterOptionsJs<FormJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val parentIdConverted: String = parentId
 		val result = FormFilters.byParentIdForDataOwnerInGroup(
@@ -151,8 +149,7 @@ public object InternalFormFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsOpeningDateForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<FormJs> {
+	public fun byPatientsOpeningDateForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<FormJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -281,8 +278,7 @@ public object InternalFormFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientSecretIdsOpeningDateForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<FormJs> {
+	public fun byPatientSecretIdsOpeningDateForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<FormJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,

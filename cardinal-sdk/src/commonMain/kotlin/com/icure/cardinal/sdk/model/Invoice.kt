@@ -34,8 +34,7 @@ import com.icure.cardinal.sdk.model.embed.InvoiceType
 import com.icure.cardinal.sdk.model.embed.MediumType
 
 /**
- * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
- * healthcare
+ * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
  * services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  * /
  */
@@ -362,8 +361,7 @@ sealed interface Invoice :
 }
 
 /**
- * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
- * healthcare
+ * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
  * services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  * /
  */
@@ -635,8 +633,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
- * healthcare
+ * Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
  * services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  * /
  */

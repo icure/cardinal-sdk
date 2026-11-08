@@ -20,8 +20,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a classification used to organize and categorize medical data. Classifications can be
- * nested
+ * Represents a classification used to organize and categorize medical data. Classifications can be nested
  * through parent-child relationships and linked to classification templates.
  * /
  */
@@ -39,8 +38,7 @@ sealed interface Classification :
 	override val id: String
 
 	/**
-	 * The revision of the classification in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the classification in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String?
 
@@ -134,8 +132,7 @@ sealed interface Classification :
 }
 
 /**
- * Represents a classification used to organize and categorize medical data. Classifications can be
- * nested
+ * Represents a classification used to organize and categorize medical data. Classifications can be nested
  * through parent-child relationships and linked to classification templates.
  * /
  */
@@ -146,8 +143,7 @@ data class DecryptedClassification(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the classification in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the classification in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -233,8 +229,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a classification used to organize and categorize medical data. Classifications can be
- * nested
+ * Represents a classification used to organize and categorize medical data. Classifications can be nested
  * through parent-child relationships and linked to classification templates.
  * /
  */
@@ -245,8 +240,7 @@ data class EncryptedClassification(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the classification in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the classification in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**

@@ -4,8 +4,7 @@ import {expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 
 /**
  *
- *  DTO returned upon successful registration of a data owner, containing the credentials needed for
- *  initial login.
+ *  DTO returned upon successful registration of a data owner, containing the credentials needed for initial login.
  *  /
  */
 export class DataOwnerRegistrationSuccess {

@@ -22,19 +22,15 @@ public external interface InvoiceFlavouredInGroupApiJs<E : InvoiceJs> {
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(invoice: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToInvoiceShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(invoice: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToInvoiceShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
 	public fun createInvoice(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createInvoices(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteInvoice(invoice: GroupScopedJs<InvoiceJs>): Promise<GroupScopedJs<E>>
 

@@ -6,8 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * A structured identifier used to match a user during login, composed of an assigner system and a
- * value within that system.
+ * A structured identifier used to match a user during login, composed of an assigner system and a value within that system.
  * /
  */
 @Serializable

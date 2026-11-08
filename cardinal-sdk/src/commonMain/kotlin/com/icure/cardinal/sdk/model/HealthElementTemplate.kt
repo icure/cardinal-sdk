@@ -18,8 +18,7 @@ import kotlin.collections.List
 import kotlin.collections.Set
 
 /**
- * Represents a template for creating healthcare elements. Health element templates provide a
- * predefined structure
+ * Represents a template for creating healthcare elements. Health element templates provide a predefined structure
  * for commonly used healthcare elements, including plans of action and default status values.
  * /
  */
@@ -31,7 +30,6 @@ data class HealthElementTemplate(
 	override val id: String,
 	/**
 	 * The revision of the template in the database, used for conflict management / optimistic locking.
-	 *
 	 */
 	override val rev: String? = null,
 	/**
@@ -91,7 +89,10 @@ data class HealthElementTemplate(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val plansOfAction: List<PlanOfActionTemplate> = emptyList(),
-) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
+) : StoredDocument,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	HasEndOfLife {
 	// region HealthElementTemplate-HealthElementTemplate
 
 	// endregion

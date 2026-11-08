@@ -7,10 +7,8 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 /**
  *
  *
- *   The RoleDto class represents a role in the system, which can have permissions and can be
- *  inheritable up to a certain level by users in child Groups.$
- *   down the group hierarchy this role can be inherited by users in child groups. A value of 0 means
- *  it cannot be inherited, while a value of -1 means it can be inherited indefinitely.
+ *   The RoleDto class represents a role in the system, which can have permissions and can be inheritable up to a certain level by users in child Groups.$
+ *   down the group hierarchy this role can be inherited by users in child groups. A value of 0 means it cannot be inherited, while a value of -1 means it can be inherited indefinitely.
  */
 export class Role implements StoredDocument {
 
@@ -34,8 +32,7 @@ export class Role implements StoredDocument {
 
 	/**
 	 *
-	 *  The name of the role. It can only contain uppercase letters, numbers, and underscores for a max
-	 *  length of 40 characters.
+	 *  The name of the role. It can only contain uppercase letters, numbers, and underscores for a max length of 40 characters.
 	 */
 	name: string | undefined = undefined;
 
@@ -57,8 +54,7 @@ export class Role implements StoredDocument {
 
 	/**
 	 *
-	 *  A set of permissions associated with this role, defining what actions users with this role can
-	 *  perform.
+	 *  A set of permissions associated with this role, defining what actions users with this role can perform.
 	 */
 	permissions: Array<string> = [];
 

@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Describes the strategy that should be used when automatically resolving the conflicting
- * revisions of an entity.
+ *  Describes the strategy that should be used when automatically resolving the conflicting revisions of an entity.
  *
  *  Maps to `org.taktik.icure.entities.conflicts.ConflictResolutionStrategy`.
  */

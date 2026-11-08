@@ -18,7 +18,8 @@ import kotlin.js.Promise
 @JsName("CryptoStrategies")
 external interface CryptoStrategiesJs {
 	fun recoverAndVerifySelfHierarchyKeys(
-		keysData: Array<KeyDataRecoveryRequestJs>,
+		currentDataOwnerId: String,
+		keysData: Record<String, KeyDataRecoveryRequestJs>,
 		cryptoPrimitives: XCryptoService,
 		keyPairRecoverer: KeyPairRecovererJs
 	): Promise<Record<String, RecoveredKeyDataJs>>
@@ -26,7 +27,7 @@ external interface CryptoStrategiesJs {
 	fun generateNewKeyForDataOwner(
 		self: DataOwnerWithTypeJs,
 		cryptoPrimitives: XCryptoService
-	): Promise<dynamic> // boolean | XRsaKeypair | "keyless" | "parent-delegator"
+	): Promise<KeyGenerationRequestResultJs>
 
 	fun verifyDelegatePublicKeys(
 		delegate: CryptoActorStubWithTypeJs,
@@ -34,6 +35,12 @@ external interface CryptoStrategiesJs {
 		cryptoPrimitives: XCryptoService,
 		groupId: String?
 	): Promise<Array<String>>
+
+	// { [delegateId: string]: { [publicKey: SpkiHexString]: RsaEncryptionAlgorithm } } | undefined
+	fun getDelegatesPublicKeys(
+		delegates: Array<String>,
+		groupId: String?,
+	): Promise<Record<String, Record<String, String>>?>
 
 	fun dataOwnerRequiresAnonymousDelegation(
 		dataOwner: CryptoActorStubWithTypeJs,

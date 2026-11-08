@@ -25,42 +25,29 @@ public external interface HealthElementFlavouredInGroupApiJs<E : HealthElementJs
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(healthElement: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToHealthElementShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(healthElement: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToHealthElementShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterHealthElementsBy(groupId: String, filter: FilterOptionsJs<HealthElementJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterHealthElementsBySorted(groupId: String,
-			filter: SortableFilterOptionsJs<HealthElementJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterHealthElementsBySorted(groupId: String, filter: SortableFilterOptionsJs<HealthElementJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createHealthElement(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
-	public fun createHealthElements(entities: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun createHealthElements(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteHealthElementById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public
-			fun undeleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteHealthElementsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteHealthElement(healthElement: GroupScopedJs<HealthElementJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteHealthElements(healthElements: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteHealthElements(healthElements: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun modifyHealthElement(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
-	public fun modifyHealthElements(entities: Array<GroupScopedJs<E>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun modifyHealthElements(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun getHealthElement(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 
-	public fun getHealthElements(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun getHealthElements(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<E>>>
 }

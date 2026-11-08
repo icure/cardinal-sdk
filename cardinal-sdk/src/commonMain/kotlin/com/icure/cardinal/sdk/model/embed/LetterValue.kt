@@ -7,8 +7,7 @@ import kotlin.Double
 import kotlin.String
 
 /**
- * Represents a letter-based value used in tarification, associating a letter key with an index,
- * coefficient, and numeric value.
+ * Represents a letter-based value used in tarification, associating a letter key with an index, coefficient, and numeric value.
  * /
  */
 @Serializable

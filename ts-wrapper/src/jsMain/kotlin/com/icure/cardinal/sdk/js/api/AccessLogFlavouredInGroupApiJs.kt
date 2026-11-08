@@ -25,30 +25,23 @@ public external interface AccessLogFlavouredInGroupApiJs<E : AccessLogJs> {
 		options: dynamic,
 	): Promise<GroupScopedJs<E>>
 
-	public fun shareWithMany(accessLog: GroupScopedJs<E>,
-			delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>):
-			Promise<GroupScopedJs<E>>
+	public fun shareWithMany(accessLog: GroupScopedJs<E>, delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<E>>
 
-	public fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
-	public fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
+	public fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<E>>>
 
 	public fun createAccessLog(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
 	public fun createAccessLogs(entities: Array<GroupScopedJs<E>>): Promise<Array<GroupScopedJs<E>>>
 
-	public fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<E>>
+	public fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<E>>
 
-	public fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<E>>>
 
 	public fun modifyAccessLog(entity: GroupScopedJs<E>): Promise<GroupScopedJs<E>>
 
@@ -56,6 +49,5 @@ public external interface AccessLogFlavouredInGroupApiJs<E : AccessLogJs> {
 
 	public fun getAccessLog(groupId: String, entityId: String): Promise<GroupScopedJs<E>?>
 
-	public fun getAccessLogs(groupId: String, entityIds: Array<String>):
-			Promise<Array<GroupScopedJs<E>>>
+	public fun getAccessLogs(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<E>>>
 }

@@ -8,7 +8,6 @@ import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("DeserializationError")
-public external object EntitySubscriptionEventJs_EntityErrorJs_DeserializationErrorJs :
-		EntitySubscriptionEventJs_EntityErrorJs {
+public external object EntitySubscriptionEventJs_EntityErrorJs_DeserializationErrorJs : EntitySubscriptionEventJs_EntityErrorJs {
 	override val ktClass: String
 }

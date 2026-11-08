@@ -20,7 +20,8 @@ data class AllUsersFilter(
 	 * Optional human-readable description of this filter instance.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<User>, Filter.AllFilter<User> {
+) : AbstractFilter<User>,
+	Filter.AllFilter<User> {
 	// region AllUsersFilter-AllUsersFilter
 
 	// endregion

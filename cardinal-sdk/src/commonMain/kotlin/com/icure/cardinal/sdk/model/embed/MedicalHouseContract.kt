@@ -12,8 +12,7 @@ import kotlin.String
 import kotlin.collections.Map
 
 /**
- * Represents a medical house contract (inscription period) for a patient, including coverage
- * details,
+ * Represents a medical house contract (inscription period) for a patient, including coverage details,
  * suspension periods, and signature information.
  * /
  */
@@ -189,8 +188,7 @@ sealed interface MedicalHouseContract : Encryptable {
 }
 
 /**
- * Represents a medical house contract (inscription period) for a patient, including coverage
- * details,
+ * Represents a medical house contract (inscription period) for a patient, including coverage details,
  * suspension periods, and signature information.
  * /
  */
@@ -345,8 +343,7 @@ data class DecryptedMedicalHouseContract(
 }
 
 /**
- * Represents a medical house contract (inscription period) for a patient, including coverage
- * details,
+ * Represents a medical house contract (inscription period) for a patient, including coverage details,
  * suspension periods, and signature information.
  * /
  */

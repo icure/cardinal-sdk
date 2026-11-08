@@ -19,8 +19,7 @@ import kotlin.String
 import kotlin.collections.Set
 
 /**
- * Represents a template for generating documents. Document templates define the structure, type,
- * and content
+ * Represents a template for generating documents. Document templates define the structure, type, and content
  * that can be used to produce actual documents.
  * /
  */
@@ -31,8 +30,7 @@ data class DocumentTemplate(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the document template in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the document template in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -123,7 +121,10 @@ data class DocumentTemplate(
 	 * The medical specialty associated with this template.
 	 */
 	public val specialty: CodeStub? = null,
-) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
+) : StoredDocument,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	HasEndOfLife {
 	// region DocumentTemplate-DocumentTemplate
 
 	// endregion

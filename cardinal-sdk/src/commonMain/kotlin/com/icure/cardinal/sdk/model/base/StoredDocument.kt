@@ -7,8 +7,7 @@ import kotlin.String
 
 /**
  *
- *  Interface for entities that are persisted as CouchDB documents and support hard deletion via a
- * deletion timestamp.
+ *  Interface for entities that are persisted as CouchDB documents and support hard deletion via a deletion timestamp.
  */
 
 interface StoredDocument : Versionable<String> {

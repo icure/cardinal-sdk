@@ -4,8 +4,7 @@ import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecod
 
 /**
  *
- *  Represents an authentication token associated with a user, including its creation time and
- *  validity period.
+ *  Represents an authentication token associated with a user, including its creation time and validity period.
  *  The token value is stored in encrypted form.
  *  /
  */

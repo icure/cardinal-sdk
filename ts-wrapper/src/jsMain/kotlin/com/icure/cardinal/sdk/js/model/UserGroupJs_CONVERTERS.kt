@@ -84,8 +84,7 @@ public fun userGroup_fromJs(obj: UserGroupJs): UserGroup {
 	val patientId = undefinedToNull(obj.patientId)
 	val healthcarePartyId = undefinedToNull(obj.healthcarePartyId)
 	val deviceId = undefinedToNull(obj.deviceId)
-	val nameOfParentOfTopmostGroupInHierarchy =
-			undefinedToNull(obj.nameOfParentOfTopmostGroupInHierarchy)
+	val nameOfParentOfTopmostGroupInHierarchy = undefinedToNull(obj.nameOfParentOfTopmostGroupInHierarchy)
 	return UserGroup(
 		groupId = groupId,
 		groupName = groupName,

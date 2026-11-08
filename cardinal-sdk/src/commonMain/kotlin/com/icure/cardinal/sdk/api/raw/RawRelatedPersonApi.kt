@@ -77,7 +77,7 @@ public interface RawRelatedPersonApi {
 
 	suspend fun getConflictsForEntity(entityId: String): HttpResponse<List<EncryptedRelatedPerson>>
 
-	public suspend fun declareConflictWinner(
+	suspend fun declareConflictWinner(
 		request: ConflictResolutionRequest<EncryptedRelatedPerson>,
 	): HttpResponse<ConflictResolutionResult<EncryptedRelatedPerson>>
 

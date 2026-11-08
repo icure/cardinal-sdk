@@ -1,11 +1,13 @@
 package com.icure.cardinal.sdk
 
 import com.icure.cardinal.sdk.api.raw.impl.RawRoleApiImpl
+import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
+import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.requests.role.CreateRoleRequest
-import com.icure.cardinal.sdk.storage.impl.VolatileStorageFacade
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.baseUrl
@@ -49,7 +51,11 @@ class SdkDataOwnerScopeTest : StringSpec({
 		val parent = createHcpUser(roles = setOf(actingScopeRoleId, "BASIC_DATA_OWNER", "HIERARCHICAL_DATA_OWNER"))
 		val child = createHcpUser(parent = parent)
 		val initialSdk = parent.api(specJob)
-		initialSdk.dataOwner.getCurrentDataOwnerHierarchyIds() shouldBe listOf(parent.dataOwnerId)
+		initialSdk.dataOwner.getCurrentDataOwnerHierarchyInfo() shouldBe DataOwnerHierarchyInfo(
+			id = parent.dataOwnerId,
+			dataOwnerType = DataOwnerType.Hcp,
+			links = emptyList()
+		)
 		val createdByParent = initialSdk.patient.createPatient(
 			initialSdk.patient.withEncryptionMetadata(
 				DecryptedPatient(
@@ -64,7 +70,17 @@ class SdkDataOwnerScopeTest : StringSpec({
 			permissionsByDataOwnerId shouldBe mapOf(EntityReferenceInGroup(parent.dataOwnerId) to AccessLevel.Write)
 		}
 		val switchedSdk = initialSdk.changeScope(child.dataOwnerId)
-		switchedSdk.dataOwner.getCurrentDataOwnerHierarchyIds() shouldBe listOf(parent.dataOwnerId, child.dataOwnerId)
+		switchedSdk.dataOwner.getCurrentDataOwnerHierarchyInfo() shouldBe DataOwnerHierarchyInfo(
+			id = child.dataOwnerId,
+			dataOwnerType = DataOwnerType.Hcp,
+			links = listOf(
+				DataOwnerHierarchyInfo.HierarchyNode(
+					linkedGroupId = parent.dataOwnerId,
+					linkType = DataOwnerGroupLinkType.Parent,
+					transitiveLinks = emptyList()
+				)
+			)
+		)
 		val createdByChild = switchedSdk.patient.createPatient(
 			switchedSdk.patient.withEncryptionMetadata(
 				DecryptedPatient(

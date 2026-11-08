@@ -40,9 +40,7 @@ public fun healthElementAsserter_fromJs(obj: HealthElementAsserterJs): HealthEle
 }
 
 @Suppress("UNUSED_VARIABLE")
-public
-		fun healthElementAsserter_LocalAsserterIdentifier_toJs(obj: HealthElementAsserter.LocalAsserterIdentifier):
-		HealthElementAsserterJs_LocalAsserterIdentifierJs {
+public fun healthElementAsserter_LocalAsserterIdentifier_toJs(obj: HealthElementAsserter.LocalAsserterIdentifier): HealthElementAsserterJs_LocalAsserterIdentifierJs {
 	val id = obj.id
 	val type = obj.type.name
 	return HealthElementAsserterJs_LocalAsserterIdentifierJs(js("{" +
@@ -51,9 +49,7 @@ public
 	"}"))
 }
 
-public
-		fun healthElementAsserter_LocalAsserterIdentifier_fromJs(obj: HealthElementAsserterJs_LocalAsserterIdentifierJs):
-		HealthElementAsserter.LocalAsserterIdentifier {
+public fun healthElementAsserter_LocalAsserterIdentifier_fromJs(obj: HealthElementAsserterJs_LocalAsserterIdentifierJs): HealthElementAsserter.LocalAsserterIdentifier {
 	val id = obj.id
 	val type = AsserterType.valueOf(obj.type)
 	return HealthElementAsserter.LocalAsserterIdentifier(
@@ -63,18 +59,14 @@ public
 }
 
 @Suppress("UNUSED_VARIABLE")
-public
-		fun healthElementAsserter_ExternalAsserterIdentifier_toJs(obj: HealthElementAsserter.ExternalAsserterIdentifier):
-		HealthElementAsserterJs_ExternalAsserterIdentifierJs {
+public fun healthElementAsserter_ExternalAsserterIdentifier_toJs(obj: HealthElementAsserter.ExternalAsserterIdentifier): HealthElementAsserterJs_ExternalAsserterIdentifierJs {
 	val identifier = identifier_toJs(obj.identifier)
 	return HealthElementAsserterJs_ExternalAsserterIdentifierJs(js("{" +
 		"identifier:identifier" +
 	"}"))
 }
 
-public
-		fun healthElementAsserter_ExternalAsserterIdentifier_fromJs(obj: HealthElementAsserterJs_ExternalAsserterIdentifierJs):
-		HealthElementAsserter.ExternalAsserterIdentifier {
+public fun healthElementAsserter_ExternalAsserterIdentifier_fromJs(obj: HealthElementAsserterJs_ExternalAsserterIdentifierJs): HealthElementAsserter.ExternalAsserterIdentifier {
 	val identifier = identifier_fromJs(obj.identifier)
 	return HealthElementAsserter.ExternalAsserterIdentifier(
 		identifier = identifier,

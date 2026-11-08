@@ -17,8 +17,7 @@ import kotlin.js.JsExport
 
 @JsExport
 public object InternalRelatedPersonFiltersObj {
-	public fun allRelatedPersonsForDataOwner(dataOwnerId: String):
-			BaseFilterOptionsJs<RelatedPersonJs> {
+	public fun allRelatedPersonsForDataOwner(dataOwnerId: String): BaseFilterOptionsJs<RelatedPersonJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val result = RelatedPersonFilters.allRelatedPersonsForDataOwner(
 			dataOwnerIdConverted,
@@ -26,8 +25,7 @@ public object InternalRelatedPersonFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun allRelatedPersonsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<RelatedPersonJs> {
+	public fun allRelatedPersonsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs): BaseFilterOptionsJs<RelatedPersonJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val result = RelatedPersonFilters.allRelatedPersonsForDataOwnerInGroup(
 			dataOwnerConverted,
@@ -41,8 +39,7 @@ public object InternalRelatedPersonFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>):
-			BaseFilterOptionsJs<RelatedPersonJs> {
+	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<RelatedPersonJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -58,8 +55,7 @@ public object InternalRelatedPersonFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<RelatedPersonJs> {
+	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<RelatedPersonJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -75,8 +71,7 @@ public object InternalRelatedPersonFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>):
-			FilterOptionsJs<RelatedPersonJs> {
+	public fun byIdentifiersForSelf(identifiers: Array<IdentifierJs>): FilterOptionsJs<RelatedPersonJs> {
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
 			"identifiers",
@@ -90,8 +85,7 @@ public object InternalRelatedPersonFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byNameForDataOwner(dataOwnerId: String, name: String):
-			BaseFilterOptionsJs<RelatedPersonJs> {
+	public fun byNameForDataOwner(dataOwnerId: String, name: String): BaseFilterOptionsJs<RelatedPersonJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val nameConverted: String = name
 		val result = RelatedPersonFilters.byNameForDataOwner(
@@ -101,8 +95,7 @@ public object InternalRelatedPersonFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byNameForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, name: String):
-			BaseFilterOptionsJs<RelatedPersonJs> {
+	public fun byNameForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, name: String): BaseFilterOptionsJs<RelatedPersonJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val nameConverted: String = name
 		val result = RelatedPersonFilters.byNameForDataOwnerInGroup(

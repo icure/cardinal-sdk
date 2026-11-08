@@ -10,8 +10,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 
 /**
- * Represents a flat rate tarification used in medical house contracts, linking a code to its
- * valorisations.
+ * Represents a flat rate tarification used in medical house contracts, linking a code to its valorisations.
  * /
  */
 
@@ -46,8 +45,7 @@ sealed interface FlatRateTarification : Encryptable {
 }
 
 /**
- * Represents a flat rate tarification used in medical house contracts, linking a code to its
- * valorisations.
+ * Represents a flat rate tarification used in medical house contracts, linking a code to its valorisations.
  * /
  */
 @Serializable
@@ -80,8 +78,7 @@ data class DecryptedFlatRateTarification(
 }
 
 /**
- * Represents a flat rate tarification used in medical house contracts, linking a code to its
- * valorisations.
+ * Represents a flat rate tarification used in medical house contracts, linking a code to its valorisations.
  * /
  */
 @Serializable

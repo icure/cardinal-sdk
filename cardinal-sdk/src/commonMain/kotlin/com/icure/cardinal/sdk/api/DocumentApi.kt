@@ -516,8 +516,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedDocument
@@ -542,8 +542,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 		delegates: Map<String, DocumentDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null
 	): DecryptedDocument
@@ -567,8 +567,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedDocument
@@ -592,8 +592,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 		delegates: Map<String, DocumentDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null
 	): DecryptedDocument
@@ -895,8 +895,8 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): GroupScoped<DecryptedDocument>
@@ -911,8 +911,8 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		delegates: Map<String, DocumentDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): GroupScoped<DecryptedDocument>
@@ -928,8 +928,8 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): GroupScoped<DecryptedDocument>
@@ -944,8 +944,8 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 		delegates: Map<String, DocumentDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): GroupScoped<DecryptedDocument>

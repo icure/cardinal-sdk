@@ -32,7 +32,8 @@ class RawMedicalLocationApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawMedicalLocationApi {
+) : BaseRawApi(rawApiConfig),
+	RawMedicalLocationApi {
 	// region common endpoints
 
 	override suspend fun createMedicalLocation(medicalLocationDto: MedicalLocation): HttpResponse<MedicalLocation> =

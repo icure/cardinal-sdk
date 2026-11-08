@@ -10,8 +10,7 @@ import kotlin.collections.Map
 
 /**
  *
- *  A lightweight reference to a code from a codification system, used as a stub in entities that
- * reference codes
+ *  A lightweight reference to a code from a codification system, used as a stub in entities that reference codes
  *  without embedding the full code definition. The id is typically formatted as type|code|version.
  */
 @RequireHashable

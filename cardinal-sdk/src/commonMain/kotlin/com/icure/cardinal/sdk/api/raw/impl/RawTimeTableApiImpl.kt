@@ -32,7 +32,8 @@ class RawTimeTableApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawTimeTableApi {
+) : BaseRawApi(rawApiConfig),
+	RawTimeTableApi {
 	// region common endpoints
 
 	override suspend fun createTimeTable(timeTableDto: TimeTable): HttpResponse<TimeTable> =

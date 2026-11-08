@@ -6,8 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * DTO returned upon successful registration of a data owner, containing the credentials needed for
- * initial login.
+ * DTO returned upon successful registration of a data owner, containing the credentials needed for initial login.
  * /
  */
 @Serializable

@@ -23,14 +23,11 @@ public external interface MaintenanceTaskFlavouredApiJs<E : MaintenanceTaskJs> {
 		options: dynamic,
 	): Promise<E>
 
-	public fun shareWithMany(maintenanceTask: E,
-			delegates: Record<String, MaintenanceTaskShareOptionsJs>): Promise<E>
+	public fun shareWithMany(maintenanceTask: E, delegates: Record<String, MaintenanceTaskShareOptionsJs>): Promise<E>
 
-	public fun filterMaintenanceTasksBy(filter: FilterOptionsJs<MaintenanceTaskJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterMaintenanceTasksBy(filter: FilterOptionsJs<MaintenanceTaskJs>): Promise<PaginatedListIteratorJs<E>>
 
-	public fun filterMaintenanceTasksBySorted(filter: SortableFilterOptionsJs<MaintenanceTaskJs>):
-			Promise<PaginatedListIteratorJs<E>>
+	public fun filterMaintenanceTasksBySorted(filter: SortableFilterOptionsJs<MaintenanceTaskJs>): Promise<PaginatedListIteratorJs<E>>
 
 	public fun createMaintenanceTask(entity: E): Promise<E>
 
