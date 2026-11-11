@@ -157,31 +157,4 @@ interface GroupApi {
 		projectId: String? = null,
 	): Group
 
-	/**
-	 * Sets a design doc schema version as available on or more groups. This operation will fail if the schema version [schemaVersion]
-	 * does not exist for the application or if there is at least one group among [groupIds] where the indexation task were not run.
-	 *
-	 * @param applicationGroupId the id of the application group. All the groups specified in [groupIds] must be children of this group.
-	 * @param schemaVersion the version of the schema to enable.
-	 * @param groupIds the ids of the groups to update.
-	 */
-	suspend fun addSchemaVersionOnGroups(applicationGroupId: String, schemaVersion: Int, groupIds: List<String>): List<Group>
-
-	/**
-	 * Removes a design doc schema version as available on or more groups. This operation will fail if that schema version is the only one
-	 * to be enabled on at least one group, unless [failIfSingleSchema] is set to false.
-	 *
-	 * @param applicationGroupId the id of the application group. All the groups specified in [groupIds] must be children of this group.
-	 * @param schemaVersion the version of the schema to enable.
-	 * @param groupIds the ids of the groups to update.
-	 * @param failIfSingleSchema if false, the operation will not fail if the specified version is the only one enabled on one or more of the
-	 * groups.
-	 */
-	suspend fun removeSchemaVersionFromGroups(
-		applicationGroupId: String,
-		schemaVersion: Int,
-		groupIds: List<String>,
-		@DefaultValue("true")
-		failIfSingleSchema: Boolean = true
-	): List<Group>
 }
