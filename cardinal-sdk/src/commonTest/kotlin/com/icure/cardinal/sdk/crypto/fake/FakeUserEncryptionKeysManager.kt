@@ -64,6 +64,7 @@ class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : 
 	}
 
 	override fun delegatorActorHierarchy(from: String?): List<String> {
-		TODO("Not yet implemented")
+		require(from == null || from == selfDelegatorActorId) { "$from is not part of the hierarchy" }
+		return listOf(selfDelegatorActorId)
 	}
 }

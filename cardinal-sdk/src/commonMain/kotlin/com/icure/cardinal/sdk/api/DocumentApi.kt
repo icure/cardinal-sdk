@@ -734,6 +734,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 * versions of iCure where this was not a guarantee.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param document a document
 	 * @return the encryption keys extracted from the provided document.
 	 */
@@ -754,6 +756,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * Attempts to extract the patient id linked to a document.
 	 * Note: documents usually should be linked with only one patient, but this method returns a set for compatibility
 	 * with older versions of iCure
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param document a document
 	 * @return the id of the patient linked to the document, or empty if the current user can't access any patient id
 	 * of the document.
@@ -788,6 +792,9 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * delegator-delegate pair, you will not be able to see if P has access to a document that was created by H and
 	 * shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 *
 	 * @param entity a document
 	 * @param delegates a set of data owner ids
 	 */
@@ -803,6 +810,9 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 
 	/**
 	 * Tries to decrypt a document, returns the input if it is not possible.
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
 	 * @param document an encrypted document
 	 * @return the decrypted document if the decryption was successful or the input if it was not.
 	 */
@@ -817,6 +827,8 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 	 * the sdk  will also pass the decrypted result to the validator before considering the decryption as successful.
 	 * This is because due to the nature of the AES-CBC encryption algorithm, it is impossible to know with 100%
 	 * certainty if the data was decrypted correctly, therefore additional context is needed.
+	 *
+	 * Failures to load the data needed for decryption (e.g. network errors) are thrown instead of returning null.
 	 *
 	 * @param document a document
 	 * @param encryptedAttachment a raw attachment of the document
@@ -839,6 +851,15 @@ interface DocumentApi : DocumentBasicFlavourlessApi, DocumentFlavouredApi<Decryp
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: DocumentFlavouredApi<Document>
 
@@ -881,6 +902,15 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: DocumentFlavouredInGroupApi<Document>
 
