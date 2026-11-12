@@ -4,7 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasIdentifier
@@ -65,6 +65,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 import com.icure.cardinal.sdk.model.embed.DeactivationReason
 
 /**
@@ -83,7 +84,7 @@ sealed interface Patient :
 	Encryptable,
 	HasIdentifier,
 	CryptoActor,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	/**
 	 * The Id of the patient. We encourage using either a v4 UUID or a HL7 Id.
@@ -502,6 +503,8 @@ sealed interface Patient :
 
 	override val extensions: JsonObject?
 
+	override val customisedTypeId: String?
+
 	override val customisedModelVersion: Int?
 	// region Patient-Patient
 	companion object {
@@ -886,6 +889,7 @@ data class DecryptedPatient(
 	override val dataOwnerGroups: List<Nothing> = emptyList(),
 	override val groupLinkType: Nothing? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Patient {
 	// region Patient-DecryptedPatient
@@ -1270,6 +1274,7 @@ data class EncryptedPatient(
 	override val dataOwnerGroups: List<Nothing> = emptyList(),
 	override val groupLinkType: Nothing? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : Patient {
 	// region Patient-EncryptedPatient

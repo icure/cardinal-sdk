@@ -44,6 +44,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.Int
 import kotlin.Lazy
+import kotlin.String
 import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
@@ -210,6 +211,7 @@ internal object PatientDecryptorFactory : RootEntityDecryptorFactory<EncryptedPa
 			schoolingInfosDecryptor = schoolingInfosDecryptor,
 			employementInfosDecryptor = employementInfosDecryptor,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
+			customisedTypeId = manifest.customisedTypeId,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,
 			cryptoService = cryptoService,
 			unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictness,
@@ -232,6 +234,7 @@ private class PatientDecryptor(
 	private val schoolingInfosDecryptor: Lazy<EntityDecryptor<EncryptedSchoolingInfo, DecryptedSchoolingInfo>>,
 	private val employementInfosDecryptor: Lazy<EntityDecryptor<EncryptedEmploymentInfo, DecryptedEmploymentInfo>>,
 	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
+	private val customisedTypeId: String?,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -247,6 +250,11 @@ private class PatientDecryptor(
 	): DecryptedPatient {
 		val extensions =
 			if (customisedModelVersion != null) {
+				if (encryptedEntity.customisedTypeId != customisedTypeId) {
+					throw UnsupportedOperationException(
+						"This instance of the SDK is not capable of handling Patient entities of customised type ${encryptedEntity.customisedTypeId}.",
+					)
+				}
 				val extensionsDecryptor =
 					(
 						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
@@ -723,6 +731,7 @@ private class PatientDecryptor(
 				dataOwnerGroups = encryptedEntity.dataOwnerGroups,
 				groupLinkType = encryptedEntity.groupLinkType,
 				extensions = extensions,
+				customisedTypeId = encryptedEntity.customisedTypeId,
 				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		val hasUnexpectedDecryptedContent =

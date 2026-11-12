@@ -2,7 +2,7 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasIdentifier
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -26,6 +26,7 @@ import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
 import kotlin.time.Instant
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  *
@@ -141,10 +142,11 @@ data class User(
 	 */
 	public val systemMetadata: SystemMetadata? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : StoredDocument,
 	HasIdentifier,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	@Serializable
 	public data class SystemMetadata(

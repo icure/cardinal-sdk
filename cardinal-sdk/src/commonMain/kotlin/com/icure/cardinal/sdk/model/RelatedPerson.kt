@@ -3,7 +3,7 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.HasEncryptionMetadata
 import com.icure.cardinal.sdk.model.base.HasEndOfLife
@@ -30,6 +30,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  *
@@ -46,7 +47,7 @@ sealed interface RelatedPerson :
 	Encryptable,
 	HasIdentifier,
 	HasEndOfLife,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	/**
 	 * The Id of the related person. We encourage using either a v4 UUID or a HL7 Id.
@@ -177,6 +178,8 @@ sealed interface RelatedPerson :
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata?
+
+	override val customisedTypeId: String?
 
 	override val customisedModelVersion: Int?
 
@@ -314,6 +317,7 @@ data class DecryptedRelatedPerson(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 	override val extensions: JsonObject? = null,
 ) : RelatedPerson {
@@ -446,6 +450,7 @@ data class EncryptedRelatedPerson(
 	 * The security metadata of the entity.
 	 */
 	override val securityMetadata: SecurityMetadata? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 	override val extensions: JsonObject? = null,
 ) : RelatedPerson {

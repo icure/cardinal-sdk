@@ -26,6 +26,7 @@ import kotlinx.serialization.json.encodeToJsonElement
 import kotlin.Boolean
 import kotlin.Int
 import kotlin.Lazy
+import kotlin.String
 import kotlin.Suppress
 
 @InternalIcureApi
@@ -93,6 +94,7 @@ internal object MessageEncryptorFactory : RootEntityEncryptorFactory<EncryptedMe
 			encodingJson = encodingJson,
 			cryptoService = cryptoService,
 			currentVersion = manifest.currentVersion,
+			customisedTypeId = manifest.customisedTypeId,
 		)
 	}
 }
@@ -134,13 +136,17 @@ private class MessageEncryptor(
 	private val encodingJson: Json,
 	cryptoService: CryptoService,
 	private val currentVersion: Int?,
+	private val customisedTypeId: String?,
 ) : AbstractEntityEncryptor<EncryptedMessage, DecryptedMessage>(cryptoService) {
 	override suspend fun encrypt(
 		encryptionKey: AesKey<AesAlgorithm.CbcWithPkcs7Padding>,
 		clearEntity: DecryptedMessage,
 	): EncryptedMessage {
-		require(clearEntity.customisedModelVersion == currentVersion) {
-			"""Can't encrypt Message with customised model version ${clearEntity.customisedModelVersion}: only entities at the current customised model version $currentVersion can be encrypted, the entity must be migrated first"""
+		require(
+			clearEntity.customisedTypeId == customisedTypeId &&
+				clearEntity.customisedModelVersion == currentVersion,
+		) {
+			"""Can't encrypt Message with customised type ${clearEntity.customisedTypeId} and version ${clearEntity.customisedModelVersion}: only entities of the current customised type $customisedTypeId at the current version $currentVersion can be encrypted, the entity must be migrated first"""
 		}
 		val dataToEncrypt = mutableMapOf<String, JsonElement>()
 		if (created_e && clearEntity.created != null) dataToEncrypt["created"] = encodingJson.encodeToJsonElement(clearEntity.created)
@@ -310,6 +316,7 @@ private class MessageEncryptor(
 			encryptedSelf = getUpdatedEncryptSelf(encryptionKey, clearEntity, JsonObject(dataToEncrypt)),
 			securityMetadata = clearEntity.securityMetadata,
 			extensions = extensionsEncryptor?.value?.encryptExtension(encryptionKey, clearEntity.extensions) ?: clearEntity.extensions,
+			customisedTypeId = clearEntity.customisedTypeId,
 			customisedModelVersion = clearEntity.customisedModelVersion,
 		)
 	}

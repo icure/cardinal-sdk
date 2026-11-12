@@ -24,6 +24,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.Int
 import kotlin.Lazy
+import kotlin.String
 import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
@@ -64,6 +65,7 @@ internal object MessageDecryptorFactory : RootEntityDecryptorFactory<EncryptedMe
 			encryptedContentDecoder = encryptedContentDecoder,
 			propertiesDecryptor = propertiesDecryptor,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
+			customisedTypeId = manifest.customisedTypeId,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,
 			cryptoService = cryptoService,
 			unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictness,
@@ -76,6 +78,7 @@ private class MessageDecryptor(
 	private val encryptedContentDecoder: Json,
 	private val propertiesDecryptor: Lazy<EntityDecryptor<EncryptedPropertyStub, DecryptedPropertyStub>>,
 	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
+	private val customisedTypeId: String?,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -91,6 +94,11 @@ private class MessageDecryptor(
 	): DecryptedMessage {
 		val extensions =
 			if (customisedModelVersion != null) {
+				if (encryptedEntity.customisedTypeId != customisedTypeId) {
+					throw UnsupportedOperationException(
+						"This instance of the SDK is not capable of handling Message entities of customised type ${encryptedEntity.customisedTypeId}.",
+					)
+				}
 				val extensionsDecryptor =
 					(
 						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
@@ -308,6 +316,7 @@ private class MessageDecryptor(
 				encryptedSelf = encryptedEntity.encryptedSelf,
 				securityMetadata = encryptedEntity.securityMetadata,
 				extensions = extensions,
+				customisedTypeId = encryptedEntity.customisedTypeId,
 				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		val hasUnexpectedDecryptedContent =

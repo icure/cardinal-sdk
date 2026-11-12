@@ -33,6 +33,14 @@ data class BuiltinRootEntityEncryptionManifest(
 	 * (e.g. Form).
 	 */
 	val currentVersion: Int? = null,
+	/**
+	 * The id of the customised type of the root entity, for all the versions in [extensionsManifestsByModelVersion]:
+	 * currently a builtin entity type has at most one customised type.
+	 *
+	 * Entities can only be encrypted if they have this customised type (and the [currentVersion]), and only entities
+	 * of this customised type can be decrypted. Null for roots that are not customised, together with [currentVersion].
+	 */
+	val customisedTypeId: String? = null,
 ) : EntityEncryptionManifest {
 	/**
 	 * The extensions manifest to use for the encryption, a key of [EntitiesEncryptionManifests.extensionsManifestsByName],
@@ -48,6 +56,9 @@ data class BuiltinRootEntityEncryptionManifest(
 			require(currentVersion in extensionsManifestsByModelVersion) {
 				"The current version $currentVersion must be in extensionsManifestsByModelVersion"
 			}
+		}
+		require((customisedTypeId == null) == (currentVersion == null)) {
+			"customisedTypeId and currentVersion must be both null or both set"
 		}
 	}
 }

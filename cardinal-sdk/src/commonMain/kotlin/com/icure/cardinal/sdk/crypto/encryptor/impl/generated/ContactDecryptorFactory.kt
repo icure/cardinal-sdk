@@ -30,6 +30,7 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlin.Int
 import kotlin.Lazy
+import kotlin.String
 import kotlin.Suppress
 import kotlin.UnsupportedOperationException
 import kotlin.collections.Collection
@@ -112,6 +113,7 @@ internal object ContactDecryptorFactory : RootEntityDecryptorFactory<EncryptedCo
 			servicesDecryptor = servicesDecryptor,
 			notesDecryptor = notesDecryptor,
 			extensionsDecryptorsByVersion = extensionsDecryptorsByVersion,
+			customisedTypeId = manifest.customisedTypeId,
 			patchDecryptedSelfJson = patchDecryptedSelfJson,
 			cryptoService = cryptoService,
 			unversionedEntitiesDecryptedJsonStrictness = unversionedEntitiesDecryptedJsonStrictness,
@@ -127,6 +129,7 @@ internal class ContactDecryptor(
 	internal val servicesDecryptor: Lazy<EntityDecryptor<EncryptedService, DecryptedService>>,
 	private val notesDecryptor: Lazy<EntityDecryptor<EncryptedAnnotation, DecryptedAnnotation>>,
 	private val extensionsDecryptorsByVersion: Map<Int, Lazy<ExtensionsEncryptors>>,
+	private val customisedTypeId: String?,
 	patchDecryptedSelfJson: ((JsonObject) -> JsonObject)?,
 	cryptoService: CryptoService,
 	unversionedEntitiesDecryptedJsonStrictness: DecryptedJsonStrictness,
@@ -142,6 +145,11 @@ internal class ContactDecryptor(
 	): DecryptedContact {
 		val extensions =
 			if (customisedModelVersion != null) {
+				if (encryptedEntity.customisedTypeId != customisedTypeId) {
+					throw UnsupportedOperationException(
+						"This instance of the SDK is not capable of handling Contact entities of customised type ${encryptedEntity.customisedTypeId}.",
+					)
+				}
 				val extensionsDecryptor =
 					(
 						extensionsDecryptorsByVersion[customisedModelVersion.typeVersion] ?: throw UnsupportedOperationException(
@@ -330,6 +338,7 @@ internal class ContactDecryptor(
 						entityCustomisedModelVersion,
 					),
 				extensions = extensions,
+				customisedTypeId = encryptedEntity.customisedTypeId,
 				customisedModelVersion = encryptedEntity.customisedModelVersion,
 			)
 		val hasUnexpectedDecryptedContent =

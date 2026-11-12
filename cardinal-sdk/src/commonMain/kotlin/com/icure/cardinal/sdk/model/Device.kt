@@ -4,7 +4,7 @@ package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.DataOwner
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
@@ -30,6 +30,7 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  * Represents a device that sends medical data. This is a root-level entity stored in the icure-device CouchDB database.
@@ -177,6 +178,7 @@ data class Device(
 	 * Properties specific to the crypto actor role of this device.
 	 */
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : StoredDocument,
 	ICureDocument<String>,
@@ -184,7 +186,7 @@ data class Device(
 	Named,
 	CryptoActor,
 	DataOwner,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	// region Device-Device
 	companion object {

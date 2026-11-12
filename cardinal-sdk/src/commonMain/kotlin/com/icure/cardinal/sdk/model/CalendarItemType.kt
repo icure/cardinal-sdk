@@ -2,7 +2,7 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model
 
-import com.icure.cardinal.sdk.model.base.CustomisableRoot
+import com.icure.cardinal.sdk.model.base.CustomisableBuiltinRoot
 import com.icure.cardinal.sdk.model.base.Extendable
 import com.icure.cardinal.sdk.model.base.StoredDocument
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -15,6 +15,7 @@ import kotlin.Long
 import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
+import com.icure.cardinal.sdk.model.base.CustomisableRoot
 
 /**
  * Represents a type of calendar item, defining properties like duration, color, and name for appointments.
@@ -93,9 +94,10 @@ data class CalendarItemType(
 	 */
 	public val publicProperties: Set<DecryptedPropertyStub>? = null,
 	override val extensions: JsonObject? = null,
+	override val customisedTypeId: String? = null,
 	override val customisedModelVersion: Int? = null,
 ) : StoredDocument,
-	CustomisableRoot,
+	CustomisableBuiltinRoot,
 	Extendable {
 	@Serializable
 	public sealed interface DurationConfig {
