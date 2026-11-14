@@ -65,3 +65,9 @@ Every PR into a `support/*` branch is a release PR.
 Run the `Release` workflow by hand (Actions → Release → Run workflow), with the title, base and head branch of
 the PR you intend to open. It validates the would-be PR, shows the plan, and runs the forge orchestrator with
 `dry_run=true`: everything is built and nothing is published.
+
+## Local preview from kraken-cloud
+
+To try unreleased `kraken-cloud` changes from TypeScript without a release, `scripts/preview/publish-preview.sh`
+builds the SDK from a local `kraken-cloud` checkout and publishes it on `npm.icure.cloud` with the `preview`
+dist-tag. Run it from the root of this repository. See [scripts/preview/README.md](scripts/preview/README.md).

@@ -14,15 +14,78 @@ In CI, the same result takes several workflows and pull requests:
 The scripts run the same steps locally, in a temporary git worktree of this repository. Your checkouts are not
 modified: `kraken-cloud` is only built, and generated code goes to the worktree.
 
-## Quick start
+## Running the script
+
+Run every command from the root of your `cardinal-multiplatform-sdk` checkout. By default the script expects
+`kraken-cloud` next to it:
+
+```
+icure/
+├── cardinal-multiplatform-sdk/   ← run from here
+└── kraken-cloud/                 ← generated from, as it is on disk (--kraken-dir to use another checkout)
+```
+
+### 1. Get the scripts
+
+Nothing to do if your checkout already contains `scripts/preview/`. Otherwise, for example on a branch created
+before the scripts were merged, check them out next to your work without touching it:
+
+```bash
+git fetch origin
+git worktree add ../cardinal-sdk-preview-tools origin/main   # or the branch that has scripts/preview
+alias publish-preview=../cardinal-sdk-preview-tools/scripts/preview/publish-preview.sh
+```
+
+The scripts don't depend on the branch you have checked out. They always build the SDK at `--sdk-ref`, in a separate
+worktree. In the commands below, `scripts/preview/publish-preview.sh` and `publish-preview` are interchangeable.
+
+### 2. Credentials
 
 ```bash
 export ICURE_NPM_USERNAME=…  ICURE_NPM_PASSWORD=…   # npm.icure.cloud account
-scripts/preview/publish-preview.sh --version 2.15.0-PREVIEW.$(date +%Y%m%d%H%M) --dry-run
-scripts/preview/publish-preview.sh --version 2.15.0-PREVIEW.202611141030 --from publish   # same version as the dry run
+gh auth status                                      # needs access to icure/sdk-codegen
+grep -c '^github' local.properties                  # githubUsername / githubPassword: should print 2
 ```
 
-A full run takes 15 to 30 minutes. Most of the time is spent building `kraken-cloud` (KSP) and the Kotlin/JS SDK.
+### 3. Dry run
+
+The dry run builds everything and runs `npm publish --dry-run`. Pick a version (see
+[Choosing the version](#choosing-the-version)) and an SDK base matching the `kraken-cloud` branch:
+
+```bash
+V=2.15.0-PREVIEW.$(date +%Y%m%d%H%M); echo "$V"     # note it: the publication must use the same version
+
+# kraken-cloud on main: the SDK base is develop (the default)
+scripts/preview/publish-preview.sh --version "$V" --dry-run
+
+# kraken-cloud on another branch: the matching SDK branch, and the codegen it needs, for example
+scripts/preview/publish-preview.sh --version 3.0.0-PREVIEW.$(date +%Y%m%d%H%M) \
+	--sdk-ref origin/release/v3 --codegen-version 2.1.0 --wrapper-codegen-version 2.1.0 --dry-run
+```
+
+A full run takes 15 to 30 minutes. Most of the time is spent building `kraken-cloud` (KSP) and the Kotlin/JS SDK. The
+run directory is `~/.cache/cardinal-preview/runs/<version>`. The generated changes are committed in its `sdk/`
+worktree:
+
+```bash
+git -C ~/.cache/cardinal-preview/runs/$V/sdk log --stat -3
+```
+
+### 4. Publish
+
+Resume the same run at the `publish` stage, with the same version and options, without `--dry-run`. The script
+asks you to type the version to confirm:
+
+```bash
+scripts/preview/publish-preview.sh --version "$V" --from publish        # plus the --sdk-ref/codegen options used above
+```
+
+### 5. Resume or clean up
+
+- After a failure, fix the cause and resume at the failed stage (`--from kraken`, `--from ts` or `--from publish`) with
+  the same version. You can change options such as the codegen versions when you resume.
+- When you no longer need the run: `scripts/preview/cleanup.sh ~/.cache/cardinal-preview/runs/$V`.
+- `scripts/preview/publish-preview.sh --help` lists every option.
 
 Consumers install the preview with:
 
