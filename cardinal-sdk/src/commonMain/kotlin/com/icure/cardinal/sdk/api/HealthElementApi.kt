@@ -18,6 +18,10 @@ import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -111,6 +115,26 @@ interface HealthElementBasicFlavourlessApi  {
 	 * @return information on users with access to the provided health element
 	 */
 	suspend fun getDataOwnersWithAccessTo(healthElement: HealthElement): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the health elements that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the health elements with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the health elements with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of health elements with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each health element.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface HealthElementBasicFlavourlessInGroupApi  {
@@ -163,6 +187,21 @@ interface HealthElementBasicFlavourlessInGroupApi  {
 	 * In-group version of [HealthElementBasicFlavourlessApi.getDataOwnersWithAccessTo].
 	 */
 	suspend fun getDataOwnersWithAccessTo(healthElement: GroupScoped<HealthElement>): EntityAccessInformation
+
+	/**
+	 * In-group version of [HealthElementBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [HealthElementBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -253,6 +292,27 @@ interface HealthElementBasicFlavouredApi<E : HealthElement> {
 	 * @return all health elements that you can access with one of the provided ids.
 	 */
 	suspend fun getHealthElements(entityIds: List<String>): List<E>
+
+	/**
+	 * Get the conflicting revisions of a health element.
+	 * Requires read access to all the conflicting revisions of the health element.
+	 * If the health element has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of a health element with conflicts, for example obtained through
+	 * [HealthElementBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the health element.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of a health element by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the health element.
+	 * Flavoured method.
+	 * @param request the health element to keep and the conflicting revisions to purge.
+	 * @return the updated health element and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface HealthElementBasicFlavouredInGroupApi<E : HealthElement> {
@@ -307,6 +367,16 @@ interface HealthElementBasicFlavouredInGroupApi<E : HealthElement> {
 	 * In-group version of [HealthElementBasicFlavouredApi.getHealthElements]
 	 */
 	suspend fun getHealthElements(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [HealthElementBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [HealthElementBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

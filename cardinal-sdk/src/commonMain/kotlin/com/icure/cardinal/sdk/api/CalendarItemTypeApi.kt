@@ -3,7 +3,12 @@ package com.icure.cardinal.sdk.api
 import com.icure.cardinal.sdk.model.CalendarItemType
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
+import com.icure.cardinal.sdk.utils.DefaultValue
 
 interface CalendarItemTypeApi {
 
@@ -44,6 +49,44 @@ interface CalendarItemTypeApi {
 		purgeCalendarItemTypeByIds(calendarItemTypes.map { it.toStoredDocumentIdentifier() })
 
 	suspend fun listCalendarItemTypesByAgendaId(agendaId: String): List<CalendarItemType>
+
+	/**
+	 * Get the ids of all the calendar item types that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the calendar item types with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Get the conflicting revisions of a calendar item type.
+	 * Requires read access to all the conflicting revisions of the calendar item type.
+	 * If the calendar item type has too many conflicts, only part of them are returned.
+	 * @param entityId the id of a calendar item type with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the calendar item type.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<CalendarItemType>
+
+	/**
+	 * Resolves the conflicts of a calendar item type by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the calendar item type.
+	 * @param request the calendar item type to keep and the conflicting revisions to purge.
+	 * @return the updated calendar item type and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<CalendarItemType>): ConflictResolutionResult<CalendarItemType>
+
+	/**
+	 * Automatically resolves the conflicts of the calendar item types with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of calendar item types with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each calendar item type.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface CalendarItemTypeInGroupApi {
@@ -82,4 +125,31 @@ interface CalendarItemTypeInGroupApi {
 	suspend fun purgeCalendarItemTypes(calendarItemTypes: List<GroupScoped<CalendarItemType>>): List<GroupScoped<StoredDocumentIdentifier>> =
 		purgeCalendarItemTypeByIds(calendarItemTypes.map { it.toStoredDocumentIdentifier() })
 
+	/**
+	 * In-group version of [CalendarItemTypeApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [CalendarItemTypeApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<CalendarItemType>>
+
+	/**
+	 * In-group version of [CalendarItemTypeApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(
+		groupId: String,
+		request: ConflictResolutionRequest<CalendarItemType>,
+	): ConflictResolutionResult<CalendarItemType>
+
+	/**
+	 * In-group version of [CalendarItemTypeApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }

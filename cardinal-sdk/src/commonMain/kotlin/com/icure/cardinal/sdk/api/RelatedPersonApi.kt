@@ -15,6 +15,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.RelatedPerson
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -108,6 +112,26 @@ interface RelatedPersonBasicFlavourlessApi {
 	 * @return information on users with access to the provided related person
 	 */
 	suspend fun getDataOwnersWithAccessTo(relatedPerson: RelatedPerson): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the related persons that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the related persons with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the related persons with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of related persons with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each related person.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface RelatedPersonBasicFlavourlessInGroupApi {
@@ -160,6 +184,21 @@ interface RelatedPersonBasicFlavourlessInGroupApi {
 	 * In-group version of [RelatedPersonBasicFlavourlessApi.getDataOwnersWithAccessTo].
 	 */
 	suspend fun getDataOwnersWithAccessTo(relatedPerson: GroupScoped<RelatedPerson>): EntityAccessInformation
+
+	/**
+	 * In-group version of [RelatedPersonBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [RelatedPersonBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -250,6 +289,27 @@ interface RelatedPersonBasicFlavouredApi<E : RelatedPerson> {
 	 * @return all related persons that you can access with one of the provided ids.
 	 */
 	suspend fun getRelatedPersons(entityIds: List<String>): List<E>
+
+	/**
+	 * Get the conflicting revisions of a related person.
+	 * Requires read access to all the conflicting revisions of the related person.
+	 * If the related person has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of a related person with conflicts, for example obtained through
+	 * [RelatedPersonBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the related person.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of a related person by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the related person.
+	 * Flavoured method.
+	 * @param request the related person to keep and the conflicting revisions to purge.
+	 * @return the updated related person and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface RelatedPersonBasicFlavouredInGroupApi<E : RelatedPerson> {
@@ -304,6 +364,16 @@ interface RelatedPersonBasicFlavouredInGroupApi<E : RelatedPerson> {
 	 * In-group version of [RelatedPersonBasicFlavouredApi.getRelatedPersons]
 	 */
 	suspend fun getRelatedPersons(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [RelatedPersonBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [RelatedPersonBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

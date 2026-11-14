@@ -31,6 +31,10 @@ import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.Receipt
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
@@ -168,6 +172,31 @@ private abstract class AbstractReceiptBasicFlavouredApi<E : Receipt>(
 		} else {
 			rawApi.listReceiptsBetweenDatesInGroup(groupId = groupId, startDate = startDate, endDate = endDate, descending = descending)
 		}.successBody().let { maybeDecrypt(groupId, it) }
+
+	protected suspend fun doGetConflictsForEntity(groupId: String?, entityId: String): List<E> =
+		if (groupId == null) {
+			rawApi.getConflictsForEntity(entityId = entityId)
+		} else {
+			rawApi.getConflictsForEntityInGroup(groupId = groupId, entityId = entityId)
+		}.successBody().let { maybeDecrypt(groupId, it) }
+
+	protected suspend fun doDeclareConflictWinner(groupId: String?, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E> {
+		requireIsValidForModification(request.document)
+		val encryptedRequest = ConflictResolutionRequest(
+			document = validateAndMaybeEncrypt(groupId, request.document),
+			conflictsToPurge = request.conflictsToPurge,
+		)
+		return if (groupId == null) {
+			rawApi.declareConflictWinner(request = encryptedRequest)
+		} else {
+			rawApi.declareConflictWinnerInGroup(groupId = groupId, request = encryptedRequest)
+		}.successBodyOrThrowRevisionConflict().let {
+			ConflictResolutionResult(
+				document = maybeDecrypt(groupId, it.document),
+				remainingConflicts = it.remainingConflicts,
+			)
+		}
+	}
 }
 
 @InternalIcureApi
@@ -205,6 +234,12 @@ private class ReceiptBasicFlavouredApiImpl<E : Receipt>(
 
 	override suspend fun listReceiptsBetweenDates(startDate: Long?, endDate: Long?, descending: Boolean): List<E> =
 		doListReceiptsBetweenDates(groupId = null, startDate = startDate, endDate = endDate, descending = descending)
+
+	override suspend fun getConflictsForEntity(entityId: String): List<E> =
+		doGetConflictsForEntity(groupId = null, entityId = entityId)
+
+	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E> =
+		doDeclareConflictWinner(groupId = null, request = request)
 }
 
 @InternalIcureApi
@@ -256,6 +291,12 @@ private class ReceiptBasicFlavouredInGroupApiImpl<E : Receipt>(
 	override suspend fun listReceiptsBetweenDates(groupId: String, startDate: Long?, endDate: Long?, descending: Boolean): List<GroupScoped<E>> =
 		doListReceiptsBetweenDates(groupId = groupId, startDate = startDate, endDate = endDate, descending = descending)
 			.map { GroupScoped(it, groupId) }
+
+	override suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>> =
+		doGetConflictsForEntity(groupId = groupId, entityId = entityId).map { GroupScoped(it, groupId) }
+
+	override suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E> =
+		doDeclareConflictWinner(groupId = groupId, request = request)
 }
 
 @InternalIcureApi
@@ -394,6 +435,25 @@ private abstract class AbstractReceiptBasicFlavourless(
 			receipt,
 			EntityWithEncryptionMetadataTypeName.Receipt,
 		)
+
+	protected suspend fun doGetConflictingEntitiesIds(groupId: String?): List<String> =
+		if (groupId == null) {
+			rawApi.getConflictingEntitiesIds()
+		} else {
+			rawApi.getConflictingEntitiesIdsInGroup(groupId = groupId)
+		}.successBody()
+
+	protected suspend fun doAutoSolveConflicts(
+		groupId: String?,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.autoSolveConflicts(entityIds = ids, strategy = strategy)
+		} else {
+			rawApi.autoSolveConflictsInGroup(groupId = groupId, entityIds = ids, strategy = strategy)
+		}.successBody()
+	}
 }
 
 @InternalIcureApi
@@ -417,6 +477,12 @@ private class ReceiptBasicFlavourlessApiImpl(
 
 	override suspend fun getDataOwnersWithAccessTo(receipt: Receipt): EntityAccessInformation =
 		doGetDataOwnersWithAccessTo(groupId = null, receipt = receipt)
+
+	override suspend fun getConflictingEntitiesIds(): List<String> =
+		doGetConflictingEntitiesIds(groupId = null)
+
+	override suspend fun autoSolveConflicts(entityIds: List<String>, strategy: ConflictResolutionStrategy?): List<MergeResult> =
+		doAutoSolveConflicts(groupId = null, entityIds = entityIds, strategy = strategy)
 }
 
 @InternalIcureApi
@@ -445,6 +511,16 @@ private class ReceiptBasicFlavourlessInGroupApiImpl(
 
 	override suspend fun getDataOwnersWithAccessTo(receipt: GroupScoped<Receipt>): EntityAccessInformation =
 		doGetDataOwnersWithAccessTo(groupId = receipt.groupId, receipt = receipt.entity)
+
+	override suspend fun getConflictingEntitiesIds(groupId: String): List<String> =
+		doGetConflictingEntitiesIds(groupId = groupId)
+
+	override suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> =
+		doAutoSolveConflicts(groupId = groupId, entityIds = entityIds, strategy = strategy)
 }
 
 @InternalIcureApi

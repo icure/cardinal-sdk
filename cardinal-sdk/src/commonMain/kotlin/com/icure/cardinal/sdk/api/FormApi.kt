@@ -19,6 +19,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -109,6 +113,26 @@ interface FormBasicFlavourlessApi : FormTemplateApi {
 	 * @return information on users with access to the provided form
 	 */
 	suspend fun getDataOwnersWithAccessTo(form: Form): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the forms that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the forms with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the forms with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of forms with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each form.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface FormBasicFlavourlessInGroupApi : FormTemplateInGroupApi {
@@ -161,6 +185,21 @@ interface FormBasicFlavourlessInGroupApi : FormTemplateInGroupApi {
 	 * In-group version of [FormBasicFlavourlessApi.getDataOwnersWithAccessTo].
 	 */
 	suspend fun getDataOwnersWithAccessTo(form: GroupScoped<Form>): EntityAccessInformation
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [FormBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -264,6 +303,26 @@ interface FormBasicFlavouredApi<E : Form> {
 	// TODO the backend currently get all forms, sorts them and then returns the latest. We could have the view be
 	//  sorted instead
 	suspend fun getLatestFormByUniqueId(uniqueId: String): E
+
+	/**
+	 * Get the conflicting revisions of a form.
+	 * Requires read access to all the conflicting revisions of the form.
+	 * If the form has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of a form with conflicts, for example obtained through [FormBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the form.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of a form by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the form.
+	 * Flavoured method.
+	 * @param request the form to keep and the conflicting revisions to purge.
+	 * @return the updated form and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface FormBasicFlavouredInGroupApi<E : Form> {
@@ -318,6 +377,16 @@ interface FormBasicFlavouredInGroupApi<E : Form> {
 	 * In-group version of [FormBasicFlavouredApi.getForms]
 	 */
 	suspend fun getForms(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [FormBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

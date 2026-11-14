@@ -6,7 +6,12 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.Agenda
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
+import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 interface AgendaApi {
@@ -139,6 +144,44 @@ interface AgendaApi {
 	suspend fun filterAgendasBy(filter: BaseFilterOptions<Agenda>): PaginatedListIterator<Agenda>
 
 	suspend fun filterAgendasBySorted(filter: BaseSortableFilterOptions<Agenda>): PaginatedListIterator<Agenda>
+
+	/**
+	 * Get the ids of all the agendas that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the agendas with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Get the conflicting revisions of an agenda.
+	 * Requires read access to all the conflicting revisions of the agenda.
+	 * If the agenda has too many conflicts, only part of them are returned.
+	 * @param entityId the id of an agenda with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the agenda.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<Agenda>
+
+	/**
+	 * Resolves the conflicts of an agenda by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the agenda.
+	 * @param request the agenda to keep and the conflicting revisions to purge.
+	 * @return the updated agenda and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Agenda>): ConflictResolutionResult<Agenda>
+
+	/**
+	 * Automatically resolves the conflicts of the agendas with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of agendas with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each agenda.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 
@@ -194,4 +237,29 @@ interface AgendaInGroupApi {
 	suspend fun filterAgendasBy(groupId: String, filter: BaseFilterOptions<Agenda>): PaginatedListIterator<GroupScoped<Agenda>>
 
 	suspend fun filterAgendasBySorted(groupId: String, filter: BaseSortableFilterOptions<Agenda>): PaginatedListIterator<GroupScoped<Agenda>>
+
+	/**
+	 * In-group version of [AgendaApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [AgendaApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<Agenda>>
+
+	/**
+	 * In-group version of [AgendaApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<Agenda>): ConflictResolutionResult<Agenda>
+
+	/**
+	 * In-group version of [AgendaApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }

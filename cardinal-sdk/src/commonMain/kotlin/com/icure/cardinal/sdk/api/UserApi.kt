@@ -9,6 +9,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.UserGroup
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.security.Enable2faRequest
 import com.icure.cardinal.sdk.model.security.LoginIdentifier
 import com.icure.cardinal.sdk.model.security.TokenWithGroup
@@ -226,6 +230,44 @@ interface UserApi: Subscribable<User, User, FilterOptions<User>> {
 		externalJwtConfigId: String,
 		externalAuthenticationToken: String,
 	): Boolean
+
+	/**
+	 * Get the ids of all the users that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the users with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Get the conflicting revisions of a user.
+	 * Requires read access to all the conflicting revisions of the user.
+	 * If the user has too many conflicts, only part of them are returned.
+	 * @param entityId the id of a user with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the user.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<User>
+
+	/**
+	 * Resolves the conflicts of a user by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the user.
+	 * @param request the user to keep and the conflicting revisions to purge.
+	 * @return the updated user and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<User>): ConflictResolutionResult<User>
+
+	/**
+	 * Automatically resolves the conflicts of the users with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of users with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each user.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 
@@ -351,4 +393,29 @@ interface UserInGroupApi {
 		identifier: LoginIdentifier,
 		replaceExisting: Boolean,
 	): Boolean
+
+	/**
+	 * In-group version of [UserApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [UserApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<User>>
+
+	/**
+	 * In-group version of [UserApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<User>): ConflictResolutionResult<User>
+
+	/**
+	 * In-group version of [UserApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }

@@ -40,6 +40,10 @@ import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DelegationTag
 import com.icure.cardinal.sdk.model.extensions.autoDelegationsFor
@@ -210,6 +214,31 @@ private abstract class AbstractHealthElementBasicFlavouredApi<E : HealthElement>
 			rawApi.getHealthElementsInGroup(groupId = groupId, healthElementIds = ListOfIds(ids))
 		}.successBody().let { maybeDecrypt(groupId, it) }
 	}
+
+	protected suspend fun doGetConflictsForEntity(groupId: String?, entityId: String): List<E> =
+		if (groupId == null) {
+			rawApi.getConflictsForEntity(entityId = entityId)
+		} else {
+			rawApi.getConflictsForEntityInGroup(groupId = groupId, entityId = entityId)
+		}.successBody().let { maybeDecrypt(groupId, it) }
+
+	protected suspend fun doDeclareConflictWinner(groupId: String?, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E> {
+		requireIsValidForModification(request.document)
+		val encryptedRequest = ConflictResolutionRequest(
+			document = validateAndMaybeEncrypt(groupId, request.document),
+			conflictsToPurge = request.conflictsToPurge,
+		)
+		return if (groupId == null) {
+			rawApi.declareConflictWinner(request = encryptedRequest)
+		} else {
+			rawApi.declareConflictWinnerInGroup(groupId = groupId, request = encryptedRequest)
+		}.successBodyOrThrowRevisionConflict().let {
+			ConflictResolutionResult(
+				document = maybeDecrypt(groupId, it.document),
+				remainingConflicts = it.remainingConflicts,
+			)
+		}
+	}
 }
 
 @InternalIcureApi
@@ -241,6 +270,12 @@ private class HealthElementBasicFlavouredApiImpl<E: HealthElement>(
 	override suspend fun getHealthElement(entityId: String): E? = doGetHealthElement(groupId = null, entityId = entityId)
 
 	override suspend fun getHealthElements(entityIds: List<String>): List<E> = doGetHealthElements(groupId = null, entityIds)
+
+	override suspend fun getConflictsForEntity(entityId: String): List<E> =
+		doGetConflictsForEntity(groupId = null, entityId = entityId)
+
+	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E> =
+		doDeclareConflictWinner(groupId = null, request = request)
 }
 
 @InternalIcureApi
@@ -289,6 +324,12 @@ private class HealthElementBasicFlavouredInGroupApiImpl<E: HealthElement>(
 	override suspend fun getHealthElements(groupId: String, entityIds: List<String>): List<GroupScoped<E>> = groupScopedListIn(groupId) {
 		doGetHealthElements(groupId = groupId, entityIds = entityIds)
 	}
+
+	override suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>> =
+		doGetConflictsForEntity(groupId = groupId, entityId = entityId).map { GroupScoped(it, groupId) }
+
+	override suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E> =
+		doDeclareConflictWinner(groupId = groupId, request = request)
 }
 
 @InternalIcureApi
@@ -438,6 +479,25 @@ private abstract class AbstractHealthElementBasicFlavourless(
 			healthElement,
 			EntityWithEncryptionMetadataTypeName.HealthElement,
 		)
+
+	protected suspend fun doGetConflictingEntitiesIds(groupId: String?): List<String> =
+		if (groupId == null) {
+			rawApi.getConflictingEntitiesIds()
+		} else {
+			rawApi.getConflictingEntitiesIdsInGroup(groupId = groupId)
+		}.successBody()
+
+	protected suspend fun doAutoSolveConflicts(
+		groupId: String?,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.autoSolveConflicts(entityIds = ids, strategy = strategy)
+		} else {
+			rawApi.autoSolveConflictsInGroup(groupId = groupId, entityIds = ids, strategy = strategy)
+		}.successBody()
+	}
 }
 
 @InternalIcureApi
@@ -461,6 +521,12 @@ private class HealthElementBasicFlavourlessApiImpl(
 
 	override suspend fun getDataOwnersWithAccessTo(healthElement: HealthElement): EntityAccessInformation =
 		doGetDataOwnersWithAccessTo(groupId = null, healthElement = healthElement)
+
+	override suspend fun getConflictingEntitiesIds(): List<String> =
+		doGetConflictingEntitiesIds(groupId = null)
+
+	override suspend fun autoSolveConflicts(entityIds: List<String>, strategy: ConflictResolutionStrategy?): List<MergeResult> =
+		doAutoSolveConflicts(groupId = null, entityIds = entityIds, strategy = strategy)
 }
 
 @InternalIcureApi
@@ -489,6 +555,16 @@ private class HealthElementBasicFlavourlessInGroupApiImpl(
 
 	override suspend fun getDataOwnersWithAccessTo(healthElement: GroupScoped<HealthElement>): EntityAccessInformation =
 		doGetDataOwnersWithAccessTo(groupId = healthElement.groupId, healthElement = healthElement.entity)
+
+	override suspend fun getConflictingEntitiesIds(groupId: String): List<String> =
+		doGetConflictingEntitiesIds(groupId = groupId)
+
+	override suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> =
+		doAutoSolveConflicts(groupId = groupId, entityIds = entityIds, strategy = strategy)
 }
 
 @InternalIcureApi

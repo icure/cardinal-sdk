@@ -17,6 +17,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -110,6 +114,26 @@ interface AccessLogBasicFlavourlessApi {
 	 * @return information on users with access to the provided access log
 	 */
 	suspend fun getDataOwnersWithAccessTo(accessLog: AccessLog): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the access logs that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the access logs with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the access logs with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of access logs with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each access log.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface AccessLogBasicFlavourlessInGroupApi {
@@ -161,6 +185,21 @@ interface AccessLogBasicFlavourlessInGroupApi {
 	 * In-group version of [AccessLogBasicFlavourlessApi.getDataOwnersWithAccessTo].
 	 */
 	suspend fun getDataOwnersWithAccessTo(accessLog: GroupScoped<AccessLog>): EntityAccessInformation
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -250,6 +289,26 @@ interface AccessLogBasicFlavouredApi<E : AccessLog> {
 	 */
 	suspend fun getAccessLogs(entityIds: List<String>): List<E>
 
+	/**
+	 * Get the conflicting revisions of an access log.
+	 * Requires read access to all the conflicting revisions of the access log.
+	 * If the access log has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of an access log with conflicts, for example obtained through
+	 * [AccessLogBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the access log.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of an access log by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the access log.
+	 * Flavoured method.
+	 * @param request the access log to keep and the conflicting revisions to purge.
+	 * @return the updated access log and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface AccessLogBasicFlavouredInGroupApi<E : AccessLog> {
@@ -304,6 +363,16 @@ interface AccessLogBasicFlavouredInGroupApi<E : AccessLog> {
 	 * In-group version of [AccessLogBasicFlavouredApi.getAccessLogs]
 	 */
 	suspend fun getAccessLogs(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [AccessLogBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

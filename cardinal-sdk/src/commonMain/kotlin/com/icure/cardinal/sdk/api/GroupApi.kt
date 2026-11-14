@@ -100,6 +100,10 @@ interface GroupApi {
 		dryRun: Boolean?
 	): List<DesignDocument>
 
+	@Deprecated(
+		"Use the getConflictingEntitiesIds and autoSolveConflicts " +
+			"methods of the inGroup api of each entity (e.g. sdk.patient.inGroup) instead",
+	)
 	suspend fun solveConflicts(id: String, limit: Int?, warmup: Boolean?): List<IdWithRev>
 	suspend fun resetStorage(
 		id: String,

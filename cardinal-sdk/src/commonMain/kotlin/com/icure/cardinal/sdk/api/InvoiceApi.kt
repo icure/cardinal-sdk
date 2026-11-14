@@ -15,6 +15,10 @@ import com.icure.cardinal.sdk.model.PaginatedList
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.data.LabelledOccurence
 import com.icure.cardinal.sdk.model.embed.AccessLevel
@@ -123,6 +127,26 @@ interface InvoiceBasicFlavourlessApi {
 	 * @return information on users with access to the provided invoice
 	 */
 	suspend fun getDataOwnersWithAccessTo(invoice: Invoice): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the invoices that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the invoices with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the invoices with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of invoices with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each invoice.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface InvoiceBasicFlavourlessInGroupApi  {
@@ -175,6 +199,21 @@ interface InvoiceBasicFlavourlessInGroupApi  {
 	 * In-group version of [InvoiceBasicFlavourlessApi.getDataOwnersWithAccessTo].
 	 */
 	suspend fun getDataOwnersWithAccessTo(invoice: GroupScoped<Invoice>): EntityAccessInformation
+
+	/**
+	 * In-group version of [InvoiceBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [InvoiceBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -349,6 +388,27 @@ interface InvoiceBasicFlavouredApi<E : Invoice> {
 		to: Long? = null,
 		hcpIds: List<String>
 	): List<E>
+
+	/**
+	 * Get the conflicting revisions of an invoice.
+	 * Requires read access to all the conflicting revisions of the invoice.
+	 * If the invoice has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of an invoice with conflicts, for example obtained through
+	 * [InvoiceBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the invoice.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of an invoice by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the invoice.
+	 * Flavoured method.
+	 * @param request the invoice to keep and the conflicting revisions to purge.
+	 * @return the updated invoice and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface InvoiceBasicFlavouredInGroupApi<E : Invoice> {
@@ -403,6 +463,16 @@ interface InvoiceBasicFlavouredInGroupApi<E : Invoice> {
 	 * In-group version of [InvoiceBasicFlavouredApi.getInvoices]
 	 */
 	suspend fun getInvoices(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [InvoiceBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [InvoiceBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

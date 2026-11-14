@@ -9,6 +9,10 @@ import com.icure.cardinal.sdk.model.DataOwnerRegistrationSuccess
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.PublicKey
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.Subscribable
 import com.icure.cardinal.sdk.utils.DefaultValue
@@ -174,6 +178,44 @@ interface HealthcarePartyApi: Subscribable<HealthcareParty, HealthcareParty, Fil
 	 * Equivalent to [DataOwnerApi.removeDataOwnersFromGroup] but for healthcareParties.
 	 */
 	suspend fun removeDataOwnersFromGroup(healthcarePartyGroup: HealthcareParty, healthcarePartiesToRemove: List<HealthcareParty>): Set<String>
+
+	/**
+	 * Get the ids of all the healthcare parties that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the healthcare parties with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Get the conflicting revisions of a healthcare party.
+	 * Requires read access to all the conflicting revisions of the healthcare party.
+	 * If the healthcare party has too many conflicts, only part of them are returned.
+	 * @param entityId the id of a healthcare party with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the healthcare party.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<HealthcareParty>
+
+	/**
+	 * Resolves the conflicts of a healthcare party by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the healthcare party.
+	 * @param request the healthcare party to keep and the conflicting revisions to purge.
+	 * @return the updated healthcare party and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<HealthcareParty>): ConflictResolutionResult<HealthcareParty>
+
+	/**
+	 * Automatically resolves the conflicts of the healthcare parties with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of healthcare parties with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each healthcare party.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface HealthcarePartyInGroupApi {
@@ -222,4 +264,32 @@ interface HealthcarePartyInGroupApi {
 		groupId: String,
 		filter: BaseSortableFilterOptions<HealthcareParty>,
 	): PaginatedListIterator<GroupScoped<HealthcareParty>>
+
+	/**
+	 * In-group version of [HealthcarePartyApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [HealthcarePartyApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<HealthcareParty>>
+
+	/**
+	 * In-group version of [HealthcarePartyApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(
+		groupId: String,
+		request: ConflictResolutionRequest<HealthcareParty>,
+	): ConflictResolutionResult<HealthcareParty>
+
+	/**
+	 * In-group version of [HealthcarePartyApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }

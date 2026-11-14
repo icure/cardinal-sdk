@@ -7,8 +7,13 @@ import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.model.Device
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.subscription.Subscribable
+import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 interface DeviceApi: Subscribable<Device, Device, FilterOptions<Device>> {
@@ -86,6 +91,44 @@ interface DeviceApi: Subscribable<Device, Device, FilterOptions<Device>> {
 
 	suspend fun matchDevicesBy(filter: BaseFilterOptions<Device>): List<String>
 	suspend fun matchDevicesBySorted(filter: BaseSortableFilterOptions<Device>): List<String>
+
+	/**
+	 * Get the ids of all the devices that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the devices with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Get the conflicting revisions of a device.
+	 * Requires read access to all the conflicting revisions of the device.
+	 * If the device has too many conflicts, only part of them are returned.
+	 * @param entityId the id of a device with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the device.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<Device>
+
+	/**
+	 * Resolves the conflicts of a device by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the device.
+	 * @param request the device to keep and the conflicting revisions to purge.
+	 * @return the updated device and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Device>): ConflictResolutionResult<Device>
+
+	/**
+	 * Automatically resolves the conflicts of the devices with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of devices with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each device.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface DeviceInGroupApi {
@@ -136,4 +179,29 @@ interface DeviceInGroupApi {
 
 	suspend fun matchDevicesBy(groupId: String, filter: BaseFilterOptions<Device>): List<String>
 	suspend fun matchDevicesBySorted(groupId: String, filter: BaseSortableFilterOptions<Device>): List<String>
+
+	/**
+	 * In-group version of [DeviceApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [DeviceApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<Device>>
+
+	/**
+	 * In-group version of [DeviceApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<Device>): ConflictResolutionResult<Device>
+
+	/**
+	 * In-group version of [DeviceApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }

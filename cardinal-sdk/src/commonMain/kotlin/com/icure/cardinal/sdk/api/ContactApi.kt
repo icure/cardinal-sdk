@@ -18,6 +18,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.data.LabelledOccurence
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.DecryptedService
@@ -139,6 +143,26 @@ interface ContactBasicFlavourlessApi {
 	 * @return information on users with access to the provided service
 	 */
 	suspend fun getDataOwnersWithAccessToService(service: Service): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the contacts that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the contacts with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the contacts with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of contacts with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each contact.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface ContactBasicFlavourlessInGroupApi {
@@ -196,6 +220,21 @@ interface ContactBasicFlavourlessInGroupApi {
 	 * In-group version of [ContactBasicFlavourlessApi.getDataOwnersWithAccessToService].
 	 */
 	suspend fun getDataOwnersWithAccessToService(service: GroupScoped<Service>): EntityAccessInformation
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [ContactBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -306,6 +345,26 @@ interface ContactBasicFlavouredApi<E : Contact, S : Service> {
 	 */
 	suspend fun getServices(entityIds: List<String>): List<S>
 
+	/**
+	 * Get the conflicting revisions of a contact.
+	 * Requires read access to all the conflicting revisions of the contact.
+	 * If the contact has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of a contact with conflicts, for example obtained through
+	 * [ContactBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the contact.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of a contact by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the contact.
+	 * Flavoured method.
+	 * @param request the contact to keep and the conflicting revisions to purge.
+	 * @return the updated contact and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface ContactBasicFlavouredInGroupApi<E : Contact, S: Service> {
@@ -370,6 +429,16 @@ interface ContactBasicFlavouredInGroupApi<E : Contact, S: Service> {
 	 * In-group version of [ContactBasicFlavouredApi.getServices]
 	 */
 	suspend fun getServices(groupId: String, entityIds: List<String>): List<GroupScoped<S>>
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [ContactBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

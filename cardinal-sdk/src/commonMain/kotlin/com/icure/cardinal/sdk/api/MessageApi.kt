@@ -17,6 +17,10 @@ import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.embed.MessageReadStatus
 import com.icure.cardinal.sdk.model.specializations.HexString
@@ -110,6 +114,26 @@ interface MessageBasicFlavourlessApi {
 	 * @return information on users with access to the provided message
 	 */
 	suspend fun getDataOwnersWithAccessTo(message: Message): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the messages that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the messages with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the messages with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of messages with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each message.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface MessageBasicFlavourlessInGroupApi  {
@@ -162,6 +186,21 @@ interface MessageBasicFlavourlessInGroupApi  {
 	 * In-group version of [MessageBasicFlavourlessApi.getDataOwnersWithAccessTo].
 	 */
 	suspend fun getDataOwnersWithAccessTo(message: GroupScoped<Message>): EntityAccessInformation
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [MessageBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -296,6 +335,27 @@ interface MessageBasicFlavouredApi<E : Message> {
 	 * @return the updated messages.
 	 */
 	suspend fun setMessagesReadStatus(entityIds: List<String>, time: Long?, readStatus: Boolean, userId: String?): List<E>
+
+	/**
+	 * Get the conflicting revisions of a message.
+	 * Requires read access to all the conflicting revisions of the message.
+	 * If the message has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of a message with conflicts, for example obtained through
+	 * [MessageBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the message.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of a message by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the message.
+	 * Flavoured method.
+	 * @param request the message to keep and the conflicting revisions to purge.
+	 * @return the updated message and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface MessageBasicFlavouredInGroupApi<E : Message> {
@@ -350,6 +410,16 @@ interface MessageBasicFlavouredInGroupApi<E : Message> {
 	 * In-group version of [MessageBasicFlavouredApi.getMessages]
 	 */
 	suspend fun getMessages(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [MessageBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

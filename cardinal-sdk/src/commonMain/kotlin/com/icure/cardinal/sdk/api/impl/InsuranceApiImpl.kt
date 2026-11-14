@@ -13,6 +13,10 @@ import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfIdsAndRev
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.utils.pagination.IdsPageIterator
@@ -135,6 +139,44 @@ internal abstract class AbstractInsuranceApi(
 
 	protected suspend fun doMatchInsurancesBySorted(groupId: String?, filter: BaseSortableFilterOptions<Insurance>) =
 		doMatchInsurancesBy(groupId = groupId, filter = filter)
+
+	protected suspend fun doGetConflictingEntitiesIds(groupId: String?): List<String> =
+		if (groupId == null) {
+			rawApi.getConflictingEntitiesIds()
+		} else {
+			rawApi.getConflictingEntitiesIdsInGroup(groupId = groupId)
+		}.successBody()
+
+	protected suspend fun doAutoSolveConflicts(
+		groupId: String?,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.autoSolveConflicts(entityIds = ids, strategy = strategy)
+		} else {
+			rawApi.autoSolveConflictsInGroup(groupId = groupId, entityIds = ids, strategy = strategy)
+		}.successBody()
+	}
+
+	protected suspend fun doGetConflictsForEntity(groupId: String?, entityId: String): List<Insurance> =
+		if (groupId == null) {
+			rawApi.getConflictsForEntity(entityId = entityId)
+		} else {
+			rawApi.getConflictsForEntityInGroup(groupId = groupId, entityId = entityId)
+		}.successBody()
+
+	protected suspend fun doDeclareConflictWinner(
+		groupId: String?,
+		request: ConflictResolutionRequest<Insurance>,
+	): ConflictResolutionResult<Insurance> {
+		requireIsValidForModification(request.document)
+		return if (groupId == null) {
+			rawApi.declareConflictWinner(request = request)
+		} else {
+			rawApi.declareConflictWinnerInGroup(groupId = groupId, request = request)
+		}.successBodyOrThrowRevisionConflict()
+	}
 }
 
 @InternalIcureApi
@@ -200,6 +242,18 @@ internal class InsuranceApiImpl(
 
 	override suspend fun filterInsurancesBySorted(filter: BaseSortableFilterOptions<Insurance>): PaginatedListIterator<Insurance> =
 		IdsPageIterator(matchInsurancesBySorted(filter), this::getInsurances)
+
+	override suspend fun getConflictingEntitiesIds(): List<String> =
+		doGetConflictingEntitiesIds(groupId = null)
+
+	override suspend fun autoSolveConflicts(entityIds: List<String>, strategy: ConflictResolutionStrategy?): List<MergeResult> =
+		doAutoSolveConflicts(groupId = null, entityIds = entityIds, strategy = strategy)
+
+	override suspend fun getConflictsForEntity(entityId: String): List<Insurance> =
+		doGetConflictsForEntity(groupId = null, entityId = entityId)
+
+	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<Insurance>): ConflictResolutionResult<Insurance> =
+		doDeclareConflictWinner(groupId = null, request = request)
 }
 
 @OptIn(InternalIcureApi::class)
@@ -285,4 +339,22 @@ internal class InsuranceInGroupApiImpl(
 			getInsurances(groupId = groupId, insurancesIds = ids)
 		}
 
+	override suspend fun getConflictingEntitiesIds(groupId: String): List<String> =
+		doGetConflictingEntitiesIds(groupId = groupId)
+
+	override suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> =
+		doAutoSolveConflicts(groupId = groupId, entityIds = entityIds, strategy = strategy)
+
+	override suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<Insurance>> =
+		doGetConflictsForEntity(groupId = groupId, entityId = entityId).map { GroupScoped(it, groupId) }
+
+	override suspend fun declareConflictWinner(
+		groupId: String,
+		request: ConflictResolutionRequest<Insurance>,
+	): ConflictResolutionResult<Insurance> =
+		doDeclareConflictWinner(groupId = groupId, request = request)
 }

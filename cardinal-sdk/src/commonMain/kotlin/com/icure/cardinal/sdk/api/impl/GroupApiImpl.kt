@@ -124,6 +124,10 @@ internal class GroupApiImpl(
 		dryRun: Boolean?
 	): List<DesignDocument> = rawApi.initDesignDocs(id = id, clazz = clazz, warmup = warmup, dryRun = dryRun).successBody()
 
+	@Deprecated(
+		"Use the getConflictingEntitiesIds and autoSolveConflicts " +
+			"methods of the inGroup api of each entity (e.g. sdk.patient.inGroup) instead",
+	)
 	override suspend fun solveConflicts(id: String, limit: Int?, warmup: Boolean?): List<IdWithRev> =
 		rawApi.solveConflicts(groupId = id, limit = limit, warmup = warmup).successBody()
 

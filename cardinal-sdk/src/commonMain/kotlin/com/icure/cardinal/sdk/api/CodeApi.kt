@@ -6,6 +6,10 @@ import com.icure.cardinal.sdk.model.BooleanResponse
 import com.icure.cardinal.sdk.model.Code
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
 import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
@@ -92,6 +96,43 @@ interface CodeApi {
 	suspend fun matchCodesBy(filter: BaseFilterOptions<Code>): List<String>
 	suspend fun matchCodesBySorted(filter: BaseSortableFilterOptions<Code>): List<String>
 
+	/**
+	 * Get the ids of all the codes that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the codes with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Get the conflicting revisions of a code.
+	 * Requires read access to all the conflicting revisions of the code.
+	 * If the code has too many conflicts, only part of them are returned.
+	 * @param entityId the id of a code with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the code.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<Code>
+
+	/**
+	 * Resolves the conflicts of a code by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the code.
+	 * @param request the code to keep and the conflicting revisions to purge.
+	 * @return the updated code and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Code>): ConflictResolutionResult<Code>
+
+	/**
+	 * Automatically resolves the conflicts of the codes with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of codes with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each code.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface CodeInGroupApi {
@@ -142,5 +183,30 @@ interface CodeInGroupApi {
 
 	suspend fun matchCodesBy(groupId: String, filter: BaseFilterOptions<Code>): List<String>
 	suspend fun matchCodesBySorted(groupId: String, filter: BaseSortableFilterOptions<Code>): List<String>
+
+	/**
+	 * In-group version of [CodeApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [CodeApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<Code>>
+
+	/**
+	 * In-group version of [CodeApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<Code>): ConflictResolutionResult<Code>
+
+	/**
+	 * In-group version of [CodeApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 

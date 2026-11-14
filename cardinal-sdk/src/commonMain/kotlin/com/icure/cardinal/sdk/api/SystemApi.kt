@@ -18,30 +18,55 @@ interface SystemApi {
 		warmup: Boolean? = null,
 	): Boolean
 
+	@Deprecated(
+		"Use sdk.patient.getConflictingEntitiesIds and sdk.patient.autoSolveConflicts " +
+			"(or sdk.patient.inGroup for other groups) instead",
+	)
 	suspend fun resolvePatientsConflicts(
 		@DefaultValue("null")
 		limit: Int? = null
 	): List<IdWithRev>
+	@Deprecated(
+		"Use sdk.contact.getConflictingEntitiesIds and sdk.contact.autoSolveConflicts " +
+			"(or sdk.contact.inGroup for other groups) instead",
+	)
 	suspend fun resolveContactsConflicts(
 		@DefaultValue("null")
 		limit: Int? = null
 	): List<IdWithRev>
+	@Deprecated("Use sdk.form.getConflictingEntitiesIds and sdk.form.autoSolveConflicts (or sdk.form.inGroup for other groups) instead")
 	suspend fun resolveFormsConflicts(
 		@DefaultValue("null")
 		limit: Int? = null
 	): List<IdWithRev>
+	@Deprecated(
+		"Use sdk.healthElement.getConflictingEntitiesIds and sdk.healthElement.autoSolveConflicts " +
+			"(or sdk.healthElement.inGroup for other groups) instead",
+	)
 	suspend fun resolveHealthElementsConflicts(
 		@DefaultValue("null")
 		limit: Int? = null
 	): List<IdWithRev>
+	@Deprecated(
+		"Use sdk.invoice.getConflictingEntitiesIds and sdk.invoice.autoSolveConflicts " +
+			"(or sdk.invoice.inGroup for other groups) instead",
+	)
 	suspend fun resolveInvoicesConflicts(
 		@DefaultValue("null")
 		limit: Int? = null
 	): List<IdWithRev>
+	@Deprecated(
+		"Use sdk.message.getConflictingEntitiesIds and sdk.message.autoSolveConflicts " +
+			"(or sdk.message.inGroup for other groups) instead",
+	)
 	suspend fun resolveMessagesConflicts(
 		@DefaultValue("null")
 		limit: Int? = null
 	): List<IdWithRev>
+	@Deprecated(
+		"Use sdk.document.getConflictingEntitiesIds and sdk.document.autoSolveConflicts " +
+			"(or sdk.document.inGroup for other groups) instead",
+	)
 	suspend fun resolveDocumentsConflicts(
 		@DefaultValue("null")
 		ids: String? = null,

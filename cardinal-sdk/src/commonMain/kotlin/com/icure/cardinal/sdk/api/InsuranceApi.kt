@@ -5,7 +5,12 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.model.Insurance
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
+import com.icure.cardinal.sdk.utils.DefaultValue
 import com.icure.cardinal.sdk.utils.pagination.PaginatedListIterator
 
 interface InsuranceApi {
@@ -61,6 +66,43 @@ interface InsuranceApi {
 		filter: BaseSortableFilterOptions<Insurance>,
 	): PaginatedListIterator<Insurance>
 
+	/**
+	 * Get the ids of all the insurances that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the insurances with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Get the conflicting revisions of an insurance.
+	 * Requires read access to all the conflicting revisions of the insurance.
+	 * If the insurance has too many conflicts, only part of them are returned.
+	 * @param entityId the id of an insurance with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the insurance.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<Insurance>
+
+	/**
+	 * Resolves the conflicts of an insurance by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the insurance.
+	 * @param request the insurance to keep and the conflicting revisions to purge.
+	 * @return the updated insurance and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<Insurance>): ConflictResolutionResult<Insurance>
+
+	/**
+	 * Automatically resolves the conflicts of the insurances with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of insurances with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each insurance.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface InsuranceInGroupApi {
@@ -110,4 +152,29 @@ interface InsuranceInGroupApi {
 		groupId: String,
 		filter: BaseSortableFilterOptions<Insurance>,
 	): PaginatedListIterator<GroupScoped<Insurance>>
+
+	/**
+	 * In-group version of [InsuranceApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [InsuranceApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<Insurance>>
+
+	/**
+	 * In-group version of [InsuranceApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<Insurance>): ConflictResolutionResult<Insurance>
+
+	/**
+	 * In-group version of [InsuranceApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }

@@ -18,6 +18,10 @@ import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.User
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.model.embed.AccessLevel
 import com.icure.cardinal.sdk.model.specializations.HexString
 import com.icure.cardinal.sdk.model.toStoredDocumentIdentifier
@@ -194,6 +198,26 @@ interface DocumentBasicFlavourlessApi {
 	 * @return information on users with access to the provided document
 	 */
 	suspend fun getDataOwnersWithAccessTo(document: Document): EntityAccessInformation
+
+	/**
+	 * Get the ids of all the documents that have conflicting revisions.
+	 * Requires the permission to manually resolve conflicts.
+	 * @return the ids of the documents with conflicts.
+	 */
+	suspend fun getConflictingEntitiesIds(): List<String>
+
+	/**
+	 * Automatically resolves the conflicts of the documents with the provided ids.
+	 * Requires the permission to automatically resolve conflicts.
+	 * @param entityIds ids of documents with conflicts, for example obtained through [getConflictingEntitiesIds].
+	 * @param strategy the strategy to use to resolve the conflicts. If null the backend uses its default strategy.
+	 * @return the outcome of the conflict resolution for each document.
+	 */
+	suspend fun autoSolveConflicts(
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 interface DocumentBasicFlavourlessInGroupApi {
@@ -246,6 +270,21 @@ interface DocumentBasicFlavourlessInGroupApi {
 	 * In-group version of [DocumentBasicFlavourlessApi.getDataOwnersWithAccessTo].
 	 */
 	suspend fun getDataOwnersWithAccessTo(document: GroupScoped<Document>): EntityAccessInformation
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.getConflictingEntitiesIds].
+	 */
+	suspend fun getConflictingEntitiesIds(groupId: String): List<String>
+
+	/**
+	 * In-group version of [DocumentBasicFlavourlessApi.autoSolveConflicts].
+	 */
+	suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		@DefaultValue("null")
+		strategy: ConflictResolutionStrategy? = null,
+	): List<MergeResult>
 }
 
 /* This interface includes the API calls can be used on decrypted items if encryption keys are available *or* encrypted items if no encryption keys are available */
@@ -340,6 +379,26 @@ interface DocumentBasicFlavouredApi<E : Document> {
 	 */
 	suspend fun getDocuments(entityIds: List<String>): List<E>
 
+	/**
+	 * Get the conflicting revisions of a document.
+	 * Requires read access to all the conflicting revisions of the document.
+	 * If the document has too many conflicts, only part of them are returned.
+	 * Flavoured method.
+	 * @param entityId the id of a document with conflicts, for example obtained through
+	 * [DocumentBasicFlavourlessApi.getConflictingEntitiesIds].
+	 * @return the conflicting revisions of the document.
+	 */
+	suspend fun getConflictsForEntity(entityId: String): List<E>
+
+	/**
+	 * Resolves the conflicts of a document by declaring the version that should be kept and the conflicting revisions that
+	 * should be purged.
+	 * Requires the permission to manually resolve conflicts and write access to all the conflicting revisions of the document.
+	 * Flavoured method.
+	 * @param request the document to keep and the conflicting revisions to purge.
+	 * @return the updated document and the revisions that are still in conflict.
+	 */
+	suspend fun declareConflictWinner(request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 interface DocumentBasicFlavouredInGroupApi<E : Document> {
@@ -394,6 +453,16 @@ interface DocumentBasicFlavouredInGroupApi<E : Document> {
 	 * In-group version of [DocumentBasicFlavouredApi.getDocuments]
 	 */
 	suspend fun getDocuments(groupId: String, entityIds: List<String>): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.getConflictsForEntity].
+	 */
+	suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<E>>
+
+	/**
+	 * In-group version of [DocumentBasicFlavouredApi.declareConflictWinner].
+	 */
+	suspend fun declareConflictWinner(groupId: String, request: ConflictResolutionRequest<E>): ConflictResolutionResult<E>
 }
 
 /* The extra API calls declared in this interface are the ones that can be used on encrypted or decrypted items but only when the user is a data owner */

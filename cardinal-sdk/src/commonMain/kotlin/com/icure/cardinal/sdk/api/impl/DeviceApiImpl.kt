@@ -13,6 +13,10 @@ import com.icure.cardinal.sdk.model.Device
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
 import com.icure.cardinal.sdk.model.ListOfIds
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionRequest
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionResult
+import com.icure.cardinal.sdk.model.conflicts.ConflictResolutionStrategy
+import com.icure.cardinal.sdk.model.conflicts.MergeResult
 import com.icure.cardinal.sdk.options.BasicApiConfiguration
 import com.icure.cardinal.sdk.serialization.DeviceAbstractFilterSerializer
 import com.icure.cardinal.sdk.serialization.SubscriptionSerializer
@@ -139,6 +143,44 @@ internal abstract class AbstractDeviceApi(
 		} else {
 			rawApi.matchDevicesInGroupBy(groupId = groupId, filter = mapDeviceFilterOptions(filter, config, groupId))
 		}.successBody()
+
+	protected suspend fun doGetConflictingEntitiesIds(groupId: String?): List<String> =
+		if (groupId == null) {
+			rawApi.getConflictingEntitiesIds()
+		} else {
+			rawApi.getConflictingEntitiesIdsInGroup(groupId = groupId)
+		}.successBody()
+
+	protected suspend fun doAutoSolveConflicts(
+		groupId: String?,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> = skipRequestOnEmptyList(entityIds) { ids ->
+		if (groupId == null) {
+			rawApi.autoSolveConflicts(entityIds = ids, strategy = strategy)
+		} else {
+			rawApi.autoSolveConflictsInGroup(groupId = groupId, entityIds = ids, strategy = strategy)
+		}.successBody()
+	}
+
+	protected suspend fun doGetConflictsForEntity(groupId: String?, entityId: String): List<Device> =
+		if (groupId == null) {
+			rawApi.getConflictsForEntity(entityId = entityId)
+		} else {
+			rawApi.getConflictsForEntityInGroup(groupId = groupId, entityId = entityId)
+		}.successBody()
+
+	protected suspend fun doDeclareConflictWinner(
+		groupId: String?,
+		request: ConflictResolutionRequest<Device>,
+	): ConflictResolutionResult<Device> {
+		requireIsValidForModification(request.document)
+		return if (groupId == null) {
+			rawApi.declareConflictWinner(request = request)
+		} else {
+			rawApi.declareConflictWinnerInGroup(groupId = groupId, request = request)
+		}.successBodyOrThrowRevisionConflict()
+	}
 }
 
 @InternalIcureApi
@@ -223,6 +265,17 @@ internal class DeviceApiImpl(
 		)
 	}
 
+	override suspend fun getConflictingEntitiesIds(): List<String> =
+		doGetConflictingEntitiesIds(groupId = null)
+
+	override suspend fun autoSolveConflicts(entityIds: List<String>, strategy: ConflictResolutionStrategy?): List<MergeResult> =
+		doAutoSolveConflicts(groupId = null, entityIds = entityIds, strategy = strategy)
+
+	override suspend fun getConflictsForEntity(entityId: String): List<Device> =
+		doGetConflictsForEntity(groupId = null, entityId = entityId)
+
+	override suspend fun declareConflictWinner(request: ConflictResolutionRequest<Device>): ConflictResolutionResult<Device> =
+		doDeclareConflictWinner(groupId = null, request = request)
 }
 
 @InternalIcureApi
@@ -303,4 +356,23 @@ internal class DeviceApiInGroupImpl(
 
 	override suspend fun matchDevicesBySorted(groupId: String, filter: BaseSortableFilterOptions<Device>) =
 		matchDevicesBy(groupId, filter)
+
+	override suspend fun getConflictingEntitiesIds(groupId: String): List<String> =
+		doGetConflictingEntitiesIds(groupId = groupId)
+
+	override suspend fun autoSolveConflicts(
+		groupId: String,
+		entityIds: List<String>,
+		strategy: ConflictResolutionStrategy?,
+	): List<MergeResult> =
+		doAutoSolveConflicts(groupId = groupId, entityIds = entityIds, strategy = strategy)
+
+	override suspend fun getConflictsForEntity(groupId: String, entityId: String): List<GroupScoped<Device>> =
+		doGetConflictsForEntity(groupId = groupId, entityId = entityId).map { GroupScoped(it, groupId) }
+
+	override suspend fun declareConflictWinner(
+		groupId: String,
+		request: ConflictResolutionRequest<Device>,
+	): ConflictResolutionResult<Device> =
+		doDeclareConflictWinner(groupId = groupId, request = request)
 }
