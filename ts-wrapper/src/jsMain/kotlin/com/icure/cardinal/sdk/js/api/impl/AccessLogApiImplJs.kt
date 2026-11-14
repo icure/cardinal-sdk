@@ -15,9 +15,11 @@ import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOr
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.AccessLogShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.accessLogDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.accessLogShareOptions_fromJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -1665,6 +1667,116 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
+		override fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+				accessLog,
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogApi.inGroup.getDataOwnersWithAccessTo(
+				accessLogConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
+		override fun shareWith(
+			`delegate`: EntityReferenceInGroupJs,
+			accessLog: GroupScopedJs<DecryptedAccessLogJs>,
+			options: dynamic,
+		): Promise<GroupScopedJs<DecryptedAccessLogJs>> {
+			val _options = options ?: js("{}")
+			return GlobalScope.promise {
+				val delegateConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(delegate)
+				val accessLogConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
+					accessLog,
+					{ x1: DecryptedAccessLogJs ->
+						accessLog_fromJs(x1)
+					},
+				)
+				val optionsConverted: AccessLogShareOptions? = convertingOptionOrDefaultNullable(
+					_options,
+					"options",
+					null
+				) { options: AccessLogShareOptionsJs? ->
+					options?.let { nonNull1 ->
+						accessLogShareOptions_fromJs(nonNull1)
+					}
+				}
+				val result = accessLogApi.inGroup.shareWith(
+					delegateConverted,
+					accessLogConverted,
+					optionsConverted,
+				)
+				groupScoped_toJs(
+					result,
+					{ x1: DecryptedAccessLog ->
+						accessLog_toJs(x1)
+					},
+				)
+			}
+		}
+
+		override fun shareWithMany(accessLog: GroupScopedJs<DecryptedAccessLogJs>, delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+			val accessLogConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
+				accessLog,
+				{ x1: DecryptedAccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val delegatesConverted: Map<EntityReferenceInGroup, AccessLogShareOptions> = EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+			val result = accessLogApi.inGroup.shareWithMany(
+				accessLogConverted,
+				delegatesConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: DecryptedAccessLog ->
+					accessLog_toJs(x1)
+				},
+			)
+		}
+
+		override fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
+			val result = accessLogApi.inGroup.filterAccessLogsBy(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<DecryptedAccessLog> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedAccessLog ->
+							accessLog_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
+		override fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+			val groupIdConverted: String = groupId
+			val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
+			val result = accessLogApi.inGroup.filterAccessLogsBySorted(
+				groupIdConverted,
+				filterConverted,
+			)
+			paginatedListIterator_toJs(
+				result,
+				{ x1: GroupScoped<DecryptedAccessLog> ->
+					groupScoped_toJs(
+						x1,
+						{ x2: DecryptedAccessLog ->
+							accessLog_toJs(x2)
+						},
+					)
+				},
+			)
+		}
+
 		override fun createAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>): Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
 				entity,
@@ -2231,6 +2343,14 @@ internal class AccessLogApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
+		val result = accessLogApi.getDataOwnersWithAccessTo(
+			accessLogConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

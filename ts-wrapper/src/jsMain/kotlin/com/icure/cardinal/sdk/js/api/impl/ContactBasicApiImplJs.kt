@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.ContactBasicApiJs
 import com.icure.cardinal.sdk.js.api.ContactBasicInGroupApiJs
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -26,6 +28,7 @@ import com.icure.cardinal.sdk.js.model.contact_fromJs
 import com.icure.cardinal.sdk.js.model.contact_toJs
 import com.icure.cardinal.sdk.js.model.embed.EncryptedServiceJs
 import com.icure.cardinal.sdk.js.model.embed.ServiceJs
+import com.icure.cardinal.sdk.js.model.embed.service_fromJs
 import com.icure.cardinal.sdk.js.model.embed.service_toJs
 import com.icure.cardinal.sdk.js.model.groupScoped_fromJs
 import com.icure.cardinal.sdk.js.model.groupScoped_toJs
@@ -380,6 +383,32 @@ internal class ContactBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
+				contact,
+				{ x1: ContactJs ->
+					contact_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.getDataOwnersWithAccessTo(
+				contactConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
+		override fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val serviceConverted: GroupScoped<Service> = groupScoped_fromJs(
+				service,
+				{ x1: ServiceJs ->
+					service_fromJs(x1)
+				},
+			)
+			val result = contactBasicApi.inGroup.getDataOwnersWithAccessToService(
+				serviceConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createContact(entity: GroupScopedJs<EncryptedContactJs>): Promise<GroupScopedJs<EncryptedContactJs>> = GlobalScope.promise {
@@ -916,6 +945,22 @@ internal class ContactBasicApiImplJs(
 				labelledOccurence_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val contactConverted: Contact = contact_fromJs(contact)
+		val result = contactBasicApi.getDataOwnersWithAccessTo(
+			contactConverted,
+		)
+		entityAccessInformation_toJs(result)
+	}
+
+	override fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val serviceConverted: Service = service_fromJs(service)
+		val result = contactBasicApi.getDataOwnersWithAccessToService(
+			serviceConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createContact(entity: EncryptedContactJs): Promise<EncryptedContactJs> = GlobalScope.promise {

@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.TopicBasicApiJs
 import com.icure.cardinal.sdk.js.api.TopicBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -300,6 +302,19 @@ internal class TopicBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
+				topic,
+				{ x1: TopicJs ->
+					topic_fromJs(x1)
+				},
+			)
+			val result = topicBasicApi.inGroup.getDataOwnersWithAccessTo(
+				topicConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createTopic(entity: GroupScopedJs<EncryptedTopicJs>): Promise<GroupScopedJs<EncryptedTopicJs>> = GlobalScope.promise {
@@ -698,6 +713,14 @@ internal class TopicBasicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(topic: TopicJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val topicConverted: Topic = topic_fromJs(topic)
+		val result = topicBasicApi.getDataOwnersWithAccessTo(
+			topicConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createTopic(entity: EncryptedTopicJs): Promise<EncryptedTopicJs> = GlobalScope.promise {

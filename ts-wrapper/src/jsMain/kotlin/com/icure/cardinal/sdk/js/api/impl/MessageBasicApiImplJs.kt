@@ -7,6 +7,8 @@ import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.MessageBasicApiJs
 import com.icure.cardinal.sdk.js.api.MessageBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -304,6 +306,19 @@ internal class MessageBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
+				message,
+				{ x1: MessageJs ->
+					message_fromJs(x1)
+				},
+			)
+			val result = messageBasicApi.inGroup.getDataOwnersWithAccessTo(
+				messageConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createMessage(entity: GroupScopedJs<EncryptedMessageJs>): Promise<GroupScopedJs<EncryptedMessageJs>> = GlobalScope.promise {
@@ -702,6 +717,14 @@ internal class MessageBasicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(message: MessageJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val messageConverted: Message = message_fromJs(message)
+		val result = messageBasicApi.getDataOwnersWithAccessTo(
+			messageConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createMessage(entity: EncryptedMessageJs): Promise<EncryptedMessageJs> = GlobalScope.promise {

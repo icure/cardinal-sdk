@@ -6,6 +6,8 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.js.api.AccessLogBasicApiJs
 import com.icure.cardinal.sdk.js.api.AccessLogBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.baseFilterOptions_fromJs
@@ -290,6 +292,19 @@ internal class AccessLogBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
+				accessLog,
+				{ x1: AccessLogJs ->
+					accessLog_fromJs(x1)
+				},
+			)
+			val result = accessLogBasicApi.inGroup.getDataOwnersWithAccessTo(
+				accessLogConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
@@ -688,6 +703,14 @@ internal class AccessLogBasicApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
+		val result = accessLogBasicApi.getDataOwnersWithAccessTo(
+			accessLogConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createAccessLog(entity: EncryptedAccessLogJs): Promise<EncryptedAccessLogJs> = GlobalScope.promise {
