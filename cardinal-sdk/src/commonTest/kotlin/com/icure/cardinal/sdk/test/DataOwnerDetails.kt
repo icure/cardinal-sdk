@@ -1,7 +1,6 @@
 package com.icure.cardinal.sdk.test
 
 import com.icure.cardinal.sdk.CardinalSdk
-import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.auth.UsernamePassword
 import com.icure.cardinal.sdk.crypto.CryptoStrategies
@@ -175,8 +174,7 @@ data class DataOwnerDetails private constructor (
 			defaultCryptoService,
 			null,
 			SdkOptions(),
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			authProcessApi = testAuthProcessApi,
 		)
 
 

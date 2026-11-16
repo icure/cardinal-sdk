@@ -2,7 +2,6 @@ package com.icure.cardinal.sdk.auth
 
 import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.api.impl.AuthApiImpl
-import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
 import com.icure.cardinal.sdk.auth.services.AuthProvider
@@ -26,6 +25,7 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.mockMessageGatewayUrl
 import com.icure.cardinal.sdk.test.mockSpecId
 import com.icure.cardinal.sdk.test.shouldBeNextRevOf
+import com.icure.cardinal.sdk.test.testAuthProcessApi
 import com.icure.cardinal.sdk.test.testGroupAdminAuth
 import com.icure.cardinal.sdk.test.testGroupId
 import com.icure.cardinal.sdk.test.uuid
@@ -121,8 +121,7 @@ class SmartAuthTest : StringSpec({
 			cryptoService = defaultCryptoService,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl,
+			authProcessApi = testAuthProcessApi,
 			designDocSchemaVersion = null
 		)
 
@@ -192,8 +191,7 @@ class SmartAuthTest : StringSpec({
 			cryptoService = defaultCryptoService,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl,
+			authProcessApi = testAuthProcessApi,
 			designDocSchemaVersion = null
 		)
 
@@ -214,8 +212,7 @@ class SmartAuthTest : StringSpec({
 				defaultCryptoService,
 				null,
 				SdkOptions(),
-				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-				krakenUrl = baseUrl
+				testAuthProcessApi,
 			)
 		).getCurrentUser().successBody()
 		retrievedWithNewPwd shouldBe userWithNewPwd
@@ -226,8 +223,7 @@ class SmartAuthTest : StringSpec({
 					defaultCryptoService,
 					null,
 					SdkOptions(),
-					RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-					krakenUrl = baseUrl
+					testAuthProcessApi,
 				)
 			).getCurrentUser()
 		}.message shouldBe "Could not get a token with the provided initial secret of type ${AuthSecretDetails.PasswordDetails::class.simpleName}."
@@ -301,8 +297,7 @@ class SmartAuthTest : StringSpec({
 			cryptoService = defaultCryptoService,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl,
+			authProcessApi = testAuthProcessApi,
 			designDocSchemaVersion = null
 		)
 
@@ -358,8 +353,7 @@ class SmartAuthTest : StringSpec({
 			cryptoService = defaultCryptoService,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl,
+			authProcessApi = testAuthProcessApi,
 			designDocSchemaVersion = null
 		)
 
@@ -410,8 +404,7 @@ class SmartAuthTest : StringSpec({
 			cryptoService = defaultCryptoService,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl,
+			authProcessApi = testAuthProcessApi,
 			designDocSchemaVersion = null
 		)
 		val userApi = getUserApiWithProvider(authProvider)
@@ -488,8 +481,7 @@ class SmartAuthTest : StringSpec({
 			cryptoService = defaultCryptoService,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl,
+			authProcessApi = testAuthProcessApi,
 			designDocSchemaVersion = null
 		)
 
@@ -513,8 +505,7 @@ class SmartAuthTest : StringSpec({
 				defaultCryptoService,
 				null,
 				SdkOptions(),
-				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-				krakenUrl = baseUrl
+				testAuthProcessApi,
 			)
 		).getCurrentUser().successBody()
 		retrievedWithNewPwd shouldBe updatedUser
@@ -525,8 +516,7 @@ class SmartAuthTest : StringSpec({
 					defaultCryptoService,
 					null,
 					SdkOptions(),
-					RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-					krakenUrl = baseUrl
+					testAuthProcessApi,
 				)
 			).getCurrentUser()
 		}.message shouldBe "Could not get a token with the provided initial secret of type ${AuthSecretDetails.PasswordDetails::class.simpleName}."
@@ -557,8 +547,7 @@ class SmartAuthTest : StringSpec({
 			cryptoService = defaultCryptoService,
 			cacheSecrets = true,
 			allowSecretRetry = true,
-			messageGatewayApi = RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl,
+			authProcessApi = testAuthProcessApi,
 			designDocSchemaVersion = null
 		)
 		val defaultGroupUserApi = getUserApiWithProvider(authProvider)
@@ -598,8 +587,7 @@ class SmartAuthTest : StringSpec({
 			defaultCryptoService,
 			null,
 			SdkOptions(),
-			RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-			krakenUrl = baseUrl
+			testAuthProcessApi,
 		)
 		getUserApiWithProvider(authProvider).getCurrentUser().successBody().healthcarePartyId shouldBe hcpDetails.dataOwnerId
 		calls shouldBe 0
@@ -629,8 +617,7 @@ class SmartAuthTest : StringSpec({
 		defaultCryptoService,
 		null,
 		SdkOptions(),
-		RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-		krakenUrl = baseUrl
+		testAuthProcessApi,
 	)
 
 	"Sdk initialized with a valid refresh token as initial secret should not invoke the secret provider".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
@@ -773,8 +760,7 @@ class SmartAuthTest : StringSpec({
 				defaultCryptoService,
 				null,
 				SdkOptions(),
-				RawMessageGatewayApi(CardinalSdk.sharedHttpClient, defaultCryptoService),
-				krakenUrl = baseUrl
+				testAuthProcessApi,
 			)
 		).getCurrentUser().successBody().groupId shouldBe secondGroupUser.groupId
 		// But on initialization the sdk does not use the group of the refresh token: the user can still access multiple groups,

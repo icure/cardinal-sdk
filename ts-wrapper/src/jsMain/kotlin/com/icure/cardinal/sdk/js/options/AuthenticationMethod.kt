@@ -153,14 +153,20 @@ private fun AuthSecretDetails.toJs(): AuthSecretDetailsJs = when (this) {
 		TwoFactorAuthTokenDetailsJs(secret = secret)
 	}
 }
+// The JavaScript SDK only starts message gateway processes for now: the Khermes overloads come with its own bridge.
 @OptIn(InternalIcureApi::class)
-private fun AuthenticationProcessRequest.toJs(): AuthenticationProcessRequestJs = AuthenticationProcessRequestJs(
-	messageGwUrl = messageGwUrl,
-	specId = specId,
-	requestId = requestId,
-)
+private fun AuthenticationProcessRequest.toJs(): AuthenticationProcessRequestJs = when (this) {
+	is AuthenticationProcessRequest.MessageGateway -> AuthenticationProcessRequestJs(
+		messageGwUrl = messageGwUrl,
+		specId = specId,
+		requestId = requestId,
+	)
+	is AuthenticationProcessRequest.Khermes -> throw UnsupportedOperationException(
+		"Khermes authentication processes are not supported by the JavaScript SDK yet"
+	)
+}
 @OptIn(InternalIcureApi::class)
-private fun AuthenticationProcessRequestJs.toKt(): AuthenticationProcessRequest = AuthenticationProcessRequest(
+private fun AuthenticationProcessRequestJs.toKt(): AuthenticationProcessRequest = AuthenticationProcessRequest.MessageGateway(
 	messageGwUrl = messageGwUrl,
 	specId = specId,
 	requestId = requestId,

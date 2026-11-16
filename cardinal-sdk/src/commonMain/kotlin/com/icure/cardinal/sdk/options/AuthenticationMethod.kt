@@ -2,12 +2,12 @@ package com.icure.cardinal.sdk.options
 
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
 import com.icure.cardinal.sdk.api.raw.RawApiConfig
-import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.impl.RawAnonymousAuthApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawUserApiImpl
 import com.icure.cardinal.sdk.auth.AuthSecretDetails
 import com.icure.cardinal.sdk.auth.AuthSecretProvider
 import com.icure.cardinal.sdk.auth.AuthenticationProcessApi
+import com.icure.cardinal.sdk.auth.AuthenticationProcessApiImpl
 import com.icure.cardinal.sdk.auth.Credentials
 import com.icure.cardinal.sdk.auth.ExternalAuthenticationToken
 import com.icure.cardinal.sdk.auth.JwtCredentials
@@ -145,8 +145,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 	cryptoService: CryptoService,
 	projectId: String?,
 	options: CommonSdkOptions,
-	messageGatewayApi: RawMessageGatewayApi,
-	krakenUrl: String
+	authProcessApi: AuthenticationProcessApiImpl,
 ): AuthProvider = when(this) {
 	is AuthenticationMethod.UsingCredentials -> when (this.credentials) {
 		is ExternalAuthenticationToken -> smartAuthWithConstantSecret(
@@ -155,9 +154,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			authSecretDetails = AuthSecretDetails.ConfiguredExternalAuthenticationDetails(this.credentials.configId, this.credentials.token,
 				AuthenticationClass.ExternalAuthentication, this.credentials.doNotUseProjectIdForGroupSelection),
 			login = null,
-			messageGatewayApi = messageGatewayApi,
+			authProcessApi = authProcessApi,
 			projectId = projectId,
-			krakenUrl = krakenUrl,
 			designDocSchemaVersion = options.designDocSchemaVersion
 		)
 		is UsernameLongToken -> smartAuthWithConstantSecret(
@@ -165,9 +163,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			cryptoService = cryptoService,
 			authSecretDetails = AuthSecretDetails.LongLivedTokenDetails(this.credentials.token),
 			login = this.credentials.username,
-			messageGatewayApi = messageGatewayApi,
+			authProcessApi = authProcessApi,
 			projectId = projectId,
-			krakenUrl = krakenUrl,
 			designDocSchemaVersion = options.designDocSchemaVersion
 		)
 		is UsernamePassword -> smartAuthWithConstantSecret(
@@ -175,9 +172,8 @@ suspend fun AuthenticationMethod.getAuthProvider(
 			cryptoService = cryptoService,
 			authSecretDetails = AuthSecretDetails.PasswordDetails(this.credentials.password),
 			login = this.credentials.username,
-			messageGatewayApi = messageGatewayApi,
+			authProcessApi = authProcessApi,
 			projectId = projectId,
-			krakenUrl = krakenUrl,
 			designDocSchemaVersion = options.designDocSchemaVersion
 		)
 		is JwtCredentials -> JwtAuthProvider(authApi, this.credentials.initialBearer, this.credentials.refresh)
@@ -210,8 +206,7 @@ suspend fun AuthenticationMethod.getAuthProvider(
 		cryptoService = cryptoService,
 		cacheSecrets = this.cacheSecrets,
 		allowSecretRetry = true,
-		messageGatewayApi = messageGatewayApi,
-		krakenUrl = krakenUrl,
+		authProcessApi = authProcessApi,
 		designDocSchemaVersion = options.designDocSchemaVersion
 	)
 }
@@ -230,8 +225,8 @@ internal suspend fun AuthenticationMethod.getGroupAndAuthProvider(
 	rawApiConfig: RawApiConfig,
 ): Pair<String?, AuthProvider> {
 	val rawAuthApi = RawAnonymousAuthApiImpl(apiUrl, rawApiConfig)
-	val messageGatewayApi = RawMessageGatewayApi(rawApiConfig.httpClient, cryptoService)
-	val authProvider = getAuthProvider(rawAuthApi, cryptoService, projectId, options, messageGatewayApi, krakenUrl = baseUrl)
+	val authProcessApi = AuthenticationProcessApiImpl(rawApiConfig.httpClient, cryptoService, krakenUrl = baseUrl)
+	val authProvider = getAuthProvider(rawAuthApi, cryptoService, projectId, options, authProcessApi)
 	val userApi = RawUserApiImpl(apiUrl, authProvider, rawApiConfig)
 	// On local there is no groups, need to handle that possibility
 	val matches = userApi.getMatchingUsers().takeIf { it.status.value != 404 }?.successBody()
@@ -266,9 +261,8 @@ private suspend fun smartAuthWithConstantSecret(
 	cryptoService: CryptoService,
 	authSecretDetails: AuthSecretDetails,
 	login: String?,
-	messageGatewayApi: RawMessageGatewayApi,
+	authProcessApi: AuthenticationProcessApiImpl,
 	projectId: String?,
-	krakenUrl: String,
 	designDocSchemaVersion: Int?
 ) = SmartAuthProvider.initialize(
 	authApi = authApi,
@@ -282,8 +276,7 @@ private suspend fun smartAuthWithConstantSecret(
 	cryptoService = cryptoService,
 	cacheSecrets = false,
 	allowSecretRetry = false,
-	messageGatewayApi = messageGatewayApi,
-	krakenUrl = krakenUrl,
+	authProcessApi = authProcessApi,
 	designDocSchemaVersion = designDocSchemaVersion
 )
 
