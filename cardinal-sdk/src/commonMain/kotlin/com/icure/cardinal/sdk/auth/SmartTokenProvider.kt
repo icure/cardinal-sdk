@@ -1,7 +1,6 @@
 package com.icure.cardinal.sdk.auth
 
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
-import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull
 import com.icure.cardinal.sdk.model.LoginCredentials
 import com.icure.cardinal.sdk.model.embed.AuthenticationClass
@@ -40,42 +39,9 @@ internal sealed interface DoGetTokenResult {
 
 }
 
-@OptIn(InternalIcureApi::class)
-private class AuthProcessApiImpl(
-	private val messageGatewayApi: RawMessageGatewayApi,
-	private val krakenUrl: String,
-) : AuthenticationProcessApi {
-	override suspend fun executeProcess(
-		messageGatewayUrl: String,
-		externalServicesSpecId: String,
-		processId: String,
-		userTelecomType: AuthenticationProcessTelecomType,
-		userTelecom: String,
-		captcha: CaptchaOptions,
-		processTemplateParameters: AuthenticationProcessTemplateParameters
-	): AuthenticationProcessRequest {
-		val requestId = messageGatewayApi.startProcess(
-			messageGatewayUrl = messageGatewayUrl,
-			externalServicesSpecId = externalServicesSpecId,
-			processId = processId,
-			userTelecomType = userTelecomType,
-			userTelecom = userTelecom,
-			captcha = captcha,
-			firstName = processTemplateParameters.firstName,
-			lastName = processTemplateParameters.lastName,
-			krakenUrl = krakenUrl
-		)
-		return AuthenticationProcessRequest(
-			messageGwUrl = messageGatewayUrl,
-			specId = externalServicesSpecId,
-			requestId = requestId
-		)
-	}
-}
-
 @InternalIcureApi
 internal class SmartTokenProvider private constructor (
-	private val messageGatewayApi: RawMessageGatewayApi,
+	private val authProcessApi: AuthenticationProcessApiImpl,
 	private val loginUsername: String?,
 	private val groupId: String?,
 	private val scopeDataOwnerId: String?,
@@ -88,13 +54,12 @@ internal class SmartTokenProvider private constructor (
 	private val cryptoService: CryptoService,
 	private val cacheSecrets: Boolean,
 	private val allowSecretRetry: Boolean,
-	private val krakenUrl: String,
 	private val designDocSchemaVersion: Int?,
 	private val refreshPadding: Duration = 30.seconds,
 ) {
 	companion object {
 		suspend operator fun invoke(
-			messageGatewayApi: RawMessageGatewayApi,
+			authProcessApi: AuthenticationProcessApiImpl,
 			loginUsername: String?,
 			groupId: String?,
 			scopeDataOwnerId: String?,
@@ -107,14 +72,13 @@ internal class SmartTokenProvider private constructor (
 			cryptoService: CryptoService,
 			cacheSecrets: Boolean,
 			allowSecretRetry: Boolean,
-			krakenUrl: String,
 			designDocSchemaVersion: Int?,
 			refreshPadding: Duration = 30.seconds,
 			requireValidInitialRefreshToken: Boolean = false,
 		): SmartTokenProvider {
 			val initialSecretCacheable = if (cacheSecrets) initializationSecret?.let { it as? AuthSecretDetails.Cacheable } else null
 			val provider = SmartTokenProvider(
-				messageGatewayApi = messageGatewayApi,
+				authProcessApi = authProcessApi,
 				loginUsername = loginUsername,
 				groupId = groupId,
 				scopeDataOwnerId = scopeDataOwnerId,
@@ -127,7 +91,6 @@ internal class SmartTokenProvider private constructor (
 				cryptoService = cryptoService,
 				cacheSecrets = cacheSecrets,
 				allowSecretRetry = allowSecretRetry,
-				krakenUrl = krakenUrl,
 				designDocSchemaVersion = designDocSchemaVersion,
 				refreshPadding = refreshPadding
 			)
@@ -170,7 +133,6 @@ internal class SmartTokenProvider private constructor (
 	data class RetrievedJwt(val jwt: String, val type: RetrievedTokenType)
 
 	private val tokenCacheMutex = Mutex()
-	private val authProcessApi = AuthProcessApiImpl(messageGatewayApi, krakenUrl)
 
 	suspend fun getCachedOrRefreshedOrNewToken(): RetrievedJwt = tokenCacheMutex.withLock {
 		cachedToken?.takeIf { !isJwtExpiredOrInvalid(it, refreshPadding) }?.let { RetrievedJwt(it, RetrievedTokenType.Cached) }
@@ -217,7 +179,7 @@ internal class SmartTokenProvider private constructor (
 			}
 		} ?: (null to null)
 		return SmartTokenProvider(
-			messageGatewayApi = messageGatewayApi,
+			authProcessApi = authProcessApi,
 			loginUsername = loginUsername,
 			groupId = newGroupId,
 			projectId = projectId,
@@ -230,7 +192,6 @@ internal class SmartTokenProvider private constructor (
 			cacheSecrets = cacheSecrets,
 			refreshPadding = refreshPadding,
 			allowSecretRetry = allowSecretRetry,
-			krakenUrl = krakenUrl,
 			designDocSchemaVersion = designDocSchemaVersion,
 			scopeDataOwnerId = null, // Reset scope on group switch
 		)
@@ -250,7 +211,7 @@ internal class SmartTokenProvider private constructor (
 			}
 		} ?: (null to null)
 		return SmartTokenProvider(
-			messageGatewayApi = messageGatewayApi,
+			authProcessApi = authProcessApi,
 			loginUsername = loginUsername,
 			groupId = groupId,
 			projectId = projectId,
@@ -263,7 +224,6 @@ internal class SmartTokenProvider private constructor (
 			cacheSecrets = cacheSecrets,
 			refreshPadding = refreshPadding,
 			allowSecretRetry = allowSecretRetry,
-			krakenUrl = krakenUrl,
 			designDocSchemaVersion = designDocSchemaVersion,
 			scopeDataOwnerId = dataOwnerId,
 		)
@@ -391,19 +351,22 @@ internal class SmartTokenProvider private constructor (
 			}
 
 			is AuthSecretDetails.ShortLivedTokenDetails -> {
-				messageGatewayApi.completeProcess(
-					messageGatewayUrl = secret.authenticationProcessInfo.messageGwUrl,
-					externalServicesSpecId = secret.authenticationProcessInfo.specId,
-					requestId = secret.authenticationProcessInfo.requestId,
-					validationCode = secret.secret
-				)
+				val processRequest = secret.authenticationProcessInfo
+				val token = try {
+					authProcessApi.completeProcess(processRequest, secret.secret)
+				} catch (e: RequestStatusException) {
+					if (AuthenticationProcessApiImpl.isRefusedCode(processRequest, e)) {
+						return DoGetTokenResult.Failure(DoGetTokenResult.DoGetTokenResultFailureReason.InvalidPwOrToken, e)
+					}
+					throw e
+				}
 				retryWithDelays(
 					listOf(100.milliseconds, 500.milliseconds, 1.seconds)
 				) {
 					authApi.login(
 						loginCredentials = LoginCredentials(
 							username = requireLoginUsername,
-							password = secret.secret
+							password = token
 						),
 						groupId = groupId,
 						applicationId = projectId,
