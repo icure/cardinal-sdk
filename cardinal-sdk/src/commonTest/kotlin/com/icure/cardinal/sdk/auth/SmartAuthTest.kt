@@ -16,12 +16,14 @@ import com.icure.cardinal.sdk.options.SdkOptions
 import com.icure.cardinal.sdk.options.getAuthProvider
 import com.icure.cardinal.sdk.options.getGroupAndAuthProvider
 import com.icure.cardinal.sdk.test.DefaultRawApiConfig
+import com.icure.cardinal.sdk.test.KhermesTestUtils
 import com.icure.cardinal.sdk.test.MockMessageGatewayUtils
 import com.icure.cardinal.sdk.test.autoCancelJob
 import com.icure.cardinal.sdk.test.baseUrl
 import com.icure.cardinal.sdk.test.createHcpUser
 import com.icure.cardinal.sdk.test.createUserInMultipleGroups
 import com.icure.cardinal.sdk.test.initializeTestEnvironment
+import com.icure.cardinal.sdk.test.khermesUrl
 import com.icure.cardinal.sdk.test.mockMessageGatewayUrl
 import com.icure.cardinal.sdk.test.mockSpecId
 import com.icure.cardinal.sdk.test.shouldBeNextRevOf
@@ -410,6 +412,52 @@ class SmartAuthTest : StringSpec({
 		val userApi = getUserApiWithProvider(authProvider)
 		userApi.getCurrentUser().response.status.isSuccess() shouldBe true
 		calls shouldBe 1
+	}
+
+	"Auth provider should ask again for a short lived token that Khermes refuses, and use the next one".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val hcpDetails = createHcpUser()
+		val process = KhermesTestUtils.createLoginProcess()
+		var processRequest: AuthenticationProcessRequest? = null
+		val attempts = mutableListOf<List<AuthSecretDetails>>()
+		val authProvider = SmartAuthProvider.initialize(
+			authApi = authApi,
+			loginUsername = hcpDetails.username,
+			secretProvider = object : AuthSecretProvider {
+				override suspend fun getSecret(
+					acceptedSecrets: Set<AuthenticationClass>,
+					previousAttempts: List<AuthSecretDetails>,
+					authProcessApi: AuthenticationProcessApi
+				): AuthSecretDetails {
+					acceptedSecrets shouldContain AuthenticationClass.ShortLivedToken
+					attempts += previousAttempts
+					// One process, one email: the first answer is a wrong code, the second the right one.
+					val request = processRequest ?: authProcessApi.executeProcess(
+						khermesUrl = khermesUrl,
+						processId = process.processId,
+						userTelecom = hcpDetails.testEmail,
+						captcha = CaptchaOptions.Kerberus.Delegated(secretKey = process.kerberusSecretKey),
+					).also { processRequest = it }
+					val code = KhermesTestUtils.waitForEmail(hcpDetails.testEmail).subject
+					return AuthSecretDetails.ShortLivedTokenDetails(
+						secret = if (previousAttempts.isEmpty()) KhermesTestUtils.wrongCode(code) else code,
+						authenticationProcessInfo = request
+					)
+				}
+			},
+			initialSecret = null,
+			initialAuthToken = null,
+			initialRefreshToken = null,
+			groupId = null,
+			projectId = null,
+			cryptoService = defaultCryptoService,
+			cacheSecrets = true,
+			allowSecretRetry = true,
+			authProcessApi = testAuthProcessApi,
+			designDocSchemaVersion = null
+		)
+		val userApi = getUserApiWithProvider(authProvider)
+		userApi.getCurrentUser().response.status.isSuccess() shouldBe true
+		attempts.map { it.size } shouldBe listOf(0, 1)
 	}
 
 	"If auth secret provider gives invalid result the request should fail with IllegalArgumentException, but future requests should work again".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {

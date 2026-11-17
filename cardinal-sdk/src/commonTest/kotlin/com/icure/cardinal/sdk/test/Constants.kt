@@ -22,6 +22,8 @@ val isLocalTestMode = TestConfig.TEST_MODE == "local" || isCanaryTestMode
 val baseUrl = TestConfig.BASE_URL
 val mockMessageGatewayUrl = TestConfig.MOCK_MESSAGE_GATEWAY_URL
 val mockSpecId = TestConfig.MOCK_SPEC_ID
+val khermesUrl = TestConfig.KHERMES_URL
+val mailpitUrl = TestConfig.MAILPIT_URL
 
 /** The authentication process api of the SDKs initialized on [baseUrl] by the tests. */
 @OptIn(InternalIcureApi::class)

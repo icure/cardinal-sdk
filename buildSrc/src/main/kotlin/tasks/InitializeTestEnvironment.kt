@@ -7,13 +7,19 @@ import io.ktor.client.plugins.expectSuccess
 import io.ktor.client.request.basicAuth
 import io.ktor.client.request.get
 import io.ktor.client.request.post
+import io.ktor.client.request.put
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
+import io.ktor.http.HttpStatusCode
 import io.ktor.http.contentType
 import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -43,22 +49,28 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 		val composeFile = File("$baseDir/buildSrc/src/main/resources/scratch/$composeFileName")
 		if(!composeFile.exists()) throw IllegalStateException("Cannot find compose file")
 		startKrakenEnvironment(baseDir, composeFile, listOf("mock"))
+		startKhermes(baseDir, composeFile)
 	}
 
+	private val couchDBPort = "15984"
+	private val couchDbUser = "icure"
+	private val couchDbPassword = "icure"
+	private val khermesPort = "18080"
+	// Every service of the compose file is interpolated, even those of a profile that is not started.
+	private val envVars = mapOf(
+		"COUCHDB_PORT" to couchDBPort,
+		"AS_PORT" to "16044",
+		"COUCHDB_USER" to couchDbUser,
+		"COUCHDB_PASSWORD" to couchDbPassword,
+		"MOCK_ICURE_URL" to "http://kraken-1:16043/rest/v1",
+		"ICURE_MOCK_LOGIN" to "john",
+		"ICURE_MOCK_PWD" to "LetMeIn", //pragma: allowlist secret
+		"ICURE_TEST_GROUP_ID" to "test-group",
+		"KHERMES_PORT" to khermesPort,
+		"MAILPIT_PORT" to "18025",
+	)
+
 	private suspend fun startKrakenEnvironment(baseDir: String, composeFile: File, profiles: List<String> = emptyList()) {
-		val couchDBPort = "15984"
-		val couchDbUser = "icure"
-		val couchDbPassword = "icure"
-		val envVars = mapOf(
-			"COUCHDB_PORT" to couchDBPort,
-			"AS_PORT" to "16044",
-			"COUCHDB_USER" to couchDbUser,
-			"COUCHDB_PASSWORD" to couchDbPassword,
-			"MOCK_ICURE_URL" to "http://kraken-1:16043/rest/v1",
-			"ICURE_MOCK_LOGIN" to "john",
-			"ICURE_MOCK_PWD" to "LetMeIn", //pragma: allowlist secret
-			"ICURE_TEST_GROUP_ID" to "test-group"
-		)
 		println("Starting docker environment")
 		val isDockerRunning = kotlin.runCatching {
 			isBaseDbCreated("http://127.0.0.1:${envVars["COUCHDB_PORT"]}", envVars.getValue("COUCHDB_USER"), envVars.getValue("COUCHDB_PASSWORD"))
@@ -95,6 +107,80 @@ abstract class InitializeTestEnvironment : DefaultTask() {
 		)
 
 		loadRolesInConfig(baseDir, couchDBPort, couchDbUser, couchDbPassword)
+	}
+
+	/**
+	 * Starts Khermes and Mailpit (the `khermes` profile), also next to an environment that was started without them.
+	 * Khermes needs its databases at startup, and an action template before a process can use it: both are created
+	 * first. The tests create their own Spec, Process and telecom template, in the test group of their run.
+	 *
+	 * The Khermes image is in a private registry: if it can't start, only the Khermes tests fail, so this warns
+	 * instead of failing the task.
+	 */
+	private suspend fun startKhermes(baseDir: String, composeFile: File) {
+		val khermesHealthUrl = "http://127.0.0.1:$khermesPort/actuator/health"
+		if (isUp(khermesHealthUrl, retry = 1)) {
+			println("Khermes is already running")
+			return
+		}
+		println("Starting Khermes")
+		val couchDbUrl = "http://127.0.0.1:$couchDBPort"
+		listOf("khermes-config", "khermes-operational").forEach { createDatabaseIfMissing(couchDbUrl, it) }
+		File("$baseDir/buildSrc/src/main/resources/khermes/action-templates")
+			.listFiles { file -> file.extension == "json" }!!
+			.forEach { createDocumentIfMissing(couchDbUrl, "khermes-config", it.readText()) }
+		val exitCode = ProcessBuilder("sh", "-c", "docker compose -f ${composeFile.name} --profile mock --profile khermes up -d")
+			.apply { environment().putAll(envVars) }
+			.directory(composeFile.parentFile)
+			.inheritIO()
+			.start()
+			.waitFor()
+		when {
+			exitCode != 0 -> println(
+				"WARNING: could not start Khermes (exit code $exitCode): the Khermes tests will fail. Its image is in " +
+					"europe-west1-docker.pkg.dev: log your Docker in with `gcloud auth configure-docker europe-west1-docker.pkg.dev`."
+			)
+			!isUp(khermesHealthUrl, retry = 60) -> println(
+				"WARNING: Khermes did not become healthy: the Khermes tests will fail. See `docker logs khermes`."
+			)
+			else -> println("Khermes is running")
+		}
+	}
+
+	private suspend fun createDatabaseIfMissing(couchDbUrl: String, name: String) {
+		val response = httpClient.put("$couchDbUrl/$name") {
+			basicAuth(couchDbUser, couchDbPassword)
+		}
+		if (!response.status.isSuccess() && response.status != HttpStatusCode.PreconditionFailed) {
+			throw IllegalStateException("Could not create database $name: ${response.status} - ${response.bodyAsText()}")
+		}
+	}
+
+	private suspend fun createDocumentIfMissing(couchDbUrl: String, database: String, document: String) {
+		val id = Json.parseToJsonElement(document).jsonObject.getValue("_id").jsonPrimitive.content
+		val response = httpClient.put("$couchDbUrl/$database/$id") {
+			basicAuth(couchDbUser, couchDbPassword)
+			contentType(ContentType.Application.Json)
+			setBody(document)
+		}
+		if (!response.status.isSuccess() && response.status != HttpStatusCode.Conflict) {
+			throw IllegalStateException("Could not create $id in $database: ${response.status} - ${response.bodyAsText()}")
+		}
+	}
+
+	private tailrec suspend fun isUp(url: String, retry: Int): Boolean {
+		if (retry == 0) return false
+		val isSuccess = try {
+			httpClient.get(url).status.isSuccess()
+		} catch (_: Exception) {
+			false
+		}
+		return if (isSuccess) {
+			true
+		} else {
+			if (retry > 1) delay(5.seconds)
+			isUp(url, retry - 1)
+		}
 	}
 
 	/**
