@@ -49,6 +49,7 @@ public fun captchaOptions_Kerberus_Computed_fromJs(obj: CaptchaOptionsJs_Kerberu
 public fun captchaOptions_Kerberus_Delegated_fromJs(obj: CaptchaOptionsJs_KerberusJs_DelegatedJs):
 		CaptchaOptions.Kerberus.Delegated {
 	return CaptchaOptions.Kerberus.Delegated(
+		secretKey = obj.secretKey,
 		onProgress = obj.onProgress,
 	)
 }

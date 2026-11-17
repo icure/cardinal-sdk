@@ -304,7 +304,7 @@ export type AuthSecretDetails =
  */
 export interface AuthenticationProcessApi {
   /**
-   * Executes an authentication process.
+   * Executes an authentication process on the iCure message gateway.
    * @param messageGatewayUrl the url of the iCure message gateway you want to use. Usually this should be
    * @param externalServicesSpecId an identifier that allows the message gateway to connect the request to your
    * services for email / sms communication of the process tokens.
@@ -314,6 +314,8 @@ export interface AuthenticationProcessApi {
    * email address or phone number depending on the type of process you are executing.
    * @param captchaOptions the captcha solution
    * @param processTemplateParameters additional parameters needed by some process templates.
+   * @deprecated The iCure message gateway is being retired: use a Khermes authentication process, through the
+   * signature that takes a `khermesUrl`.
    */
   executeProcess(
     messageGatewayUrl: string,
@@ -323,6 +325,31 @@ export interface AuthenticationProcessApi {
     userTelecom: string,
     captchaOptions: CaptchaOptions,
     processTemplateParameters?: AuthenticationProcessTemplateParameters
+  ): Promise<AuthenticationProcessRequest>
+
+  /**
+   * Executes a Khermes authentication process: Khermes sends a validation code to {@link userTelecom}. Give that code
+   * as the secret of an {@link AuthSecretDetails.ShortLivedTokenDetails}, with the returned request.
+   * @param khermesUrl the url of Khermes, `https://khermes.icure.cloud` in production. It must create its tokens on the
+   * backend the SDK uses.
+   * @param processId the id of the Khermes authentication process to execute. The process defines the channel (email or
+   * SMS) of the validation code.
+   * @param userTelecom the email address (email process) or E.164 phone number such as `+32470123456` (SMS process) of
+   * the user.
+   * @param captcha the captcha. Khermes only supports {@link CaptchaOptions.Kerberus} for now: any other option is
+   * refused. With {@link CaptchaOptions.Kerberus.Delegated}, give the secret key of the Kerberus provider of the
+   * process's Spec.
+   * @param variables the values of the variables that the process's templates declare. Khermes refuses any variable
+   * they don't declare.
+   * @param locale the locale of the email or SMS template, or undefined for the default locale of the process.
+   */
+  executeProcess(
+    khermesUrl: string,
+    processId: string,
+    userTelecom: string,
+    captcha: CaptchaOptions,
+    variables?: { [key: string]: string },
+    locale?: string
   ): Promise<AuthenticationProcessRequest>
 }
 
@@ -342,15 +369,36 @@ export enum AuthenticationProcessTelecomType {
 }
 
 /**
- * Holds information on an authentication process request done through the {@link AuthenticationProcessApi}.
+ * Holds information on an authentication process request done through the {@link AuthenticationProcessApi}: on the
+ * iCure message gateway or on Khermes.
  *
- * You should not instantiate this class directly or use its properties, as they are for internal use and may be changed
- * without notice.
+ * You should not instantiate these classes directly or use their properties, as they are for internal use and may be
+ * changed without notice.
  */
-export class AuthenticationProcessRequest {
-  constructor(
-    readonly messageGwUrl: String,
-    readonly specId: String,
-    readonly requestId: String
-  ) {}
+export type AuthenticationProcessRequest =
+  AuthenticationProcessRequest.MessageGateway |
+  AuthenticationProcessRequest.Khermes
+
+export namespace AuthenticationProcessRequest {
+  /**
+   * A request done on the iCure message gateway.
+   */
+  export class MessageGateway {
+    constructor(
+      readonly messageGwUrl: string,
+      readonly specId: string,
+      readonly requestId: string
+    ) {}
+  }
+
+  /**
+   * A request done on Khermes.
+   */
+  export class Khermes {
+    constructor(
+      readonly khermesUrl: string,
+      readonly processId: string,
+      readonly requestId: string
+    ) {}
+  }
 }

@@ -1,7 +1,6 @@
 @file:JsQualifier("options")
 package com.icure.cardinal.sdk.js.options.external
 
-import com.icure.cardinal.sdk.js.auth.CaptchaOptionsJs
 import com.icure.cardinal.sdk.js.crypto.CryptoStrategiesJs
 import com.icure.cardinal.sdk.js.model.UserGroupJs
 import com.icure.cardinal.sdk.js.storage.KeyStorageFacadeJs
@@ -32,29 +31,27 @@ external interface AuthSecretProviderJs {
 }
 
 @JsName("AuthenticationProcessRequest")
-external class AuthenticationProcessRequestJs(
-	messageGwUrl: String,
-	specId: String,
-	requestId: String
-) {
-	val messageGwUrl: String
-	val specId: String
+external interface AuthenticationProcessRequestJs {
 	val requestId: String
 }
 
 @JsName("AuthSecretDetails")
 external interface AuthSecretDetailsJs
 
+/**
+ * `executeProcess` has two signatures in TypeScript, for the message gateway and for Khermes, but one function in
+ * JavaScript: the arguments are those of either signature (see `AuthenticationProcessApiBridge`).
+ */
 @JsName("AuthenticationProcessApi")
 external interface AuthenticationProcessApiJs {
 	fun executeProcess(
-		messageGatewayUrl: String,
-		externalServicesSpecId: String,
-		processId: String,
-		userTelecomType: String,
-		userTelecom: String,
-		captchaOptions: CaptchaOptionsJs,
-		processTemplateParameters: AuthenticationProcessTemplateParametersJs?
+		arg0: String,
+		arg1: String,
+		arg2: String,
+		arg3: dynamic,
+		arg4: dynamic,
+		arg5: dynamic,
+		arg6: dynamic,
 	): Promise<AuthenticationProcessRequestJs>
 }
 
