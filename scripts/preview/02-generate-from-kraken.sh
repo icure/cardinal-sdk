@@ -4,6 +4,8 @@
 # standard flavour: the steps of kraken-cloud .github/workflows/generate.yml (models, raw APIs, AbstractFilterSerializer)
 # legacy flavour:   the steps of the-forge .github/actions/legacy-codegen (models only, deprecated fields kept): what
 #                   the-forge publishes on npm.icure.cloud for a release
+# v3 flavour:       the steps of sdk-codegen local-generate-sdk.sh, for the Cardinal 3 SDK branches (custom entities):
+#                   standard plus the entity encryptors, deprecated fields kept, --custom-entities-support
 #
 # The kraken-cloud checkout is only built: the KSP JSON is copied to the work directory and everything is generated
 # there. The working tree of kraken-cloud, including uncommitted changes, is what gets generated.
@@ -37,26 +39,39 @@ rsync -a "$KRAKEN_DIR/cloud-core/build/generated/ksp/main/resources/" "$JSON/clo
 EDITORCONFIG="$KRAKEN_DIR/ci/.editorConfig"
 COMMON_MAIN="$SDK_DIR/cardinal-sdk/src/commonMain"
 codegen() { java -jar "$MULTIPLATFORM_JAR" "$@"; }
-lint() { "$KTLINT" -F "$1" --editorconfig="$EDITORCONFIG"; }
+# ktlint takes its argument as a glob: an absolute path below a hidden directory (the default work directory is under
+# ~/.cache) makes it walk the whole home directory. Pass a relative path, as CI does.
+lint() { (cd "$(dirname "$1")" && "$KTLINT" -F "$(basename "$1")" --editorconfig="$EDITORCONFIG"); }
 
 # The generator writes its output in a `com` directory next to its input: remove it between the passes.
-if [ "$FLAVOUR" = standard ]; then
+GEN_OPTS=()
+[ "$FLAVOUR" = v3 ] && GEN_OPTS=(--exclude-deprecated=false --custom-entities-support)
+if [ "$FLAVOUR" = standard ] || [ "$FLAVOUR" = v3 ]; then
 	log "Generating the AbstractFilterSerializer"
 	rm -rf "$JSON/dto/com"
-	codegen generate --serializer --input="$JSON/dto"
+	codegen generate --serializer ${GEN_OPTS[@]+"${GEN_OPTS[@]}"} --input="$JSON/dto"
 	mkdir -p "$GEN/filters/kotlin"
 	mv "$JSON/dto/com" "$GEN/filters/kotlin/"
 	lint "$GEN/filters"
 
+	if [ "$FLAVOUR" = v3 ]; then
+		log "Generating the entity encryptors and decryptors"
+		rm -rf "$JSON/dto/com"
+		codegen generate --encryptor ${GEN_OPTS[@]+"${GEN_OPTS[@]}"} --input="$JSON/dto"
+		mkdir -p "$GEN/encryptors/kotlin"
+		mv "$JSON/dto/com" "$GEN/encryptors/kotlin/"
+		lint "$GEN/encryptors"
+	fi
+
 	log "Generating the models"
 	rm -rf "$JSON/dto/com"
-	codegen generate --dto --input="$JSON/dto"
+	codegen generate --dto ${GEN_OPTS[@]+"${GEN_OPTS[@]}"} --input="$JSON/dto"
 	codegen process --dto --input="$JSON/dto/com/icure/cardinal/sdk/model" --output="$GEN/dto/main/kotlin/com/icure/cardinal/sdk/model"
 	lint "$GEN/dto"
 
 	log "Generating the raw APIs"
 	rm -rf "$JSON/dto/com"
-	codegen generate --sdk --input="$JSON/common-api" --input="$JSON/cloud-api" --context="$JSON/dto"
+	codegen generate --sdk ${GEN_OPTS[@]+"${GEN_OPTS[@]}"} --input="$JSON/common-api" --input="$JSON/cloud-api" --context="$JSON/dto"
 	codegen merge --sdk --dst="$JSON/cloud-api/com/icure/cardinal/sdk/api/raw" --src="$JSON/common-api/com/icure/cardinal/sdk/api/raw"
 	mkdir -p "$GEN/api/kotlin"
 	mv "$JSON/cloud-api/com" "$GEN/api/kotlin/"
@@ -67,6 +82,7 @@ if [ "$FLAVOUR" = standard ]; then
 	rsync -a "$GEN/dto/main/" "$COMMON_MAIN/"
 	rsync -a "$GEN/api/" "$COMMON_MAIN/"
 	rsync -a "$GEN/filters/" "$COMMON_MAIN/"
+	if [ "$FLAVOUR" = v3 ]; then rsync -a "$GEN/encryptors/" "$COMMON_MAIN/"; fi
 else
 	log "Generating the models with their deprecated fields (legacy flavour)"
 	rm -rf "$JSON/dto/com"

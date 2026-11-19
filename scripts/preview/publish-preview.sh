@@ -24,9 +24,12 @@ Sources:
   --kraken-dir PATH            kraken-cloud checkout to generate from, uncommitted changes included
                                (default: ../kraken-cloud next to the main checkout of this repository)
   --sdk-ref REF                SDK commit the generated code is merged into (default: origin/develop)
-  --flavour standard|legacy    standard: models, raw APIs and filter serializer (kraken-cloud generate.yml);
+  --flavour standard|legacy|v3 standard: models, raw APIs and filter serializer (kraken-cloud generate.yml);
                                legacy: models only, deprecated fields kept (what the-forge publishes on
-                               npm.icure.cloud for a release) (default: standard)
+                               npm.icure.cloud for a release);
+                               v3: standard plus the entity encryptors, deprecated fields kept and custom entities
+                               support (sdk-codegen local-generate-sdk.sh), for the Cardinal 3 SDK branches
+                               (default: standard)
   --codegen-version V          icure/sdk-codegen release for models and APIs
                                (default: CODEGEN_VERSION of kraken-cloud generate.yml)
   --wrapper-codegen-version V  icure/sdk-codegen release for the TypeScript wrapper

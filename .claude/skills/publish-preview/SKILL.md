@@ -31,7 +31,9 @@ irreversible.
      another kraken-cloud branch, CI uses the SDK branch with the same name. Pick the SDK branch matching the
      kraken-cloud branch when there is one (`git ls-remote --heads origin <branch>`).
    - Flavour: `standard` (models + raw APIs + filter serializer, needed for new endpoints and filters) or `legacy`
-     (models only with deprecated fields, what the-forge publishes on npm.icure.cloud). Default `standard`.
+     (models only with deprecated fields, what the-forge publishes on npm.icure.cloud). Default `standard`. For the
+     Cardinal 3 branches (kraken-cloud `experimental/3.0.0`, SDK `feature/generic-entities`), use `v3` and the codegen
+     the SDK branch was generated with (see the Flavours section of the README).
    - Version `X.Y.Z-PREVIEW.N`, with `X.Y.Z` the next full release and `N` a timestamp (`date +%Y%m%d%H%M`).
      Official previews use small `N` on the same registry and package.
 2. **Dry run.** `scripts/preview/publish-preview.sh --version <V> [options] --dry-run`. It takes 15 to 30 minutes, so

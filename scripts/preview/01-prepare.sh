@@ -43,7 +43,7 @@ require_cmd git gh java node npm tsc rsync curl
 
 [ -n "$VERSION" ] || die "--version is required, e.g. --version 2.15.0-PREVIEW.$(date +%Y%m%d%H%M) (see the README for the numbering)"
 is_preview_version "$VERSION" || die "$VERSION is not a preview version (X.Y.Z-PREVIEW.N)"
-case "$FLAVOUR" in standard|legacy) ;; *) die "--flavour must be standard or legacy" ;; esac
+case "$FLAVOUR" in standard|legacy|v3) ;; *) die "--flavour must be standard, legacy or v3" ;; esac
 [ "$DIST_TAG" != "latest" ] || die "a preview must never take the 'latest' dist-tag"
 
 # The SDK repository is the one this script lives in; its main checkout holds local.properties.

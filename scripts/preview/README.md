@@ -128,6 +128,13 @@ Each stage can also be run on its own with the work directory as argument. The s
   must compile against them. If they don't, stage `ts` fails and the change needs SDK work first.
 - `legacy`: the steps of the-forge `legacy-codegen`. Only the models are generated, with their deprecated fields.
   This is what the-forge publishes on `npm.icure.cloud` for a release.
+- `v3`: the steps of `sdk-codegen` `local-generate-sdk.sh`, for the Cardinal 3 SDK branches (custom entities, e.g.
+  `feature/generic-entities` with `kraken-cloud` `experimental/3.0.0`). Like `standard`, plus the entity encryptors,
+  with the deprecated fields kept and `--custom-entities-support`. The codegen must be the one the SDK branch was
+  generated with: when it is ahead of the last release, build the jars from `sdk-codegen` (`./gradlew
+  :multiplatformsdk-codegen:fatJar :wrapper-codegen:fatJar`), copy them as `multiplatformsdk-codegen.jar` and
+  `wrapper-codegen.jar` into `~/.cache/cardinal-preview/codegen/<name>/`, and pass `--codegen-version <name>
+  --wrapper-codegen-version <name>`.
 
 ## Requirements
 
