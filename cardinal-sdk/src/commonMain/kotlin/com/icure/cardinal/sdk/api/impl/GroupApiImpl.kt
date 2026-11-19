@@ -55,6 +55,42 @@ internal class GroupApiImpl(
 		initialisationData = initialisationData,
 	).successBody()
 
+	override suspend fun createApplicationGroup(
+		id: String,
+		name: String,
+		server: String?,
+		q: Int?,
+		n: Int?,
+		superGroup: String?,
+		projectId: String?,
+	): Group = rawApi.createApplicationGroup(
+		id = id,
+		name = name,
+		server = server,
+		q = q,
+		n = n,
+		superGroup = superGroup,
+		applicationId = projectId
+	).successBody()
+
+	override suspend fun createTenantGroup(
+		id: String,
+		name: String,
+		server: String?,
+		q: Int?,
+		n: Int?,
+		superGroup: String?,
+		projectId: String?,
+	): Group = rawApi.createDatabaseGroup(
+		id = id,
+		name = name,
+		server = server,
+		q = q,
+		n = n,
+		superGroup = superGroup,
+		applicationId = projectId
+	).successBody()
+
 	override suspend fun registerNewGroupAdministrator(
 		type: GroupType?,
 		registrationInformation: RegistrationInformation,
@@ -170,4 +206,5 @@ internal class GroupApiImpl(
 		else
 			rawApi.modifyGroupApplicationId(id = groupId, applicationId = projectId, applyToSubGroups = applyToSubgroups).successBody()
 	}
+
 }

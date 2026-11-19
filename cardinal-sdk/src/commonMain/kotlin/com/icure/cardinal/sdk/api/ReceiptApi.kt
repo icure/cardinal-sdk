@@ -421,15 +421,44 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 
 	suspend fun getAndDecryptReceiptAttachment(receipt: Receipt, attachmentId: String): ByteArray
 	suspend fun encryptAndSetReceiptAttachment(receipt: Receipt, blobType: String, attachment: ByteArray): EncryptedReceipt
+	/**
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 */
 	suspend fun getEncryptionKeysOf(receipt: Receipt): Set<HexString>
 	suspend fun hasWriteAccess(receipt: Receipt): Boolean
+	/**
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 */
 	suspend fun decryptPatientIdOf(receipt: Receipt): Set<EntityReferenceInGroup>
+	/**
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 */
 	suspend fun createDelegationDeAnonymizationMetadata(entity: Receipt, delegates: Set<String>)
 	suspend fun logReceipt(user: User, docId: String, refs: List<String>, blobType: String, blob: ByteArray): Receipt
 	suspend fun decrypt(receipt: EncryptedReceipt): DecryptedReceipt
+	/**
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
+	 */
 	suspend fun tryDecrypt(receipt: EncryptedReceipt): Receipt
 
 	val encrypted: ReceiptFlavouredApi<EncryptedReceipt>
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
+	 */
 	val tryAndRecover: ReceiptFlavouredApi<Receipt>
 	val inGroup: ReceiptInGroupApi
 }
@@ -438,6 +467,18 @@ interface ReceiptApi : ReceiptBasicFlavourlessApi, ReceiptFlavouredApi<Decrypted
 interface ReceiptInGroupApi : ReceiptBasicFlavourlessInGroupApi, ReceiptFlavouredInGroupApi<DecryptedReceipt> {
 
 	val encrypted: ReceiptFlavouredInGroupApi<EncryptedReceipt>
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
+	 */
 	val tryAndRecover: ReceiptFlavouredInGroupApi<Receipt>
 
 	/**

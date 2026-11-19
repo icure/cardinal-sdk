@@ -14056,6 +14056,47 @@ needs updating.
 
 ---
 
+<!-- Source: sdk/how-to/application-groups-and-schema-versions.mdx -->
+
+# Creating application and tenant groups and managing their schema versions
+
+Groups form a hierarchy whose levels are listed by `GroupType`: `Root`, `App` and `Database`. Besides the generic
+`createGroup`, `GroupApi` has two dedicated creation methods, `createApplicationGroup` and `createTenantGroup`. Both
+take an `id` and a `name`, plus an optional object with `server`, `q`, `n`, `superGroup` and `projectId`; unlike
+`createGroup`, they take no password and no `DatabaseInitialisation`. Each one returns the created `Group`.
+
+A group records the versions of the custom design doc schema applied to it in `Group.designDocSchemaVersions`, and
+`Group.defaultChildrenSchemaVersion` holds the version applied by default to its child groups when they are created.
+`addSchemaVersionOnGroups` and `removeSchemaVersionFromGroups` change the versions available on child groups of an
+application group.
+
+```typescript
+const applicationGroup = await sdk.group.createApplicationGroup(
+	"my-application",
+	"My application",
+	{ projectId: "my-project" }
+)
+const tenantGroup = await sdk.group.createTenantGroup(
+	"clinic-a",
+	"Clinic A",
+	{ superGroup: applicationGroup.id }
+)
+
+const updated = await sdk.group.addSchemaVersionOnGroups(applicationGroup.id, 2, [tenantGroup.id])
+for (const group of updated) {
+	console.log(`${group.id}: schema versions ${group.designDocSchemaVersions.join(", ")}`)
+}
+
+await sdk.group.removeSchemaVersionFromGroups(applicationGroup.id, 1, [tenantGroup.id])
+```
+
+Every id in `groupIds` must be a child of `applicationGroupId`, and both methods return the updated groups.
+`addSchemaVersionOnGroups` fails if the schema version does not exist for the application, or if the indexation task
+has not been run on at least one of the groups. `removeSchemaVersionFromGroups` fails if the version is the only one
+enabled on at least one of the groups; pass `{ failIfSingleSchema: false }` as the last argument to remove it anyway.
+
+---
+
 
 ================================================================================
 # PART 5: DATA MODEL REFERENCE
