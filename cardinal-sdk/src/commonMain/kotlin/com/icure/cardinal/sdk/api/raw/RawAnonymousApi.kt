@@ -24,12 +24,14 @@ public interface RawAnonymousApi {
 		userId: String,
 		startDate: Long,
 		endDate: Long,
+		schemaVersion: Int?,
 	): HttpResponse<List<AppointmentTypeAndPlace>>
 
 	suspend fun listAnonymousAgendaAndAppointmentTypes(
 		groupId: String,
 		propertyId: String,
 		propertyValue: String,
+		schemaVersion: Int?,
 	): HttpResponse<PublicAgendasAndCalendarItemTypes>
 
 	suspend fun listAnonymousAvailabilities(
@@ -39,6 +41,7 @@ public interface RawAnonymousApi {
 		startDate: Long,
 		endDate: Long,
 		limit: Int? = null,
+		schemaVersion: Int?,
 	): HttpResponse<List<Long>>
 
 	suspend fun getAvailabilitiesByPeriodAndCalendarItemTypeId(
@@ -50,14 +53,21 @@ public interface RawAnonymousApi {
 		endDate: Long,
 		placeId: String? = null,
 		limit: Int? = null,
+		schemaVersion: Int?,
 	): HttpResponse<List<Long>>
 	// endregion
 
 	// region anonymous healthcareparty endpoints
 
-	suspend fun listHealthcarePartiesInGroup(groupId: String): HttpResponse<List<UserAndHealthcareParty>>
+	suspend fun listHealthcarePartiesInGroup(
+		groupId: String,
+		schemaVersion: Int?,
+	): HttpResponse<List<UserAndHealthcareParty>>
 
-	suspend fun listPublicHealthcarePartiesInGroup(groupId: String): HttpResponse<List<HealthcareParty>>
+	suspend fun listPublicHealthcarePartiesInGroup(
+		groupId: String,
+		schemaVersion: Int?,
+	): HttpResponse<List<HealthcareParty>>
 	// endregion
 
 	// region anonymous icure endpoints
@@ -72,6 +82,7 @@ public interface RawAnonymousApi {
 		startKey: String? = null,
 		startDocumentId: String? = null,
 		limit: Int? = null,
+		schemaVersion: Int?,
 	): HttpResponse<PaginatedList<AnonymousMedicalLocation>>
 	// endregion
 }

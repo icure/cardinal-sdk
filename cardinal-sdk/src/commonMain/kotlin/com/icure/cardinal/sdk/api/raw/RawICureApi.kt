@@ -64,6 +64,11 @@ public interface RawICureApi {
 
 	suspend fun evictAllFromMap(mapName: String): HttpResponse<String>
 
+	suspend fun setSecondaryPoolActivationStatus(
+		poolName: String,
+		status: Boolean,
+	): HttpResponse<String>
+
 	suspend fun loglevel(
 		loglevel: String,
 		loggerName: String,

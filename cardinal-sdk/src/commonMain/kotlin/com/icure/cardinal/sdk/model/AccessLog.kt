@@ -21,9 +21,9 @@ import kotlin.collections.Set
 import kotlin.time.Instant
 
 /**
- * Represents an access log entry that records access to medical data or resources within the
+ *
+ *  Represents an access log entry that records access to medical data or resources within the
  * system.
- * /
  */
 
 sealed interface AccessLog :
@@ -139,9 +139,9 @@ sealed interface AccessLog :
 }
 
 /**
- * Represents an access log entry that records access to medical data or resources within the
+ *
+ *  Represents an access log entry that records access to medical data or resources within the
  * system.
- * /
  */
 @Serializable
 data class DecryptedAccessLog(
@@ -242,9 +242,9 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents an access log entry that records access to medical data or resources within the
+ *
+ *  Represents an access log entry that records access to medical data or resources within the
  * system.
- * /
  */
 @Serializable
 data class EncryptedAccessLog(
