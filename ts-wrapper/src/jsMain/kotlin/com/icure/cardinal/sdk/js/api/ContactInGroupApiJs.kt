@@ -90,11 +90,9 @@ public external interface ContactInGroupApiJs {
 
 	public fun purgeContacts(contacts: Array<GroupScopedJs<ContactJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>): Promise<EntityAccessInformationJs>
 
-	public fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

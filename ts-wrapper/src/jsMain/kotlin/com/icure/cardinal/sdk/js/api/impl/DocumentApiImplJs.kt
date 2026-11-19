@@ -1926,8 +1926,7 @@ internal class DocumentApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
 				document,
 				{ x1: DocumentJs ->
@@ -3065,8 +3064,7 @@ internal class DocumentApiImplJs(
 		document_toJs(result)
 	}
 
-	override fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val documentConverted: Document = document_fromJs(document)
 		val result = documentApi.getDataOwnersWithAccessTo(
 			documentConverted,

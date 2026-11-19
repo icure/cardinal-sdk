@@ -1718,8 +1718,7 @@ internal class TopicApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val topicConverted: GroupScoped<Topic> = groupScoped_fromJs(
 				topic,
 				{ x1: TopicJs ->
@@ -2390,8 +2389,7 @@ internal class TopicApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(topic: TopicJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(topic: TopicJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val topicConverted: Topic = topic_fromJs(topic)
 		val result = topicApi.getDataOwnersWithAccessTo(
 			topicConverted,

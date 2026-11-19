@@ -5,6 +5,8 @@ import com.icure.cardinal.sdk.api.InvoiceBasicApi
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.InvoiceBasicApiJs
 import com.icure.cardinal.sdk.js.api.InvoiceBasicInGroupApiJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
 import com.icure.cardinal.sdk.js.model.CheckedConverters.dynamicToJsonNullsafe
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
@@ -232,6 +234,19 @@ internal class InvoiceBasicApiImplJs(
 					)
 				},
 			)
+		}
+
+		override fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
+				invoice,
+				{ x1: InvoiceJs ->
+					invoice_fromJs(x1)
+				},
+			)
+			val result = invoiceBasicApi.inGroup.getDataOwnersWithAccessTo(
+				invoiceConverted,
+			)
+			entityAccessInformation_toJs(result)
 		}
 
 		override fun createInvoice(entity: GroupScopedJs<EncryptedInvoiceJs>): Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
@@ -591,6 +606,14 @@ internal class InvoiceBasicApiImplJs(
 				labelledOccurence_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val invoiceConverted: Invoice = invoice_fromJs(invoice)
+		val result = invoiceBasicApi.getDataOwnersWithAccessTo(
+			invoiceConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun createInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs> = GlobalScope.promise {

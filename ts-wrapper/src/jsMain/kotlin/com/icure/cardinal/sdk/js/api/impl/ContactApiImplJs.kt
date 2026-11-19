@@ -1967,8 +1967,7 @@ internal class ContactApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(contact: GroupScopedJs<ContactJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val contactConverted: GroupScoped<Contact> = groupScoped_fromJs(
 				contact,
 				{ x1: ContactJs ->
@@ -1981,8 +1980,7 @@ internal class ContactApiImplJs(
 			entityAccessInformation_toJs(result)
 		}
 
-		override fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessToService(service: GroupScopedJs<ServiceJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val serviceConverted: GroupScoped<Service> = groupScoped_fromJs(
 				service,
 				{ x1: ServiceJs ->
@@ -2815,8 +2813,7 @@ internal class ContactApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(contact: ContactJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val contactConverted: Contact = contact_fromJs(contact)
 		val result = contactApi.getDataOwnersWithAccessTo(
 			contactConverted,
@@ -2824,8 +2821,7 @@ internal class ContactApiImplJs(
 		entityAccessInformation_toJs(result)
 	}
 
-	override fun getDataOwnersWithAccessToService(service: ServiceJs):
-			Promise<EntityAccessInformationJs> = GlobalScope.promise {
+	override fun getDataOwnersWithAccessToService(service: ServiceJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val serviceConverted: Service = service_fromJs(service)
 		val result = contactApi.getDataOwnersWithAccessToService(
 			serviceConverted,

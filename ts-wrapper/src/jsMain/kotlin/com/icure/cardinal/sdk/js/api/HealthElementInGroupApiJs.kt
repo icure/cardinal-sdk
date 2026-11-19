@@ -79,8 +79,7 @@ public external interface HealthElementInGroupApiJs {
 
 	public fun purgeHealthElements(healthElements: Array<GroupScopedJs<HealthElementJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

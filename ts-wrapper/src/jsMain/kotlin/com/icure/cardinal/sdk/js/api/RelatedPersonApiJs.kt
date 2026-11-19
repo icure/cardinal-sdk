@@ -73,8 +73,7 @@ public external interface RelatedPersonApiJs {
 
 	public fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,

@@ -70,8 +70,7 @@ public external interface InvoiceInGroupApiJs {
 
 	public fun purgeInvoices(invoices: Array<GroupScopedJs<InvoiceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

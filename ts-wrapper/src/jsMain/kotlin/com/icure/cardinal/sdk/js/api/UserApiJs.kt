@@ -57,6 +57,10 @@ public external interface UserApiJs {
 		options: dynamic,
 	): Promise<String>
 
+	public fun deleteToken(userId: String, key: String): Promise<UserJs>
+
+	public fun deleteAllTokens(userId: String, options: dynamic): Promise<UserJs>
+
 	public fun filterUsersBy(filter: BaseFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<UserJs>>
 
 	public fun matchUsersBy(filter: BaseFilterOptionsJs<UserJs>): Promise<Array<String>>

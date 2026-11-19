@@ -1743,8 +1743,7 @@ internal class MessageApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val messageConverted: GroupScoped<Message> = groupScoped_fromJs(
 				message,
 				{ x1: MessageJs ->
@@ -2455,8 +2454,7 @@ internal class MessageApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(message: MessageJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(message: MessageJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val messageConverted: Message = message_fromJs(message)
 		val result = messageApi.getDataOwnersWithAccessTo(
 			messageConverted,

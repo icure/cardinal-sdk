@@ -45,8 +45,7 @@ public external interface RelatedPersonBasicApiJs {
 
 	public fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs>
 
 	public fun createRelatedPerson(entity: EncryptedRelatedPersonJs): Promise<EncryptedRelatedPersonJs>
 

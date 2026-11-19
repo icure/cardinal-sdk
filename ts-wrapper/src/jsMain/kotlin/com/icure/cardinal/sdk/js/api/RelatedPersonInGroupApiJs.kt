@@ -76,8 +76,7 @@ public external interface RelatedPersonInGroupApiJs {
 
 	public fun purgeRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

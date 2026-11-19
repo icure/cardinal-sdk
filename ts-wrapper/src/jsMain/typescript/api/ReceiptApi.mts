@@ -34,12 +34,27 @@ export interface ReceiptApi {
 	encryptAndSetReceiptAttachment(receipt: Receipt, blobType: string,
 			attachment: Int8Array): Promise<EncryptedReceipt>;
 
+	/**
+	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 */
 	getEncryptionKeysOf(receipt: Receipt): Promise<Array<HexString>>;
 
 	hasWriteAccess(receipt: Receipt): Promise<boolean>;
 
+	/**
+	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 */
 	decryptPatientIdOf(receipt: Receipt): Promise<Array<EntityReferenceInGroup>>;
 
+	/**
+	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 */
 	createDelegationDeAnonymizationMetadata(entity: Receipt, delegates: Array<string>): Promise<void>;
 
 	logReceipt(
@@ -52,6 +67,12 @@ export interface ReceiptApi {
 
 	decrypt(receipt: EncryptedReceipt): Promise<DecryptedReceipt>;
 
+	/**
+	 *
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
+	 */
 	tryDecrypt(receipt: EncryptedReceipt): Promise<Receipt>;
 
 	/**

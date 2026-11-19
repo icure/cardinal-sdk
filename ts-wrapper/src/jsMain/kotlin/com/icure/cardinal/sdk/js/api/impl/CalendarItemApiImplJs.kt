@@ -1841,8 +1841,7 @@ internal class CalendarItemApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val calendarItemConverted: GroupScoped<CalendarItem> = groupScoped_fromJs(
 				calendarItem,
 				{ x1: CalendarItemJs ->
@@ -2648,8 +2647,7 @@ internal class CalendarItemApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs):
-			Promise<EntityAccessInformationJs> = GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val calendarItemConverted: CalendarItem = calendarItem_fromJs(calendarItem)
 		val result = calendarItemApi.getDataOwnersWithAccessTo(
 			calendarItemConverted,

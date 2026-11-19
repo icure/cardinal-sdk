@@ -1649,8 +1649,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -2333,8 +2332,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
-			Promise<EntityAccessInformationJs> = GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.getDataOwnersWithAccessTo(
 			relatedPersonConverted,

@@ -46,8 +46,7 @@ public external interface HealthElementBasicApiJs {
 
 	public fun purgeHealthElements(healthElements: Array<HealthElementJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getDataOwnersWithAccessTo(healthElement: HealthElementJs):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(healthElement: HealthElementJs): Promise<EntityAccessInformationJs>
 
 	public fun createHealthElement(entity: EncryptedHealthElementJs): Promise<EncryptedHealthElementJs>
 

@@ -37,6 +37,9 @@ export interface PatientApi {
 	/**
 	 *
 	 *  Tries to decrypt a patient, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param patients encrypted patients
 	 *  @return all the provided patients, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -57,6 +60,9 @@ export interface PatientApi {
 	 *
 	 *  Get all the secret ids of the provided patient that this instance of SDK can decrypt with the available keys, and
 	 *  a non-exhaustive list of data owners that have direct access to those secret ids.
+	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *
 	 *  # Direct access
 	 *
@@ -89,6 +95,8 @@ export interface PatientApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this wasn't a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param patient a patient
 	 *  @return the encryption keys extracted from the provided patient.
 	 */
@@ -165,6 +173,9 @@ export interface PatientApi {
 	 *  At the same time since the de-anonymization metadata applies to a specific delegation and therefore to a specific
 	 *  delegator-delegate pair, you will not be able to see if P has access to a patient that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
+	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *
 	 *  @param entity a patient
 	 *  @param delegates a set of data owner ids

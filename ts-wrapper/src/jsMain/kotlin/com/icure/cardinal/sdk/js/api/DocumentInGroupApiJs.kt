@@ -107,8 +107,7 @@ public external interface DocumentInGroupApiJs {
 
 	public fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

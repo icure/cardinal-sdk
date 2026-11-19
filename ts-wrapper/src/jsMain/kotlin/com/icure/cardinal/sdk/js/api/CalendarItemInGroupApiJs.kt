@@ -106,8 +106,7 @@ public external interface CalendarItemInGroupApiJs {
 
 	public fun purgeCalendarItems(calendarItems: Array<GroupScopedJs<CalendarItemJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(calendarItem: GroupScopedJs<CalendarItemJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

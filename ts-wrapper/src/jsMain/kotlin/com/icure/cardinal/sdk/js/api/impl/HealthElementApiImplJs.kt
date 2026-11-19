@@ -14,10 +14,12 @@ import com.icure.cardinal.sdk.js.api.HealthElementFlavouredApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementFlavouredInGroupApiJs
 import com.icure.cardinal.sdk.js.api.HealthElementInGroupApiJs
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.HealthElementShareOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.crypto.entities.bulkShareByIdsResult_toJs
+import com.icure.cardinal.sdk.js.crypto.entities.entityAccessInformation_toJs
 import com.icure.cardinal.sdk.js.crypto.entities.healthElementDelegateOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.healthElementShareOptions_fromJs
 import com.icure.cardinal.sdk.js.crypto.entities.secretIdUseOption_fromJs
@@ -1688,6 +1690,19 @@ internal class HealthElementApiImplJs(
 			)
 		}
 
+		override fun getDataOwnersWithAccessTo(healthElement: GroupScopedJs<HealthElementJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+			val healthElementConverted: GroupScoped<HealthElement> = groupScoped_fromJs(
+				healthElement,
+				{ x1: HealthElementJs ->
+					healthElement_fromJs(x1)
+				},
+			)
+			val result = healthElementApi.inGroup.getDataOwnersWithAccessTo(
+				healthElementConverted,
+			)
+			entityAccessInformation_toJs(result)
+		}
+
 		override fun shareWith(
 			`delegate`: EntityReferenceInGroupJs,
 			healthElement: GroupScopedJs<DecryptedHealthElementJs>,
@@ -2406,6 +2421,14 @@ internal class HealthElementApiImplJs(
 				storedDocumentIdentifier_toJs(x1)
 			},
 		)
+	}
+
+	override fun getDataOwnersWithAccessTo(healthElement: HealthElementJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		val healthElementConverted: HealthElement = healthElement_fromJs(healthElement)
+		val result = healthElementApi.getDataOwnersWithAccessTo(
+			healthElementConverted,
+		)
+		entityAccessInformation_toJs(result)
 	}
 
 	override fun shareWith(

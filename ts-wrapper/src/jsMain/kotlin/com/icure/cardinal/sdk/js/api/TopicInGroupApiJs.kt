@@ -77,8 +77,7 @@ public external interface TopicInGroupApiJs {
 
 	public fun purgeTopics(topics: Array<GroupScopedJs<TopicJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(topic: GroupScopedJs<TopicJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

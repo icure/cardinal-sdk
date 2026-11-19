@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.api
 
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.filters.BaseFilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.BaseSortableFilterOptionsJs
 import com.icure.cardinal.sdk.js.model.EncryptedFormJs
@@ -43,6 +44,8 @@ public external interface FormBasicInGroupApiJs {
 	public fun purgeForm(form: GroupScopedJs<FormJs>): Promise<Unit>
 
 	public fun purgeForms(forms: Array<GroupScopedJs<FormJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+
+	public fun getDataOwnersWithAccessTo(form: GroupScopedJs<FormJs>): Promise<EntityAccessInformationJs>
 
 	public fun createFormTemplate(formTemplate: GroupScopedJs<FormTemplateJs>): Promise<GroupScopedJs<FormTemplateJs>>
 

@@ -69,8 +69,7 @@ public external interface CalendarItemBasicApiJs {
 
 	public fun purgeCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
-	public fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs): Promise<EntityAccessInformationJs>
 
 	public fun createCalendarItem(entity: EncryptedCalendarItemJs): Promise<EncryptedCalendarItemJs>
 

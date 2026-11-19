@@ -1709,8 +1709,7 @@ internal class ReceiptApiImplJs(
 			result
 		}
 
-		override fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val receiptConverted: GroupScoped<Receipt> = groupScoped_fromJs(
 				receipt,
 				{ x1: ReceiptJs ->
@@ -2443,8 +2442,7 @@ internal class ReceiptApiImplJs(
 		receipt_toJs(result)
 	}
 
-	override fun getDataOwnersWithAccessTo(receipt: ReceiptJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(receipt: ReceiptJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val receiptConverted: Receipt = receipt_fromJs(receipt)
 		val result = receiptApi.getDataOwnersWithAccessTo(
 			receiptConverted,

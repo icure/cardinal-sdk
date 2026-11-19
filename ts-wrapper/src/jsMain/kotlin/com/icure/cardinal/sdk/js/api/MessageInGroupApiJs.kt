@@ -77,8 +77,7 @@ public external interface MessageInGroupApiJs {
 
 	public fun purgeMessages(messages: Array<GroupScopedJs<MessageJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(message: GroupScopedJs<MessageJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

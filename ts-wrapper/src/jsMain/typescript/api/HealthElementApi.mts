@@ -1,6 +1,7 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
 import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
+import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {HealthElementDelegateOptions} from '../crypto/entities/HealthElementDelegateOptions.mjs';
 import {HealthElementShareOptions} from '../crypto/entities/HealthElementShareOptions.mjs';
 import {SecretIdUseOption} from '../crypto/entities/SecretIdUseOption.mjs';
@@ -67,6 +68,8 @@ export interface HealthElementApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param healthElement a health element
 	 *  @return the encryption keys extracted from the provided health element.
 	 */
@@ -89,6 +92,8 @@ export interface HealthElementApi {
 	 *  Attempts to extract the patient id linked to a health element.
 	 *  Note: health elements usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param healthElement a health element
 	 *  @return the id of the patient linked to the health element, or empty if the current user can't access any patient id
 	 *  of the health element.
@@ -124,6 +129,9 @@ export interface HealthElementApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a health element that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a health element
 	 *  @param delegates a set of data owner ids
 	 */
@@ -142,6 +150,9 @@ export interface HealthElementApi {
 	/**
 	 *
 	 *  Tries to decrypt a HealthElement, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param healthElements encrypted HealthElements
 	 *  @return all the provided HealthElements, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -279,6 +290,17 @@ export interface HealthElementApi {
 	 *  because you had no write access to them) they will not be included in this list.
 	 */
 	purgeHealthElements(healthElements: Array<HealthElement>): Promise<Array<StoredDocumentIdentifier>>;
+
+	/**
+	 *
+	 *  Get all data owners with access to the provided health element, attempting to identify any unknown anonymous data owners
+	 *  using delegations de-anonymization metadata.
+	 *  See [com.icure.cardinal.sdk.crypto.EntityAccessInformationProvider.getDataOwnersWithAccessTo] for the semantics of
+	 *  anonymous data owners and the behaviour of basic apis.
+	 *  @param healthElement a health element
+	 *  @return information on users with access to the provided health element
+	 */
+	getDataOwnersWithAccessTo(healthElement: HealthElement): Promise<EntityAccessInformation>;
 
 	/**
 	 *

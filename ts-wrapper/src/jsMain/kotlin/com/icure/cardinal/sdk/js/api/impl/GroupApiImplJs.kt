@@ -2,7 +2,6 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.GroupApi
-import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.GroupApiJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
@@ -782,72 +781,6 @@ internal class GroupApiImplJs(
 				projectIdConverted,
 			)
 			group_toJs(result)
-		}
-	}
-
-	override fun addSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Double,
-		groupIds: Array<String>,
-	): Promise<Array<GroupJs>> = GlobalScope.promise {
-		val applicationGroupIdConverted: String = applicationGroupId
-		val schemaVersionConverted: Int = numberToInt(schemaVersion, "schemaVersion")
-		val groupIdsConverted: List<String> = arrayToList(
-			groupIds,
-			"groupIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = groupApi.addSchemaVersionOnGroups(
-			applicationGroupIdConverted,
-			schemaVersionConverted,
-			groupIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: Group ->
-				group_toJs(x1)
-			},
-		)
-	}
-
-	override fun removeSchemaVersionFromGroups(
-		applicationGroupId: String,
-		schemaVersion: Double,
-		groupIds: Array<String>,
-		options: dynamic,
-	): Promise<Array<GroupJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val applicationGroupIdConverted: String = applicationGroupId
-			val schemaVersionConverted: Int = numberToInt(schemaVersion, "schemaVersion")
-			val groupIdsConverted: List<String> = arrayToList(
-				groupIds,
-				"groupIds",
-				{ x1: String ->
-					x1
-				},
-			)
-			val failIfSingleSchemaConverted: Boolean = convertingOptionOrDefaultNonNull(
-				_options,
-				"failIfSingleSchema",
-				true
-			) { failIfSingleSchema: Boolean ->
-				failIfSingleSchema
-			}
-			val result = groupApi.removeSchemaVersionFromGroups(
-				applicationGroupIdConverted,
-				schemaVersionConverted,
-				groupIdsConverted,
-				failIfSingleSchemaConverted,
-			)
-			listToArray(
-				result,
-				{ x1: Group ->
-					group_toJs(x1)
-				},
-			)
 		}
 	}
 }

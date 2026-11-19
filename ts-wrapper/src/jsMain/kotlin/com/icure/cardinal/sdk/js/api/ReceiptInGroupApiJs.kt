@@ -78,8 +78,7 @@ public external interface ReceiptInGroupApiJs {
 		attachmentId: String,
 	): Promise<ByteArray>
 
-	public fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>):
-			Promise<EntityAccessInformationJs>
+	public fun getDataOwnersWithAccessTo(receipt: GroupScopedJs<ReceiptJs>): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		`delegate`: EntityReferenceInGroupJs,

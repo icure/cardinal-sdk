@@ -6,6 +6,7 @@ package com.icure.cardinal.sdk.js.api
 import com.icure.cardinal.sdk.js.crypto.entities.BulkShareByIdsResultJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemDelegateOptionsJs
 import com.icure.cardinal.sdk.js.crypto.entities.CalendarItemShareOptionsJs
+import com.icure.cardinal.sdk.js.crypto.entities.EntityAccessInformationJs
 import com.icure.cardinal.sdk.js.crypto.entities.SecretIdUseOptionJs
 import com.icure.cardinal.sdk.js.filters.FilterOptionsJs
 import com.icure.cardinal.sdk.js.filters.SortableFilterOptionsJs
@@ -104,6 +105,8 @@ public external interface CalendarItemApiJs {
 	public fun purgeCalendarItem(calendarItem: CalendarItemJs): Promise<Unit>
 
 	public fun purgeCalendarItems(calendarItems: Array<CalendarItemJs>): Promise<Array<StoredDocumentIdentifierJs>>
+
+	public fun getDataOwnersWithAccessTo(calendarItem: CalendarItemJs): Promise<EntityAccessInformationJs>
 
 	public fun shareWith(
 		delegateId: String,
