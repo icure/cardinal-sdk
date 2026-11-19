@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.GroupDeletionReport
 import com.icure.cardinal.sdk.model.IdWithRev
+import com.icure.cardinal.sdk.model.InterruptedGroupHardDeletion
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfProperties
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -30,7 +31,6 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 import kotlin.collections.Map
-import kotlin.collections.Set
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -148,7 +148,13 @@ public interface RawGroupApi {
 
 	suspend fun deleteGroup(id: String): HttpResponse<Group>
 
-	suspend fun hardDeleteGroup(id: String): HttpResponse<List<GroupDeletionReport>>
+	suspend fun listInterruptedHardDeletions(): HttpResponse<List<InterruptedGroupHardDeletion>>
+
+	suspend fun hardDeleteGroup(
+		id: String,
+		force: Boolean? = null,
+		reason: String? = null,
+	): HttpResponse<List<GroupDeletionReport>>
 
 	suspend fun getInternalPropertiesOfGroup(id: String): HttpResponse<List<EncryptedPropertyStub>>
 
@@ -221,25 +227,5 @@ public interface RawGroupApi {
 	suspend fun listAllGroupsIds(): HttpResponse<List<DocIdentifier>>
 
 	suspend fun matchGroupsBy(filter: AbstractFilter<Group>): HttpResponse<List<String>>
-
-	suspend fun uniqueSchemaVersionsForApplicationGroup(applicationGroupId: String): HttpResponse<Set<Int>>
-
-	suspend fun setDefaultChildrenSchemaVersion(
-		applicationGroupId: String,
-		schemaVersion: Int,
-	): HttpResponse<Group>
-
-	suspend fun addSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Int,
-		groupIds: ListOfIds,
-	): HttpResponse<List<Group>>
-
-	suspend fun removeSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Int,
-		force: Boolean,
-		groupIds: ListOfIds,
-	): HttpResponse<List<Group>>
 	// endregion
 }
