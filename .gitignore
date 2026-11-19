@@ -17,3 +17,4 @@ python-wrapper/src/commonMain/resources/venv
 wrapper-codegen-*
 wrapper-codegen.jar
 test-data
+.env.npm
