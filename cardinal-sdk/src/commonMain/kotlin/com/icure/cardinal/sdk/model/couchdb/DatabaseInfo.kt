@@ -2,10 +2,12 @@
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
 package com.icure.cardinal.sdk.model.couchdb
 
+import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.Int
 import kotlin.Long
 import kotlin.String
+import kotlin.collections.Set
 
 /**
  * Data transfer object containing information about a CouchDB database, including size metrics and cluster configuration.
@@ -53,6 +55,8 @@ data class DatabaseInfo(
 	 * The number of copies that must be read before a read is considered successful.
 	 */
 	public val r: Int? = null,
+	@param:DefaultValue("emptySet()")
+	public val zones: Set<String> = emptySet(),
 ) {
 	// region DatabaseInfo-DatabaseInfo
 

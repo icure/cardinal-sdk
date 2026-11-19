@@ -205,7 +205,6 @@ data class DataOwnerDetails private constructor (
 		useHierarchicalDataOwners: Boolean = true,
 		authenticationMethod: AuthenticationMethod = AuthenticationMethod.UsingCredentials(UsernamePassword(username, password)),
 		customisedSdkOptions: CustomisedSdkOptions = CustomisedSdkOptions(),
-		useHierarchicalDataOwners: Boolean = true,
 		fillStorage: suspend (storage: CardinalStorageFacade) -> Unit
 	): CardinalSdk =
 		CardinalSdk.initialize(
