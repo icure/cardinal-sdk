@@ -13,6 +13,7 @@ import com.icure.cardinal.sdk.model.PublicAgendasAndCalendarItemTypes
 import com.icure.cardinal.sdk.model.UserAndHealthcareParty
 import com.icure.utils.InternalIcureApi
 import io.ktor.client.request.accept
+import io.ktor.client.request.`header`
 import io.ktor.client.request.parameter
 import io.ktor.http.ContentType.Application
 import io.ktor.http.appendPathSegments
@@ -38,6 +39,7 @@ class RawAnonymousApiImpl(
 		userId: String,
 		startDate: Long,
 		endDate: Long,
+		schemaVersion: Int?,
 	): HttpResponse<List<AppointmentTypeAndPlace>> =
 		get {
 			url {
@@ -48,12 +50,14 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+			`header`("Schema-Version", schemaVersion)
 		}.wrap()
 
 	override suspend fun listAnonymousAgendaAndAppointmentTypes(
 		groupId: String,
 		propertyId: String,
 		propertyValue: String,
+		schemaVersion: Int?,
 	): HttpResponse<PublicAgendasAndCalendarItemTypes> =
 		get {
 			url {
@@ -72,6 +76,7 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+			`header`("Schema-Version", schemaVersion)
 		}.wrap()
 
 	override suspend fun listAnonymousAvailabilities(
@@ -81,6 +86,7 @@ class RawAnonymousApiImpl(
 		startDate: Long,
 		endDate: Long,
 		limit: Int?,
+		schemaVersion: Int?,
 	): HttpResponse<List<Long>> =
 		get {
 			url {
@@ -92,6 +98,7 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+			`header`("Schema-Version", schemaVersion)
 		}.wrap()
 
 	override suspend fun getAvailabilitiesByPeriodAndCalendarItemTypeId(
@@ -103,6 +110,7 @@ class RawAnonymousApiImpl(
 		endDate: Long,
 		placeId: String?,
 		limit: Int?,
+		schemaVersion: Int?,
 	): HttpResponse<List<Long>> =
 		get {
 			url {
@@ -116,13 +124,17 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+			`header`("Schema-Version", schemaVersion)
 		}.wrap()
 
 	// endregion
 
 	// region anonymous healthcareparty endpoints
 
-	override suspend fun listHealthcarePartiesInGroup(groupId: String): HttpResponse<List<UserAndHealthcareParty>> =
+	override suspend fun listHealthcarePartiesInGroup(
+		groupId: String,
+		schemaVersion: Int?,
+	): HttpResponse<List<UserAndHealthcareParty>> =
 		get {
 			url {
 				takeFrom(apiUrl)
@@ -130,9 +142,13 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+			`header`("Schema-Version", schemaVersion)
 		}.wrap()
 
-	override suspend fun listPublicHealthcarePartiesInGroup(groupId: String): HttpResponse<List<HealthcareParty>> =
+	override suspend fun listPublicHealthcarePartiesInGroup(
+		groupId: String,
+		schemaVersion: Int?,
+	): HttpResponse<List<HealthcareParty>> =
 		get {
 			url {
 				takeFrom(apiUrl)
@@ -140,6 +156,7 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+			`header`("Schema-Version", schemaVersion)
 		}.wrapList()
 
 	// endregion
@@ -165,6 +182,7 @@ class RawAnonymousApiImpl(
 		startKey: String?,
 		startDocumentId: String?,
 		limit: Int?,
+		schemaVersion: Int?,
 	): HttpResponse<PaginatedList<AnonymousMedicalLocation>> =
 		get {
 			url {
@@ -176,6 +194,7 @@ class RawAnonymousApiImpl(
 				parameter("ts", GMTDate().timestamp)
 			}
 			accept(Application.Json)
+			`header`("Schema-Version", schemaVersion)
 		}.wrap()
 
 	// endregion
