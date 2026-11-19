@@ -11,6 +11,7 @@ import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.GroupDeletionReport
 import com.icure.cardinal.sdk.model.IdWithRev
+import com.icure.cardinal.sdk.model.InterruptedGroupHardDeletion
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfProperties
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -376,11 +377,27 @@ class RawGroupApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
-	override suspend fun hardDeleteGroup(id: String): HttpResponse<List<GroupDeletionReport>> =
+	override suspend fun listInterruptedHardDeletions(): HttpResponse<List<InterruptedGroupHardDeletion>> =
+		get(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "group", "hard", "interrupted")
+				parameter("ts", GMTDate().timestamp)
+			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun hardDeleteGroup(
+		id: String,
+		force: Boolean?,
+		reason: String?,
+	): HttpResponse<List<GroupDeletionReport>> =
 		delete(authProvider) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "group", "hard", id)
+				parameter("force", force)
+				parameter("reason", reason)
 			}
 			accept(Application.Json)
 		}.wrap()

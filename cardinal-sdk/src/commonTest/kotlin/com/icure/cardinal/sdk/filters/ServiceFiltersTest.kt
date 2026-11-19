@@ -3,6 +3,15 @@ package com.icure.cardinal.sdk.filters
 import com.icure.cardinal.sdk.crypto.entities.toEncryptionMetadataStub
 import com.icure.cardinal.sdk.model.DecryptedPatient
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
+import com.icure.cardinal.sdk.model.filter.VersionFiltering
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerCodeCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientCodeCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientTagCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerTagCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyPatientTagCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyTagCodesFilter
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
 import com.icure.utils.InternalIcureApi
 import io.kotest.core.spec.style.StringSpec
@@ -536,5 +545,92 @@ class ServiceFiltersTest : StringSpec({
 		internal.tagCodePrefix shouldBe tagCodePrefix
 		internal.startOfServiceValueDate shouldBe null
 		internal.endOfServiceValueDate shouldBe endDate
+	}
+
+	// --- Version filtering of the codes and tag codes filters ---
+
+	suspend fun mapped(filter: FilterOptions<com.icure.cardinal.sdk.model.embed.Service>) =
+		mapServiceFilterOptions(filter, selfDataOwner = null, entityEncryptionService = null, boundGroup = null, requestGroup = null)
+
+	"codes and tag codes filters have no version filtering by default".config(enabled = DEFAULT_ENABLED) {
+		ServiceFilters.byCodesAndValueDateForDataOwner(dataOwnerId, codeCodes)
+			.shouldBeInstanceOf<ServiceFilters.ByCodesAndValueDateForDataOwner>().versionFiltering shouldBe null
+		ServiceFilters.byTagCodesAndValueDateForSelf(tagCodes)
+			.shouldBeInstanceOf<ServiceFilters.ByTagCodesAndValueDateForSelf>().versionFiltering shouldBe null
+		ServiceFilters.byPatientsCodesAndValueDateForSelf(patients, codeCodes)
+			.shouldBeInstanceOf<ServiceFilters.ByPatientsCodesAndValueDateForSelf>().versionFiltering shouldBe null
+		ServiceFilters.byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(inGroupRef, secretIds, tagCodes)
+			.shouldBeInstanceOf<ServiceFilters.ByPatientSecretIdsTagCodesAndValueDateForDataOwner>().versionFiltering shouldBe null
+	}
+
+	"codes and tag codes filters keep their version filtering".config(enabled = DEFAULT_ENABLED) {
+		ServiceFilters.byCodesAndValueDateForDataOwnerInGroup(inGroupRef, codeCodes, versionFiltering = VersionFiltering.Any)
+			.shouldBeInstanceOf<ServiceFilters.ByCodesAndValueDateForDataOwner>().versionFiltering shouldBe VersionFiltering.Any
+		ServiceFilters.byTagCodesAndValueDateForDataOwner(dataOwnerId, tagCodes, versionFiltering = VersionFiltering.Latest)
+			.shouldBeInstanceOf<ServiceFilters.ByTagCodesAndValueDateForDataOwner>().versionFiltering shouldBe VersionFiltering.Latest
+		ServiceFilters.byPatientsTagCodesAndValueDateForDataOwner(dataOwnerId, patients, tagCodes, versionFiltering = VersionFiltering.Any)
+			.shouldBeInstanceOf<ServiceFilters.ByPatientsTagCodesAndValueDateForDataOwner>().versionFiltering shouldBe VersionFiltering.Any
+		ServiceFilters.byPatientSecretIdsCodesAndValueDateForSelf(secretIds, codeCodes, versionFiltering = VersionFiltering.Any)
+			.shouldBeInstanceOf<ServiceFilters.ByPatientSecretIdsCodesAndValueDateForSelf>().versionFiltering shouldBe VersionFiltering.Any
+	}
+
+	"codes filter without version filtering maps to ServiceByHcPartyCodesFilter".config(enabled = DEFAULT_ENABLED) {
+		mapped(ServiceFilters.byCodesAndValueDateForDataOwner(dataOwnerId, codeCodes, startDate, endDate)) shouldBe
+			ServiceByHcPartyCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				codeCodes = codeCodes,
+				startValueDate = startDate,
+				endValueDate = endDate,
+			)
+	}
+
+	"codes filter with version filtering maps to ServiceByDataOwnerCodeCodesFilter".config(enabled = DEFAULT_ENABLED) {
+		mapped(ServiceFilters.byCodesAndValueDateForDataOwner(dataOwnerId, codeCodes, startDate, endDate, VersionFiltering.Any)) shouldBe
+			ServiceByDataOwnerCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				codeCodes = codeCodes,
+				startValueDate = startDate,
+				endValueDate = endDate,
+				filterVersion = VersionFiltering.Any,
+			)
+	}
+
+	"tag codes filter maps to the filter matching its version filtering".config(enabled = DEFAULT_ENABLED) {
+		mapped(ServiceFilters.byTagCodesAndValueDateForDataOwner(dataOwnerId, tagCodes)) shouldBe
+			ServiceByHcPartyTagCodesFilter(healthcarePartyId = dataOwnerId, tagCodes = tagCodes)
+		mapped(ServiceFilters.byTagCodesAndValueDateForDataOwner(dataOwnerId, tagCodes, versionFiltering = VersionFiltering.Latest)) shouldBe
+			ServiceByDataOwnerTagCodesFilter(dataOwnerId = dataOwnerId, tagCodes = tagCodes, filterVersion = VersionFiltering.Latest)
+	}
+
+	"patient secret ids codes filter maps to the filter matching its version filtering".config(enabled = DEFAULT_ENABLED) {
+		mapped(ServiceFilters.byPatientSecretIdsCodesAndValueDateForDataOwner(dataOwnerId, secretIds, codeCodes)) shouldBe
+			ServiceByHcPartyPatientCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = secretIds.toSet(),
+				codeCodes = codeCodes,
+			)
+		mapped(ServiceFilters.byPatientSecretIdsCodesAndValueDateForDataOwner(dataOwnerId, secretIds, codeCodes, versionFiltering = VersionFiltering.Any)) shouldBe
+			ServiceByDataOwnerPatientCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = secretIds.toSet(),
+				codeCodes = codeCodes,
+				filterVersion = VersionFiltering.Any,
+			)
+	}
+
+	"patient secret ids tag codes filter maps to the filter matching its version filtering".config(enabled = DEFAULT_ENABLED) {
+		mapped(ServiceFilters.byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(inGroupRef, secretIds, tagCodes)) shouldBe
+			ServiceByHcPartyPatientTagCodesFilter(
+				healthcarePartyId = "group-1/data-owner-2",
+				patientSecretForeignKeys = secretIds.toSet(),
+				tagCodes = tagCodes,
+			)
+		mapped(ServiceFilters.byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(inGroupRef, secretIds, tagCodes, versionFiltering = VersionFiltering.Latest)) shouldBe
+			ServiceByDataOwnerPatientTagCodesFilter(
+				dataOwnerId = "group-1/data-owner-2",
+				patientSecretForeignKeys = secretIds.toSet(),
+				tagCodes = tagCodes,
+				filterVersion = VersionFiltering.Latest,
+			)
 	}
 })

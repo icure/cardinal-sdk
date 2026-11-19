@@ -83,7 +83,7 @@ data class Group(
 	@param:DefaultValue("emptyMap()")
 	public val operationTokens: Map<String, OperationToken> = emptyMap(),
 	/**
-	 * List of entities that have to be collected from a shared database.
+	 * Single-used token to perform specific operations.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val sharedEntities: Map<String, String> = emptyMap(),
@@ -109,9 +109,6 @@ data class Group(
 	 */
 	@JsonNames("applicationId")
 	public val projectId: String? = null,
-	/**
-	 * A user-chosen identifier for the applications for which this group holds data.
-	 */
 	public val templates: TemplatesConfiguration? = null,
 	/**
 	 *

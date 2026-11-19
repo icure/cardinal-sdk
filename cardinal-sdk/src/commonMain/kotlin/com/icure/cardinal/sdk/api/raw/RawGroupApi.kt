@@ -5,6 +5,7 @@ import com.icure.cardinal.sdk.model.EncryptedPropertyStub
 import com.icure.cardinal.sdk.model.Group
 import com.icure.cardinal.sdk.model.GroupDeletionReport
 import com.icure.cardinal.sdk.model.IdWithRev
+import com.icure.cardinal.sdk.model.InterruptedGroupHardDeletion
 import com.icure.cardinal.sdk.model.ListOfIds
 import com.icure.cardinal.sdk.model.ListOfProperties
 import com.icure.cardinal.sdk.model.PaginatedList
@@ -147,7 +148,13 @@ public interface RawGroupApi {
 
 	suspend fun deleteGroup(id: String): HttpResponse<Group>
 
-	suspend fun hardDeleteGroup(id: String): HttpResponse<List<GroupDeletionReport>>
+	suspend fun listInterruptedHardDeletions(): HttpResponse<List<InterruptedGroupHardDeletion>>
+
+	suspend fun hardDeleteGroup(
+		id: String,
+		force: Boolean? = null,
+		reason: String? = null,
+	): HttpResponse<List<GroupDeletionReport>>
 
 	suspend fun getInternalPropertiesOfGroup(id: String): HttpResponse<List<EncryptedPropertyStub>>
 

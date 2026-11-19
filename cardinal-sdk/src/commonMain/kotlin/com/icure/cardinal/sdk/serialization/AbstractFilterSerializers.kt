@@ -145,7 +145,11 @@ import com.icure.cardinal.sdk.model.filter.relatedperson.RelatedPersonByDataOwne
 import com.icure.cardinal.sdk.model.filter.relatedperson.RelatedPersonByDataOwnerNameFilter
 import com.icure.cardinal.sdk.model.filter.relatedperson.RelatedPersonByIdsFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByAssociationIdFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerCodeCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientCodeCodesFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientDateFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientTagCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerTagCodesFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyCodePrefixFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyCodesFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyFilter
@@ -915,7 +919,11 @@ internal object ServiceAbstractFilterSerializer : CustomJsonPolymorphicSerialize
 			"IntersectionFilter" -> IntersectionFilterSerializer(this)
 			"UnionFilter" -> UnionFilterSerializer(this)
 			"ServiceByAssociationIdFilter" -> ServiceByAssociationIdFilter.serializer()
+			"ServiceByDataOwnerCodeCodesFilter" -> ServiceByDataOwnerCodeCodesFilter.serializer()
+			"ServiceByDataOwnerPatientCodeCodesFilter" -> ServiceByDataOwnerPatientCodeCodesFilter.serializer()
 			"ServiceByDataOwnerPatientDateFilter" -> ServiceByDataOwnerPatientDateFilter.serializer()
+			"ServiceByDataOwnerPatientTagCodesFilter" -> ServiceByDataOwnerPatientTagCodesFilter.serializer()
+			"ServiceByDataOwnerTagCodesFilter" -> ServiceByDataOwnerTagCodesFilter.serializer()
 			"ServiceByHcPartyCodePrefixFilter" -> ServiceByHcPartyCodePrefixFilter.serializer()
 			"ServiceByHcPartyCodesFilter" -> ServiceByHcPartyCodesFilter.serializer()
 			"ServiceByHcPartyFilter" -> ServiceByHcPartyFilter.serializer()
@@ -942,7 +950,11 @@ internal object ServiceAbstractFilterSerializer : CustomJsonPolymorphicSerialize
 			IntersectionFilter::class -> IntersectionFilterSerializer(this)
 			UnionFilter::class -> UnionFilterSerializer(this)
 			ServiceByAssociationIdFilter::class -> ServiceByAssociationIdFilter.serializer()
+			ServiceByDataOwnerCodeCodesFilter::class -> ServiceByDataOwnerCodeCodesFilter.serializer()
+			ServiceByDataOwnerPatientCodeCodesFilter::class -> ServiceByDataOwnerPatientCodeCodesFilter.serializer()
 			ServiceByDataOwnerPatientDateFilter::class -> ServiceByDataOwnerPatientDateFilter.serializer()
+			ServiceByDataOwnerPatientTagCodesFilter::class -> ServiceByDataOwnerPatientTagCodesFilter.serializer()
+			ServiceByDataOwnerTagCodesFilter::class -> ServiceByDataOwnerTagCodesFilter.serializer()
 			ServiceByHcPartyCodePrefixFilter::class -> ServiceByHcPartyCodePrefixFilter.serializer()
 			ServiceByHcPartyCodesFilter::class -> ServiceByHcPartyCodesFilter.serializer()
 			ServiceByHcPartyFilter::class -> ServiceByHcPartyFilter.serializer()
