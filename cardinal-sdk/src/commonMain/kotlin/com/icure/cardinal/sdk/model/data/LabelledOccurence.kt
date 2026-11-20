@@ -7,8 +7,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Data transfer object representing a labelled occurrence count, typically used for aggregation
- * results.
+ * Data transfer object representing a labelled occurrence count, typically used for aggregation results.
  * /
  */
 @Serializable

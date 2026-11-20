@@ -5,8 +5,7 @@ import {TypedValuesType} from './embed/TypedValuesType.mjs';
 
 /**
  *
- *  Lightweight stub representation of a property type, containing only the identifier and value
- *  type.
+ *  Lightweight stub representation of a property type, containing only the identifier and value type.
  *  /
  */
 export class PropertyTypeStub {

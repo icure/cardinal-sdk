@@ -20,7 +20,8 @@ data class AllPricingFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Tarification>, Filter.AllFilter<Tarification> {
+) : AbstractFilter<Tarification>,
+	Filter.AllFilter<Tarification> {
 	// region AllPricingFilter-AllPricingFilter
 
 	// endregion

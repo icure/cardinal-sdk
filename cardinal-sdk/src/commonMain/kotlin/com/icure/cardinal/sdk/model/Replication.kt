@@ -44,7 +44,9 @@ data class Replication(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val databaseSynchronizations: List<DatabaseSynchronization> = emptyList(),
-) : StoredDocument, Identifiable<String>, Named {
+) : StoredDocument,
+	Identifiable<String>,
+	Named {
 	// region Replication-Replication
 
 	// endregion

@@ -1,6 +1,7 @@
 package com.icure.cardinal.sdk.api
 
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.HealthElementDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.HealthElementShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
@@ -415,6 +416,15 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: HealthElementFlavouredApi<HealthElement>
 
@@ -444,8 +454,8 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedHealthElement
@@ -470,8 +480,8 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 		delegates: Map<String, HealthElementDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedHealthElement
@@ -481,6 +491,8 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 * versions of iCure where this was not a guarantee.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param healthElement a health element
 	 * @return the encryption keys extracted from the provided health element.
 	 */
@@ -501,6 +513,8 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * Attempts to extract the patient id linked to a health element.
 	 * Note: health elements usually should be linked with only one patient, but this method returns a set for compatibility
 	 * with older versions of iCure
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param healthElement a health element
 	 * @return the id of the patient linked to the health element, or empty if the current user can't access any patient id
 	 * of the health element.
@@ -535,6 +549,9 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * delegator-delegate pair, you will not be able to see if P has access to a health element that was created by H and
 	 * shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 *
 	 * @param entity a health element
 	 * @param delegates a set of data owner ids
 	 */
@@ -549,6 +566,9 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 
 	/**
 	 * Tries to decrypt a HealthElement, returns the input if it is not possible.
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
 	 * @param healthElements encrypted HealthElements
 	 * @return all the provided HealthElements, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -587,6 +607,30 @@ interface HealthElementApi : HealthElementBasicFlavourlessApi, HealthElementFlav
 	 * @return a list of health element ids
 	 */
 	suspend fun matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): List<String>
+
+	/**
+	 * Share many already-existing health elements with one or more delegates at once, retrieving them by id instead
+	 * of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per health element when you already know the ids of many health elements to share and don't otherwise need
+	 * their decrypted content, since only lightweight metadata (not the full content of each health element) is ever
+	 * retrieved, and no content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found health element. Unlike [shareWithMany], if
+	 * the share fails for some (health element, delegate) pairs this method reports the failure for those specific
+	 * pairs in the returned result instead of throwing, so sharing proceeds normally for every other health element
+	 * and delegate in the batch.
+	 *
+	 * @param healthElementIds ids of the health elements to share. Ids that don't exist, or exist but for which the
+	 * current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each health element, and the options for sharing
+	 * with each of them (see [HealthElementShareOptions]). The exact same options are applied to every health element
+	 * in [healthElementIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareHealthElementsByIds(
+		healthElementIds: List<String>,
+		delegates: Map<String, HealthElementShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, HealthElementFlavouredInGroupApi<DecryptedHealthElement> { // TODO subscribable
@@ -597,6 +641,15 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: HealthElementFlavouredInGroupApi<HealthElement>
 
@@ -611,8 +664,8 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedHealthElement>
@@ -630,8 +683,8 @@ interface HealthElementInGroupApi : HealthElementBasicFlavourlessInGroupApi, Hea
 		) Map<EntityReferenceInGroup, HealthElementDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedHealthElement>

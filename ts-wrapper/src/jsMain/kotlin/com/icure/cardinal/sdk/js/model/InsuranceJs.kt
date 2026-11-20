@@ -20,7 +20,10 @@ import kotlin.js.JsQualifier
 @JsName("Insurance")
 public external class InsuranceJs(
 	partial: dynamic,
-) : StoredDocumentJs, HasTagsJs, HasCodesJs, HasIdentifierJs {
+) : StoredDocumentJs,
+    HasTagsJs,
+    HasCodesJs,
+    HasIdentifierJs {
 	override val id: String
 
 	override val rev: String?

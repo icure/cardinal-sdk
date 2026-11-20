@@ -4,6 +4,7 @@ import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.AllHealthcarePartiesFilter
+import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByDataOwnerGroupIdFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdentifiersFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByIdsFilter
 import com.icure.cardinal.sdk.model.filter.hcparty.HealthcarePartyByNameFilter
@@ -119,6 +120,20 @@ object HealthcarePartyFilters {
 		parentId: String
 	): BaseFilterOptions<HealthcareParty> = ByParentId(parentId)
 
+	/**
+	 * Get all the healthcare parties that are direct members of the data owner group represented by the data owner
+	 * with id [dataOwnerGroupId], regardless of the type of the group (parent or simple).
+	 *
+	 * Only direct links match: membership is not propagated through the group hierarchies.
+	 *
+	 * These options are not sortable.
+	 *
+	 * @param dataOwnerGroupId the id of the data owner representing the group.
+	 */
+	fun byDataOwnerGroupId(
+		dataOwnerGroupId: String
+	): BaseFilterOptions<HealthcareParty> = ByDataOwnerGroupId(dataOwnerGroupId)
+
 	@Serializable
 	internal data object All: BaseFilterOptions<HealthcareParty>
 
@@ -162,6 +177,11 @@ object HealthcarePartyFilters {
 	internal class ByParentId(
 		val parentId: String
 	): BaseFilterOptions<HealthcareParty>
+
+	@Serializable
+	internal class ByDataOwnerGroupId(
+		val dataOwnerGroupId: String
+	): BaseFilterOptions<HealthcareParty>
 }
 
 
@@ -192,5 +212,8 @@ internal suspend fun mapHealthcarePartyFilterOptions(
 		descending = filterOptions.descending
 	)
 	is HealthcarePartyFilters.ByParentId -> HealthcarePartyByParentIdFilter(parentId = filterOptions.parentId)
+	is HealthcarePartyFilters.ByDataOwnerGroupId -> HealthcarePartyByDataOwnerGroupIdFilter(
+		dataOwnerGroupId = filterOptions.dataOwnerGroupId
+	)
 	else -> throw IllegalArgumentException("Filter options ${filterOptions::class.simpleName} are not valid for filtering HealthcareParties")
 }

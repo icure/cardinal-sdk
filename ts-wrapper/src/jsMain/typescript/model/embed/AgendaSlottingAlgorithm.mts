@@ -9,8 +9,7 @@ export namespace AgendaSlottingAlgorithm {
 	/**
 	 *
 	 *
-	 *   The appointments can be taken at fixed intervals of [intervalMinutes] starting from the
-	 *  beginning of the
+	 *   The appointments can be taken at fixed intervals of [intervalMinutes] starting from the beginning of the
 	 *   scheduled working hours for the available timetable item.
 	 *   # Example
 	 *   - Time table item scheduled 09:30-12:00, 12:45-14:00

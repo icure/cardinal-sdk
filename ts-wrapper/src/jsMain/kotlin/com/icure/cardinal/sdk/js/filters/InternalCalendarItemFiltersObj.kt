@@ -121,8 +121,7 @@ public object InternalCalendarItemFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsStartTimeForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<CalendarItemJs> {
+	public fun byPatientsStartTimeForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<CalendarItemJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -251,8 +250,7 @@ public object InternalCalendarItemFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientSecretIdsStartTimeForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<CalendarItemJs> {
+	public fun byPatientSecretIdsStartTimeForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<CalendarItemJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,

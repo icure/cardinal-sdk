@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {ContactDelegateOptions} from '../crypto/entities/ContactDelegateOptions.mjs';
 import {ContactShareOptions} from '../crypto/entities/ContactShareOptions.mjs';
 import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
@@ -121,6 +122,8 @@ export interface ContactApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param contact a contact
 	 *  @return the encryption keys extracted from the provided contact.
 	 */
@@ -143,6 +146,8 @@ export interface ContactApi {
 	 *  Attempts to extract the patient id linked to a contact.
 	 *  Note: contacts usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param contact a contact
 	 *  @return the id of the patient linked to the contact, or empty if the current user can't access any patient id
 	 *  of the contact.
@@ -156,6 +161,8 @@ export interface ContactApi {
 	 *  with older versions of iCure
 	 *  It is to be noted that only services returned by getServices, or filterServices method will have the metadata necessary
 	 *  to deduce the patient id. In the case of services obtained directly from the Contact, you should use decryptPatientIdOf(Contact) instead.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param service a service returned by getServices, or filterServices method.
 	 *  @return the id of the patient linked to the service, or empty if the current user can't access any patient id
 	 *  of the service.
@@ -191,6 +198,9 @@ export interface ContactApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a contact that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a contact
 	 *  @param delegates a set of data owner ids
 	 */
@@ -198,6 +208,12 @@ export interface ContactApi {
 
 	decrypt(contact: EncryptedContact): Promise<DecryptedContact>;
 
+	/**
+	 *
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
+	 */
 	tryDecrypt(contact: EncryptedContact): Promise<Contact>;
 
 	/**
@@ -218,6 +234,10 @@ export interface ContactApi {
 	 *  Note: you should use this function only when you retrieve [Service]s as single entity. If you are retrieving them as part of a
 	 *  [Contact], use [tryDecrypt] instead.
 	 *
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
+	 *
 	 *  @param service the [EncryptedService] to decrypt.
 	 *  @return the [DecryptedService] if the decryption was successful, the original [service] otherwise.
 	 */
@@ -233,6 +253,28 @@ export interface ContactApi {
 	 */
 	subscribeToServiceCreateOrUpdateEvents(filter: FilterOptions<Service>,
 			options?: { subscriptionConfig?: EntitySubscriptionConfiguration | undefined }): Promise<EntitySubscription<EncryptedService>>;
+
+	/**
+	 *
+	 *  Share many already-existing contacts with one or more delegates at once, retrieving them by id instead of
+	 *  requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per contact when you already know the ids of many contacts to share and don't otherwise need their decrypted
+	 *  content, since only lightweight metadata (not the full content of each contact) is ever retrieved, and no
+	 *  content flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found contact. Unlike [shareWithMany], if the
+	 *  share fails for some (contact, delegate) pairs this method reports the failure for those specific pairs in the
+	 *  returned result instead of throwing, so sharing proceeds normally for every other contact and delegate in the
+	 *  batch.
+	 *
+	 *  @param contactIds ids of the contacts to share. Ids that don't exist, or exist but for which the current user
+	 *  has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each contact, and the options for sharing with each
+	 *  of them (see [ContactShareOptions]). The exact same options are applied to every contact in [contactIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareContactsByIds(contactIds: Array<string>,
+			delegates: { [ key: string ]: ContactShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *
@@ -549,6 +591,26 @@ export interface ContactApi {
 	/**
 	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *
+	 *  # Access control
+	 *
+	 *  The subscription will only receive notifications about entities that the SDK user can access; currently this
+	 *  validation varies slightly from standard read methods.
+	 *
+	 *  ## Encryptable entities
+	 *
+	 *  Applies the same access control rules as the standard read methods; depending on the permissions of the user the
+	 *  entity might need to have a direct delegation to the user, or to a parent, or if the user has the permission to
+	 *  read any entity of the type regardless of delegations then all notification of entities (matching the filter)
+	 *  will be received.
+	 *
+	 *  ## Healthcare party
+	 *
+	 *  Currently, regardless of user permissions, only notifications about healthcare parties that have the current SDK
+	 *  data owner as a DIRECT link will be returned.
+	 *
+	 *  This behaviour is not in line with current Cardinal SDK ideology and is subject to change in future versions.
+	 *
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
 	 *  make the filter as restrictive as possible.

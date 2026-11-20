@@ -20,8 +20,7 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
- *  healthcare
+ *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
  *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  *  /
  */
@@ -311,8 +310,7 @@ export interface Invoice extends StoredDocument, ICureDocument<string>, HasMedic
 
 /**
  *
- *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
- *  healthcare
+ *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
  *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  *  /
  */
@@ -935,8 +933,7 @@ export class DecryptedInvoice {
 
 /**
  *
- *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for
- *  healthcare
+ *  Represents an invoice. An invoice is used to bill patients, mutual funds, or paying agencies for healthcare
  *  services rendered. It is serialized in JSON and saved in the underlying iCure CouchDB database.
  *  /
  */

@@ -10,10 +10,8 @@ import kotlin.String
 import kotlin.collections.Set
 
 /**
- * Represents a delegation which allows a data owner to access the encrypted data of an entity and
- * specifies
- * the access control level. Created by a delegator data owner and usable by a delegate data owner,
- * using
+ * Represents a delegation which allows a data owner to access the encrypted data of an entity and specifies
+ * the access control level. Created by a delegator data owner and usable by a delegate data owner, using
  * exchange data for encryption and access control.
  * /
  */

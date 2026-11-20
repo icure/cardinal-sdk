@@ -6,8 +6,7 @@ import kotlinx.serialization.Serializable
 import kotlin.Int
 
 /**
- * Represents the renewal information for a medication prescription, including the number of
- * renewals and their duration.
+ * Represents the renewal information for a medication prescription, including the number of renewals and their duration.
  * /
  */
 @Serializable

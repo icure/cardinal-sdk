@@ -10,8 +10,7 @@ import kotlin.collections.List
 
 /**
  *
- *  Represents a high-frequency time series with named fields, sample data, and statistical
- * summaries.
+ *  Represents a high-frequency time series with named fields, sample data, and statistical summaries.
  */
 @Serializable
 data class TimeSeries(

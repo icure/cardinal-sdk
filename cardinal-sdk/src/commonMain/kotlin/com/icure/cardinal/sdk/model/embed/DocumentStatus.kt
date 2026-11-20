@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumerates the lifecycle statuses of a document, from draft through finalization, review,
- * signature, and delivery.
+ *  Enumerates the lifecycle statuses of a document, from draft through finalization, review, signature, and delivery.
  */
 @Serializable
 enum class DocumentStatus(

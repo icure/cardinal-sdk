@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.crypto.entities
 
+import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.utils.InternalIcureApi
 
 @InternalIcureApi
@@ -9,7 +10,8 @@ data class MinimalBulkShareResult(
 	val updateErrors: List<FailedRequestDetails>
 ) {
 	data class MinimalRequestDetails(
-		val delegateId: String,
-		val entityId: String
+		val delegateReference: EntityReferenceInGroup,
+		val entityId: String,
+		val purpose: ShareRequestPurpose
 	)
 }

@@ -4,8 +4,7 @@ import {expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 
 /**
  *
- *  A directed, qualified link from one healthcare element to another. Links should be created in a
- *  single direction:
+ *  A directed, qualified link from one healthcare element to another. Links should be created in a single direction:
  *  the reverse link can be found through a view.
  *  /
  */
@@ -13,8 +12,7 @@ export class HealthElementQualifiedLink {
 
 	/**
 	 *
-	 *  The qualification of the link. Free string; using the names of LinkQualification entries is
-	 *  encouraged but not enforced.
+	 *  The qualification of the link. Free string; using the names of LinkQualification entries is encouraged but not enforced.
 	 */
 	type: string;
 

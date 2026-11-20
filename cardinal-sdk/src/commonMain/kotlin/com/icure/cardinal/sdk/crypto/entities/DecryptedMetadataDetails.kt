@@ -16,4 +16,19 @@ data class DecryptedMetadataDetails<T : Any>(
 	 * The ids data owners know to have access to [value].
 	 */
 	val dataOwnersWithAccess: Set<EntityReferenceInGroup>
-)
+) {
+	companion object {
+		/**
+		 * Groups the [DecryptedMetadataDetails] to have
+		 * Only works if T has proper equals hash code which is ok for all current concrete uses as of writing
+		 */
+		internal fun <T : Any> List<DecryptedMetadataDetails<T>>.groupedByValueToAllDataOwnersWithAccess(): Map<T, Set<EntityReferenceInGroup>> =
+			groupingBy {
+				it.value
+			}.aggregate<_, _, MutableSet<EntityReferenceInGroup>> { _, accumulator, element, _ ->
+				accumulator?.also {
+					it.addAll(element.dataOwnersWithAccess)
+				} ?: element.dataOwnersWithAccess.toMutableSet()
+			}
+	}
+}

@@ -25,7 +25,8 @@ data class PatientByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Patient>, Filter.IdsFilter<String, Patient> {
+) : AbstractFilter<Patient>,
+	Filter.IdsFilter<String, Patient> {
 	// region PatientByIdsFilter-PatientByIdsFilter
 
 	// endregion

@@ -24,7 +24,8 @@ data class ComplementFilter<O : Identifiable<String>>(
 	 * The filter whose results are removed from the superSet results.
 	 */
 	override val subSet: AbstractFilter<O>,
-) : AbstractFilter<O>, Filter.ComplementFilter<O> {
+) : AbstractFilter<O>,
+	Filter.ComplementFilter<O> {
 	// region ComplementFilter-ComplementFilter
 
 	// endregion

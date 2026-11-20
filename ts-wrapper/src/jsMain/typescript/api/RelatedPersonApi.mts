@@ -63,6 +63,8 @@ export interface RelatedPersonApi {
 	 *  of the related person the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param relatedPerson a related person
 	 *  @return the encryption keys extracted from the provided related person.
 	 */
@@ -84,6 +86,8 @@ export interface RelatedPersonApi {
 	 *
 	 *  Attempts to extract the secret ids of a related person. Since a related person is a root entity these secret ids
 	 *  may be used to link other entities to it.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param relatedPerson a related person
 	 *  @return the secret ids of the provided related person that the current user can access.
 	 */
@@ -107,6 +111,9 @@ export interface RelatedPersonApi {
 	 *  Note that this delegation metadata may be used to de-anonymize the corresponding delegation in any RelatedPerson,
 	 *  not only in the provided instance.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a related person
 	 *  @param delegates a set of data owner ids
 	 */
@@ -125,6 +132,9 @@ export interface RelatedPersonApi {
 	/**
 	 *
 	 *  Tries to decrypt a RelatedPerson, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param relatedPersons encrypted RelatedPersons
 	 *  @return all the provided RelatedPersons, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -408,6 +418,26 @@ export interface RelatedPersonApi {
 	/**
 	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *
+	 *  # Access control
+	 *
+	 *  The subscription will only receive notifications about entities that the SDK user can access; currently this
+	 *  validation varies slightly from standard read methods.
+	 *
+	 *  ## Encryptable entities
+	 *
+	 *  Applies the same access control rules as the standard read methods; depending on the permissions of the user the
+	 *  entity might need to have a direct delegation to the user, or to a parent, or if the user has the permission to
+	 *  read any entity of the type regardless of delegations then all notification of entities (matching the filter)
+	 *  will be received.
+	 *
+	 *  ## Healthcare party
+	 *
+	 *  Currently, regardless of user permissions, only notifications about healthcare parties that have the current SDK
+	 *  data owner as a DIRECT link will be returned.
+	 *
+	 *  This behaviour is not in line with current Cardinal SDK ideology and is subject to change in future versions.
+	 *
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
 	 *  make the filter as restrictive as possible.

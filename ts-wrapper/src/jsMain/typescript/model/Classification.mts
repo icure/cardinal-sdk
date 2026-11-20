@@ -15,8 +15,7 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents a classification used to organize and categorize medical data. Classifications can be
- *  nested
+ *  Represents a classification used to organize and categorize medical data. Classifications can be nested
  *  through parent-child relationships and linked to classification templates.
  *  /
  */
@@ -48,8 +47,7 @@ export interface Classification extends StoredDocument, ICureDocument<string>, H
 
 /**
  *
- *  Represents a classification used to organize and categorize medical data. Classifications can be
- *  nested
+ *  Represents a classification used to organize and categorize medical data. Classifications can be nested
  *  through parent-child relationships and linked to classification templates.
  *  /
  */
@@ -63,8 +61,7 @@ export class DecryptedClassification {
 
 	/**
 	 *
-	 *  The revision of the classification in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the classification in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -274,8 +271,7 @@ export class DecryptedClassification {
 
 /**
  *
- *  Represents a classification used to organize and categorize medical data. Classifications can be
- *  nested
+ *  Represents a classification used to organize and categorize medical data. Classifications can be nested
  *  through parent-child relationships and linked to classification templates.
  *  /
  */
@@ -289,8 +285,7 @@ export class EncryptedClassification {
 
 	/**
 	 *
-	 *  The revision of the classification in the database, used for conflict management / optimistic
-	 *  locking.
+	 *  The revision of the classification in the database, used for conflict management / optimistic locking.
 	 */
 	rev: string | undefined = undefined;
 

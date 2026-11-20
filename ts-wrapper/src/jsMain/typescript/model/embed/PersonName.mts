@@ -5,8 +5,7 @@ import {PersonNameUse} from './PersonNameUse.mjs';
 
 /**
  *
- *  Represents name information for a person, following FHIR HumanName conventions. Includes family
- *  name,
+ *  Represents name information for a person, following FHIR HumanName conventions. Includes family name,
  *  given names, prefixes, suffixes, and a validity period.
  *  /
  */

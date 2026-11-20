@@ -11,9 +11,6 @@ public fun permissionItem_toJs(obj: PermissionItem): PermissionItemJs = when (ob
 }
 
 public fun permissionItem_fromJs(obj: PermissionItemJs): PermissionItem = when {
-	obj is AlwaysPermissionItemJs || obj.ktClass ==
-			"com.icure.cardinal.sdk.model.security.AlwaysPermissionItem" ->alwaysPermissionItem_fromJs(obj as
-			com.icure.cardinal.sdk.js.model.security.AlwaysPermissionItemJs)
-	else -> throw
-			IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.security.PermissionItem: $obj""")
+	obj is AlwaysPermissionItemJs || obj.ktClass == "com.icure.cardinal.sdk.model.security.AlwaysPermissionItem" ->alwaysPermissionItem_fromJs(obj as com.icure.cardinal.sdk.js.model.security.AlwaysPermissionItemJs)
+	else -> throw IllegalArgumentException("""Unknown concrete implementation for com.icure.cardinal.sdk.model.security.PermissionItem: $obj""")
 }

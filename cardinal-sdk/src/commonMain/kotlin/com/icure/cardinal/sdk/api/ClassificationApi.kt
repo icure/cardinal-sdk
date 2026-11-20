@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ClassificationShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption
 import com.icure.cardinal.sdk.filters.BaseFilterOptions
@@ -176,8 +177,8 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedClassification
@@ -187,6 +188,8 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 * versions of iCure where this was not a guarantee.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param classification a classification
 	 * @return the encryption keys extracted from the provided classification.
 	 */
@@ -207,6 +210,8 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * Attempts to extract the patient id linked to a classification.
 	 * Note: classifications usually should be linked with only one patient, but this method returns a set for compatibility
 	 * with older versions of iCure
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param classification a classification
 	 * @return the id of the patient linked to the classification, or empty if the current user can't access any patient id
 	 * of the classification.
@@ -241,6 +246,9 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * delegator-delegate pair, you will not be able to see if P has access to a classification that was created by H and
 	 * shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 *
 	 * @param entity a classification
 	 * @param delegates a set of data owner ids
 	 */
@@ -256,6 +264,9 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 
 	/**
 	 * Tries to decrypt a classification, returns the input if it is not possible.
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
 	 * @param classification an encrypted classification
 	 * @return the decrypted classification if the decryption was successful or the input if it was not.
 	 */
@@ -268,6 +279,15 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: ClassificationFlavouredApi<Classification>
 
@@ -294,6 +314,30 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * @return a list of classification ids
 	 */
 	suspend fun matchClassificationsBySorted(filter: SortableFilterOptions<Classification>): List<String>
+
+	/**
+	 * Share many already-existing classifications with one or more delegates at once, retrieving them by id instead
+	 * of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per classification when you already know the ids of many classifications to share and don't otherwise need
+	 * their decrypted content, since only lightweight metadata (not the full content of each classification) is
+	 * ever retrieved, and no content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found classification. Unlike [shareWithMany], if
+	 * the share fails for some (classification, delegate) pairs this method reports the failure for those specific
+	 * pairs in the returned result instead of throwing, so sharing proceeds normally for every other classification
+	 * and delegate in the batch.
+	 *
+	 * @param classificationIds ids of the classifications to share. Ids that don't exist, or exist but for which the
+	 * current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each classification, and the options for sharing
+	 * with each of them (see [ClassificationShareOptions]). The exact same options are applied to every
+	 * classification in [classificationIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareClassificationsByIds(
+		classificationIds: List<String>,
+		delegates: Map<String, ClassificationShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface ClassificationBasicApi : ClassificationBasicFlavourlessApi, ClassificationBasicFlavouredApi<EncryptedClassification> {

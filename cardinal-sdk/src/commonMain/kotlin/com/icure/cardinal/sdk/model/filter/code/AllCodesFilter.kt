@@ -20,7 +20,8 @@ data class AllCodesFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<Code>, Filter.AllFilter<Code> {
+) : AbstractFilter<Code>,
+	Filter.AllFilter<Code> {
 	// region AllCodesFilter-AllCodesFilter
 
 	// endregion

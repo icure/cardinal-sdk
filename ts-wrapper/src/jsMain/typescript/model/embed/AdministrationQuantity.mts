@@ -5,8 +5,7 @@ import {CodeStub} from '../base/CodeStub.mjs';
 
 /**
  *
- *  Represents a quantity for medication administration, including the numeric amount and the unit of
- *  administration.
+ *  Represents a quantity for medication administration, including the numeric amount and the unit of administration.
  *  /
  */
 export class AdministrationQuantity {

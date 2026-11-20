@@ -8,8 +8,7 @@ import kotlin.String
 
 /**
  *
- *  Enumeration of the possible types of data owners in the iCure platform: healthcare parties,
- * devices, and patients.
+ *  Enumeration of the possible types of data owners in the iCure platform: healthcare parties, devices, and patients.
  */
 @Serializable
 enum class DataOwnerType(

@@ -13,13 +13,13 @@ export interface RecoveryApi {
 
 	/**
 	 *
-	 *  Create recovery data for the logged user and stores it encrypted on the iCure server. This allows the user that created
-	 *  it to recover all the currently available keypairs at a later time by just providing the string returned by this method to the
-	 *  {@link recoverKeyPairs} method.
+	 *  Create recovery data for this sdk's delegator actor and stores it encrypted on the iCure server.
+	 *  This allows the user that created it to recover all the currently available keypairs at a later time by just
+	 *  providing the string returned by this method to the [recoverKeyPairs] method.
 	 *
-	 *  You can also provide an expiration time for the recovery data (through `options.lifetimeSeconds`). If you do so, the recovery dat
-	 *  a will be deleted automatically after that amount seconds has passed. If you don't provide an expiration time, the recovery data
-	 *  will be available until it is explicitly deleted.
+	 *  You can also provide an expiration time for the recovery data (through [lifetimeSeconds]). If you do so, the
+	 *  recovery data will be deleted automatically after that amount seconds has passed. If you don't provide an
+	 *  expiration time, the recovery data will be available until it is explicitly deleted.
 	 *
 	 *  This could be used to:
 	 *  - Provide some sort of one-use "recovery codes" to the user, which he can use to recover his keypair if he loses
@@ -44,8 +44,8 @@ export interface RecoveryApi {
 
 	/**
 	 *
-	 *  Create recovery data containing available keypairs for a parent hcp of the logged user and stores it encrypted
-	 *  on the iCure server, similarly to [createRecoveryInfoForAvailableKeyPairs].
+	 *  Create recovery data containing available keypairs for a parent hcp of this sdk's delegator actor and stores
+	 *  it encrypted on the iCure server, similarly to [createRecoveryInfoForAvailableKeyPairs].
 	 *
 	 *  Requires that the current user has the "RecoveryDataManagement.ExtendedCreate.ForParent" permission (or stronger),
 	 *  and that the user for which the data is intended has the "RecoveryDataManagement.ExtendedRead.ForParent"

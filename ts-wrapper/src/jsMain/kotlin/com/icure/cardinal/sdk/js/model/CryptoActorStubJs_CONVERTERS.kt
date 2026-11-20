@@ -8,7 +8,9 @@ import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
 import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
-import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
+import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
+import com.icure.cardinal.sdk.js.model.base.dataOwnerGroupLink_fromJs
+import com.icure.cardinal.sdk.js.model.base.dataOwnerGroupLink_toJs
 import com.icure.cardinal.sdk.js.model.specializations.aesExchangeKeyEncryptionKeypairIdentifier_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.aesExchangeKeyEncryptionKeypairIdentifier_toJs
 import com.icure.cardinal.sdk.js.model.specializations.aesExchangeKeyEntryKeyString_fromJs
@@ -20,6 +22,8 @@ import com.icure.cardinal.sdk.js.model.specializations.spkiHexString_toJs
 import com.icure.cardinal.sdk.js.utils.Record
 import com.icure.cardinal.sdk.model.CryptoActorStub
 import com.icure.cardinal.sdk.model.DecryptedPropertyStub
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
 import com.icure.cardinal.sdk.model.specializations.HexString
@@ -110,8 +114,16 @@ public fun cryptoActorStub_toJs(obj: CryptoActorStub): CryptoActorStubJs {
 			spkiHexString_toJs(x1)
 		},
 	)
-	val parentId = nullToUndefined(
-		obj.parentId
+	val dataOwnerGroups = listToArray(
+		obj.dataOwnerGroups,
+		{ x1: DataOwnerGroupLink ->
+			dataOwnerGroupLink_toJs(x1)
+		},
+	)
+	val groupLinkType = nullToUndefined(
+		obj.groupLinkType?.let { nonNull1 ->
+			nonNull1.name
+		}
 	)
 	val cryptoActorProperties = nullToUndefined(
 		setToArray(
@@ -130,7 +142,8 @@ public fun cryptoActorStub_toJs(obj: CryptoActorStub): CryptoActorStubJs {
 		"privateKeyShamirPartitions:privateKeyShamirPartitions," +
 		"publicKey:publicKey," +
 		"publicKeysForOaepWithSha256:publicKeysForOaepWithSha256," +
-		"parentId:parentId," +
+		"dataOwnerGroups:dataOwnerGroups," +
+		"groupLinkType:groupLinkType," +
 		"cryptoActorProperties:cryptoActorProperties" +
 	"}"))
 }
@@ -221,7 +234,16 @@ public fun cryptoActorStub_fromJs(obj: CryptoActorStubJs): CryptoActorStub {
 			spkiHexString_fromJs(x1)
 		},
 	)
-	val parentId = undefinedToNull(obj.parentId)
+	val dataOwnerGroups = arrayToList(
+		obj.dataOwnerGroups,
+		"obj.dataOwnerGroups",
+		{ x1: DataOwnerGroupLinkJs ->
+			dataOwnerGroupLink_fromJs(x1)
+		},
+	)
+	val groupLinkType = obj.groupLinkType?.let { nonNull1 ->
+		DataOwnerGroupLinkType.valueOf(nonNull1)
+	}
 	val cryptoActorProperties = arrayToSet(
 		obj.cryptoActorProperties,
 		"obj.cryptoActorProperties",
@@ -238,7 +260,8 @@ public fun cryptoActorStub_fromJs(obj: CryptoActorStubJs): CryptoActorStub {
 		privateKeyShamirPartitions = privateKeyShamirPartitions,
 		publicKey = publicKey,
 		publicKeysForOaepWithSha256 = publicKeysForOaepWithSha256,
-		parentId = parentId,
+		dataOwnerGroups = dataOwnerGroups,
+		groupLinkType = groupLinkType,
 		cryptoActorProperties = cryptoActorProperties,
 	)
 }

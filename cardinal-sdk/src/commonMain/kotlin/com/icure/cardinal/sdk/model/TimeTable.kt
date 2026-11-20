@@ -22,8 +22,7 @@ import com.icure.cardinal.sdk.model.specializations.Base64String
 import kotlin.collections.Map
 
 /**
- * Represents a timetable for scheduling appointments and availability. A timetable is linked to an
- * agenda
+ * Represents a timetable for scheduling appointments and availability. A timetable is linked to an agenda
  * and defines time slots within a given period.
  * /
  */
@@ -34,8 +33,7 @@ data class TimeTable(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the timetable in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the timetable in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -93,7 +91,10 @@ data class TimeTable(
 	 */
 	@param:DefaultValue("emptyList()")
 	public val items: List<TimeTableItem> = emptyList(),
-) : StoredDocument, ICureDocument<String>, HasMedicalLocation, HasEndOfLife {
+) : StoredDocument,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	HasEndOfLife {
 	// region TimeTable-TimeTable
 
 	// endregion

@@ -12,8 +12,7 @@ import kotlin.String
 import kotlin.time.Instant
 
 /**
- * Represents a typed value that can hold one of several primitive types (boolean, integer, double,
- * string, or date).
+ * Represents a typed value that can hold one of several primitive types (boolean, integer, double, string, or date).
  * The actual value is stored in the corresponding typed field based on the [type].
  * /
  */
@@ -59,8 +58,7 @@ sealed interface TypedValue : Encryptable {
 }
 
 /**
- * Represents a typed value that can hold one of several primitive types (boolean, integer, double,
- * string, or date).
+ * Represents a typed value that can hold one of several primitive types (boolean, integer, double, string, or date).
  * The actual value is stored in the corresponding typed field based on the [type].
  * /
  */
@@ -102,8 +100,7 @@ data class DecryptedTypedValue(
 }
 
 /**
- * Represents a typed value that can hold one of several primitive types (boolean, integer, double,
- * string, or date).
+ * Represents a typed value that can hold one of several primitive types (boolean, integer, double, string, or date).
  * The actual value is stored in the corresponding typed field based on the [type].
  * /
  */

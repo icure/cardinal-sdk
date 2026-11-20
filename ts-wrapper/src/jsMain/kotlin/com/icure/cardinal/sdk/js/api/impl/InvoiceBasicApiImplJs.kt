@@ -58,8 +58,7 @@ internal class InvoiceBasicApiImplJs(
 	private val invoiceBasicApi: InvoiceBasicApi,
 ) : InvoiceBasicApiJs {
 	override val inGroup: InvoiceBasicInGroupApiJs = object : InvoiceBasicInGroupApiJs {
-		override fun deleteInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -77,8 +76,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun deleteInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -107,8 +105,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun purgeInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
-				= GlobalScope.promise {
+		override fun purgeInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -121,8 +118,7 @@ internal class InvoiceBasicApiImplJs(
 
 		}
 
-		override fun purgeInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -151,8 +147,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun deleteInvoice(invoice: GroupScopedJs<InvoiceJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteInvoice(invoice: GroupScopedJs<InvoiceJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
 				invoice,
 				{ x1: InvoiceJs ->
@@ -170,8 +165,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun deleteInvoices(invoices: Array<GroupScopedJs<InvoiceJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteInvoices(invoices: Array<GroupScopedJs<InvoiceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val invoicesConverted: List<GroupScoped<Invoice>> = arrayToList(
 				invoices,
 				"invoices",
@@ -200,8 +194,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun purgeInvoice(invoice: GroupScopedJs<InvoiceJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeInvoice(invoice: GroupScopedJs<InvoiceJs>): Promise<Unit> = GlobalScope.promise {
 			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
 				invoice,
 				{ x1: InvoiceJs ->
@@ -214,8 +207,7 @@ internal class InvoiceBasicApiImplJs(
 
 		}
 
-		override fun purgeInvoices(invoices: Array<GroupScopedJs<InvoiceJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeInvoices(invoices: Array<GroupScopedJs<InvoiceJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val invoicesConverted: List<GroupScoped<Invoice>> = arrayToList(
 				invoices,
 				"invoices",
@@ -244,8 +236,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(invoice: GroupScopedJs<InvoiceJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
 				invoice,
 				{ x1: InvoiceJs ->
@@ -258,8 +249,7 @@ internal class InvoiceBasicApiImplJs(
 			entityAccessInformation_toJs(result)
 		}
 
-		override fun createInvoice(entity: GroupScopedJs<EncryptedInvoiceJs>):
-				Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
+		override fun createInvoice(entity: GroupScopedJs<EncryptedInvoiceJs>): Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedInvoice> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedInvoiceJs ->
@@ -277,8 +267,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun createInvoices(entities: Array<GroupScopedJs<EncryptedInvoiceJs>>):
-				Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
+		override fun createInvoices(entities: Array<GroupScopedJs<EncryptedInvoiceJs>>): Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedInvoice>> = arrayToList(
 				entities,
 				"entities",
@@ -307,8 +296,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
+		override fun undeleteInvoiceById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -326,8 +314,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
+		override fun undeleteInvoicesByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -356,8 +343,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteInvoice(invoice: GroupScopedJs<InvoiceJs>):
-				Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
+		override fun undeleteInvoice(invoice: GroupScopedJs<InvoiceJs>): Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
 			val invoiceConverted: GroupScoped<Invoice> = groupScoped_fromJs(
 				invoice,
 				{ x1: InvoiceJs ->
@@ -375,8 +361,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteInvoices(invoices: Array<GroupScopedJs<EncryptedInvoiceJs>>):
-				Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
+		override fun undeleteInvoices(invoices: Array<GroupScopedJs<EncryptedInvoiceJs>>): Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
 			val invoicesConverted: List<GroupScoped<EncryptedInvoice>> = arrayToList(
 				invoices,
 				"invoices",
@@ -405,8 +390,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun modifyInvoice(entity: GroupScopedJs<EncryptedInvoiceJs>):
-				Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
+		override fun modifyInvoice(entity: GroupScopedJs<EncryptedInvoiceJs>): Promise<GroupScopedJs<EncryptedInvoiceJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedInvoice> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedInvoiceJs ->
@@ -424,8 +408,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun modifyInvoices(entities: Array<GroupScopedJs<EncryptedInvoiceJs>>):
-				Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
+		override fun modifyInvoices(entities: Array<GroupScopedJs<EncryptedInvoiceJs>>): Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedInvoice>> = arrayToList(
 				entities,
 				"entities",
@@ -454,8 +437,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun getInvoice(groupId: String, entityId: String):
-				Promise<GroupScopedJs<EncryptedInvoiceJs>?> = GlobalScope.promise {
+		override fun getInvoice(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedInvoiceJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = invoiceBasicApi.inGroup.getInvoice(
@@ -474,8 +456,7 @@ internal class InvoiceBasicApiImplJs(
 			)
 		}
 
-		override fun getInvoices(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
+		override fun getInvoices(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedInvoiceJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -502,8 +483,7 @@ internal class InvoiceBasicApiImplJs(
 		}
 	}
 
-	override fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
-			= GlobalScope.promise {
+	override fun deleteInvoiceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = invoiceBasicApi.deleteInvoiceById(
@@ -513,8 +493,7 @@ internal class InvoiceBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -543,8 +522,7 @@ internal class InvoiceBasicApiImplJs(
 
 	}
 
-	override fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -563,8 +541,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun deleteInvoice(invoice: InvoiceJs): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteInvoice(invoice: InvoiceJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val invoiceConverted: Invoice = invoice_fromJs(invoice)
 		val result = invoiceBasicApi.deleteInvoice(
 			invoiceConverted,
@@ -572,8 +549,7 @@ internal class InvoiceBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
-			= GlobalScope.promise {
+	override fun deleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val invoicesConverted: List<Invoice> = arrayToList(
 			invoices,
 			"invoices",
@@ -600,8 +576,7 @@ internal class InvoiceBasicApiImplJs(
 
 	}
 
-	override fun purgeInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>>
-			= GlobalScope.promise {
+	override fun purgeInvoices(invoices: Array<InvoiceJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val invoicesConverted: List<Invoice> = arrayToList(
 			invoices,
 			"invoices",
@@ -620,8 +595,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun getTarificationsCodesOccurrences(minOccurrence: Double):
-			Promise<Array<LabelledOccurenceJs>> = GlobalScope.promise {
+	override fun getTarificationsCodesOccurrences(minOccurrence: Double): Promise<Array<LabelledOccurenceJs>> = GlobalScope.promise {
 		val minOccurrenceConverted: Int = numberToInt(minOccurrence, "minOccurrence")
 		val result = invoiceBasicApi.getTarificationsCodesOccurrences(
 			minOccurrenceConverted,
@@ -634,8 +608,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(invoice: InvoiceJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val invoiceConverted: Invoice = invoice_fromJs(invoice)
 		val result = invoiceBasicApi.getDataOwnersWithAccessTo(
 			invoiceConverted,
@@ -643,8 +616,7 @@ internal class InvoiceBasicApiImplJs(
 		entityAccessInformation_toJs(result)
 	}
 
-	override fun createInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs> =
-			GlobalScope.promise {
+	override fun createInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs> = GlobalScope.promise {
 		val entityConverted: EncryptedInvoice = invoice_fromJs(entity)
 		val result = invoiceBasicApi.createInvoice(
 			entityConverted,
@@ -652,8 +624,7 @@ internal class InvoiceBasicApiImplJs(
 		invoice_toJs(result)
 	}
 
-	override fun createInvoices(entities: Array<EncryptedInvoiceJs>):
-			Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
+	override fun createInvoices(entities: Array<EncryptedInvoiceJs>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedInvoice> = arrayToList(
 			entities,
 			"entities",
@@ -672,8 +643,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun undeleteInvoiceById(id: String, rev: String): Promise<EncryptedInvoiceJs> =
-			GlobalScope.promise {
+	override fun undeleteInvoiceById(id: String, rev: String): Promise<EncryptedInvoiceJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = invoiceBasicApi.undeleteInvoiceById(
@@ -683,8 +653,7 @@ internal class InvoiceBasicApiImplJs(
 		invoice_toJs(result)
 	}
 
-	override fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
+	override fun undeleteInvoicesByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -703,8 +672,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun undeleteInvoice(invoice: InvoiceJs): Promise<EncryptedInvoiceJs> =
-			GlobalScope.promise {
+	override fun undeleteInvoice(invoice: InvoiceJs): Promise<EncryptedInvoiceJs> = GlobalScope.promise {
 		val invoiceConverted: Invoice = invoice_fromJs(invoice)
 		val result = invoiceBasicApi.undeleteInvoice(
 			invoiceConverted,
@@ -712,8 +680,7 @@ internal class InvoiceBasicApiImplJs(
 		invoice_toJs(result)
 	}
 
-	override fun undeleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<EncryptedInvoiceJs>> =
-			GlobalScope.promise {
+	override fun undeleteInvoices(invoices: Array<InvoiceJs>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val invoicesConverted: List<Invoice> = arrayToList(
 			invoices,
 			"invoices",
@@ -732,8 +699,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun modifyInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs> =
-			GlobalScope.promise {
+	override fun modifyInvoice(entity: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs> = GlobalScope.promise {
 		val entityConverted: EncryptedInvoice = invoice_fromJs(entity)
 		val result = invoiceBasicApi.modifyInvoice(
 			entityConverted,
@@ -741,8 +707,7 @@ internal class InvoiceBasicApiImplJs(
 		invoice_toJs(result)
 	}
 
-	override fun modifyInvoices(entities: Array<EncryptedInvoiceJs>):
-			Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
+	override fun modifyInvoices(entities: Array<EncryptedInvoiceJs>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedInvoice> = arrayToList(
 			entities,
 			"entities",
@@ -773,8 +738,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun getInvoices(entityIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> =
-			GlobalScope.promise {
+	override fun getInvoices(entityIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -793,8 +757,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun reassignInvoice(invoice: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs> =
-			GlobalScope.promise {
+	override fun reassignInvoice(invoice: EncryptedInvoiceJs): Promise<EncryptedInvoiceJs> = GlobalScope.promise {
 		val invoiceConverted: EncryptedInvoice = invoice_fromJs(invoice)
 		val result = invoiceBasicApi.reassignInvoice(
 			invoiceConverted,
@@ -802,8 +765,7 @@ internal class InvoiceBasicApiImplJs(
 		invoice_toJs(result)
 	}
 
-	override fun mergeTo(invoiceId: String, ids: Array<String>): Promise<EncryptedInvoiceJs> =
-			GlobalScope.promise {
+	override fun mergeTo(invoiceId: String, ids: Array<String>): Promise<EncryptedInvoiceJs> = GlobalScope.promise {
 		val invoiceIdConverted: String = invoiceId
 		val idsConverted: List<String> = arrayToList(
 			ids,
@@ -926,8 +888,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun findInvoicesByAuthor(hcPartyId: String, options: dynamic):
-			Promise<PaginatedListJs<EncryptedInvoiceJs>> {
+	override fun findInvoicesByAuthor(hcPartyId: String, options: dynamic): Promise<PaginatedListJs<EncryptedInvoiceJs>> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val hcPartyIdConverted: String = hcPartyId
@@ -983,8 +944,7 @@ internal class InvoiceBasicApiImplJs(
 		}
 	}
 
-	override fun listInvoicesByHcPartyAndGroupId(hcPartyId: String, groupId: String):
-			Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
+	override fun listInvoicesByHcPartyAndGroupId(hcPartyId: String, groupId: String): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val hcPartyIdConverted: String = hcPartyId
 		val groupIdConverted: String = groupId
 		val result = invoiceBasicApi.listInvoicesByHcPartyAndGroupId(
@@ -1043,8 +1003,7 @@ internal class InvoiceBasicApiImplJs(
 		}
 	}
 
-	override fun listInvoicesByContactIds(contactIds: Array<String>):
-			Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
+	override fun listInvoicesByContactIds(contactIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val contactIdsConverted: List<String> = arrayToList(
 			contactIds,
 			"contactIds",
@@ -1063,8 +1022,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun listInvoicesByRecipientsIds(recipientsIds: Array<String>):
-			Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
+	override fun listInvoicesByRecipientsIds(recipientsIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val recipientsIdsConverted: List<String> = arrayToList(
 			recipientsIds,
 			"recipientsIds",
@@ -1083,8 +1041,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun listToInsurances(userIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> =
-			GlobalScope.promise {
+	override fun listToInsurances(userIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val userIdsConverted: List<String> = arrayToList(
 			userIds,
 			"userIds",
@@ -1103,8 +1060,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun listToInsurancesUnsent(userIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> =
-			GlobalScope.promise {
+	override fun listToInsurancesUnsent(userIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val userIdsConverted: List<String> = arrayToList(
 			userIds,
 			"userIds",
@@ -1123,8 +1079,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun listToPatients(hcPartyId: String): Promise<Array<EncryptedInvoiceJs>> =
-			GlobalScope.promise {
+	override fun listToPatients(hcPartyId: String): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val hcPartyIdConverted: String = hcPartyId
 		val result = invoiceBasicApi.listToPatients(
 			hcPartyIdConverted,
@@ -1137,8 +1092,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun listToPatientsUnsent(hcPartyId: String?): Promise<Array<EncryptedInvoiceJs>> =
-			GlobalScope.promise {
+	override fun listToPatientsUnsent(hcPartyId: String?): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val hcPartyIdConverted: String? = undefinedToNull(hcPartyId)
 		val result = invoiceBasicApi.listToPatientsUnsent(
 			hcPartyIdConverted,
@@ -1151,8 +1105,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun listInvoicesByIds(ids: Array<String>): Promise<Array<EncryptedInvoiceJs>> =
-			GlobalScope.promise {
+	override fun listInvoicesByIds(ids: Array<String>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val idsConverted: List<String> = arrayToList(
 			ids,
 			"ids",
@@ -1198,8 +1151,7 @@ internal class InvoiceBasicApiImplJs(
 		)
 	}
 
-	override fun listInvoicesByServiceIds(serviceIds: Array<String>):
-			Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
+	override fun listInvoicesByServiceIds(serviceIds: Array<String>): Promise<Array<EncryptedInvoiceJs>> = GlobalScope.promise {
 		val serviceIdsConverted: List<String> = arrayToList(
 			serviceIds,
 			"serviceIds",

@@ -7,8 +7,7 @@ import {StoredDocument} from './base/StoredDocument.mjs';
 
 /**
  *
- *  Represents a medical code from a terminology system (e.g., ICD, SNOMED). The code id is composed
- *  of
+ *  Represents a medical code from a terminology system (e.g., ICD, SNOMED). The code id is composed of
  *  type|code|version and must be unique.
  *  /
  */

@@ -87,8 +87,8 @@ import kotlinx.coroutines.promise
 internal class AccessLogApiImplJs(
 	private val accessLogApi: AccessLogApi,
 ) : AccessLogApiJs {
-	override val encrypted: AccessLogFlavouredApiJs<EncryptedAccessLogJs> = object :
-			AccessLogFlavouredApiJs<EncryptedAccessLogJs> {
+	override val encrypted: AccessLogFlavouredApiJs<EncryptedAccessLogJs> =
+			object : AccessLogFlavouredApiJs<EncryptedAccessLogJs> {
 		override fun shareWith(
 			delegateId: String,
 			accessLog: EncryptedAccessLogJs,
@@ -116,9 +116,7 @@ internal class AccessLogApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(accessLog: EncryptedAccessLogJs,
-				delegates: Record<String, AccessLogShareOptionsJs>): Promise<EncryptedAccessLogJs> =
-				GlobalScope.promise {
+		override fun shareWithMany(accessLog: EncryptedAccessLogJs, delegates: Record<String, AccessLogShareOptionsJs>): Promise<EncryptedAccessLogJs> = GlobalScope.promise {
 			val accessLogConverted: EncryptedAccessLog = accessLog_fromJs(accessLog)
 			val delegatesConverted: Map<String, AccessLogShareOptions> = objectToMap(
 				delegates,
@@ -137,8 +135,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
-				Promise<PaginatedListIteratorJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+		override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 			val result = accessLogApi.encrypted.filterAccessLogsBy(
 				filterConverted,
@@ -151,8 +148,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
-				Promise<PaginatedListIteratorJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+		override fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 			val result = accessLogApi.encrypted.filterAccessLogsBySorted(
 				filterConverted,
@@ -165,8 +161,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun createAccessLog(entity: EncryptedAccessLogJs): Promise<EncryptedAccessLogJs> =
-				GlobalScope.promise {
+		override fun createAccessLog(entity: EncryptedAccessLogJs): Promise<EncryptedAccessLogJs> = GlobalScope.promise {
 			val entityConverted: EncryptedAccessLog = accessLog_fromJs(entity)
 			val result = accessLogApi.encrypted.createAccessLog(
 				entityConverted,
@@ -174,8 +169,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun createAccessLogs(entities: Array<EncryptedAccessLogJs>):
-				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+		override fun createAccessLogs(entities: Array<EncryptedAccessLogJs>): Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val entitiesConverted: List<EncryptedAccessLog> = arrayToList(
 				entities,
 				"entities",
@@ -194,8 +188,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLogById(id: String, rev: String): Promise<EncryptedAccessLogJs> =
-				GlobalScope.promise {
+		override fun undeleteAccessLogById(id: String, rev: String): Promise<EncryptedAccessLogJs> = GlobalScope.promise {
 			val idConverted: String = id
 			val revConverted: String = rev
 			val result = accessLogApi.encrypted.undeleteAccessLogById(
@@ -205,8 +198,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+		override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -225,8 +217,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<EncryptedAccessLogJs> =
-				GlobalScope.promise {
+		override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<EncryptedAccessLogJs> = GlobalScope.promise {
 			val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 			val result = accessLogApi.encrypted.undeleteAccessLog(
 				accessLogConverted,
@@ -234,8 +225,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>):
-				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+		override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val accessLogsConverted: List<AccessLog> = arrayToList(
 				accessLogs,
 				"accessLogs",
@@ -254,8 +244,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun modifyAccessLog(entity: EncryptedAccessLogJs): Promise<EncryptedAccessLogJs> =
-				GlobalScope.promise {
+		override fun modifyAccessLog(entity: EncryptedAccessLogJs): Promise<EncryptedAccessLogJs> = GlobalScope.promise {
 			val entityConverted: EncryptedAccessLog = accessLog_fromJs(entity)
 			val result = accessLogApi.encrypted.modifyAccessLog(
 				entityConverted,
@@ -263,8 +252,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun modifyAccessLogs(entities: Array<EncryptedAccessLogJs>):
-				Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
+		override fun modifyAccessLogs(entities: Array<EncryptedAccessLogJs>): Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val entitiesConverted: List<EncryptedAccessLog> = arrayToList(
 				entities,
 				"entities",
@@ -283,8 +271,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun getAccessLog(entityId: String): Promise<EncryptedAccessLogJs?> =
-				GlobalScope.promise {
+		override fun getAccessLog(entityId: String): Promise<EncryptedAccessLogJs?> = GlobalScope.promise {
 			val entityIdConverted: String = entityId
 			val result = accessLogApi.encrypted.getAccessLog(
 				entityIdConverted,
@@ -296,8 +283,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun getAccessLogs(entityIds: Array<String>): Promise<Array<EncryptedAccessLogJs>> =
-				GlobalScope.promise {
+		override fun getAccessLogs(entityIds: Array<String>): Promise<Array<EncryptedAccessLogJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -317,8 +303,8 @@ internal class AccessLogApiImplJs(
 		}
 	}
 
-	override val tryAndRecover: AccessLogFlavouredApiJs<AccessLogJs> = object :
-			AccessLogFlavouredApiJs<AccessLogJs> {
+	override val tryAndRecover: AccessLogFlavouredApiJs<AccessLogJs> =
+			object : AccessLogFlavouredApiJs<AccessLogJs> {
 		override fun shareWith(
 			delegateId: String,
 			accessLog: AccessLogJs,
@@ -346,9 +332,7 @@ internal class AccessLogApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(accessLog: AccessLogJs,
-				delegates: Record<String, AccessLogShareOptionsJs>): Promise<AccessLogJs> =
-				GlobalScope.promise {
+		override fun shareWithMany(accessLog: AccessLogJs, delegates: Record<String, AccessLogShareOptionsJs>): Promise<AccessLogJs> = GlobalScope.promise {
 			val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 			val delegatesConverted: Map<String, AccessLogShareOptions> = objectToMap(
 				delegates,
@@ -367,8 +351,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
-				Promise<PaginatedListIteratorJs<AccessLogJs>> = GlobalScope.promise {
+		override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<AccessLogJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 			val result = accessLogApi.tryAndRecover.filterAccessLogsBy(
 				filterConverted,
@@ -381,8 +364,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
-				Promise<PaginatedListIteratorJs<AccessLogJs>> = GlobalScope.promise {
+		override fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<AccessLogJs>> = GlobalScope.promise {
 			val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 			val result = accessLogApi.tryAndRecover.filterAccessLogsBySorted(
 				filterConverted,
@@ -403,8 +385,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun createAccessLogs(entities: Array<AccessLogJs>): Promise<Array<AccessLogJs>> =
-				GlobalScope.promise {
+		override fun createAccessLogs(entities: Array<AccessLogJs>): Promise<Array<AccessLogJs>> = GlobalScope.promise {
 			val entitiesConverted: List<AccessLog> = arrayToList(
 				entities,
 				"entities",
@@ -423,8 +404,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLogById(id: String, rev: String): Promise<AccessLogJs> =
-				GlobalScope.promise {
+		override fun undeleteAccessLogById(id: String, rev: String): Promise<AccessLogJs> = GlobalScope.promise {
 			val idConverted: String = id
 			val revConverted: String = rev
 			val result = accessLogApi.tryAndRecover.undeleteAccessLogById(
@@ -434,8 +414,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-				Promise<Array<AccessLogJs>> = GlobalScope.promise {
+		override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<AccessLogJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -454,8 +433,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<AccessLogJs> =
-				GlobalScope.promise {
+		override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<AccessLogJs> = GlobalScope.promise {
 			val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 			val result = accessLogApi.tryAndRecover.undeleteAccessLog(
 				accessLogConverted,
@@ -463,8 +441,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<AccessLogJs>> =
-				GlobalScope.promise {
+		override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<AccessLogJs>> = GlobalScope.promise {
 			val accessLogsConverted: List<AccessLog> = arrayToList(
 				accessLogs,
 				"accessLogs",
@@ -491,8 +468,7 @@ internal class AccessLogApiImplJs(
 			accessLog_toJs(result)
 		}
 
-		override fun modifyAccessLogs(entities: Array<AccessLogJs>): Promise<Array<AccessLogJs>> =
-				GlobalScope.promise {
+		override fun modifyAccessLogs(entities: Array<AccessLogJs>): Promise<Array<AccessLogJs>> = GlobalScope.promise {
 			val entitiesConverted: List<AccessLog> = arrayToList(
 				entities,
 				"entities",
@@ -523,8 +499,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun getAccessLogs(entityIds: Array<String>): Promise<Array<AccessLogJs>> =
-				GlobalScope.promise {
+		override fun getAccessLogs(entityIds: Array<String>): Promise<Array<AccessLogJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -545,8 +520,8 @@ internal class AccessLogApiImplJs(
 	}
 
 	override val inGroup: AccessLogInGroupApiJs = object : AccessLogInGroupApiJs {
-		override val encrypted: AccessLogFlavouredInGroupApiJs<EncryptedAccessLogJs> = object :
-				AccessLogFlavouredInGroupApiJs<EncryptedAccessLogJs> {
+		override val encrypted: AccessLogFlavouredInGroupApiJs<EncryptedAccessLogJs> =
+				object : AccessLogFlavouredInGroupApiJs<EncryptedAccessLogJs> {
 			override fun shareWith(
 				`delegate`: EntityReferenceInGroupJs,
 				accessLog: GroupScopedJs<EncryptedAccessLogJs>,
@@ -584,17 +559,14 @@ internal class AccessLogApiImplJs(
 				}
 			}
 
-			override fun shareWithMany(accessLog: GroupScopedJs<EncryptedAccessLogJs>,
-					delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>):
-					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+			override fun shareWithMany(accessLog: GroupScopedJs<EncryptedAccessLogJs>, delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 				val accessLogConverted: GroupScoped<EncryptedAccessLog> = groupScoped_fromJs(
 					accessLog,
 					{ x1: EncryptedAccessLogJs ->
 						accessLog_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogShareOptions> =
-						EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogShareOptions> = EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 				val result = accessLogApi.inGroup.encrypted.shareWithMany(
 					accessLogConverted,
 					delegatesConverted,
@@ -607,8 +579,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+			override fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 				val result = accessLogApi.inGroup.encrypted.filterAccessLogsBy(
@@ -628,9 +599,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun filterAccessLogsBySorted(groupId: String,
-					filter: SortableFilterOptionsJs<AccessLogJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+			override fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 				val result = accessLogApi.inGroup.encrypted.filterAccessLogsBySorted(
@@ -650,8 +619,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun createAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>):
-					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+			override fun createAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedAccessLog> = groupScoped_fromJs(
 					entity,
 					{ x1: EncryptedAccessLogJs ->
@@ -669,8 +637,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun createAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>):
-					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+			override fun createAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<EncryptedAccessLog>> = arrayToList(
 					entities,
 					"entities",
@@ -699,8 +666,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+			override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 					entityId,
 					{ x1: StoredDocumentIdentifierJs ->
@@ -718,9 +684,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override
-					fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+			override fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
 				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 					entityIds,
 					"entityIds",
@@ -749,8 +713,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
-					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+			override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 				val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 					accessLog,
 					{ x1: AccessLogJs ->
@@ -768,8 +731,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+			override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
 				val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
 					accessLogs,
 					"accessLogs",
@@ -798,8 +760,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun modifyAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>):
-					Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
+			override fun modifyAccessLog(entity: GroupScopedJs<EncryptedAccessLogJs>): Promise<GroupScopedJs<EncryptedAccessLogJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedAccessLog> = groupScoped_fromJs(
 					entity,
 					{ x1: EncryptedAccessLogJs ->
@@ -817,8 +778,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun modifyAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>):
-					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+			override fun modifyAccessLogs(entities: Array<GroupScopedJs<EncryptedAccessLogJs>>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<EncryptedAccessLog>> = arrayToList(
 					entities,
 					"entities",
@@ -847,8 +807,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun getAccessLog(groupId: String, entityId: String):
-					Promise<GroupScopedJs<EncryptedAccessLogJs>?> = GlobalScope.promise {
+			override fun getAccessLog(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedAccessLogJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdConverted: String = entityId
 				val result = accessLogApi.inGroup.encrypted.getAccessLog(
@@ -867,8 +826,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun getAccessLogs(groupId: String, entityIds: Array<String>):
-					Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
+			override fun getAccessLogs(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedAccessLogJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdsConverted: List<String> = arrayToList(
 					entityIds,
@@ -895,8 +853,8 @@ internal class AccessLogApiImplJs(
 			}
 		}
 
-		override val tryAndRecover: AccessLogFlavouredInGroupApiJs<AccessLogJs> = object :
-				AccessLogFlavouredInGroupApiJs<AccessLogJs> {
+		override val tryAndRecover: AccessLogFlavouredInGroupApiJs<AccessLogJs> =
+				object : AccessLogFlavouredInGroupApiJs<AccessLogJs> {
 			override fun shareWith(
 				`delegate`: EntityReferenceInGroupJs,
 				accessLog: GroupScopedJs<AccessLogJs>,
@@ -934,17 +892,14 @@ internal class AccessLogApiImplJs(
 				}
 			}
 
-			override fun shareWithMany(accessLog: GroupScopedJs<AccessLogJs>,
-					delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>):
-					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
+			override fun shareWithMany(accessLog: GroupScopedJs<AccessLogJs>, delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
 				val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 					accessLog,
 					{ x1: AccessLogJs ->
 						accessLog_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogShareOptions> =
-						EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogShareOptions> = EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 				val result = accessLogApi.inGroup.tryAndRecover.shareWithMany(
 					accessLogConverted,
 					delegatesConverted,
@@ -957,8 +912,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+			override fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 				val result = accessLogApi.inGroup.tryAndRecover.filterAccessLogsBy(
@@ -978,9 +932,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun filterAccessLogsBySorted(groupId: String,
-					filter: SortableFilterOptionsJs<AccessLogJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+			override fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 				val result = accessLogApi.inGroup.tryAndRecover.filterAccessLogsBySorted(
@@ -1000,8 +952,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun createAccessLog(entity: GroupScopedJs<AccessLogJs>):
-					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
+			override fun createAccessLog(entity: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 					entity,
 					{ x1: AccessLogJs ->
@@ -1019,8 +970,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun createAccessLogs(entities: Array<GroupScopedJs<AccessLogJs>>):
-					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+			override fun createAccessLogs(entities: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<AccessLog>> = arrayToList(
 					entities,
 					"entities",
@@ -1049,8 +999,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
+			override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
 				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 					entityId,
 					{ x1: StoredDocumentIdentifierJs ->
@@ -1068,9 +1017,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override
-					fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+			override fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 					entityIds,
 					"entityIds",
@@ -1099,8 +1046,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
-					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
+			override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
 				val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 					accessLog,
 					{ x1: AccessLogJs ->
@@ -1118,8 +1064,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+			override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 				val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
 					accessLogs,
 					"accessLogs",
@@ -1148,8 +1093,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun modifyAccessLog(entity: GroupScopedJs<AccessLogJs>):
-					Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
+			override fun modifyAccessLog(entity: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<AccessLogJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 					entity,
 					{ x1: AccessLogJs ->
@@ -1167,8 +1111,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun modifyAccessLogs(entities: Array<GroupScopedJs<AccessLogJs>>):
-					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+			override fun modifyAccessLogs(entities: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<AccessLog>> = arrayToList(
 					entities,
 					"entities",
@@ -1197,8 +1140,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun getAccessLog(groupId: String, entityId: String):
-					Promise<GroupScopedJs<AccessLogJs>?> = GlobalScope.promise {
+			override fun getAccessLog(groupId: String, entityId: String): Promise<GroupScopedJs<AccessLogJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdConverted: String = entityId
 				val result = accessLogApi.inGroup.tryAndRecover.getAccessLog(
@@ -1217,8 +1159,7 @@ internal class AccessLogApiImplJs(
 				)
 			}
 
-			override fun getAccessLogs(groupId: String, entityIds: Array<String>):
-					Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+			override fun getAccessLogs(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdsConverted: List<String> = arrayToList(
 					entityIds,
@@ -1279,8 +1220,7 @@ internal class AccessLogApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> =
-						convertingOptionOrDefaultNonNull(
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> = convertingOptionOrDefaultNonNull(
 					_options,
 					"delegates",
 					emptyMap()
@@ -1290,12 +1230,11 @@ internal class AccessLogApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
-						convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
 					"alternateRootDelegateReference",
 					null
@@ -1334,8 +1273,7 @@ internal class AccessLogApiImplJs(
 				val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
 					accessLog_fromJs(nonNull1)
 				}
-				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogDelegateOptions> =
-						EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLogDelegateOptions> = EntityReferenceInGroupToAccessLogDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
 				val patientConverted: GroupScoped<Patient>? = convertingOptionOrDefaultNullable(
 					_options,
 					"patient",
@@ -1362,12 +1300,11 @@ internal class AccessLogApiImplJs(
 				val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 					_options,
 					"secretId",
-					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+					com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 				) { secretId: SecretIdUseOptionJs ->
 					secretIdUseOption_fromJs(secretId)
 				}
-				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
-						convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
 					"alternateRootDelegateReference",
 					null
@@ -1394,8 +1331,7 @@ internal class AccessLogApiImplJs(
 			}
 		}
 
-		override fun getEncryptionKeysOf(accessLog: GroupScopedJs<AccessLogJs>): Promise<Array<String>> =
-				GlobalScope.promise {
+		override fun getEncryptionKeysOf(accessLog: GroupScopedJs<AccessLogJs>): Promise<Array<String>> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: AccessLogJs ->
@@ -1413,8 +1349,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun hasWriteAccess(accessLog: GroupScopedJs<AccessLogJs>): Promise<Boolean> =
-				GlobalScope.promise {
+		override fun hasWriteAccess(accessLog: GroupScopedJs<AccessLogJs>): Promise<Boolean> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: AccessLogJs ->
@@ -1427,8 +1362,7 @@ internal class AccessLogApiImplJs(
 			result
 		}
 
-		override fun decryptPatientIdOf(accessLog: GroupScopedJs<AccessLogJs>):
-				Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
+		override fun decryptPatientIdOf(accessLog: GroupScopedJs<AccessLogJs>): Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: AccessLogJs ->
@@ -1446,8 +1380,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<AccessLogJs>,
-				delegates: Array<EntityReferenceInGroupJs>): Promise<Unit> = GlobalScope.promise {
+		override fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<AccessLogJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit> = GlobalScope.promise {
 			val entityConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				entity,
 				{ x1: AccessLogJs ->
@@ -1468,8 +1401,7 @@ internal class AccessLogApiImplJs(
 
 		}
 
-		override fun decrypt(accessLogs: Array<GroupScopedJs<EncryptedAccessLogJs>>):
-				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun decrypt(accessLogs: Array<GroupScopedJs<EncryptedAccessLogJs>>): Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val accessLogsConverted: List<GroupScoped<EncryptedAccessLog>> = arrayToList(
 				accessLogs,
 				"accessLogs",
@@ -1498,8 +1430,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun tryDecrypt(accessLogs: Array<GroupScopedJs<EncryptedAccessLogJs>>):
-				Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
+		override fun tryDecrypt(accessLogs: Array<GroupScopedJs<EncryptedAccessLogJs>>): Promise<Array<GroupScopedJs<AccessLogJs>>> = GlobalScope.promise {
 			val accessLogsConverted: List<GroupScoped<EncryptedAccessLog>> = arrayToList(
 				accessLogs,
 				"accessLogs",
@@ -1528,8 +1459,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun matchAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 			val result = accessLogApi.inGroup.matchAccessLogsBy(
@@ -1544,8 +1474,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun matchAccessLogsBySorted(groupId: String,
-				filter: SortableFilterOptionsJs<AccessLogJs>): Promise<Array<String>> = GlobalScope.promise {
+		override fun matchAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 			val result = accessLogApi.inGroup.matchAccessLogsBySorted(
@@ -1560,8 +1489,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun deleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1579,8 +1507,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun deleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1609,8 +1536,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun purgeAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<Unit> = GlobalScope.promise {
+		override fun purgeAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1623,8 +1549,7 @@ internal class AccessLogApiImplJs(
 
 		}
 
-		override fun purgeAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1653,8 +1578,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun deleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: AccessLogJs ->
@@ -1672,8 +1596,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun deleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
 				accessLogs,
 				"accessLogs",
@@ -1702,8 +1625,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun purgeAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<Unit> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: AccessLogJs ->
@@ -1716,8 +1638,7 @@ internal class AccessLogApiImplJs(
 
 		}
 
-		override fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
 				accessLogs,
 				"accessLogs",
@@ -1746,8 +1667,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(accessLog: GroupScopedJs<AccessLogJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: AccessLogJs ->
@@ -1797,17 +1717,14 @@ internal class AccessLogApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(accessLog: GroupScopedJs<DecryptedAccessLogJs>,
-				delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>):
-				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+		override fun shareWithMany(accessLog: GroupScopedJs<DecryptedAccessLogJs>, delegates: Array<EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: DecryptedAccessLogJs ->
 					accessLog_fromJs(x1)
 				},
 			)
-			val delegatesConverted: Map<EntityReferenceInGroup, AccessLogShareOptions> =
-					EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+			val delegatesConverted: Map<EntityReferenceInGroup, AccessLogShareOptions> = EntityReferenceInGroupToAccessLogShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 			val result = accessLogApi.inGroup.shareWithMany(
 				accessLogConverted,
 				delegatesConverted,
@@ -1820,8 +1737,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun filterAccessLogsBy(groupId: String, filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 			val result = accessLogApi.inGroup.filterAccessLogsBy(
@@ -1841,9 +1757,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun filterAccessLogsBySorted(groupId: String,
-				filter: SortableFilterOptionsJs<AccessLogJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun filterAccessLogsBySorted(groupId: String, filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 			val result = accessLogApi.inGroup.filterAccessLogsBySorted(
@@ -1863,8 +1777,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun createAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>):
-				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+		override fun createAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>): Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
 				entity,
 				{ x1: DecryptedAccessLogJs ->
@@ -1882,8 +1795,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun createAccessLogs(entities: Array<GroupScopedJs<DecryptedAccessLogJs>>):
-				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun createAccessLogs(entities: Array<GroupScopedJs<DecryptedAccessLogJs>>): Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<DecryptedAccessLog>> = arrayToList(
 				entities,
 				"entities",
@@ -1912,8 +1824,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+		override fun undeleteAccessLogById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1931,8 +1842,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun undeleteAccessLogsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1961,8 +1871,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>):
-				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+		override fun undeleteAccessLog(accessLog: GroupScopedJs<AccessLogJs>): Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val accessLogConverted: GroupScoped<AccessLog> = groupScoped_fromJs(
 				accessLog,
 				{ x1: AccessLogJs ->
@@ -1980,8 +1889,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>):
-				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun undeleteAccessLogs(accessLogs: Array<GroupScopedJs<AccessLogJs>>): Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val accessLogsConverted: List<GroupScoped<AccessLog>> = arrayToList(
 				accessLogs,
 				"accessLogs",
@@ -2010,8 +1918,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun modifyAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>):
-				Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+		override fun modifyAccessLog(entity: GroupScopedJs<DecryptedAccessLogJs>): Promise<GroupScopedJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedAccessLog> = groupScoped_fromJs(
 				entity,
 				{ x1: DecryptedAccessLogJs ->
@@ -2029,8 +1936,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun modifyAccessLogs(entities: Array<GroupScopedJs<DecryptedAccessLogJs>>):
-				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun modifyAccessLogs(entities: Array<GroupScopedJs<DecryptedAccessLogJs>>): Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<DecryptedAccessLog>> = arrayToList(
 				entities,
 				"entities",
@@ -2059,8 +1965,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun getAccessLog(groupId: String, entityId: String):
-				Promise<GroupScopedJs<DecryptedAccessLogJs>?> = GlobalScope.promise {
+		override fun getAccessLog(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedAccessLogJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = accessLogApi.inGroup.getAccessLog(
@@ -2079,8 +1984,7 @@ internal class AccessLogApiImplJs(
 			)
 		}
 
-		override fun getAccessLogs(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
+		override fun getAccessLogs(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedAccessLogJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -2107,8 +2011,7 @@ internal class AccessLogApiImplJs(
 		}
 	}
 
-	override fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic):
-			Promise<DecryptedAccessLogJs> {
+	override fun withEncryptionMetadata(base: DecryptedAccessLogJs?, options: dynamic): Promise<DecryptedAccessLogJs> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val baseConverted: DecryptedAccessLog? = base?.let { nonNull1 ->
@@ -2151,7 +2054,7 @@ internal class AccessLogApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2215,7 +2118,7 @@ internal class AccessLogApiImplJs(
 			val secretIdConverted: SecretIdUseOption = convertingOptionOrDefaultNonNull(
 				_options,
 				"secretId",
-				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent
+				com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy
 			) { secretId: SecretIdUseOptionJs ->
 				secretIdUseOption_fromJs(secretId)
 			}
@@ -2238,8 +2141,7 @@ internal class AccessLogApiImplJs(
 		}
 	}
 
-	override fun getEncryptionKeysOf(accessLog: AccessLogJs): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun getEncryptionKeysOf(accessLog: AccessLogJs): Promise<Array<String>> = GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.getEncryptionKeysOf(
 			accessLogConverted,
@@ -2260,8 +2162,7 @@ internal class AccessLogApiImplJs(
 		result
 	}
 
-	override fun decryptPatientIdOf(accessLog: AccessLogJs): Promise<Array<EntityReferenceInGroupJs>> =
-			GlobalScope.promise {
+	override fun decryptPatientIdOf(accessLog: AccessLogJs): Promise<Array<EntityReferenceInGroupJs>> = GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.decryptPatientIdOf(
 			accessLogConverted,
@@ -2274,8 +2175,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun createDelegationDeAnonymizationMetadata(entity: AccessLogJs,
-			delegates: Array<String>): Promise<Unit> = GlobalScope.promise {
+	override fun createDelegationDeAnonymizationMetadata(entity: AccessLogJs, delegates: Array<String>): Promise<Unit> = GlobalScope.promise {
 		val entityConverted: AccessLog = accessLog_fromJs(entity)
 		val delegatesConverted: Set<String> = arrayToSet(
 			delegates,
@@ -2291,8 +2191,7 @@ internal class AccessLogApiImplJs(
 
 	}
 
-	override fun decrypt(accessLog: EncryptedAccessLogJs): Promise<DecryptedAccessLogJs> =
-			GlobalScope.promise {
+	override fun decrypt(accessLog: EncryptedAccessLogJs): Promise<DecryptedAccessLogJs> = GlobalScope.promise {
 		val accessLogConverted: EncryptedAccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.decrypt(
 			accessLogConverted,
@@ -2300,8 +2199,7 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun tryDecrypt(accessLog: EncryptedAccessLogJs): Promise<AccessLogJs> =
-			GlobalScope.promise {
+	override fun tryDecrypt(accessLog: EncryptedAccessLogJs): Promise<AccessLogJs> = GlobalScope.promise {
 		val accessLogConverted: EncryptedAccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.tryDecrypt(
 			accessLogConverted,
@@ -2309,8 +2207,7 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun matchAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 		val result = accessLogApi.matchAccessLogsBy(
 			filterConverted,
@@ -2323,8 +2220,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun matchAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 		val result = accessLogApi.matchAccessLogsBySorted(
 			filterConverted,
@@ -2337,8 +2233,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun deleteAccessLogById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteAccessLogById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = accessLogApi.deleteAccessLogById(
@@ -2348,8 +2243,7 @@ internal class AccessLogApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2378,8 +2272,7 @@ internal class AccessLogApiImplJs(
 
 	}
 
-	override fun purgeAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2398,8 +2291,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun deleteAccessLog(accessLog: AccessLogJs): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteAccessLog(accessLog: AccessLogJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.deleteAccessLog(
 			accessLogConverted,
@@ -2407,8 +2299,7 @@ internal class AccessLogApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteAccessLogs(accessLogs: Array<AccessLogJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val accessLogsConverted: List<AccessLog> = arrayToList(
 			accessLogs,
 			"accessLogs",
@@ -2435,8 +2326,7 @@ internal class AccessLogApiImplJs(
 
 	}
 
-	override fun purgeAccessLogs(accessLogs: Array<AccessLogJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val accessLogsConverted: List<AccessLog> = arrayToList(
 			accessLogs,
 			"accessLogs",
@@ -2455,8 +2345,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs>
-			= GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(accessLog: AccessLogJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.getDataOwnersWithAccessTo(
 			accessLogConverted,
@@ -2491,9 +2380,7 @@ internal class AccessLogApiImplJs(
 		}
 	}
 
-	override fun shareWithMany(accessLog: DecryptedAccessLogJs,
-			delegates: Record<String, AccessLogShareOptionsJs>): Promise<DecryptedAccessLogJs> =
-			GlobalScope.promise {
+	override fun shareWithMany(accessLog: DecryptedAccessLogJs, delegates: Record<String, AccessLogShareOptionsJs>): Promise<DecryptedAccessLogJs> = GlobalScope.promise {
 		val accessLogConverted: DecryptedAccessLog = accessLog_fromJs(accessLog)
 		val delegatesConverted: Map<String, AccessLogShareOptions> = objectToMap(
 			delegates,
@@ -2512,8 +2399,7 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+	override fun filterAccessLogsBy(filter: FilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val filterConverted: FilterOptions<AccessLog> = filterOptions_fromJs(filter)
 		val result = accessLogApi.filterAccessLogsBy(
 			filterConverted,
@@ -2526,8 +2412,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>):
-			Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>> = GlobalScope.promise {
+	override fun filterAccessLogsBySorted(filter: SortableFilterOptionsJs<AccessLogJs>): Promise<PaginatedListIteratorJs<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val filterConverted: SortableFilterOptions<AccessLog> = sortableFilterOptions_fromJs(filter)
 		val result = accessLogApi.filterAccessLogsBySorted(
 			filterConverted,
@@ -2540,8 +2425,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun createAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs> =
-			GlobalScope.promise {
+	override fun createAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs> = GlobalScope.promise {
 		val entityConverted: DecryptedAccessLog = accessLog_fromJs(entity)
 		val result = accessLogApi.createAccessLog(
 			entityConverted,
@@ -2549,8 +2433,7 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun createAccessLogs(entities: Array<DecryptedAccessLogJs>):
-			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+	override fun createAccessLogs(entities: Array<DecryptedAccessLogJs>): Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val entitiesConverted: List<DecryptedAccessLog> = arrayToList(
 			entities,
 			"entities",
@@ -2569,8 +2452,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun undeleteAccessLogById(id: String, rev: String): Promise<DecryptedAccessLogJs> =
-			GlobalScope.promise {
+	override fun undeleteAccessLogById(id: String, rev: String): Promise<DecryptedAccessLogJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = accessLogApi.undeleteAccessLogById(
@@ -2580,8 +2462,7 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+	override fun undeleteAccessLogsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2600,8 +2481,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<DecryptedAccessLogJs> =
-			GlobalScope.promise {
+	override fun undeleteAccessLog(accessLog: AccessLogJs): Promise<DecryptedAccessLogJs> = GlobalScope.promise {
 		val accessLogConverted: AccessLog = accessLog_fromJs(accessLog)
 		val result = accessLogApi.undeleteAccessLog(
 			accessLogConverted,
@@ -2609,8 +2489,7 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>):
-			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+	override fun undeleteAccessLogs(accessLogs: Array<AccessLogJs>): Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val accessLogsConverted: List<AccessLog> = arrayToList(
 			accessLogs,
 			"accessLogs",
@@ -2629,8 +2508,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun modifyAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs> =
-			GlobalScope.promise {
+	override fun modifyAccessLog(entity: DecryptedAccessLogJs): Promise<DecryptedAccessLogJs> = GlobalScope.promise {
 		val entityConverted: DecryptedAccessLog = accessLog_fromJs(entity)
 		val result = accessLogApi.modifyAccessLog(
 			entityConverted,
@@ -2638,8 +2516,7 @@ internal class AccessLogApiImplJs(
 		accessLog_toJs(result)
 	}
 
-	override fun modifyAccessLogs(entities: Array<DecryptedAccessLogJs>):
-			Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
+	override fun modifyAccessLogs(entities: Array<DecryptedAccessLogJs>): Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val entitiesConverted: List<DecryptedAccessLog> = arrayToList(
 			entities,
 			"entities",
@@ -2670,8 +2547,7 @@ internal class AccessLogApiImplJs(
 		)
 	}
 
-	override fun getAccessLogs(entityIds: Array<String>): Promise<Array<DecryptedAccessLogJs>> =
-			GlobalScope.promise {
+	override fun getAccessLogs(entityIds: Array<String>): Promise<Array<DecryptedAccessLogJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",

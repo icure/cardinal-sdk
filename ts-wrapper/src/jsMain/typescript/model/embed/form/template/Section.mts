@@ -5,8 +5,7 @@ import {StructureElement} from './StructureElement.mjs';
 
 /**
  *
- *  Represents a section within a form template layout, containing a set of structure elements
- *  (fields and groups).
+ *  Represents a section within a form template layout, containing a set of structure elements (fields and groups).
  *  /
  */
 export class Section {

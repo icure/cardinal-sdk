@@ -2,7 +2,6 @@
 package com.icure.cardinal.sdk.js.api.`impl`
 
 import com.icure.cardinal.sdk.api.GroupApi
-import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNonNull
 import com.icure.cardinal.sdk.js.api.DefaultParametersSupport.convertingOptionOrDefaultNullable
 import com.icure.cardinal.sdk.js.api.GroupApiJs
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
@@ -152,8 +151,7 @@ internal class GroupApiImplJs(
 			) { projectId: String? ->
 				undefinedToNull(projectId)
 			}
-			val initialisationDataConverted: DatabaseInitialisation =
-					databaseInitialisation_fromJs(initialisationData)
+			val initialisationDataConverted: DatabaseInitialisation = databaseInitialisation_fromJs(initialisationData)
 			val result = groupApi.createGroup(
 				idConverted,
 				nameConverted,
@@ -170,8 +168,7 @@ internal class GroupApiImplJs(
 		}
 	}
 
-	override fun registerNewGroupAdministrator(registrationInformation: RegistrationInformationJs,
-			options: dynamic): Promise<RegistrationSuccessJs> {
+	override fun registerNewGroupAdministrator(registrationInformation: RegistrationInformationJs, options: dynamic): Promise<RegistrationSuccessJs> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val typeConverted: GroupType? = convertingOptionOrDefaultNullable(
@@ -183,8 +180,7 @@ internal class GroupApiImplJs(
 					GroupType.valueOf(nonNull1)
 				}
 			}
-			val registrationInformationConverted: RegistrationInformation =
-					registrationInformation_fromJs(registrationInformation)
+			val registrationInformationConverted: RegistrationInformation = registrationInformation_fromJs(registrationInformation)
 			val result = groupApi.registerNewGroupAdministrator(
 				typeConverted,
 				registrationInformationConverted,
@@ -355,8 +351,7 @@ internal class GroupApiImplJs(
 		group_toJs(result)
 	}
 
-	override fun getDefaultRoles(groupId: String): Promise<Record<String, Array<RoleConfigurationJs>>>
-			= GlobalScope.promise {
+	override fun getDefaultRoles(groupId: String): Promise<Record<String, Array<RoleConfigurationJs>>> = GlobalScope.promise {
 		val groupIdConverted: String = groupId
 		val result = groupApi.getDefaultRoles(
 			groupIdConverted,
@@ -385,8 +380,7 @@ internal class GroupApiImplJs(
 		group_toJs(result)
 	}
 
-	override fun changeSuperGroup(childGroupId: String, operationToken: String): Promise<GroupJs> =
-			GlobalScope.promise {
+	override fun changeSuperGroup(childGroupId: String, operationToken: String): Promise<GroupJs> = GlobalScope.promise {
 		val childGroupIdConverted: String = childGroupId
 		val operationTokenConverted: String = operationToken
 		val result = groupApi.changeSuperGroup(
@@ -396,8 +390,7 @@ internal class GroupApiImplJs(
 		group_toJs(result)
 	}
 
-	override fun hardDeleteGroup(id: String): Promise<Array<GroupDeletionReportJs>> =
-			GlobalScope.promise {
+	override fun hardDeleteGroup(id: String): Promise<Array<GroupDeletionReportJs>> = GlobalScope.promise {
 		val idConverted: String = id
 		val result = groupApi.hardDeleteGroup(
 			idConverted,
@@ -410,8 +403,7 @@ internal class GroupApiImplJs(
 		)
 	}
 
-	override fun modifyGroupProperties(id: String, properties: ListOfPropertiesJs): Promise<GroupJs> =
-			GlobalScope.promise {
+	override fun modifyGroupProperties(id: String, properties: ListOfPropertiesJs): Promise<GroupJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val propertiesConverted: ListOfProperties = listOfProperties_fromJs(properties)
 		val result = groupApi.modifyGroupProperties(
@@ -421,8 +413,7 @@ internal class GroupApiImplJs(
 		group_toJs(result)
 	}
 
-	override fun setGroupPassword(id: String, password: String): Promise<GroupJs> =
-			GlobalScope.promise {
+	override fun setGroupPassword(id: String, password: String): Promise<GroupJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val passwordConverted: String = password
 		val result = groupApi.setGroupPassword(
@@ -525,8 +516,7 @@ internal class GroupApiImplJs(
 		}
 	}
 
-	override fun getGroupsStorageInfos(groups: Array<String>): Promise<Array<GroupDatabasesInfoJs>> =
-			GlobalScope.promise {
+	override fun getGroupsStorageInfos(groups: Array<String>): Promise<Array<GroupDatabasesInfoJs>> = GlobalScope.promise {
 		val groupsConverted: List<String> = arrayToList(
 			groups,
 			"groups",
@@ -593,8 +583,7 @@ internal class GroupApiImplJs(
 		group_toJs(result)
 	}
 
-	override fun removeExternalJwtConfig(groupId: String, key: String): Promise<GroupJs> =
-			GlobalScope.promise {
+	override fun removeExternalJwtConfig(groupId: String, key: String): Promise<GroupJs> = GlobalScope.promise {
 		val groupIdConverted: String = groupId
 		val keyConverted: String = key
 		val result = groupApi.removeExternalJwtConfig(
@@ -639,8 +628,7 @@ internal class GroupApiImplJs(
 
 	}
 
-	override fun modifyGroupApplicationId(id: String, applicationId: String): Promise<GroupJs> =
-			GlobalScope.promise {
+	override fun modifyGroupApplicationId(id: String, applicationId: String): Promise<GroupJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val applicationIdConverted: String = applicationId
 		val result = groupApi.modifyGroupApplicationId(
@@ -793,72 +781,6 @@ internal class GroupApiImplJs(
 				projectIdConverted,
 			)
 			group_toJs(result)
-		}
-	}
-
-	override fun addSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Double,
-		groupIds: Array<String>,
-	): Promise<Array<GroupJs>> = GlobalScope.promise {
-		val applicationGroupIdConverted: String = applicationGroupId
-		val schemaVersionConverted: Int = numberToInt(schemaVersion, "schemaVersion")
-		val groupIdsConverted: List<String> = arrayToList(
-			groupIds,
-			"groupIds",
-			{ x1: String ->
-				x1
-			},
-		)
-		val result = groupApi.addSchemaVersionOnGroups(
-			applicationGroupIdConverted,
-			schemaVersionConverted,
-			groupIdsConverted,
-		)
-		listToArray(
-			result,
-			{ x1: Group ->
-				group_toJs(x1)
-			},
-		)
-	}
-
-	override fun removeSchemaVersionFromGroups(
-		applicationGroupId: String,
-		schemaVersion: Double,
-		groupIds: Array<String>,
-		options: dynamic,
-	): Promise<Array<GroupJs>> {
-		val _options = options ?: js("{}")
-		return GlobalScope.promise {
-			val applicationGroupIdConverted: String = applicationGroupId
-			val schemaVersionConverted: Int = numberToInt(schemaVersion, "schemaVersion")
-			val groupIdsConverted: List<String> = arrayToList(
-				groupIds,
-				"groupIds",
-				{ x1: String ->
-					x1
-				},
-			)
-			val failIfSingleSchemaConverted: Boolean = convertingOptionOrDefaultNonNull(
-				_options,
-				"failIfSingleSchema",
-				true
-			) { failIfSingleSchema: Boolean ->
-				failIfSingleSchema
-			}
-			val result = groupApi.removeSchemaVersionFromGroups(
-				applicationGroupIdConverted,
-				schemaVersionConverted,
-				groupIdsConverted,
-				failIfSingleSchemaConverted,
-			)
-			listToArray(
-				result,
-				{ x1: Group ->
-					group_toJs(x1)
-				},
-			)
 		}
 	}
 }

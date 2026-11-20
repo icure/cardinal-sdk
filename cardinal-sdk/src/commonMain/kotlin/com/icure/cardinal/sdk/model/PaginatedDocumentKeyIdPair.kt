@@ -17,8 +17,7 @@ data class PaginatedDocumentKeyIdPair(
 	 */
 	public val startKey: JsonElement? = null,
 	/**
-	 * The document identifier to start the next page from, used to disambiguate when multiple
-	 * documents share the same key.
+	 * The document identifier to start the next page from, used to disambiguate when multiple documents share the same key.
 	 */
 	public val startKeyDocId: String? = null,
 ) {

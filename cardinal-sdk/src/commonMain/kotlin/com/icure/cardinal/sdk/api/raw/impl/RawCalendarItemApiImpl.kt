@@ -48,12 +48,10 @@ class RawCalendarItemApiImpl(
 	private val authProvider: AuthProvider,
 	private val accessControlKeysHeadersProvider: AccessControlKeysHeadersProvider?,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawCalendarItemApi {
+) : BaseRawApi(rawApiConfig),
+	RawCalendarItemApi {
 	override suspend fun getAccessControlKeysHeaderValues(groupId: String?): List<String>? =
-		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(
-			groupId,
-			EntityWithEncryptionMetadataTypeName.CalendarItem,
-		)
+		accessControlKeysHeadersProvider?.getAccessControlKeysHeadersFor(groupId, EntityWithEncryptionMetadataTypeName.CalendarItem)
 
 	// region common endpoints
 
@@ -521,10 +519,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemDto: EncryptedCalendarItem,
 	): HttpResponse<EncryptedCalendarItem> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId)
@@ -552,10 +547,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemDto: EncryptedCalendarItem,
 	): HttpResponse<EncryptedCalendarItem> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId)
@@ -650,10 +642,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemIdsAndRevs: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "delete", "batch")
@@ -710,10 +699,7 @@ class RawCalendarItemApiImpl(
 		groupId: String,
 		calendarItemIdsAndRevs: ListOfIdsAndRev,
 	): HttpResponse<List<DocIdentifier>> =
-		post(
-			authProvider,
-			groupId,
-		) {
+		post(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "purge", "batch")
@@ -755,10 +741,7 @@ class RawCalendarItemApiImpl(
 		request: BulkShareOrUpdateMetadataParams,
 		groupId: String,
 	): HttpResponse<List<EntityBulkShareResult<EncryptedCalendarItem>>> =
-		put(
-			authProvider,
-			groupId,
-		) {
+		put(authProvider, groupId) {
 			url {
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "calendarItem", "inGroup", groupId, "bulkSharedMetadataUpdate")

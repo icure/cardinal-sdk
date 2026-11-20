@@ -7,8 +7,7 @@ import kotlin.String
 import kotlin.collections.List
 
 /**
- * Represents a subword within a keyword hierarchy. Subwords can be nested recursively to form a
- * tree structure.
+ * Represents a subword within a keyword hierarchy. Subwords can be nested recursively to form a tree structure.
  * /
  */
 @Serializable

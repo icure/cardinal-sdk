@@ -9,8 +9,7 @@ import kotlin.Long
 import kotlin.String
 
 /**
- * Represents schooling information for a patient, including the period, school name, and type of
- * education.
+ * Represents schooling information for a patient, including the period, school name, and type of education.
  * /
  */
 
@@ -45,8 +44,7 @@ sealed interface SchoolingInfo : Encryptable {
 }
 
 /**
- * Represents schooling information for a patient, including the period, school name, and type of
- * education.
+ * Represents schooling information for a patient, including the period, school name, and type of education.
  * /
  */
 @Serializable
@@ -78,8 +76,7 @@ data class DecryptedSchoolingInfo(
 }
 
 /**
- * Represents schooling information for a patient, including the period, school name, and type of
- * education.
+ * Represents schooling information for a patient, including the period, school name, and type of education.
  * /
  */
 @Serializable

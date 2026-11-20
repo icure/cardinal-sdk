@@ -45,8 +45,7 @@ public object InternalMessageFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byTransportGuidForDataOwner(dataOwnerId: String, transportGuid: String):
-			BaseFilterOptionsJs<MessageJs> {
+	public fun byTransportGuidForDataOwner(dataOwnerId: String, transportGuid: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.byTransportGuidForDataOwner(
@@ -56,8 +55,7 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			transportGuid: String): BaseFilterOptionsJs<MessageJs> {
+	public fun byTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, transportGuid: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.byTransportGuidForDataOwnerInGroup(
@@ -75,8 +73,7 @@ public object InternalMessageFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun fromAddressForDataOwner(dataOwnerId: String, address: String):
-			BaseFilterOptionsJs<MessageJs> {
+	public fun fromAddressForDataOwner(dataOwnerId: String, address: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val addressConverted: String = address
 		val result = MessageFilters.fromAddressForDataOwner(
@@ -86,8 +83,7 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun fromAddressForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, address: String):
-			BaseFilterOptionsJs<MessageJs> {
+	public fun fromAddressForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, address: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val addressConverted: String = address
 		val result = MessageFilters.fromAddressForDataOwnerInGroup(
@@ -200,8 +196,7 @@ public object InternalMessageFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSentDateForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<MessageJs> {
+	public fun byPatientsSentDateForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -330,8 +325,7 @@ public object InternalMessageFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientSecretIdsSentDateForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<MessageJs> {
+	public fun byPatientSecretIdsSentDateForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<MessageJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -370,8 +364,7 @@ public object InternalMessageFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun toAddressForDataOwner(dataOwnerId: String, address: String):
-			BaseFilterOptionsJs<MessageJs> {
+	public fun toAddressForDataOwner(dataOwnerId: String, address: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val addressConverted: String = address
 		val result = MessageFilters.toAddressForDataOwner(
@@ -381,8 +374,7 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun toAddressForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, address: String):
-			BaseFilterOptionsJs<MessageJs> {
+	public fun toAddressForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, address: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val addressConverted: String = address
 		val result = MessageFilters.toAddressForDataOwnerInGroup(
@@ -484,8 +476,7 @@ public object InternalMessageFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun latestByTransportGuidForDataOwner(dataOwnerId: String, transportGuid: String):
-			BaseFilterOptionsJs<MessageJs> {
+	public fun latestByTransportGuidForDataOwner(dataOwnerId: String, transportGuid: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.latestByTransportGuidForDataOwner(
@@ -495,8 +486,7 @@ public object InternalMessageFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun latestByTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			transportGuid: String): BaseFilterOptionsJs<MessageJs> {
+	public fun latestByTransportGuidForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, transportGuid: String): BaseFilterOptionsJs<MessageJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val transportGuidConverted: String = transportGuid
 		val result = MessageFilters.latestByTransportGuidForDataOwnerInGroup(

@@ -67,6 +67,8 @@ export interface MessageApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of Cardinal where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param message a message
 	 *  @return the encryption keys extracted from the provided Message.
 	 */
@@ -89,6 +91,8 @@ export interface MessageApi {
 	 *  Attempts to extract the patient id linked to a message.
 	 *  Note: messages usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param message a message
 	 *  @return the id of the patient linked to the Message, or empty if the current user can't access any patient id
 	 *  of the Message.
@@ -124,6 +128,9 @@ export interface MessageApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a message that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a message
 	 *  @param delegates a set of data owner ids
 	 */
@@ -141,6 +148,9 @@ export interface MessageApi {
 	/**
 	 *
 	 *  Tries to decrypt a message, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param message an encrypted Message
 	 *  @return the decrypted Message if the decryption was successful or the input if it was not.
 	 */
@@ -160,6 +170,8 @@ export interface MessageApi {
 	/**
 	 *
 	 *  Get all the secret ids that the current data owner can access from the provided message.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param message a message
 	 *  @return a map where the keys are the secret ids of the patient and the value is a set of references
 	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
@@ -479,6 +491,26 @@ export interface MessageApi {
 	/**
 	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *
+	 *  # Access control
+	 *
+	 *  The subscription will only receive notifications about entities that the SDK user can access; currently this
+	 *  validation varies slightly from standard read methods.
+	 *
+	 *  ## Encryptable entities
+	 *
+	 *  Applies the same access control rules as the standard read methods; depending on the permissions of the user the
+	 *  entity might need to have a direct delegation to the user, or to a parent, or if the user has the permission to
+	 *  read any entity of the type regardless of delegations then all notification of entities (matching the filter)
+	 *  will be received.
+	 *
+	 *  ## Healthcare party
+	 *
+	 *  Currently, regardless of user permissions, only notifications about healthcare parties that have the current SDK
+	 *  data owner as a DIRECT link will be returned.
+	 *
+	 *  This behaviour is not in line with current Cardinal SDK ideology and is subject to change in future versions.
+	 *
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
 	 *  make the filter as restrictive as possible.

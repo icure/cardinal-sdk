@@ -242,8 +242,7 @@ internal class SystemApiImplJs(
 		}
 	}
 
-	override fun getIndexingInfoByGroup(groupId: String): Promise<IndexingInfoJs> =
-			GlobalScope.promise {
+	override fun getIndexingInfoByGroup(groupId: String): Promise<IndexingInfoJs> = GlobalScope.promise {
 		val groupIdConverted: String = groupId
 		val result = systemApi.getIndexingInfoByGroup(
 			groupIdConverted,

@@ -25,7 +25,8 @@ data class HealthElementByIdsFilter(
 	 * Optional description of this filter.
 	 */
 	override val desc: String? = null,
-) : AbstractFilter<HealthElement>, Filter.IdsFilter<String, HealthElement> {
+) : AbstractFilter<HealthElement>,
+	Filter.IdsFilter<String, HealthElement> {
 	// region HealthElementByIdsFilter-HealthElementByIdsFilter
 
 	// endregion

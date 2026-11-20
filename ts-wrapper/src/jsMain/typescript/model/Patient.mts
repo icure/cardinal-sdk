@@ -33,10 +33,8 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
 
 /**
  *
- *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
- *  services.
- *  This entity stores personal, administrative, and medical information about the patient, and
- *  supports
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ *  This entity stores personal, administrative, and medical information about the patient, and supports
  *  end-to-end encryption of sensitive data.
  *  /
  */
@@ -254,9 +252,11 @@ export interface Patient extends StoredDocument, ICureDocument<string>, HasMedic
 
 	/**
 	 *
-	 *  Always null for patients.
+	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
-	parentId: undefined;
+	dataOwnerGroups: Array<never>;
+
+	groupLinkType: undefined;
 
 	readonly isEncrypted: boolean;
 
@@ -266,10 +266,8 @@ export interface Patient extends StoredDocument, ICureDocument<string>, HasMedic
 
 /**
  *
- *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
- *  services.
- *  This entity stores personal, administrative, and medical information about the patient, and
- *  supports
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ *  This entity stores personal, administrative, and medical information about the patient, and supports
  *  end-to-end encryption of sensitive data.
  *  /
  */
@@ -667,9 +665,11 @@ export class DecryptedPatient {
 
 	/**
 	 *
-	 *  Always null for patients.
+	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
-	parentId: undefined = undefined;
+	dataOwnerGroups: Array<never> = [];
+
+	groupLinkType: undefined = undefined;
 
 	readonly isEncrypted: false = false;
 
@@ -742,7 +742,8 @@ export class DecryptedPatient {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
-		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
+		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 	}
 
 	toJSON(): object {
@@ -812,7 +813,8 @@ export class DecryptedPatient {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
-		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
+		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
+		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		res['isEncrypted'] = false
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedPatient'
 		return res
@@ -956,7 +958,8 @@ export class DecryptedPatient {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
-			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
+			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
+			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
@@ -968,10 +971,8 @@ export class DecryptedPatient {
 
 /**
  *
- *  Represents a patient in the iCure platform. A patient is a person who receives healthcare
- *  services.
- *  This entity stores personal, administrative, and medical information about the patient, and
- *  supports
+ *  Represents a patient in the iCure platform. A patient is a person who receives healthcare services.
+ *  This entity stores personal, administrative, and medical information about the patient, and supports
  *  end-to-end encryption of sensitive data.
  *  /
  */
@@ -1369,9 +1370,11 @@ export class EncryptedPatient {
 
 	/**
 	 *
-	 *  Always null for patients.
+	 *  The links to the data owners representing the groups this patient belongs to.
 	 */
-	parentId: undefined = undefined;
+	dataOwnerGroups: Array<never> = [];
+
+	groupLinkType: undefined = undefined;
 
 	readonly isEncrypted: true = true;
 
@@ -1444,7 +1447,8 @@ export class EncryptedPatient {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('cryptoActorProperties' in partial && partial.cryptoActorProperties !== undefined) this.cryptoActorProperties = partial.cryptoActorProperties;
-		if ('parentId' in partial) this.parentId = partial.parentId;
+		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
+		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 	}
 
 	toJSON(): object {
@@ -1514,7 +1518,8 @@ export class EncryptedPatient {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		res['cryptoActorProperties'] = this.cryptoActorProperties.map((x0) => x0.toJSON() )
-		if (this.parentId != undefined) throw new Error('Unexpected nullish value for parentId')
+		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
+		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		res['isEncrypted'] = true
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedPatient'
 		return res
@@ -1658,7 +1663,8 @@ export class EncryptedPatient {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			cryptoActorProperties: expectArray(extractEntry(jCpy, 'cryptoActorProperties', false, path), false, [...path, ".cryptoActorProperties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
-			parentId: expectNullish(extractEntry(jCpy, 'parentId', false, path), [...path, ".parentId"]),
+			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
+			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)
