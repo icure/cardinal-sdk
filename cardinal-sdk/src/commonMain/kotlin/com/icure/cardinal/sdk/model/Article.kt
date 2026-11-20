@@ -20,8 +20,8 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents an article entity used to store named, classified content items.
- * /
+ *
+ *  Represents an article entity used to store named, classified content items.
  */
 
 sealed interface Article :
@@ -126,8 +126,8 @@ sealed interface Article :
 }
 
 /**
- * Represents an article entity used to store named, classified content items.
- * /
+ *
+ *  Represents an article entity used to store named, classified content items.
  */
 @Serializable
 data class DecryptedArticle(
@@ -217,8 +217,8 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents an article entity used to store named, classified content items.
- * /
+ *
+ *  Represents an article entity used to store named, classified content items.
  */
 @Serializable
 data class EncryptedArticle(
