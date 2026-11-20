@@ -127,4 +127,12 @@ public object InternalHealthcarePartyFiltersObj {
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
+
+	public fun byDataOwnerGroupId(dataOwnerGroupId: String): BaseFilterOptionsJs<HealthcarePartyJs> {
+		val dataOwnerGroupIdConverted: String = dataOwnerGroupId
+		val result = HealthcarePartyFilters.byDataOwnerGroupId(
+			dataOwnerGroupIdConverted,
+		)
+		return BaseFilterOptionsJsImpl(result)
+	}
 }
