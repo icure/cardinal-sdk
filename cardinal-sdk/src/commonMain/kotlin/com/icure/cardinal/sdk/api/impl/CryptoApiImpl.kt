@@ -70,7 +70,9 @@ internal class CryptoApiImpl(
 		groupId: String?,
 		delegate: EntityReferenceInGroup
 	): RawDecryptedExchangeData {
-		require(delegate.groupId == null && delegate.entityId != this.internal.dataOwnerApi.getCurrentDataOwnerId()) { "Can't create exchange data to yourself in keyless mode." }
+		// The delegate may be in another group than the current data owner (e.g. a keyless data owner of a parent group
+		// sharing data with a data owner of a child group): only exchange data to self is forbidden.
+		require(delegate.entityId != this.internal.dataOwnerApi.getCurrentDataOwnerId()) { "Can't create exchange data to yourself in keyless mode." }
 		check(this.internal.userEncryptionKeysManager.delegatorActorVerifiedKeys().isEmpty()) { "This method can only be used in keyless mode." }
 
 		val created = this.internal.exchangeDataManager.getOrCreateEncryptionDataTo(

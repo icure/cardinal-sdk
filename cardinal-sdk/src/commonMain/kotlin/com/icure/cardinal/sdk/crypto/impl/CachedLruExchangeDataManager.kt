@@ -359,7 +359,23 @@ private class CachedLruExchangeDataManagerInGroup(
 		null
 
 	override suspend fun cacheInjectedExchangeData(exchangeDataDetails: List<Pair<ExchangeDataWithUnencryptedContent, Boolean>>) {
-		TODO("Not yet implemented")
+		val selfReference = EntityReferenceInGroup(userEncryptionKeys.delegatorActorId(), null)
+			.asReferenceStringInGroup(requestGroup, sdkBoundGroup)
+		// Minimize expensive operations in lock: calculate hashes here
+		val toCache = exchangeDataDetails.map { (data, verified) ->
+			prepareCachedDetails(
+				data.exchangeData,
+				// Only verified data from the current data owner may be used to share new data with its delegate:
+				// data injected where the current data owner is the delegate is only usable for decryption.
+				Pair(data.unencryptedContent, verified && data.exchangeData.delegator == selfReference)
+			)
+		}
+		cacheMutex.withLock {
+			toCache.forEach {
+				cacheMainInfoJobMustHaveLock(it.exchangeData.groupId, CompletableDeferred(it))
+				cacheAdditionalInfoMustHaveLock(it)
+			}
+		}
 	}
 
 	override fun dispose() =
