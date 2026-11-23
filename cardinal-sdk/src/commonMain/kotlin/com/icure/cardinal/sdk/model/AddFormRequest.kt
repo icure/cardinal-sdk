@@ -6,8 +6,8 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Request object used to add a form for a patient.
- * /
+ *
+ *  Request object used to add a form for a patient.
  */
 @Serializable
 data class AddFormRequest(

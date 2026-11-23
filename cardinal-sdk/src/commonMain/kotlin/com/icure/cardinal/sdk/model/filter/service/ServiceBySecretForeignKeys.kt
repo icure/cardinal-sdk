@@ -10,8 +10,8 @@ import kotlin.String
 import kotlin.collections.Set
 
 /**
- * Filter that matches services by healthcare party and patient secret foreign keys.
- * /
+ *
+ *  Filter that matches services by healthcare party and patient secret foreign keys.
  */
 @SerialName("ServiceBySecretForeignKeys")
 @Serializable
