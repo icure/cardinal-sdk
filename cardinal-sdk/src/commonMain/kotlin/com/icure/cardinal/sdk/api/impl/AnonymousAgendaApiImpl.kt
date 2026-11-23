@@ -7,7 +7,8 @@ import com.icure.utils.InternalIcureApi
 
 @OptIn(InternalIcureApi::class)
 class AnonymousAgendaApiImpl(
-	val raw: RawAnonymousApi
+	val raw: RawAnonymousApi,
+	private val designDocSchemaVersion: Int?,
 ): AnonymousAgendaApi {
 	override suspend fun listAnonymousAgendaAndAppointmentTypes(
 		groupId: String,
@@ -16,7 +17,8 @@ class AnonymousAgendaApiImpl(
 	): PublicAgendasAndCalendarItemTypes = raw.listAnonymousAgendaAndAppointmentTypes(
 		groupId = groupId,
 		propertyId = propertyId,
-		propertyValue = propertyValue
+		propertyValue = propertyValue,
+		schemaVersion = designDocSchemaVersion,
 	).successBody()
 
 	override suspend fun listAnonymousAvailabilities(
@@ -33,5 +35,6 @@ class AnonymousAgendaApiImpl(
 		startDate = startDate,
 		endDate = endDate,
 		limit = limit,
+		schemaVersion = designDocSchemaVersion,
 	).successBody()
 }
