@@ -16,7 +16,6 @@ import com.icure.cardinal.sdk.api.impl.CalendarItemTypeApiImpl
 import com.icure.cardinal.sdk.api.impl.CardinalAnonymousSdkImpl
 import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
-import com.icure.cardinal.sdk.api.impl.FilterApiImpl
 import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
@@ -52,7 +51,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawCodeApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawContactApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDocumentApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawFilterApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
@@ -471,15 +469,6 @@ private class CardinalBaseApisImpl(
 				config.rawApiConfig
 			),
 			config
-		)
-	}
-	override val filter by lazy {
-		FilterApiImpl(
-			rawApi = RawFilterApiImpl(
-				apiUrl,
-				authProvider,
-				config.rawApiConfig
-			)
 		)
 	}
 	override val form by lazy {

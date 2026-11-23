@@ -19,7 +19,6 @@ import com.icure.cardinal.sdk.js.api.DataOwnerApiJs
 import com.icure.cardinal.sdk.js.api.DeviceApiJs
 import com.icure.cardinal.sdk.js.api.DocumentApiJs
 import com.icure.cardinal.sdk.js.api.DocumentBasicApiJs
-import com.icure.cardinal.sdk.js.api.FilterApiJs
 import com.icure.cardinal.sdk.js.api.FormApiJs
 import com.icure.cardinal.sdk.js.api.FormBasicApiJs
 import com.icure.cardinal.sdk.js.api.FrontEndMigrationApiJs
@@ -69,7 +68,6 @@ external interface CardinalApisJs {
 	val contact: ContactApiJs
 	val document: DocumentApiJs
 	val form: FormApiJs
-	val filter: FilterApiJs
 	val healthElement: HealthElementApiJs
 	val invoice: InvoiceApiJs
 	val maintenanceTask: MaintenanceTaskApiJs
@@ -111,7 +109,6 @@ external interface CardinalBaseApisJs {
 	val contact: ContactBasicApiJs
 	val document: DocumentBasicApiJs
 	val form: FormBasicApiJs
-	val filter: FilterApiJs
 	val healthElement: HealthElementBasicApiJs
 	val invoice: InvoiceBasicApiJs
 	val maintenanceTask: MaintenanceTaskBasicApiJs
@@ -137,5 +134,4 @@ external interface CardinalAnonymousApisJs {
 }
 
 @JsName("CardinalAnonymousSdk")
-external interface CardinalAnonymousSdkJs : CardinalAnonymousApisJs {
-}
+external interface CardinalAnonymousSdkJs : CardinalAnonymousApisJs

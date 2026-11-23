@@ -19,7 +19,6 @@ import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.DeviceApi
 import com.icure.cardinal.sdk.api.DocumentApi
 import com.icure.cardinal.sdk.api.DocumentBasicApi
-import com.icure.cardinal.sdk.api.FilterApi
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.api.FormBasicApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
@@ -57,7 +56,6 @@ interface CardinalNonCryptoApis {
 	val code: CodeApi
 	val calendarItemType: CalendarItemTypeApi
 	val device: DeviceApi
-	val filter: FilterApi
 	val frontEndMigration: FrontEndMigrationApi
 	val group: GroupApi
 	val healthcareParty: HealthcarePartyApi
