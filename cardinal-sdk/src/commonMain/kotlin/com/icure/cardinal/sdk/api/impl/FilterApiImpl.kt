@@ -22,7 +22,7 @@ class FilterApiImpl(
 							name = option.name,
 							factoryMethods = option.factoryMethods,
 							targetFilter = option.targetFilter,
-							views = it.views
+							views = emptyList()
 						)
 					}
 				}
