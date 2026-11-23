@@ -156,6 +156,19 @@ public interface RawDocumentApi {
 		documentDto: EncryptedDocument,
 	): HttpResponse<EncryptedDocument>
 
+	suspend fun setDocumentAttachmentInGroup(
+		groupId: String,
+		documentId: String,
+		rev: String,
+		utis: List<String>? = null,
+		compressionAlgorithm: String? = null,
+		triedCompressionAlgorithmsVersion: String? = null,
+		realDataSize: Long? = null,
+		payload: ByteArray,
+		lengthHeader: Long?,
+		encrypted: Boolean? = null,
+	): HttpResponse<EncryptedDocument>
+
 	suspend fun createDocumentsInGroup(
 		groupId: String,
 		documentDtos: List<EncryptedDocument>,

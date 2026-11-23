@@ -697,6 +697,28 @@ private class DocumentApiImpl(
 			delegates: Set<EntityReferenceInGroup>
 		) = doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
 
+		override suspend fun encryptAndSetMainAttachment(
+			document: GroupScoped<Document>,
+			utis: List<String>?,
+			attachment: ByteArray,
+		): GroupScoped<EncryptedDocument> {
+			val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(document.groupId, listOf(document.entity), EntityWithEncryptionMetadataTypeName.Document)[document.entity.id]?.key
+				?: throw EntityEncryptionException("Cannot extract encryption key from document")
+			val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
+			return GroupScoped(
+				rawApi.setDocumentAttachmentInGroup(
+					groupId = document.groupId,
+					documentId = document.entity.id,
+					rev = document.entity.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
+					utis = utis,
+					payload = payload,
+					lengthHeader = attachment.size.toLong(),
+					encrypted = true,
+				).successBody(),
+				document.groupId,
+			)
+		}
+
 		override suspend fun getEncryptionKeysOf(document: GroupScoped<Document>): Set<HexString> =
 			doGetEncryptionKeysOf(document.groupId, document.entity)
 

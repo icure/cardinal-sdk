@@ -26,6 +26,7 @@ import com.icure.cardinal.sdk.test.initializeTestEnvironment
 import com.icure.cardinal.sdk.test.superadminAuth
 import com.icure.cardinal.sdk.test.uuid
 import com.icure.cardinal.sdk.utils.DEFAULT_ENABLED
+import com.icure.cardinal.sdk.utils.EntityEncryptionException
 import com.icure.cardinal.sdk.utils.LOCAL_ENV_ONLY
 import com.icure.cardinal.sdk.utils.RequestStatusException
 import com.icure.kryptom.crypto.CryptoService
@@ -168,7 +169,9 @@ class KeylessInterGroupDeliveryTest : StringSpec({
 		val labApi = labApi()
 		labApi.createExchangeDataToRecipient()
 		val message = labApi.deliverMessage(transportGuid = "lab|sub|${uuid()}", subject = "Results for order 42")
-		val document = labApi.deliverDocument(message, name = "report.pdf")
+		val created = labApi.deliverDocument(message, name = "report.pdf")
+		val report = "%PDF-1.4 lab report for order 42".encodeToByteArray()
+		val document = labApi.document.inGroup.encryptAndSetMainAttachment(created, listOf("com.adobe.pdf"), report)
 
 		// The delegator can read back what it created while it holds the exchange keys in memory
 		labApi.message.inGroup.getMessage(practiceGroupId, message.entity.id).shouldNotBeNull().entity.subject shouldBe "Results for order 42"
@@ -181,6 +184,7 @@ class KeylessInterGroupDeliveryTest : StringSpec({
 		val documentForRecipient = recipientApi.document.getDocument(document.entity.id).shouldNotBeNull()
 		documentForRecipient.name shouldBe "report.pdf"
 		recipientApi.document.decryptOwningEntityIdsOf(documentForRecipient).map { it.entityId } shouldBe listOf(message.entity.id)
+		recipientApi.document.getAndDecryptMainAttachment(documentForRecipient).decodeToString() shouldBe report.decodeToString()
 
 		// Another hcp of the same practice can neither get nor decrypt them
 		shouldThrow<RequestStatusException> { otherHcpApi.message.getMessage(message.entity.id) }.statusCode shouldBe 403
@@ -228,6 +232,20 @@ class KeylessInterGroupDeliveryTest : StringSpec({
 
 		recipientApi.message.getMessage(first.entity.id).shouldNotBeNull().subject shouldBe "Before restart"
 		recipientApi.message.getMessage(second.entity.id).shouldNotBeNull().subject shouldBe "After restart"
+	}
+
+	"After a restart, a keyless lab cannot attach a file to a document left by an earlier attempt".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val firstInstance = labApi()
+		firstInstance.createExchangeDataToRecipient()
+		val message = firstInstance.deliverMessage(transportGuid = "lab|sub|${uuid()}", subject = "Interrupted")
+		val leftover = firstInstance.deliverDocument(message, name = "report.pdf")
+
+		// The exchange keys of the first instance are lost: the new instance has its own exchange data only
+		val secondInstance = labApi()
+		secondInstance.createExchangeDataToRecipient()
+		shouldThrow<EntityEncryptionException> {
+			secondInstance.document.inGroup.encryptAndSetMainAttachment(leftover, listOf("com.adobe.pdf"), "late".encodeToByteArray())
+		}
 	}
 
 	"A keyless lab without exchange data cannot deliver".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
