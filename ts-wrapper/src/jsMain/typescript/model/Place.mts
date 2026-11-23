@@ -1,7 +1,7 @@
 // auto-generated file
 import {expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
-import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {CustomisableBuiltinRoot} from './base/CustomisableBuiltinRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {Named} from './base/Named.mjs';
 import {StoredDocument} from './base/StoredDocument.mjs';
@@ -13,7 +13,7 @@ import {DecryptedAddress} from './embed/Address.mjs';
  *  DTO representing a physical place or location, such as a clinic or office.
  *  /
  */
-export class Place implements StoredDocument, Named, CustomisableRoot, Extendable {
+export class Place implements StoredDocument, Named, CustomisableBuiltinRoot, Extendable {
 
 	/**
 	 *
@@ -51,6 +51,8 @@ export class Place implements StoredDocument, Named, CustomisableRoot, Extendabl
 	 */
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	constructor(partial: Partial<Place>) {
@@ -60,6 +62,7 @@ export class Place implements StoredDocument, Named, CustomisableRoot, Extendabl
 		if ('name' in partial) this.name = partial.name;
 		if ('address' in partial) this.address = partial.address;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -71,6 +74,7 @@ export class Place implements StoredDocument, Named, CustomisableRoot, Extendabl
 		if (this.name != undefined) res['name'] = this.name
 		if (this.address != undefined) res['address'] = this.address.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		return res
 	}
@@ -86,6 +90,7 @@ export class Place implements StoredDocument, Named, CustomisableRoot, Extendabl
 			name: expectString(extractEntry(jCpy, 'name', false, path), true, [...path, ".name"]),
 			address: expectObject(extractEntry(jCpy, 'address', false, path), true, ignoreUnknownKeys, [...path, ".address"], DecryptedAddress.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {

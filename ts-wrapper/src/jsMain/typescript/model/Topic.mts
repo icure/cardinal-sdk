@@ -3,7 +3,7 @@ import {expectArray, expectMap, expectNumber, expectObject, expectString, expect
 import {randomUuid} from '../utils/Id.mjs';
 import {TopicRole} from './TopicRole.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
-import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {CustomisableBuiltinRoot} from './base/CustomisableBuiltinRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
@@ -21,7 +21,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  and can be linked to health elements and services for medical context.
  *  /
  */
-export interface Topic extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
+export interface Topic extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableBuiltinRoot, Extendable {
 
 	/**
 	 *
@@ -223,6 +223,8 @@ export class DecryptedTopic {
 	 */
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -255,6 +257,7 @@ export class DecryptedTopic {
 		if ('linkedHealthElements' in partial && partial.linkedHealthElements !== undefined) this.linkedHealthElements = partial.linkedHealthElements;
 		if ('linkedServices' in partial && partial.linkedServices !== undefined) this.linkedServices = partial.linkedServices;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -284,6 +287,7 @@ export class DecryptedTopic {
 		res['linkedHealthElements'] = this.linkedHealthElements.map((x0) => x0 )
 		res['linkedServices'] = this.linkedServices.map((x0) => x0 )
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedTopic'
@@ -345,6 +349,7 @@ export class DecryptedTopic {
 			linkedHealthElements: expectArray(extractEntry(jCpy, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
 			linkedServices: expectArray(extractEntry(jCpy, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
@@ -507,6 +512,8 @@ export class EncryptedTopic {
 	 */
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: true = true;
@@ -539,6 +546,7 @@ export class EncryptedTopic {
 		if ('linkedHealthElements' in partial && partial.linkedHealthElements !== undefined) this.linkedHealthElements = partial.linkedHealthElements;
 		if ('linkedServices' in partial && partial.linkedServices !== undefined) this.linkedServices = partial.linkedServices;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -568,6 +576,7 @@ export class EncryptedTopic {
 		res['linkedHealthElements'] = this.linkedHealthElements.map((x0) => x0 )
 		res['linkedServices'] = this.linkedServices.map((x0) => x0 )
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedTopic'
@@ -629,6 +638,7 @@ export class EncryptedTopic {
 			linkedHealthElements: expectArray(extractEntry(jCpy, 'linkedHealthElements', false, path), false, [...path, ".linkedHealthElements"], (x0, p0) => expectString(x0, false, p0)),
 			linkedServices: expectArray(extractEntry(jCpy, 'linkedServices', false, path), false, [...path, ".linkedServices"], (x0, p0) => expectString(x0, false, p0)),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {

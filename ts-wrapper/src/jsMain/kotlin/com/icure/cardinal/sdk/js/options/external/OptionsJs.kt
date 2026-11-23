@@ -81,6 +81,7 @@ external interface SdkOptionsJs {
 	val dataOwnerScope: String?
 	val unversionedEntitiesDecryptedJsonStrictness: String?
 	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
+	val designDocSchemaVersion: Int?
 }
 
 @JsName("BasicToFullSdkOptions")
@@ -100,6 +101,7 @@ external interface BasicSdkOptionsJs {
 	val ignoreUnknownFields: Boolean?
 	val dataOwnerScope: String?
 	val entityListDecodingStrategy: EntityListDecodingStrategyJs?
+	val designDocSchemaVersion: Int?
 }
 
 @JsName("AnonymousSdkOptions")

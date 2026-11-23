@@ -560,6 +560,11 @@ object FilterOptionsCatalog {
 				factoryMethods = listOf("byParentId"),
 				targetFilter = "HealthcarePartyByParentIdFilter",
 			),
+			FilterOptionGroup(
+				name = "byDataOwnerGroupId",
+				factoryMethods = listOf("byDataOwnerGroupId"),
+				targetFilter = "HealthcarePartyByDataOwnerGroupIdFilter",
+			),
 		),
 		"MaintenanceTask" to listOf(
 			FilterOptionGroup(

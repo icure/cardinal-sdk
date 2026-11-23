@@ -89,6 +89,9 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -110,6 +113,7 @@ public fun calendarItemType_toJs(obj: CalendarItemType): CalendarItemTypeJs {
 		"subjectByLanguage:subjectByLanguage," +
 		"publicProperties:publicProperties," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -164,6 +168,7 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return CalendarItemType(
 		id = id,
@@ -183,6 +188,7 @@ public fun calendarItemType_fromJs(obj: CalendarItemTypeJs): CalendarItemType {
 		subjectByLanguage = subjectByLanguage,
 		publicProperties = publicProperties,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

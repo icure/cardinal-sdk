@@ -159,6 +159,9 @@ public fun user_toJs(obj: User): UserJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -188,6 +191,7 @@ public fun user_toJs(obj: User): UserJs {
 		"authenticationTokens:authenticationTokens," +
 		"systemMetadata:systemMetadata," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -281,6 +285,7 @@ public fun user_fromJs(obj: UserJs): User {
 		user_SystemMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return User(
 		id = id,
@@ -308,6 +313,7 @@ public fun user_fromJs(obj: UserJs): User {
 		authenticationTokens = authenticationTokens,
 		systemMetadata = systemMetadata,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

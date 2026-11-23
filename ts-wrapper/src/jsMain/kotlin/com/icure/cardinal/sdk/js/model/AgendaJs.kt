@@ -4,7 +4,7 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
-import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableBuiltinRootJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEndOfLifeJs
 import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
@@ -28,7 +28,7 @@ public external class AgendaJs(
     ICureDocumentJs<String>,
     HasMedicalLocationJs,
     HasEndOfLifeJs,
-    CustomisableRootJs,
+    CustomisableBuiltinRootJs,
     ExtendableJs {
 	override val id: String
 
@@ -75,6 +75,8 @@ public external class AgendaJs(
 	public val schedules: Array<ResourceGroupAllocationScheduleJs>
 
 	override val extensions: dynamic
+
+	override val customisedTypeId: String?
 
 	override val customisedModelVersion: Double?
 }

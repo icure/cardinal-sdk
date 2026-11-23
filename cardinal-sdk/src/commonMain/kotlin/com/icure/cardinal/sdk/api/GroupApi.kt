@@ -127,4 +127,34 @@ interface GroupApi {
 	suspend fun modifyGroupApplicationId(id: String, applicationId: String): Group
 	suspend fun addTagToGroup(id: String, rev: String, tag: CodeStub): Group
 	suspend fun removeTagFromGroup(id: String, rev: String, tagId: String): Group
+	suspend fun createApplicationGroup(
+		id: String,
+		name: String,
+		@DefaultValue("null")
+		server: String? = null,
+		@DefaultValue("null")
+		q: Int? = null,
+		@DefaultValue("null")
+		n: Int?= null,
+		@DefaultValue("null")
+		superGroup: String? = null,
+		@DefaultValue("null")
+		projectId: String? = null,
+	): Group
+
+	suspend fun createTenantGroup(
+		id: String,
+		name: String,
+		@DefaultValue("null")
+		server: String? = null,
+		@DefaultValue("null")
+		q: Int? = null,
+		@DefaultValue("null")
+		n: Int?= null,
+		@DefaultValue("null")
+		superGroup: String? = null,
+		@DefaultValue("null")
+		projectId: String? = null,
+	): Group
+
 }

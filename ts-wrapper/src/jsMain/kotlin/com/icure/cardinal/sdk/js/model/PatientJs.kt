@@ -5,7 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
-import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableBuiltinRootJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
@@ -57,7 +57,7 @@ import kotlin.js.JsQualifier
 @JsName("Patient")
 public sealed external interface PatientJs : StoredDocumentJs, ICureDocumentJs<String>,
 		HasMedicalLocationJs, PersonJs, HasEncryptionMetadataJs, EncryptableJs, HasIdentifierJs,
-		CryptoActorJs, CustomisableRootJs, ExtendableJs {
+		CryptoActorJs, CustomisableBuiltinRootJs, ExtendableJs {
 	public val endOfLife: Double?
 
 	public val birthSex: String?
@@ -333,6 +333,8 @@ public external class DecryptedPatientJs(
 
 	override val extensions: dynamic
 
+	override val customisedTypeId: String?
+
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
@@ -513,6 +515,8 @@ public external class EncryptedPatientJs(
 	override val groupLinkType: Nothing?
 
 	override val extensions: dynamic
+
+	override val customisedTypeId: String?
 
 	override val customisedModelVersion: Double?
 

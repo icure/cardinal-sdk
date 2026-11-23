@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.crypto.entities.CardinalKeyInfo
 import com.icure.cardinal.sdk.crypto.entities.RsaDecryptionKeysSet
 import com.icure.cardinal.sdk.crypto.entities.toPrivateKeyInfo
 import com.icure.cardinal.sdk.model.CryptoActorStub
+import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.base.DataOwnerHierarchyInfo
 import com.icure.cardinal.sdk.model.specializations.KeypairFingerprintV2String
 import com.icure.cardinal.sdk.model.specializations.SpkiHexString
@@ -64,10 +65,11 @@ class FakeUserEncryptionKeysManager(private val selfDelegatorActorId: String) : 
 	}
 
 	override fun delegatorActorParentHierarchy(from: String?): DataOwnerHierarchyInfo {
-		TODO("Not yet implemented")
+		require(from == null || from == selfDelegatorActorId) { "$from is not part of the hierarchy" }
+		return DataOwnerHierarchyInfo(selfDelegatorActorId, DataOwnerType.Hcp)
 	}
 
 	override fun delegatorActorFullHierarchy(): DataOwnerHierarchyInfo {
-		TODO("Not yet implemented")
+		return DataOwnerHierarchyInfo(selfDelegatorActorId, DataOwnerType.Hcp)
 	}
 }

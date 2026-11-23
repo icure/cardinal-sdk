@@ -5,7 +5,7 @@ import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
-import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {CustomisableBuiltinRoot} from './base/CustomisableBuiltinRoot.mjs';
 import {DataOwner} from './base/DataOwner.mjs';
 import {DataOwnerGroupLink} from './base/DataOwnerGroupLink.mjs';
 import {DataOwnerGroupLinkType} from './base/DataOwnerGroupLinkType.mjs';
@@ -38,7 +38,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  icure-healthdata CouchDB database.
  *  /
  */
-export class HealthcareParty implements StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags, HasIdentifier, CustomisableRoot, Extendable {
+export class HealthcareParty implements StoredDocument, Named, Person, CryptoActor, DataOwner, HasCodes, HasTags, HasIdentifier, CustomisableBuiltinRoot, Extendable {
 
 	/**
 	 *
@@ -392,6 +392,8 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	readonly $ktClass: 'com.icure.cardinal.sdk.model.HealthcareParty' = 'com.icure.cardinal.sdk.model.HealthcareParty';
@@ -457,6 +459,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 		if ('publicKey' in partial) this.publicKey = partial.publicKey;
 		if ('publicKeysForOaepWithSha256' in partial && partial.publicKeysForOaepWithSha256 !== undefined) this.publicKeysForOaepWithSha256 = partial.publicKeysForOaepWithSha256;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -522,6 +525,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 		if (this.publicKey != undefined) res['publicKey'] = this.publicKey
 		res['publicKeysForOaepWithSha256'] = this.publicKeysForOaepWithSha256.map((x0) => x0 )
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.HealthcareParty'
 		return res
@@ -659,6 +663,7 @@ export class HealthcareParty implements StoredDocument, Named, Person, CryptoAct
 			publicKey: expectString(extractEntry(jCpy, 'publicKey', false, path), true, [...path, ".publicKey"]) as SpkiHexString,
 			publicKeysForOaepWithSha256: expectArray(extractEntry(jCpy, 'publicKeysForOaepWithSha256', false, path), false, [...path, ".publicKeysForOaepWithSha256"], (x0, p0) => expectString(x0, false, p0) as SpkiHexString),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {

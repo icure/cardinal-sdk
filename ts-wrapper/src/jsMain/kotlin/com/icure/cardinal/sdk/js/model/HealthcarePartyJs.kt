@@ -5,7 +5,7 @@ package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.CryptoActorJs
-import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableBuiltinRootJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerGroupLinkJs
 import com.icure.cardinal.sdk.js.model.base.DataOwnerJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
@@ -41,7 +41,7 @@ public external class HealthcarePartyJs(
     HasCodesJs,
     HasTagsJs,
     HasIdentifierJs,
-    CustomisableRootJs,
+    CustomisableBuiltinRootJs,
     ExtendableJs {
 	override val id: String
 
@@ -162,6 +162,8 @@ public external class HealthcarePartyJs(
 	override val publicKeysForOaepWithSha256: Array<String>
 
 	override val extensions: dynamic
+
+	override val customisedTypeId: String?
 
 	override val customisedModelVersion: Double?
 

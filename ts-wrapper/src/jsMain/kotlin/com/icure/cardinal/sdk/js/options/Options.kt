@@ -56,6 +56,7 @@ suspend fun SdkOptionsJs.toKt(): SdkOptions {
 		} ?: defaultSdkOptions.unversionedEntitiesDecryptedJsonStrictness,
 		entityListDecodingStrategy = this.entityListDecodingStrategy?.toKt()
 			?: defaultSdkOptions.entityListDecodingStrategy,
+		designDocSchemaVersion = this.designDocSchemaVersion,
 	)
 }
 
@@ -72,6 +73,7 @@ suspend fun BasicSdkOptionsJs.toKt(): BasicSdkOptions {
 		dataOwnerScope = this.dataOwnerScope ?: defaultApiOptions.dataOwnerScope,
 		entityListDecodingStrategy = this.entityListDecodingStrategy?.toKt()
 			?: defaultApiOptions.entityListDecodingStrategy,
+		designDocSchemaVersion = this.designDocSchemaVersion,
 	)
 }
 

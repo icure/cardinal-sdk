@@ -169,6 +169,9 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -203,6 +206,7 @@ public fun form_toJs(obj: DecryptedForm): DecryptedFormJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -305,6 +309,7 @@ public fun form_fromJs(obj: DecryptedFormJs): DecryptedForm {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedForm(
 		id = id,
@@ -337,6 +342,7 @@ public fun form_fromJs(obj: DecryptedFormJs): DecryptedForm {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }
@@ -477,6 +483,9 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -511,6 +520,7 @@ public fun form_toJs(obj: EncryptedForm): EncryptedFormJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -613,6 +623,7 @@ public fun form_fromJs(obj: EncryptedFormJs): EncryptedForm {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedForm(
 		id = id,
@@ -645,6 +656,7 @@ public fun form_fromJs(obj: EncryptedFormJs): EncryptedForm {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

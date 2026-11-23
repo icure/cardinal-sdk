@@ -2,7 +2,7 @@
 import {expectArray, expectMap, expectNumber, expectObject, expectString, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
-import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {CustomisableBuiltinRoot} from './base/CustomisableBuiltinRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
@@ -19,7 +19,7 @@ import {Base64String} from './specializations/Base64String.mjs';
  *  Represents an access log entry that records access to medical data or resources within the system.
  *  /
  */
-export interface AccessLog extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableRoot, Extendable {
+export interface AccessLog extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable, CustomisableBuiltinRoot, Extendable {
 
 	/**
 	 *
@@ -216,6 +216,8 @@ export class DecryptedAccessLog {
 
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -248,6 +250,7 @@ export class DecryptedAccessLog {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -277,6 +280,7 @@ export class DecryptedAccessLog {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedAccessLog'
@@ -332,6 +336,7 @@ export class DecryptedAccessLog {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
@@ -489,6 +494,8 @@ export class EncryptedAccessLog {
 
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: true = true;
@@ -521,6 +528,7 @@ export class EncryptedAccessLog {
 		if ('encryptedSelf' in partial) this.encryptedSelf = partial.encryptedSelf;
 		if ('securityMetadata' in partial) this.securityMetadata = partial.securityMetadata;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -550,6 +558,7 @@ export class EncryptedAccessLog {
 		if (this.encryptedSelf != undefined) res['encryptedSelf'] = this.encryptedSelf
 		if (this.securityMetadata != undefined) res['securityMetadata'] = this.securityMetadata.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedAccessLog'
@@ -605,6 +614,7 @@ export class EncryptedAccessLog {
 			encryptedSelf: expectString(extractEntry(jCpy, 'encryptedSelf', false, path), true, [...path, ".encryptedSelf"]) as Base64String,
 			securityMetadata: expectObject(extractEntry(jCpy, 'securityMetadata', false, path), true, ignoreUnknownKeys, [...path, ".securityMetadata"], SecurityMetadata.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {

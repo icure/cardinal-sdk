@@ -64,6 +64,8 @@ export interface RelatedPersonApi {
 	 *  of the related person the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param relatedPerson a related person
 	 *  @return the encryption keys extracted from the provided related person.
 	 */
@@ -85,6 +87,8 @@ export interface RelatedPersonApi {
 	 *
 	 *  Get all the secret ids that the current data owner can access from the provided related person. Since a related
 	 *  person is a root entity these secret ids may be used to link other entities to it.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param relatedPerson a related person
 	 *  @return a map where the keys are the secret ids of the related person and the value is a set of references
 	 *  ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
@@ -109,6 +113,9 @@ export interface RelatedPersonApi {
 	 *  Note that this delegation metadata may be used to de-anonymize the corresponding delegation in any RelatedPerson,
 	 *  not only in the provided instance.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a related person
 	 *  @param delegates a set of data owner ids
 	 */
@@ -127,6 +134,9 @@ export interface RelatedPersonApi {
 	/**
 	 *
 	 *  Tries to decrypt a RelatedPerson, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param relatedPersons encrypted RelatedPersons
 	 *  @return all the provided RelatedPersons, each of them decrypted if possible or unchanged (still encrypted)
 	 */

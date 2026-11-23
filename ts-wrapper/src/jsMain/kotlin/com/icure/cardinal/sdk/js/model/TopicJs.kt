@@ -4,7 +4,7 @@
 package com.icure.cardinal.sdk.js.model
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
-import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableBuiltinRootJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasEncryptionMetadataJs
 import com.icure.cardinal.sdk.js.model.base.HasMedicalLocationJs
@@ -23,7 +23,8 @@ import kotlin.js.JsQualifier
 
 @JsName("Topic")
 public sealed external interface TopicJs : StoredDocumentJs, ICureDocumentJs<String>,
-		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, CustomisableRootJs, ExtendableJs {
+		HasMedicalLocationJs, HasEncryptionMetadataJs, EncryptableJs, CustomisableBuiltinRootJs,
+		ExtendableJs {
 	public val healthElementId: String?
 
 	public val contactId: String?
@@ -93,6 +94,8 @@ public external class DecryptedTopicJs(
 
 	override val extensions: dynamic
 
+	override val customisedTypeId: String?
+
 	override val customisedModelVersion: Double?
 
 	override val isEncrypted: Boolean
@@ -151,6 +154,8 @@ public external class EncryptedTopicJs(
 	override val linkedServices: Array<String>
 
 	override val extensions: dynamic
+
+	override val customisedTypeId: String?
 
 	override val customisedModelVersion: Double?
 

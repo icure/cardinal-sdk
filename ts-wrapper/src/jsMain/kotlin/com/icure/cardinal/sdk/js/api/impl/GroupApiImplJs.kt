@@ -669,4 +669,118 @@ internal class GroupApiImplJs(
 		)
 		group_toJs(result)
 	}
+
+	override fun createApplicationGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val idConverted: String = id
+			val nameConverted: String = name
+			val serverConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"server",
+				null
+			) { server: String? ->
+				undefinedToNull(server)
+			}
+			val qConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"q",
+				null
+			) { q: Double? ->
+				numberToInt(q, "q")
+			}
+			val nConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"n",
+				null
+			) { n: Double? ->
+				numberToInt(n, "n")
+			}
+			val superGroupConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"superGroup",
+				null
+			) { superGroup: String? ->
+				undefinedToNull(superGroup)
+			}
+			val projectIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"projectId",
+				null
+			) { projectId: String? ->
+				undefinedToNull(projectId)
+			}
+			val result = groupApi.createApplicationGroup(
+				idConverted,
+				nameConverted,
+				serverConverted,
+				qConverted,
+				nConverted,
+				superGroupConverted,
+				projectIdConverted,
+			)
+			group_toJs(result)
+		}
+	}
+
+	override fun createTenantGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs> {
+		val _options = options ?: js("{}")
+		return GlobalScope.promise {
+			val idConverted: String = id
+			val nameConverted: String = name
+			val serverConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"server",
+				null
+			) { server: String? ->
+				undefinedToNull(server)
+			}
+			val qConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"q",
+				null
+			) { q: Double? ->
+				numberToInt(q, "q")
+			}
+			val nConverted: Int? = convertingOptionOrDefaultNullable(
+				_options,
+				"n",
+				null
+			) { n: Double? ->
+				numberToInt(n, "n")
+			}
+			val superGroupConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"superGroup",
+				null
+			) { superGroup: String? ->
+				undefinedToNull(superGroup)
+			}
+			val projectIdConverted: String? = convertingOptionOrDefaultNullable(
+				_options,
+				"projectId",
+				null
+			) { projectId: String? ->
+				undefinedToNull(projectId)
+			}
+			val result = groupApi.createTenantGroup(
+				idConverted,
+				nameConverted,
+				serverConverted,
+				qConverted,
+				nConverted,
+				superGroupConverted,
+				projectIdConverted,
+			)
+			group_toJs(result)
+		}
+	}
 }

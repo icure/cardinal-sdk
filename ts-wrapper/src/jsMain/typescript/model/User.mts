@@ -2,7 +2,7 @@
 import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expectString, expectStringEnum, extractEntry} from '../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
-import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {CustomisableBuiltinRoot} from './base/CustomisableBuiltinRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
 import {Identifier} from './base/Identifier.mjs';
@@ -21,7 +21,7 @@ import {Permission} from './security/Permission.mjs';
  *   Represents a user that can log in to the iCure platform. A user can be linked to a healthcare party,
  *   a patient, or a device, and holds authentication credentials, roles, and permissions.
  */
-export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Extendable {
+export class User implements StoredDocument, HasIdentifier, CustomisableBuiltinRoot, Extendable {
 
 	/**
 	 *
@@ -169,6 +169,8 @@ export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Ex
 
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	constructor(partial: Partial<User>) {
@@ -197,6 +199,7 @@ export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Ex
 		if ('authenticationTokens' in partial && partial.authenticationTokens !== undefined) this.authenticationTokens = partial.authenticationTokens;
 		if ('systemMetadata' in partial) this.systemMetadata = partial.systemMetadata;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -227,6 +230,7 @@ export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Ex
 		res['authenticationTokens'] = Object.fromEntries(Object.entries(this.authenticationTokens).map(([k0, v0]) => [k0, v0.toJSON()]))
 		if (this.systemMetadata != undefined) res['systemMetadata'] = this.systemMetadata.toJSON()
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		return res
 	}
@@ -279,6 +283,7 @@ export class User implements StoredDocument, HasIdentifier, CustomisableRoot, Ex
 			),
 			systemMetadata: expectObject(extractEntry(jCpy, 'systemMetadata', false, path), true, ignoreUnknownKeys, [...path, ".systemMetadata"], User.SystemMetadata.fromJSON),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {

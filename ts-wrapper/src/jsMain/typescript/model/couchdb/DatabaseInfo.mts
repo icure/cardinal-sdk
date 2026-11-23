@@ -1,5 +1,5 @@
 // auto-generated file
-import {expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
+import {expectArray, expectNumber, expectString, extractEntry} from '../../internal/JsonDecodeUtils.mjs';
 import {randomUuid} from '../../utils/Id.mjs';
 
 
@@ -70,6 +70,8 @@ export class DatabaseInfo {
 	 */
 	r: number | undefined = undefined;
 
+	zones: Array<string> = [];
+
 	constructor(partial: Partial<DatabaseInfo>) {
 		this.id = partial.id ?? randomUuid();
 		if ('updateSeq' in partial) this.updateSeq = partial.updateSeq;
@@ -81,6 +83,7 @@ export class DatabaseInfo {
 		if ('n' in partial) this.n = partial.n;
 		if ('w' in partial) this.w = partial.w;
 		if ('r' in partial) this.r = partial.r;
+		if ('zones' in partial && partial.zones !== undefined) this.zones = partial.zones;
 	}
 
 	toJSON(): object {
@@ -95,6 +98,7 @@ export class DatabaseInfo {
 		if (this.n != undefined) res['n'] = this.n
 		if (this.w != undefined) res['w'] = this.w
 		if (this.r != undefined) res['r'] = this.r
+		res['zones'] = this.zones.map((x0) => x0 )
 		return res
 	}
 
@@ -113,6 +117,7 @@ export class DatabaseInfo {
 			n: expectNumber(extractEntry(jCpy, 'n', false, path), true, true, [...path, ".n"]),
 			w: expectNumber(extractEntry(jCpy, 'w', false, path), true, true, [...path, ".w"]),
 			r: expectNumber(extractEntry(jCpy, 'r', false, path), true, true, [...path, ".r"]),
+			zones: expectArray(extractEntry(jCpy, 'zones', false, path), false, [...path, ".zones"], (x0, p0) => expectString(x0, false, p0)),
 		})
 		if (!ignoreUnknownKeys) {
 			const unused = Object.keys(jCpy)

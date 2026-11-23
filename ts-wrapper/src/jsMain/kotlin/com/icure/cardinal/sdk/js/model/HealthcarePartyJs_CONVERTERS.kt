@@ -383,6 +383,9 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -447,6 +450,7 @@ public fun healthcareParty_toJs(obj: HealthcareParty): HealthcarePartyJs {
 		"publicKey:publicKey," +
 		"publicKeysForOaepWithSha256:publicKeysForOaepWithSha256," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -719,6 +723,7 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return HealthcareParty(
 		id = id,
@@ -781,6 +786,7 @@ public fun healthcareParty_fromJs(obj: HealthcarePartyJs): HealthcareParty {
 		publicKey = publicKey,
 		publicKeysForOaepWithSha256 = publicKeysForOaepWithSha256,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

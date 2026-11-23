@@ -356,6 +356,9 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -434,6 +437,7 @@ public fun invoice_toJs(obj: DecryptedInvoice): DecryptedInvoiceJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -626,6 +630,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedInvoice(
 		id = id,
@@ -702,6 +707,7 @@ public fun invoice_fromJs(obj: DecryptedInvoiceJs): DecryptedInvoice {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }
@@ -1007,6 +1013,9 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -1085,6 +1094,7 @@ public fun invoice_toJs(obj: EncryptedInvoice): EncryptedInvoiceJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -1277,6 +1287,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedInvoice(
 		id = id,
@@ -1353,6 +1364,7 @@ public fun invoice_fromJs(obj: EncryptedInvoiceJs): EncryptedInvoice {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

@@ -5,7 +5,7 @@ import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub, EncryptedPropertyStub, PropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
 import {CryptoActor} from './base/CryptoActor.mjs';
-import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {CustomisableBuiltinRoot} from './base/CustomisableBuiltinRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEncryptionMetadata} from './base/HasEncryptionMetadata.mjs';
 import {HasIdentifier} from './base/HasIdentifier.mjs';
@@ -43,7 +43,7 @@ import {SpkiHexString} from './specializations/SpkiHexString.mjs';
  *  end-to-end encryption of sensitive data.
  *  /
  */
-export interface Patient extends StoredDocument, ICureDocument<string>, HasMedicalLocation, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor, CustomisableRoot, Extendable {
+export interface Patient extends StoredDocument, ICureDocument<string>, HasMedicalLocation, Person, HasEncryptionMetadata, Encryptable, HasIdentifier, CryptoActor, CustomisableBuiltinRoot, Extendable {
 
 	/**
 	 *
@@ -824,6 +824,8 @@ export class DecryptedPatient {
 
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: false = false;
@@ -917,6 +919,7 @@ export class DecryptedPatient {
 		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
 		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -1007,6 +1010,7 @@ export class DecryptedPatient {
 		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
 		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = false
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.DecryptedPatient'
@@ -1171,6 +1175,7 @@ export class DecryptedPatient {
 			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
 			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
@@ -1664,6 +1669,8 @@ export class EncryptedPatient {
 
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	readonly isEncrypted: true = true;
@@ -1757,6 +1764,7 @@ export class EncryptedPatient {
 		if ('dataOwnerGroups' in partial && partial.dataOwnerGroups !== undefined) this.dataOwnerGroups = partial.dataOwnerGroups;
 		if ('groupLinkType' in partial) this.groupLinkType = partial.groupLinkType;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -1847,6 +1855,7 @@ export class EncryptedPatient {
 		res['dataOwnerGroups'] = this.dataOwnerGroups.map((x0) => { throw new Error("Array is not allowed to have elements") } )
 		if (this.groupLinkType != undefined) throw new Error('Unexpected nullish value for groupLinkType')
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		res['isEncrypted'] = true
 		res['$ktClass'] = 'com.icure.cardinal.sdk.model.EncryptedPatient'
@@ -2011,6 +2020,7 @@ export class EncryptedPatient {
 			dataOwnerGroups: expectArray(extractEntry(jCpy, 'dataOwnerGroups', false, path), false, [...path, ".dataOwnerGroups"], (x0, p0) => { throw new Error(`Array at ${p0} is not allowed to have elements`) }),
 			groupLinkType: expectNullish(extractEntry(jCpy, 'groupLinkType', false, path), [...path, ".groupLinkType"]),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {

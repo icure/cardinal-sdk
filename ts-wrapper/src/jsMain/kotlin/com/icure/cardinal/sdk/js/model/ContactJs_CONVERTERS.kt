@@ -237,6 +237,9 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -275,6 +278,7 @@ public fun contact_toJs(obj: DecryptedContact): DecryptedContactJs {
 		"securityMetadata:securityMetadata," +
 		"notes:notes," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -424,6 +428,7 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedContact(
 		id = id,
@@ -460,6 +465,7 @@ public fun contact_fromJs(obj: DecryptedContactJs): DecryptedContact {
 		securityMetadata = securityMetadata,
 		notes = notes,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }
@@ -637,6 +643,9 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -675,6 +684,7 @@ public fun contact_toJs(obj: EncryptedContact): EncryptedContactJs {
 		"securityMetadata:securityMetadata," +
 		"notes:notes," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -824,6 +834,7 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 		},
 	)
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedContact(
 		id = id,
@@ -860,6 +871,7 @@ public fun contact_fromJs(obj: EncryptedContactJs): EncryptedContact {
 		securityMetadata = securityMetadata,
 		notes = notes,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

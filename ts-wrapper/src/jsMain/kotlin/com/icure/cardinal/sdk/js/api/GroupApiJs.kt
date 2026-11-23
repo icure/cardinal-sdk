@@ -145,4 +145,16 @@ public external interface GroupApiJs {
 		rev: String,
 		tagId: String,
 	): Promise<GroupJs>
+
+	public fun createApplicationGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs>
+
+	public fun createTenantGroup(
+		id: String,
+		name: String,
+		options: dynamic,
+	): Promise<GroupJs>
 }

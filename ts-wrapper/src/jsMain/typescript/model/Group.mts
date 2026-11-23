@@ -94,7 +94,7 @@ export class Group implements StoredDocument, HasTags {
 
 	/**
 	 *
-	 *  List of entities that have to be collected from a shared database.
+	 *  Single-used token to perform specific operations.
 	 */
 	sharedEntities: { [ key: string ]: string } = {};
 
@@ -130,10 +130,6 @@ export class Group implements StoredDocument, HasTags {
 	 */
 	projectId: string | undefined = undefined;
 
-	/**
-	 *
-	 *  A user-chosen identifier for the applications for which this group holds data.
-	 */
 	templates: Group.TemplatesConfiguration | undefined = undefined;
 
 	/**

@@ -3,7 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model
 
-import com.icure.cardinal.sdk.js.model.base.CustomisableRootJs
+import com.icure.cardinal.sdk.js.model.base.CustomisableBuiltinRootJs
 import com.icure.cardinal.sdk.js.model.base.ExtendableJs
 import com.icure.cardinal.sdk.js.model.base.HasIdentifierJs
 import com.icure.cardinal.sdk.js.model.base.IdentifierJs
@@ -22,7 +22,7 @@ public external class UserJs(
 	partial: dynamic,
 ) : StoredDocumentJs,
     HasIdentifierJs,
-    CustomisableRootJs,
+    CustomisableBuiltinRootJs,
     ExtendableJs {
 	override val id: String
 
@@ -73,6 +73,8 @@ public external class UserJs(
 	public val systemMetadata: UserJs_SystemMetadataJs?
 
 	override val extensions: dynamic
+
+	override val customisedTypeId: String?
 
 	override val customisedModelVersion: Double?
 }

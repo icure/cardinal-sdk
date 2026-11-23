@@ -101,6 +101,19 @@ interface HealthcarePartyFiltersFactory {
 	 */
 	byParentId(parentId: string): BaseFilterOptions<HealthcareParty>;
 
+	/**
+	 *
+	 *  Get all the healthcare parties that are direct members of the data owner group represented by the data owner
+	 *  with id [dataOwnerGroupId], regardless of the type of the group (parent or simple).
+	 *
+	 *  Only direct links match: membership is not propagated through the group hierarchies.
+	 *
+	 *  These options are not sortable.
+	 *
+	 *  @param dataOwnerGroupId the id of the data owner representing the group.
+	 */
+	byDataOwnerGroupId(dataOwnerGroupId: string): BaseFilterOptions<HealthcareParty>;
+
 }
 
 export const HealthcarePartyFilters: HealthcarePartyFiltersFactory = {
@@ -111,5 +124,6 @@ export const HealthcarePartyFilters: HealthcarePartyFiltersFactory = {
 			byIds: (ids) => InternalHealthcarePartyFiltersObj.getInstance().byIds(ids),
 			byName: (searchString, options) => InternalHealthcarePartyFiltersObj.getInstance().byName(searchString, options),
 			byNationalIdentifier: (searchString, options) => InternalHealthcarePartyFiltersObj.getInstance().byNationalIdentifier(searchString, options),
-			byParentId: (parentId) => InternalHealthcarePartyFiltersObj.getInstance().byParentId(parentId)
+			byParentId: (parentId) => InternalHealthcarePartyFiltersObj.getInstance().byParentId(parentId),
+			byDataOwnerGroupId: (dataOwnerGroupId) => InternalHealthcarePartyFiltersObj.getInstance().byDataOwnerGroupId(dataOwnerGroupId)
 		};

@@ -16,4 +16,8 @@ public external class GroupDeletionReportJs(
 	public val id: String
 
 	public val server: String
+
+	public val status: String
+
+	public val message: String?
 }

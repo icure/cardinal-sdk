@@ -552,6 +552,9 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -641,6 +644,7 @@ public fun patient_toJs(obj: DecryptedPatient): DecryptedPatientJs {
 		"dataOwnerGroups:dataOwnerGroups," +
 		"groupLinkType:groupLinkType," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -1017,6 +1021,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		{ _ -> throw IllegalArgumentException("Array 'obj.dataOwnerGroups' can't have any values") })
 	val groupLinkType = obj.groupLinkType
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedPatient(
 		id = id,
@@ -1104,6 +1109,7 @@ public fun patient_fromJs(obj: DecryptedPatientJs): DecryptedPatient {
 		dataOwnerGroups = dataOwnerGroups,
 		groupLinkType = groupLinkType,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }
@@ -1544,6 +1550,9 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -1633,6 +1642,7 @@ public fun patient_toJs(obj: EncryptedPatient): EncryptedPatientJs {
 		"dataOwnerGroups:dataOwnerGroups," +
 		"groupLinkType:groupLinkType," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -2009,6 +2019,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		{ _ -> throw IllegalArgumentException("Array 'obj.dataOwnerGroups' can't have any values") })
 	val groupLinkType = obj.groupLinkType
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedPatient(
 		id = id,
@@ -2096,6 +2107,7 @@ public fun patient_fromJs(obj: EncryptedPatientJs): EncryptedPatient {
 		dataOwnerGroups = dataOwnerGroups,
 		groupLinkType = groupLinkType,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

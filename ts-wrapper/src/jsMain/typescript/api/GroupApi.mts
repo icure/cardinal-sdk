@@ -108,4 +108,10 @@ export interface GroupApi {
 
 	removeTagFromGroup(id: string, rev: string, tagId: string): Promise<Group>;
 
+	createApplicationGroup(id: string, name: string,
+			options?: { server?: string | undefined, q?: number | undefined, n?: number | undefined, superGroup?: string | undefined, projectId?: string | undefined }): Promise<Group>;
+
+	createTenantGroup(id: string, name: string,
+			options?: { server?: string | undefined, q?: number | undefined, n?: number | undefined, superGroup?: string | undefined, projectId?: string | undefined }): Promise<Group>;
+
 }

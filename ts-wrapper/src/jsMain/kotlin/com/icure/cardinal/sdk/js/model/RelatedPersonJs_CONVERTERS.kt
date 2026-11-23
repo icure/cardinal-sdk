@@ -193,6 +193,9 @@ public fun relatedPerson_toJs(obj: DecryptedRelatedPerson): DecryptedRelatedPers
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -226,6 +229,7 @@ public fun relatedPerson_toJs(obj: DecryptedRelatedPerson): DecryptedRelatedPers
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion," +
 		"extensions:extensions" +
 	"}"))
@@ -357,6 +361,7 @@ public fun relatedPerson_fromJs(obj: DecryptedRelatedPersonJs): DecryptedRelated
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return DecryptedRelatedPerson(
@@ -386,6 +391,7 @@ public fun relatedPerson_fromJs(obj: DecryptedRelatedPersonJs): DecryptedRelated
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 		extensions = extensions,
 	)
@@ -532,6 +538,9 @@ public fun relatedPerson_toJs(obj: EncryptedRelatedPerson): EncryptedRelatedPers
 			securityMetadata_toJs(nonNull1)
 		}
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -565,6 +574,7 @@ public fun relatedPerson_toJs(obj: EncryptedRelatedPerson): EncryptedRelatedPers
 		"encryptionKeys:encryptionKeys," +
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion," +
 		"extensions:extensions" +
 	"}"))
@@ -696,6 +706,7 @@ public fun relatedPerson_fromJs(obj: EncryptedRelatedPersonJs): EncryptedRelated
 	val securityMetadata = obj.securityMetadata?.let { nonNull1 ->
 		securityMetadata_fromJs(nonNull1)
 	}
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
 	return EncryptedRelatedPerson(
@@ -725,6 +736,7 @@ public fun relatedPerson_fromJs(obj: EncryptedRelatedPersonJs): EncryptedRelated
 		encryptionKeys = encryptionKeys,
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 		extensions = extensions,
 	)

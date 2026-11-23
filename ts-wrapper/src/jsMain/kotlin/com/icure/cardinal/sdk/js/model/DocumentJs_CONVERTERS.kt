@@ -229,6 +229,9 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -272,6 +275,7 @@ public fun document_toJs(obj: DecryptedDocument): DecryptedDocumentJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -412,6 +416,7 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return DecryptedDocument(
 		id = id,
@@ -453,6 +458,7 @@ public fun document_fromJs(obj: DecryptedDocumentJs): DecryptedDocument {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }
@@ -640,6 +646,9 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 	val extensions = nullToUndefined(
 		jsonToDynamic(obj.extensions)
 	)
+	val customisedTypeId = nullToUndefined(
+		obj.customisedTypeId
+	)
 	val customisedModelVersion = nullToUndefined(
 		intToNumber(obj.customisedModelVersion)
 	)
@@ -683,6 +692,7 @@ public fun document_toJs(obj: EncryptedDocument): EncryptedDocumentJs {
 		"encryptedSelf:encryptedSelf," +
 		"securityMetadata:securityMetadata," +
 		"extensions:extensions," +
+		"customisedTypeId:customisedTypeId," +
 		"customisedModelVersion:customisedModelVersion" +
 	"}"))
 }
@@ -823,6 +833,7 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 		securityMetadata_fromJs(nonNull1)
 	}
 	val extensions = dynamicToJsonObjectNullsafe(obj.extensions, "obj.extensions")
+	val customisedTypeId = undefinedToNull(obj.customisedTypeId)
 	val customisedModelVersion = numberToInt(obj.customisedModelVersion, "obj.customisedModelVersion")
 	return EncryptedDocument(
 		id = id,
@@ -864,6 +875,7 @@ public fun document_fromJs(obj: EncryptedDocumentJs): EncryptedDocument {
 		encryptedSelf = encryptedSelf,
 		securityMetadata = securityMetadata,
 		extensions = extensions,
+		customisedTypeId = customisedTypeId,
 		customisedModelVersion = customisedModelVersion,
 	)
 }

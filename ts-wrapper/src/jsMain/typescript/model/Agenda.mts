@@ -3,7 +3,7 @@ import {expectArray, expectBoolean, expectMap, expectNumber, expectObject, expec
 import {randomUuid} from '../utils/Id.mjs';
 import {DecryptedPropertyStub} from './PropertyStub.mjs';
 import {CodeStub} from './base/CodeStub.mjs';
-import {CustomisableRoot} from './base/CustomisableRoot.mjs';
+import {CustomisableBuiltinRoot} from './base/CustomisableBuiltinRoot.mjs';
 import {Extendable} from './base/Extendable.mjs';
 import {HasEndOfLife} from './base/HasEndOfLife.mjs';
 import {HasMedicalLocation} from './base/HasMedicalLocation.mjs';
@@ -21,7 +21,7 @@ import {UserAccessLevel} from './embed/UserAccessLevel.mjs';
  *   Represents an agenda that keeps track of appointments (calendar items) for a resource or group of resources.
  *   An agenda can specify a schedule for its resources and allows managing availabilities for booking.
  */
-export class Agenda implements StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEndOfLife, CustomisableRoot, Extendable {
+export class Agenda implements StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEndOfLife, CustomisableBuiltinRoot, Extendable {
 
 	/**
 	 *
@@ -157,6 +157,8 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 
 	extensions: Record<string, any> | undefined = undefined;
 
+	customisedTypeId: string | undefined = undefined;
+
 	customisedModelVersion: number | undefined = undefined;
 
 	constructor(partial: Partial<Agenda>) {
@@ -183,6 +185,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 		if ('properties' in partial && partial.properties !== undefined) this.properties = partial.properties;
 		if ('schedules' in partial && partial.schedules !== undefined) this.schedules = partial.schedules;
 		if ('extensions' in partial) this.extensions = partial.extensions;
+		if ('customisedTypeId' in partial) this.customisedTypeId = partial.customisedTypeId;
 		if ('customisedModelVersion' in partial) this.customisedModelVersion = partial.customisedModelVersion;
 	}
 
@@ -211,6 +214,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 		res['properties'] = this.properties.map((x0) => x0.toJSON() )
 		res['schedules'] = this.schedules.map((x0) => x0.toJSON() )
 		if (this.extensions != undefined) res['extensions'] = this.extensions
+		if (this.customisedTypeId != undefined) res['customisedTypeId'] = this.customisedTypeId
 		if (this.customisedModelVersion != undefined) res['customisedModelVersion'] = this.customisedModelVersion
 		return res
 	}
@@ -249,6 +253,7 @@ export class Agenda implements StoredDocument, ICureDocument<string>, HasMedical
 			properties: expectArray(extractEntry(jCpy, 'properties', false, path), false, [...path, ".properties"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, DecryptedPropertyStub.fromJSON)),
 			schedules: expectArray(extractEntry(jCpy, 'schedules', false, path), false, [...path, ".schedules"], (x0, p0) => expectObject(x0, false, ignoreUnknownKeys, p0, ResourceGroupAllocationSchedule.fromJSON)),
 			extensions: extractEntry(jCpy, 'extensions', false, path),
+			customisedTypeId: expectString(extractEntry(jCpy, 'customisedTypeId', false, path), true, [...path, ".customisedTypeId"]),
 			customisedModelVersion: expectNumber(extractEntry(jCpy, 'customisedModelVersion', false, path), true, true, [...path, ".customisedModelVersion"]),
 		})
 		if (!ignoreUnknownKeys) {
