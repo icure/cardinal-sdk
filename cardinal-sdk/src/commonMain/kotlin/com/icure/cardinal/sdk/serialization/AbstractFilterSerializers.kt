@@ -189,8 +189,12 @@ internal object AnyAbstractFilterSerializer : CustomJsonPolymorphicSerializer<Ab
 	@Suppress("UNCHECKED_CAST")
 	override fun getSerializerBySerialName(serialName: String): KSerializer<out AbstractFilter<*>>? =
 		when (serialName) {
+			"ComplementFilter" ->
+				ComplementFilterSerializer(
+					this as
+						KSerializer<AbstractFilter<Identifiable<String>>>,
+				)
 			"UnionFilter" -> UnionFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
-			"ComplementFilter" -> ComplementFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
 			"IntersectionFilter" -> IntersectionFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
 			else ->
 				AgendaAbstractFilterSerializer.getSerializerBySerialName(serialName)
@@ -222,8 +226,8 @@ internal object AnyAbstractFilterSerializer : CustomJsonPolymorphicSerializer<Ab
 	@Suppress("UNCHECKED_CAST")
 	override fun getSerializerByClass(kclass: KClass<out AbstractFilter<*>>): KSerializer<out AbstractFilter<*>>? =
 		when (kclass) {
-			UnionFilter::class -> UnionFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
 			ComplementFilter::class -> ComplementFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
+			UnionFilter::class -> UnionFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
 			IntersectionFilter::class -> IntersectionFilterSerializer(this as KSerializer<AbstractFilter<Identifiable<String>>>)
 			else ->
 				AgendaAbstractFilterSerializer.getSerializerByClass(kclass as KClass<out AbstractFilter<Agenda>>)

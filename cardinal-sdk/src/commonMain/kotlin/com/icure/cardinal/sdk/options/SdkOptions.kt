@@ -40,6 +40,11 @@ interface HttpSdkOptions {
 	 * Configures how requests should be retried in case of server errors or connection errors.
 	 */
 	val requestRetryConfiguration: RequestRetryConfiguration?
+
+	/**
+	 * The version of the design doc schema to use. If null, it will use the latest available on the group.
+	 */
+	val designDocSchemaVersion: Int?
 }
 
 interface SerializationOptions {
@@ -75,10 +80,6 @@ interface CommonSdkOptions : HttpSdkOptions, SerializationOptions {
 	 */
 	val cryptoService: CryptoService
 
-	/**
-	 * The version of the design doc schema to use. If null, it will use the latest available on the group.
-	 */
-	val designDocSchemaVersion: Int?
 }
 
 interface BoundSdkOptions : CommonSdkOptions {
@@ -111,6 +112,7 @@ data class AnonymousSdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val ignoreUnknownFields: Boolean? = null,
 	override val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
+	override val designDocSchemaVersion: Int? = null,
 ): HttpSdkOptions, SerializationOptions {
 	init {
 		validateHttpAndSerializationOptions()
