@@ -16,6 +16,7 @@ import kotlin.time.Instant
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.decodeFromDynamic
 import kotlinx.serialization.json.encodeToDynamic
 import kotlin.math.floor
@@ -230,12 +231,24 @@ object CheckedConverters {
 		try {
 			Json.decodeFromDynamic<JsonElement>(obj)
 		} catch (e: Exception) {
-			throw IllegalArgumentException("Invalid JSON object @ $description", e)
+			throw IllegalArgumentException("Invalid JSON @ $description", e)
 		}
 
 	fun dynamicToJsonNullsafe(obj: dynamic, description: String): JsonElement? =
 		// Note: can't use let on dynamic
 		if (obj != null) dynamicToJson(obj, description) else null
+
+	@OptIn(ExperimentalSerializationApi::class)
+	fun dynamicToJsonObject(obj: dynamic, description: String): JsonObject =
+		try {
+			Json.decodeFromDynamic<JsonObject>(obj)
+		} catch (e: Exception) {
+			throw IllegalArgumentException("Invalid JSON object @ $description", e)
+		}
+
+	fun dynamicToJsonObjectNullsafe(obj: dynamic, description: String): JsonObject? =
+		// Note: can't use let on dynamic
+		if (obj != null) dynamicToJsonObject(obj, description) else null
 
 	@OptIn(ExperimentalSerializationApi::class)
 	fun jsonToDynamic(obj: JsonElement): dynamic =
