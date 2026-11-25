@@ -3,21 +3,35 @@
 package com.icure.cardinal.sdk.model.embed
 
 import com.icure.cardinal.sdk.model.base.CodeStub
+import com.icure.cardinal.sdk.model.base.HasCodes
+import com.icure.cardinal.sdk.model.base.HasTags
 import com.icure.cardinal.sdk.model.base.Identifiable
 import com.icure.cardinal.sdk.model.specializations.Base64String
+import com.icure.cardinal.sdk.utils.DefaultValue
 import kotlinx.serialization.Serializable
 import kotlin.String
+import kotlin.collections.Set
 
 /**
  * Represents a member of a care team involved in a patient's care, linking a healthcare party with their role.
  * /
  */
 
-sealed interface CareTeamMember : Encryptable, Identifiable<String> {
+sealed interface CareTeamMember : Encryptable, HasTags, HasCodes, Identifiable<String> {
 	/**
 	 * The unique identifier of this care team member.
 	 */
 	override val id: String
+
+	/**
+	 * Tags qualifying this care team member.
+	 */
+	override val tags: Set<CodeStub>
+
+	/**
+	 * Codes qualifying this care team member.
+	 */
+	override val codes: Set<CodeStub>
 
 	/**
 	 * The type of care team member (physician, specialist, or other).
@@ -54,6 +68,16 @@ data class DecryptedCareTeamMember(
 	 */
 	override val id: String,
 	/**
+	 * Tags qualifying this care team member.
+	 */
+	@param:DefaultValue("emptySet()")
+	override val tags: Set<CodeStub> = emptySet(),
+	/**
+	 * Codes qualifying this care team member.
+	 */
+	@param:DefaultValue("emptySet()")
+	override val codes: Set<CodeStub> = emptySet(),
+	/**
 	 * The type of care team member (physician, specialist, or other).
 	 */
 	override val careTeamMemberType: CareTeamMemberType? = null,
@@ -85,6 +109,16 @@ data class EncryptedCareTeamMember(
 	 * The unique identifier of this care team member.
 	 */
 	override val id: String,
+	/**
+	 * Tags qualifying this care team member.
+	 */
+	@param:DefaultValue("emptySet()")
+	override val tags: Set<CodeStub> = emptySet(),
+	/**
+	 * Codes qualifying this care team member.
+	 */
+	@param:DefaultValue("emptySet()")
+	override val codes: Set<CodeStub> = emptySet(),
 	/**
 	 * The type of care team member (physician, specialist, or other).
 	 */

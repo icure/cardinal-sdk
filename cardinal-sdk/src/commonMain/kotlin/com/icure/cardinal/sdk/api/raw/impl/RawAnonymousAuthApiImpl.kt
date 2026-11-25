@@ -72,17 +72,6 @@ class RawAnonymousAuthApiImpl(
 			`header`("Refresh-Token", refreshToken)
 		}.wrap()
 
-	override suspend fun check(loginCredentials: LoginCredentials): HttpResponse<Unit> =
-		post {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "auth", "check")
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(loginCredentials)
-		}.wrap()
-
 	override suspend fun getAuthJwtPublicKey(): HttpResponse<String> =
 		get {
 			url {
