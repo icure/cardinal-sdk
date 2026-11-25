@@ -2007,12 +2007,10 @@ internal suspend fun mapServiceFilterOptions(
 	is ServiceFilters.ByPatientsCodesAndValueDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
-		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet()
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
 		val versionFiltering = filterOptions.versionFiltering
 		if (versionFiltering == null) {
 			ServiceByHcPartyPatientCodesFilter(
-				healthcarePartyId = dataOwnerId,
-				patientSecretForeignKeys = patientSecretForeignKeys,
 				healthcarePartyId = dataOwnerId,
 				patientSecretForeignKeys = patientSecretForeignKeys,
 				codeCodes = filterOptions.codeCodes,
@@ -2033,12 +2031,10 @@ internal suspend fun mapServiceFilterOptions(
 	is ServiceFilters.ByPatientsCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
-		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet()
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
 		val versionFiltering = filterOptions.versionFiltering
 		if (versionFiltering == null) {
 			ServiceByHcPartyPatientCodesFilter(
-				healthcarePartyId = dataOwnerId,
-				patientSecretForeignKeys = patientSecretForeignKeys,
 				healthcarePartyId = dataOwnerId,
 				patientSecretForeignKeys = patientSecretForeignKeys,
 				codeCodes = filterOptions.codeCodes,
@@ -2149,7 +2145,7 @@ internal suspend fun mapServiceFilterOptions(
 	is ServiceFilters.ByPatientsTagCodesAndValueDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
-		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet()
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
 		val versionFiltering = filterOptions.versionFiltering
 		if (versionFiltering == null) {
 			ServiceByHcPartyPatientTagCodesFilter(
@@ -2173,7 +2169,7 @@ internal suspend fun mapServiceFilterOptions(
 	is ServiceFilters.ByPatientsTagCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
 		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
-		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Builtin.Patient, null).values.flatten().toSet()
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
 		val versionFiltering = filterOptions.versionFiltering
 		if (versionFiltering == null) {
 			ServiceByHcPartyPatientTagCodesFilter(
