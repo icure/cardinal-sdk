@@ -566,6 +566,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -589,6 +590,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -612,6 +614,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -635,6 +638,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -656,6 +660,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -673,6 +678,7 @@ private class DocumentApiImpl(
 			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
@@ -746,6 +752,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadata(
+			null,
 			base,
 			user,
 			delegates.keyAsLocalDataOwnerReferences(),
@@ -766,6 +773,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadataAndDelegates(
+			null,
 			base,
 			user,
 			delegates.keyAsLocalDataOwnerReferences(),
@@ -786,6 +794,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadata(
+			null,
 			base,
 			user,
 			delegates.keyAsLocalDataOwnerReferences(),
@@ -806,6 +815,7 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadataAndDelegates(
+			null,
 			base,
 			user,
 			delegates.keyAsLocalDataOwnerReferences(),
@@ -823,7 +833,7 @@ private class DocumentApiImpl(
 		delegates: Map<String, AccessLevel>,
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
-		doWithEncryptionMetadata(base, user, delegates.keyAsLocalDataOwnerReferences(), alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }, null)
+		doWithEncryptionMetadata(null, base, user, delegates.keyAsLocalDataOwnerReferences(), alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }, null)
 
 	override suspend fun withEncryptionMetadataAndDelegatesUnlinked(
 		base: DecryptedDocument?,
@@ -831,9 +841,10 @@ private class DocumentApiImpl(
 		user: User?,
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
-		doWithEncryptionMetadataAndDelegates(base, user, delegates.keyAsLocalDataOwnerReferences(), alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }, null)
+		doWithEncryptionMetadataAndDelegates(null, base, user, delegates.keyAsLocalDataOwnerReferences(), alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }, null)
 
 	private suspend fun doWithEncryptionMetadata(
+		entityGroupId: String?,
 		base: DecryptedDocument?,
 		user: User?,
 		delegates: Map<EntityReferenceInGroup, AccessLevel>,
@@ -841,6 +852,7 @@ private class DocumentApiImpl(
 		owningEntityDetails: OwningEntityDetails?,
 	) =
 		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
 			base = base,
 			user = user,
 			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
@@ -849,6 +861,7 @@ private class DocumentApiImpl(
 		)
 
 	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
 		base: DecryptedDocument?,
 		user: User?,
 		delegates: Map<EntityReferenceInGroup, DelegateOptions>,
@@ -856,7 +869,7 @@ private class DocumentApiImpl(
 		owningEntityDetails: OwningEntityDetails?,
 	) =
 		crypto.entity.entityWithInitializedEncryptedMetadata(
-			entityGroupId = null,
+			entityGroupId = entityGroupId,
 			entity = (base ?: DecryptedDocument(crypto.primitives.strongRandom.randomUUID())).copy(
 				created = base?.created ?: currentEpochMs(),
 				modified = base?.modified ?: currentEpochMs(),
@@ -866,6 +879,8 @@ private class DocumentApiImpl(
 			entityType = EntityWithEncryptionMetadataTypeName.Document,
 			owningEntityDetails = owningEntityDetails,
 			initializeEncryptionKey = true,
+			// The user's auto-delegations are in the user's group: a reference with a null group designates the group of the sdk,
+			// also when the document is created in another group.
 			autoDelegations = delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty().keyAsLocalDataOwnerReferences(),
 			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
 		).updatedEntity

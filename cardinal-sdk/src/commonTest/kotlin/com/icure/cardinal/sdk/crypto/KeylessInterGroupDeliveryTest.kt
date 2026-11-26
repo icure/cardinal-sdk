@@ -14,6 +14,7 @@ import com.icure.cardinal.sdk.model.DecryptedMessage
 import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.HealthcareParty
+import com.icure.cardinal.sdk.model.Message
 import com.icure.cardinal.sdk.model.User
 import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.embed.AccessLevel
@@ -130,7 +131,7 @@ class KeylessInterGroupDeliveryTest : StringSpec({
 			)
 		)
 
-	suspend fun CardinalSdk.deliverDocument(message: GroupScoped<DecryptedMessage>, name: String): GroupScoped<DecryptedDocument> =
+	suspend fun CardinalSdk.deliverDocument(message: GroupScoped<Message>, name: String): GroupScoped<DecryptedDocument> =
 		document.inGroup.createDocument(
 			document.inGroup.withEncryptionMetadataLinkedToMessage(
 				entityGroupId = practiceGroupId,
@@ -189,6 +190,31 @@ class KeylessInterGroupDeliveryTest : StringSpec({
 		// Another hcp of the same practice can neither get nor decrypt them
 		shouldThrow<RequestStatusException> { otherHcpApi.message.getMessage(message.entity.id) }.statusCode shouldBe 403
 		shouldThrow<RequestStatusException> { otherHcpApi.document.getDocument(document.entity.id) }.statusCode shouldBe 403
+	}
+
+	"A keyless lab can create and attach the Documents of a Message before the Message itself".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val labApi = labApi()
+		labApi.createExchangeDataToRecipient()
+		val messageId = uuid()
+		// The Message is not persisted yet: the Documents are linked to a placeholder without encryption metadata
+		val placeholder = GroupScoped<Message>(DecryptedMessage(id = messageId), practiceGroupId)
+		val reports = listOf("report.pdf", "annex.pdf").associateWith { "%PDF-1.4 $it for order 43".encodeToByteArray() }
+		val documents = reports.map { (name, content) ->
+			val created = labApi.deliverDocument(placeholder, name = name)
+			labApi.document.inGroup.encryptAndSetMainAttachment(created, listOf("com.adobe.pdf"), content)
+		}
+		val message = labApi.deliverMessage(transportGuid = "lab|sub|${uuid()}", subject = "Results for order 43", id = messageId)
+		message.entity.id shouldBe messageId
+
+		recipientApi.message.getMessage(messageId).shouldNotBeNull().subject shouldBe "Results for order 43"
+		documents.forEach { document ->
+			val documentForRecipient = recipientApi.document.getDocument(document.entity.id).shouldNotBeNull()
+			val name = documentForRecipient.name.shouldNotBeNull()
+			recipientApi.document.decryptOwningEntityIdsOf(documentForRecipient).map { it.entityId } shouldBe listOf(messageId)
+			recipientApi.document.getAndDecryptMainAttachment(documentForRecipient).decodeToString() shouldBe reports.getValue(name).decodeToString()
+			shouldThrow<RequestStatusException> { otherHcpApi.document.getDocument(document.entity.id) }.statusCode shouldBe 403
+		}
+		shouldThrow<RequestStatusException> { otherHcpApi.message.getMessage(messageId) }.statusCode shouldBe 403
 	}
 
 	"A keyless lab detects a duplicate delivery through its deterministic id, even from a new instance".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
