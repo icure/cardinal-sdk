@@ -253,4 +253,15 @@ class KeylessInterGroupDeliveryTest : StringSpec({
 			labApi().deliverMessage(transportGuid = "lab|sub|${uuid()}", subject = "No exchange data")
 		}
 	}
+
+	"A keyless lab cannot create exchange data to itself, with or without the group of its own reference".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
+		val api = labApi()
+		shouldThrow<IllegalArgumentException> { api.crypto.keylessCreateExchangeDataTo(lab.dataOwnerId) }
+		shouldThrow<IllegalArgumentException> {
+			api.crypto.inGroup.keylessCreateExchangeDataTo(groupId = platformGroupId, delegate = EntityReferenceInGroup(lab.dataOwnerId, null))
+		}
+		shouldThrow<IllegalArgumentException> {
+			api.crypto.inGroup.keylessCreateExchangeDataTo(groupId = platformGroupId, delegate = EntityReferenceInGroup(lab.dataOwnerId, platformGroupId))
+		}
+	}
 })
