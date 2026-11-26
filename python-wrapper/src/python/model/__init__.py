@@ -2,245 +2,25 @@
 import json
 import base64
 from cardinal_sdk.model.RecoveryDataKey import RecoveryDataKey
-from typing import Optional
-from dataclasses import field
-from cardinal_sdk.model.specializations import Base64String
 from typing import Any
 from typing import Union
 from cardinal_sdk.model.JsonElement import JsonElement
 from dataclasses import dataclass
+from typing import Optional
+from dataclasses import field
+from cardinal_sdk.model.specializations import Base64String
 from typing import cast
-from collections.abc import Callable
 from enum import Enum
-from datetime import timedelta
-from cardinal_sdk.model.serialization import serialize_timedelta
-from cardinal_sdk.model.serialization import deserialize_timedelta
+from collections.abc import Callable
 from cardinal_sdk.model.specializations import HexString
 from cardinal_sdk.model.specializations import AesExchangeKeyEntryKeyString
 from cardinal_sdk.model.specializations import AesExchangeKeyEncryptionKeypairIdentifier
 from cardinal_sdk.model.specializations import SpkiHexString
 from cardinal_sdk.model.SingletonMeta import SingletonMeta
+from datetime import timedelta
+from cardinal_sdk.model.serialization import serialize_timedelta
+from cardinal_sdk.model.serialization import deserialize_timedelta
 from cardinal_sdk.model.specializations import SecureDelegationKeyString
-
-@dataclass
-class DecryptedRelatedPerson:
-	id: str
-	rev: Optional[str] = None
-	identifier: list['Identifier'] = field(default_factory=list)
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
-	deletion_date: Optional[int] = None
-	first_name: Optional[str] = None
-	last_name: Optional[str] = None
-	names: list['PersonName'] = field(default_factory=list)
-	company_name: Optional[str] = None
-	languages: list[str] = field(default_factory=list)
-	addresses: list['DecryptedAddress'] = field(default_factory=list)
-	civility: Optional[str] = None
-	gender: Optional['Gender'] = None
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
-			"deletionDate": self.deletion_date,
-			"firstName": self.first_name,
-			"lastName": self.last_name,
-			"names": [x0.__serialize__() for x0 in self.names],
-			"companyName": self.company_name,
-			"languages": [x0 for x0 in self.languages],
-			"addresses": [x0.__serialize__() for x0 in self.addresses],
-			"civility": self.civility,
-			"gender": self.gender.__serialize__() if self.gender is not None else None,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedRelatedPerson':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			first_name=deserialized_dict.get("firstName"),
-			last_name=deserialized_dict.get("lastName"),
-			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
-			company_name=deserialized_dict.get("companyName"),
-			languages=[x0 for x0 in deserialized_dict["languages"]],
-			addresses=[DecryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
-			civility=deserialized_dict.get("civility"),
-			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class EncryptedRelatedPerson:
-	id: str
-	rev: Optional[str] = None
-	identifier: list['Identifier'] = field(default_factory=list)
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
-	deletion_date: Optional[int] = None
-	first_name: Optional[str] = None
-	last_name: Optional[str] = None
-	names: list['PersonName'] = field(default_factory=list)
-	company_name: Optional[str] = None
-	languages: list[str] = field(default_factory=list)
-	addresses: list['EncryptedAddress'] = field(default_factory=list)
-	civility: Optional[str] = None
-	gender: Optional['Gender'] = None
-	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
-			"deletionDate": self.deletion_date,
-			"firstName": self.first_name,
-			"lastName": self.last_name,
-			"names": [x0.__serialize__() for x0 in self.names],
-			"companyName": self.company_name,
-			"languages": [x0 for x0 in self.languages],
-			"addresses": [x0.__serialize__() for x0 in self.addresses],
-			"civility": self.civility,
-			"gender": self.gender.__serialize__() if self.gender is not None else None,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedRelatedPerson':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			first_name=deserialized_dict.get("firstName"),
-			last_name=deserialized_dict.get("lastName"),
-			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
-			company_name=deserialized_dict.get("companyName"),
-			languages=[x0 for x0 in deserialized_dict["languages"]],
-			addresses=[EncryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
-			civility=deserialized_dict.get("civility"),
-			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
-			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-type RelatedPerson = Union['DecryptedRelatedPerson', 'EncryptedRelatedPerson']
-
-def serialize_related_person(related_person: RelatedPerson) -> Any:
-	if isinstance(related_person, DecryptedRelatedPerson):
-		serialized_entity = related_person.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedRelatedPerson"})
-		return serialized_entity
-	elif isinstance(related_person, EncryptedRelatedPerson):
-		serialized_entity = related_person.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedRelatedPerson"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(related_person)} is not a known subclass of RelatedPerson")
-
-def deserialize_related_person(data: Union[str, dict[str, JsonElement]]) -> 'RelatedPerson':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.DecryptedRelatedPerson":
-		return DecryptedRelatedPerson._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedRelatedPerson":
-		return EncryptedRelatedPerson._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of RelatedPerson")
 
 @dataclass
 class StoredDocumentIdentifier:
@@ -263,2974 +43,6 @@ class StoredDocumentIdentifier:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict["rev"],
-		)
-
-@dataclass
-class EntityAccessInformation:
-	permissions_by_data_owner_id: dict['EntityReferenceInGroup', 'AccessLevel']
-	has_unknown_anonymous_data_owners: bool
-
-	def __serialize__(self) -> Any:
-		return {
-			"permissionsByDataOwnerId": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in self.permissions_by_data_owner_id.items()],
-			"hasUnknownAnonymousDataOwners": self.has_unknown_anonymous_data_owners,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntityAccessInformation':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			permissions_by_data_owner_id={ EntityReferenceInGroup._deserialize(x0["k"]): AccessLevel._deserialize(x0["v"]) for x0 in cast(list[dict[str, JsonElement]], deserialized_dict["permissionsByDataOwnerId"]) },
-			has_unknown_anonymous_data_owners=deserialized_dict["hasUnknownAnonymousDataOwners"],
-		)
-
-@dataclass
-class GroupScoped[E]:
-	entity: E
-	group_id: str
-
-	def __serialize__(self, serialize_e: Callable[[E], Any]) -> Any:
-		return {
-			"entity": serialize_e(self.entity),
-			"groupId": self.group_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]], deserialize_e: Callable[[dict[str, JsonElement]], E]) -> 'GroupScoped[E]':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			entity=deserialize_e(cast(dict, deserialized_dict["entity"])),
-			group_id=deserialized_dict["groupId"],
-		)
-
-@dataclass
-class EncryptedForm:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	opening_date: Optional[int] = None
-	status: Optional[str] = None
-	version: Optional[int] = None
-	descr: Optional[str] = None
-	unique_id: Optional[str] = None
-	form_template_id: Optional[str] = None
-	contact_id: Optional[str] = None
-	health_element_id: Optional[str] = None
-	plan_of_action_id: Optional[str] = None
-	parent: Optional[str] = None
-	anchor_id: Optional[str] = None
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"openingDate": self.opening_date,
-			"status": self.status,
-			"version": self.version,
-			"descr": self.descr,
-			"uniqueId": self.unique_id,
-			"formTemplateId": self.form_template_id,
-			"contactId": self.contact_id,
-			"healthElementId": self.health_element_id,
-			"planOfActionId": self.plan_of_action_id,
-			"parent": self.parent,
-			"anchorId": self.anchor_id,
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedForm':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			opening_date=deserialized_dict.get("openingDate"),
-			status=deserialized_dict.get("status"),
-			version=deserialized_dict.get("version"),
-			descr=deserialized_dict.get("descr"),
-			unique_id=deserialized_dict.get("uniqueId"),
-			form_template_id=deserialized_dict.get("formTemplateId"),
-			contact_id=deserialized_dict.get("contactId"),
-			health_element_id=deserialized_dict.get("healthElementId"),
-			plan_of_action_id=deserialized_dict.get("planOfActionId"),
-			parent=deserialized_dict.get("parent"),
-			anchor_id=deserialized_dict.get("anchorId"),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class DecryptedForm:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	opening_date: Optional[int] = None
-	status: Optional[str] = None
-	version: Optional[int] = None
-	descr: Optional[str] = None
-	unique_id: Optional[str] = None
-	form_template_id: Optional[str] = None
-	contact_id: Optional[str] = None
-	health_element_id: Optional[str] = None
-	plan_of_action_id: Optional[str] = None
-	parent: Optional[str] = None
-	anchor_id: Optional[str] = None
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"openingDate": self.opening_date,
-			"status": self.status,
-			"version": self.version,
-			"descr": self.descr,
-			"uniqueId": self.unique_id,
-			"formTemplateId": self.form_template_id,
-			"contactId": self.contact_id,
-			"healthElementId": self.health_element_id,
-			"planOfActionId": self.plan_of_action_id,
-			"parent": self.parent,
-			"anchorId": self.anchor_id,
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedForm':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			opening_date=deserialized_dict.get("openingDate"),
-			status=deserialized_dict.get("status"),
-			version=deserialized_dict.get("version"),
-			descr=deserialized_dict.get("descr"),
-			unique_id=deserialized_dict.get("uniqueId"),
-			form_template_id=deserialized_dict.get("formTemplateId"),
-			contact_id=deserialized_dict.get("contactId"),
-			health_element_id=deserialized_dict.get("healthElementId"),
-			plan_of_action_id=deserialized_dict.get("planOfActionId"),
-			parent=deserialized_dict.get("parent"),
-			anchor_id=deserialized_dict.get("anchorId"),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-type Form = Union['EncryptedForm', 'DecryptedForm']
-
-def serialize_form(form: Form) -> Any:
-	if isinstance(form, EncryptedForm):
-		serialized_entity = form.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedForm"})
-		return serialized_entity
-	elif isinstance(form, DecryptedForm):
-		serialized_entity = form.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedForm"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(form)} is not a known subclass of Form")
-
-def deserialize_form(data: Union[str, dict[str, JsonElement]]) -> 'Form':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedForm":
-		return EncryptedForm._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedForm":
-		return DecryptedForm._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of Form")
-
-@dataclass
-class FormTemplate:
-	id: str
-	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	template_layout: Optional['FormTemplateLayout'] = None
-	raw_template_layout: Optional[bytearray] = None
-	name: Optional[str] = None
-	guid: Optional[str] = None
-	group: Optional['DocumentGroup'] = None
-	descr: Optional[str] = None
-	disabled: Optional[str] = None
-	specialty: Optional['CodeStub'] = None
-	author: Optional[str] = None
-	form_instance_preferred_location: Optional[str] = None
-	keyboard_shortcut: Optional[str] = None
-	short_report: Optional[str] = None
-	medium_report: Optional[str] = None
-	long_report: Optional[str] = None
-	reports: set[str] = field(default_factory=set)
-	tags: set['CodeStub'] = field(default_factory=set)
-	layout_attachment_id: Optional[str] = None
-	template_layout_attachment_id: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"templateLayout": self.template_layout.__serialize__() if self.template_layout is not None else None,
-			"rawTemplateLayout": base64.b64encode(self.raw_template_layout).decode('utf-8') if self.raw_template_layout is not None else None,
-			"name": self.name,
-			"guid": self.guid,
-			"group": self.group.__serialize__() if self.group is not None else None,
-			"descr": self.descr,
-			"disabled": self.disabled,
-			"specialty": self.specialty.__serialize__() if self.specialty is not None else None,
-			"author": self.author,
-			"formInstancePreferredLocation": self.form_instance_preferred_location,
-			"keyboardShortcut": self.keyboard_shortcut,
-			"shortReport": self.short_report,
-			"mediumReport": self.medium_report,
-			"longReport": self.long_report,
-			"reports": [x0 for x0 in self.reports],
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"layoutAttachmentId": self.layout_attachment_id,
-			"templateLayoutAttachmentId": self.template_layout_attachment_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FormTemplate':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			template_layout=FormTemplateLayout._deserialize(deserialized_dict.get("templateLayout")) if deserialized_dict.get("templateLayout") is not None else None,
-			raw_template_layout=bytearray(base64.b64decode(deserialized_dict.get("rawTemplateLayout"))) if deserialized_dict.get("rawTemplateLayout") is not None else None,
-			name=deserialized_dict.get("name"),
-			guid=deserialized_dict.get("guid"),
-			group=DocumentGroup._deserialize(deserialized_dict.get("group")) if deserialized_dict.get("group") is not None else None,
-			descr=deserialized_dict.get("descr"),
-			disabled=deserialized_dict.get("disabled"),
-			specialty=CodeStub._deserialize(deserialized_dict.get("specialty")) if deserialized_dict.get("specialty") is not None else None,
-			author=deserialized_dict.get("author"),
-			form_instance_preferred_location=deserialized_dict.get("formInstancePreferredLocation"),
-			keyboard_shortcut=deserialized_dict.get("keyboardShortcut"),
-			short_report=deserialized_dict.get("shortReport"),
-			medium_report=deserialized_dict.get("mediumReport"),
-			long_report=deserialized_dict.get("longReport"),
-			reports={x0 for x0 in deserialized_dict["reports"]},
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			layout_attachment_id=deserialized_dict.get("layoutAttachmentId"),
-			template_layout_attachment_id=deserialized_dict.get("templateLayoutAttachmentId"),
-		)
-
-class EntityWithEncryptionMetadataTypeName(Enum):
-	Article = "Article"
-	AccessLog = "AccessLog"
-	CalendarItem = "CalendarItem"
-	Classification = "Classification"
-	ClassificationTemplate = "ClassificationTemplate"
-	Contact = "Contact"
-	Service = "Service"
-	Document = "Document"
-	Form = "Form"
-	HealthElement = "HealthElement"
-	Invoice = "Invoice"
-	MaintenanceTask = "MaintenanceTask"
-	Message = "Message"
-	Patient = "Patient"
-	Receipt = "Receipt"
-	RelatedPerson = "RelatedPerson"
-	Topic = "Topic"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntityWithEncryptionMetadataTypeName':
-		if data == "Article":
-			return EntityWithEncryptionMetadataTypeName.Article
-		elif data == "AccessLog":
-			return EntityWithEncryptionMetadataTypeName.AccessLog
-		elif data == "CalendarItem":
-			return EntityWithEncryptionMetadataTypeName.CalendarItem
-		elif data == "Classification":
-			return EntityWithEncryptionMetadataTypeName.Classification
-		elif data == "ClassificationTemplate":
-			return EntityWithEncryptionMetadataTypeName.ClassificationTemplate
-		elif data == "Contact":
-			return EntityWithEncryptionMetadataTypeName.Contact
-		elif data == "Service":
-			return EntityWithEncryptionMetadataTypeName.Service
-		elif data == "Document":
-			return EntityWithEncryptionMetadataTypeName.Document
-		elif data == "Form":
-			return EntityWithEncryptionMetadataTypeName.Form
-		elif data == "HealthElement":
-			return EntityWithEncryptionMetadataTypeName.HealthElement
-		elif data == "Invoice":
-			return EntityWithEncryptionMetadataTypeName.Invoice
-		elif data == "MaintenanceTask":
-			return EntityWithEncryptionMetadataTypeName.MaintenanceTask
-		elif data == "Message":
-			return EntityWithEncryptionMetadataTypeName.Message
-		elif data == "Patient":
-			return EntityWithEncryptionMetadataTypeName.Patient
-		elif data == "Receipt":
-			return EntityWithEncryptionMetadataTypeName.Receipt
-		elif data == "RelatedPerson":
-			return EntityWithEncryptionMetadataTypeName.RelatedPerson
-		elif data == "Topic":
-			return EntityWithEncryptionMetadataTypeName.Topic
-		else:
-			raise Exception(f"{data} is not a valid value for EntityWithEncryptionMetadataTypeName enum.")
-
-@dataclass
-class RawDecryptedExchangeData:
-	exchange_data_id: str
-	exchange_key: bytearray
-	access_control_secret: bytearray
-	shared_signature_key: bytearray
-
-	def __serialize__(self) -> Any:
-		return {
-			"exchangeDataId": self.exchange_data_id,
-			"exchangeKey": base64.b64encode(self.exchange_key).decode('utf-8'),
-			"accessControlSecret": base64.b64encode(self.access_control_secret).decode('utf-8'),
-			"sharedSignatureKey": base64.b64encode(self.shared_signature_key).decode('utf-8'),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RawDecryptedExchangeData':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			exchange_data_id=deserialized_dict["exchangeDataId"],
-			exchange_key=bytearray(base64.b64decode(deserialized_dict["exchangeKey"])),
-			access_control_secret=bytearray(base64.b64decode(deserialized_dict["accessControlSecret"])),
-			shared_signature_key=bytearray(base64.b64decode(deserialized_dict["sharedSignatureKey"])),
-		)
-
-@dataclass
-class ExchangeDataInjectionDetails:
-	exchange_data_id: str
-	access_control_secret: bytearray
-	exchange_key: bytearray
-	shared_signature_key: bytearray
-	verified: bool
-
-	def __serialize__(self) -> Any:
-		return {
-			"exchangeDataId": self.exchange_data_id,
-			"accessControlSecret": base64.b64encode(self.access_control_secret).decode('utf-8'),
-			"exchangeKey": base64.b64encode(self.exchange_key).decode('utf-8'),
-			"sharedSignatureKey": base64.b64encode(self.shared_signature_key).decode('utf-8'),
-			"verified": self.verified,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExchangeDataInjectionDetails':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			exchange_data_id=deserialized_dict["exchangeDataId"],
-			access_control_secret=bytearray(base64.b64decode(deserialized_dict["accessControlSecret"])),
-			exchange_key=bytearray(base64.b64decode(deserialized_dict["exchangeKey"])),
-			shared_signature_key=bytearray(base64.b64decode(deserialized_dict["sharedSignatureKey"])),
-			verified=deserialized_dict["verified"],
-		)
-
-@dataclass(frozen=True)
-class EntityReferenceInGroup:
-	entity_id: str
-	group_id: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"entityId": self.entity_id,
-			"groupId": self.group_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntityReferenceInGroup':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			entity_id=deserialized_dict["entityId"],
-			group_id=deserialized_dict.get("groupId"),
-		)
-
-@dataclass
-class EncryptedAccessLog:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	object_id: Optional[str] = None
-	access_type: Optional[str] = None
-	user: Optional[str] = None
-	detail: Optional[str] = None
-	date: Optional[int] = None
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"objectId": self.object_id,
-			"accessType": self.access_type,
-			"user": self.user,
-			"detail": self.detail,
-			"date": self.date,
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedAccessLog':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			object_id=deserialized_dict.get("objectId"),
-			access_type=deserialized_dict.get("accessType"),
-			user=deserialized_dict.get("user"),
-			detail=deserialized_dict.get("detail"),
-			date=deserialized_dict.get("date"),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class DecryptedAccessLog:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	object_id: Optional[str] = None
-	access_type: Optional[str] = None
-	user: Optional[str] = None
-	detail: Optional[str] = None
-	date: Optional[int] = None
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"objectId": self.object_id,
-			"accessType": self.access_type,
-			"user": self.user,
-			"detail": self.detail,
-			"date": self.date,
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedAccessLog':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			object_id=deserialized_dict.get("objectId"),
-			access_type=deserialized_dict.get("accessType"),
-			user=deserialized_dict.get("user"),
-			detail=deserialized_dict.get("detail"),
-			date=deserialized_dict.get("date"),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-type AccessLog = Union['EncryptedAccessLog', 'DecryptedAccessLog']
-
-def serialize_access_log(access_log: AccessLog) -> Any:
-	if isinstance(access_log, EncryptedAccessLog):
-		serialized_entity = access_log.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedAccessLog"})
-		return serialized_entity
-	elif isinstance(access_log, DecryptedAccessLog):
-		serialized_entity = access_log.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedAccessLog"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(access_log)} is not a known subclass of AccessLog")
-
-def deserialize_access_log(data: Union[str, dict[str, JsonElement]]) -> 'AccessLog':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedAccessLog":
-		return EncryptedAccessLog._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedAccessLog":
-		return DecryptedAccessLog._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of AccessLog")
-
-@dataclass
-class EncryptedHealthElement:
-	id: str
-	identifiers: list['Identifier'] = field(default_factory=list)
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
-	deletion_date: Optional[int] = None
-	health_element_id: Optional[str] = None
-	value_date: Optional[int] = None
-	opening_date: Optional[int] = None
-	closing_date: Optional[int] = None
-	descr: Optional[str] = None
-	note: Optional[str] = None
-	notes: list['EncryptedAnnotation'] = field(default_factory=list)
-	relevant: bool = True
-	id_opening_contact: Optional[str] = None
-	id_closing_contact: Optional[str] = None
-	id_service: Optional[str] = None
-	laterality: Optional['Laterality'] = None
-	plans_of_action: list['EncryptedPlanOfAction'] = field(default_factory=list)
-	episodes: list['EncryptedEpisode'] = field(default_factory=list)
-	care_team: list['EncryptedCareTeamMember'] = field(default_factory=list)
-	qualified_links: list['HealthElementQualifiedLink'] = field(default_factory=list)
-	asserters: list['HealthElementAsserter'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"identifiers": [x0.__serialize__() for x0 in self.identifiers],
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
-			"deletionDate": self.deletion_date,
-			"healthElementId": self.health_element_id,
-			"valueDate": self.value_date,
-			"openingDate": self.opening_date,
-			"closingDate": self.closing_date,
-			"descr": self.descr,
-			"note": self.note,
-			"notes": [x0.__serialize__() for x0 in self.notes],
-			"relevant": self.relevant,
-			"idOpeningContact": self.id_opening_contact,
-			"idClosingContact": self.id_closing_contact,
-			"idService": self.id_service,
-			"laterality": self.laterality.__serialize__() if self.laterality is not None else None,
-			"plansOfAction": [x0.__serialize__() for x0 in self.plans_of_action],
-			"episodes": [x0.__serialize__() for x0 in self.episodes],
-			"careTeam": [x0.__serialize__() for x0 in self.care_team],
-			"qualifiedLinks": [x0.__serialize__() for x0 in self.qualified_links],
-			"asserters": [x0.__serialize__() for x0 in self.asserters],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedHealthElement':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			identifiers=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifiers"]],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			health_element_id=deserialized_dict.get("healthElementId"),
-			value_date=deserialized_dict.get("valueDate"),
-			opening_date=deserialized_dict.get("openingDate"),
-			closing_date=deserialized_dict.get("closingDate"),
-			descr=deserialized_dict.get("descr"),
-			note=deserialized_dict.get("note"),
-			notes=[EncryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
-			relevant=deserialized_dict["relevant"],
-			id_opening_contact=deserialized_dict.get("idOpeningContact"),
-			id_closing_contact=deserialized_dict.get("idClosingContact"),
-			id_service=deserialized_dict.get("idService"),
-			laterality=Laterality._deserialize(deserialized_dict.get("laterality")) if deserialized_dict.get("laterality") is not None else None,
-			plans_of_action=[EncryptedPlanOfAction._deserialize(x0) for x0 in deserialized_dict["plansOfAction"]],
-			episodes=[EncryptedEpisode._deserialize(x0) for x0 in deserialized_dict["episodes"]],
-			care_team=[EncryptedCareTeamMember._deserialize(x0) for x0 in deserialized_dict["careTeam"]],
-			qualified_links=[HealthElementQualifiedLink._deserialize(x0) for x0 in deserialized_dict["qualifiedLinks"]],
-			asserters=[HealthElementAsserter._deserialize(x0) for x0 in deserialized_dict["asserters"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class DecryptedHealthElement:
-	id: str
-	identifiers: list['Identifier'] = field(default_factory=list)
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
-	deletion_date: Optional[int] = None
-	health_element_id: Optional[str] = None
-	value_date: Optional[int] = None
-	opening_date: Optional[int] = None
-	closing_date: Optional[int] = None
-	descr: Optional[str] = None
-	note: Optional[str] = None
-	notes: list['DecryptedAnnotation'] = field(default_factory=list)
-	relevant: bool = True
-	id_opening_contact: Optional[str] = None
-	id_closing_contact: Optional[str] = None
-	id_service: Optional[str] = None
-	laterality: Optional['Laterality'] = None
-	plans_of_action: list['DecryptedPlanOfAction'] = field(default_factory=list)
-	episodes: list['DecryptedEpisode'] = field(default_factory=list)
-	care_team: list['DecryptedCareTeamMember'] = field(default_factory=list)
-	qualified_links: list['HealthElementQualifiedLink'] = field(default_factory=list)
-	asserters: list['HealthElementAsserter'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"identifiers": [x0.__serialize__() for x0 in self.identifiers],
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
-			"deletionDate": self.deletion_date,
-			"healthElementId": self.health_element_id,
-			"valueDate": self.value_date,
-			"openingDate": self.opening_date,
-			"closingDate": self.closing_date,
-			"descr": self.descr,
-			"note": self.note,
-			"notes": [x0.__serialize__() for x0 in self.notes],
-			"relevant": self.relevant,
-			"idOpeningContact": self.id_opening_contact,
-			"idClosingContact": self.id_closing_contact,
-			"idService": self.id_service,
-			"laterality": self.laterality.__serialize__() if self.laterality is not None else None,
-			"plansOfAction": [x0.__serialize__() for x0 in self.plans_of_action],
-			"episodes": [x0.__serialize__() for x0 in self.episodes],
-			"careTeam": [x0.__serialize__() for x0 in self.care_team],
-			"qualifiedLinks": [x0.__serialize__() for x0 in self.qualified_links],
-			"asserters": [x0.__serialize__() for x0 in self.asserters],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedHealthElement':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			identifiers=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifiers"]],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			health_element_id=deserialized_dict.get("healthElementId"),
-			value_date=deserialized_dict.get("valueDate"),
-			opening_date=deserialized_dict.get("openingDate"),
-			closing_date=deserialized_dict.get("closingDate"),
-			descr=deserialized_dict.get("descr"),
-			note=deserialized_dict.get("note"),
-			notes=[DecryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
-			relevant=deserialized_dict["relevant"],
-			id_opening_contact=deserialized_dict.get("idOpeningContact"),
-			id_closing_contact=deserialized_dict.get("idClosingContact"),
-			id_service=deserialized_dict.get("idService"),
-			laterality=Laterality._deserialize(deserialized_dict.get("laterality")) if deserialized_dict.get("laterality") is not None else None,
-			plans_of_action=[DecryptedPlanOfAction._deserialize(x0) for x0 in deserialized_dict["plansOfAction"]],
-			episodes=[DecryptedEpisode._deserialize(x0) for x0 in deserialized_dict["episodes"]],
-			care_team=[DecryptedCareTeamMember._deserialize(x0) for x0 in deserialized_dict["careTeam"]],
-			qualified_links=[HealthElementQualifiedLink._deserialize(x0) for x0 in deserialized_dict["qualifiedLinks"]],
-			asserters=[HealthElementAsserter._deserialize(x0) for x0 in deserialized_dict["asserters"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-type HealthElement = Union['EncryptedHealthElement', 'DecryptedHealthElement']
-
-def serialize_health_element(health_element: HealthElement) -> Any:
-	if isinstance(health_element, EncryptedHealthElement):
-		serialized_entity = health_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedHealthElement"})
-		return serialized_entity
-	elif isinstance(health_element, DecryptedHealthElement):
-		serialized_entity = health_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedHealthElement"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(health_element)} is not a known subclass of HealthElement")
-
-def deserialize_health_element(data: Union[str, dict[str, JsonElement]]) -> 'HealthElement':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedHealthElement":
-		return EncryptedHealthElement._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedHealthElement":
-		return DecryptedHealthElement._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of HealthElement")
-
-class SubscriptionEventType(Enum):
-	Create = "Create"
-	Update = "Update"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SubscriptionEventType':
-		if data == "Create":
-			return SubscriptionEventType.Create
-		elif data == "Update":
-			return SubscriptionEventType.Update
-		else:
-			raise Exception(f"{data} is not a valid value for SubscriptionEventType enum.")
-
-@dataclass
-class EntitySubscriptionConfiguration:
-	channel_buffer_capacity: int = 100
-	on_buffer_full: 'EntitySubscriptionConfigurationFullBufferBehaviour' = field(default_factory=lambda: EntitySubscriptionConfigurationFullBufferBehaviour.Close)
-	reconnection_delay: timedelta = timedelta(seconds=2)
-	retry_delay_exponent_factor: float = 2.0
-	connection_max_retries: int = 5
-
-	def __serialize__(self) -> Any:
-		return {
-			"channelBufferCapacity": self.channel_buffer_capacity,
-			"onBufferFull": self.on_buffer_full.__serialize__(),
-			"reconnectionDelay": serialize_timedelta(self.reconnection_delay),
-			"retryDelayExponentFactor": self.retry_delay_exponent_factor,
-			"connectionMaxRetries": self.connection_max_retries,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntitySubscriptionConfiguration':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			channel_buffer_capacity=deserialized_dict["channelBufferCapacity"],
-			on_buffer_full=EntitySubscriptionConfigurationFullBufferBehaviour._deserialize(deserialized_dict["onBufferFull"]),
-			reconnection_delay=deserialize_timedelta(deserialized_dict["reconnectionDelay"]),
-			retry_delay_exponent_factor=deserialized_dict["retryDelayExponentFactor"],
-			connection_max_retries=deserialized_dict["connectionMaxRetries"],
-		)
-
-class EntitySubscriptionConfigurationFullBufferBehaviour(Enum):
-	Close = "Close"
-	DropOldest = "DropOldest"
-	Ignore = "Ignore"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntitySubscriptionConfigurationFullBufferBehaviour':
-		if data == "Close":
-			return EntitySubscriptionConfigurationFullBufferBehaviour.Close
-		elif data == "DropOldest":
-			return EntitySubscriptionConfigurationFullBufferBehaviour.DropOldest
-		elif data == "Ignore":
-			return EntitySubscriptionConfigurationFullBufferBehaviour.Ignore
-		else:
-			raise Exception(f"{data} is not a valid value for FullBufferBehaviour enum.")
-
-@dataclass
-class EncryptedCalendarItem:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	title: Optional[str] = None
-	calendar_item_type_id: Optional[str] = None
-	master_calendar_item_id: Optional[str] = None
-	important: Optional[bool] = None
-	home_visit: Optional[bool] = None
-	phone_number: Optional[str] = None
-	place_id: Optional[str] = None
-	address: Optional['EncryptedAddress'] = None
-	address_text: Optional[str] = None
-	start_time: Optional[int] = None
-	end_time: Optional[int] = None
-	details: Optional[str] = None
-	was_migrated: Optional[bool] = None
-	agenda_id: Optional[str] = None
-	resource_group: Optional['CodeStub'] = None
-	availabilities_assignment_strategy: Optional['CalendarItemAvailabilitiesAssignmentStrategy'] = None
-	hcp_id: Optional[str] = None
-	recurrence_id: Optional[str] = None
-	meeting_tags: list['EncryptedCalendarItemTag'] = field(default_factory=list)
-	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"title": self.title,
-			"calendarItemTypeId": self.calendar_item_type_id,
-			"masterCalendarItemId": self.master_calendar_item_id,
-			"important": self.important,
-			"homeVisit": self.home_visit,
-			"phoneNumber": self.phone_number,
-			"placeId": self.place_id,
-			"address": self.address.__serialize__() if self.address is not None else None,
-			"addressText": self.address_text,
-			"startTime": self.start_time,
-			"endTime": self.end_time,
-			"details": self.details,
-			"wasMigrated": self.was_migrated,
-			"agendaId": self.agenda_id,
-			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
-			"availabilitiesAssignmentStrategy": self.availabilities_assignment_strategy.__serialize__() if self.availabilities_assignment_strategy is not None else None,
-			"hcpId": self.hcp_id,
-			"recurrenceId": self.recurrence_id,
-			"meetingTags": [x0.__serialize__() for x0 in self.meeting_tags],
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCalendarItem':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			title=deserialized_dict.get("title"),
-			calendar_item_type_id=deserialized_dict.get("calendarItemTypeId"),
-			master_calendar_item_id=deserialized_dict.get("masterCalendarItemId"),
-			important=deserialized_dict.get("important"),
-			home_visit=deserialized_dict.get("homeVisit"),
-			phone_number=deserialized_dict.get("phoneNumber"),
-			place_id=deserialized_dict.get("placeId"),
-			address=EncryptedAddress._deserialize(deserialized_dict.get("address")) if deserialized_dict.get("address") is not None else None,
-			address_text=deserialized_dict.get("addressText"),
-			start_time=deserialized_dict.get("startTime"),
-			end_time=deserialized_dict.get("endTime"),
-			details=deserialized_dict.get("details"),
-			was_migrated=deserialized_dict.get("wasMigrated"),
-			agenda_id=deserialized_dict.get("agendaId"),
-			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
-			availabilities_assignment_strategy=CalendarItemAvailabilitiesAssignmentStrategy._deserialize(deserialized_dict.get("availabilitiesAssignmentStrategy")) if deserialized_dict.get("availabilitiesAssignmentStrategy") is not None else None,
-			hcp_id=deserialized_dict.get("hcpId"),
-			recurrence_id=deserialized_dict.get("recurrenceId"),
-			meeting_tags=[EncryptedCalendarItemTag._deserialize(x0) for x0 in deserialized_dict["meetingTags"]],
-			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class DecryptedCalendarItem:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	title: Optional[str] = None
-	calendar_item_type_id: Optional[str] = None
-	master_calendar_item_id: Optional[str] = None
-	important: Optional[bool] = None
-	home_visit: Optional[bool] = None
-	phone_number: Optional[str] = None
-	place_id: Optional[str] = None
-	address: Optional['DecryptedAddress'] = None
-	address_text: Optional[str] = None
-	start_time: Optional[int] = None
-	end_time: Optional[int] = None
-	details: Optional[str] = None
-	was_migrated: Optional[bool] = None
-	agenda_id: Optional[str] = None
-	resource_group: Optional['CodeStub'] = None
-	availabilities_assignment_strategy: Optional['CalendarItemAvailabilitiesAssignmentStrategy'] = None
-	hcp_id: Optional[str] = None
-	recurrence_id: Optional[str] = None
-	meeting_tags: list['DecryptedCalendarItemTag'] = field(default_factory=list)
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"title": self.title,
-			"calendarItemTypeId": self.calendar_item_type_id,
-			"masterCalendarItemId": self.master_calendar_item_id,
-			"important": self.important,
-			"homeVisit": self.home_visit,
-			"phoneNumber": self.phone_number,
-			"placeId": self.place_id,
-			"address": self.address.__serialize__() if self.address is not None else None,
-			"addressText": self.address_text,
-			"startTime": self.start_time,
-			"endTime": self.end_time,
-			"details": self.details,
-			"wasMigrated": self.was_migrated,
-			"agendaId": self.agenda_id,
-			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
-			"availabilitiesAssignmentStrategy": self.availabilities_assignment_strategy.__serialize__() if self.availabilities_assignment_strategy is not None else None,
-			"hcpId": self.hcp_id,
-			"recurrenceId": self.recurrence_id,
-			"meetingTags": [x0.__serialize__() for x0 in self.meeting_tags],
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCalendarItem':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			title=deserialized_dict.get("title"),
-			calendar_item_type_id=deserialized_dict.get("calendarItemTypeId"),
-			master_calendar_item_id=deserialized_dict.get("masterCalendarItemId"),
-			important=deserialized_dict.get("important"),
-			home_visit=deserialized_dict.get("homeVisit"),
-			phone_number=deserialized_dict.get("phoneNumber"),
-			place_id=deserialized_dict.get("placeId"),
-			address=DecryptedAddress._deserialize(deserialized_dict.get("address")) if deserialized_dict.get("address") is not None else None,
-			address_text=deserialized_dict.get("addressText"),
-			start_time=deserialized_dict.get("startTime"),
-			end_time=deserialized_dict.get("endTime"),
-			details=deserialized_dict.get("details"),
-			was_migrated=deserialized_dict.get("wasMigrated"),
-			agenda_id=deserialized_dict.get("agendaId"),
-			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
-			availabilities_assignment_strategy=CalendarItemAvailabilitiesAssignmentStrategy._deserialize(deserialized_dict.get("availabilitiesAssignmentStrategy")) if deserialized_dict.get("availabilitiesAssignmentStrategy") is not None else None,
-			hcp_id=deserialized_dict.get("hcpId"),
-			recurrence_id=deserialized_dict.get("recurrenceId"),
-			meeting_tags=[DecryptedCalendarItemTag._deserialize(x0) for x0 in deserialized_dict["meetingTags"]],
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-class CalendarItemAvailabilitiesAssignmentStrategy(Enum):
-	Strict = "S"
-	Loose = "L"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemAvailabilitiesAssignmentStrategy':
-		if data == "S":
-			return CalendarItemAvailabilitiesAssignmentStrategy.Strict
-		elif data == "L":
-			return CalendarItemAvailabilitiesAssignmentStrategy.Loose
-		else:
-			raise Exception(f"{data} is not a valid value for AvailabilitiesAssignmentStrategy enum.")
-
-type CalendarItem = Union['EncryptedCalendarItem', 'DecryptedCalendarItem']
-
-def serialize_calendar_item(calendar_item: CalendarItem) -> Any:
-	if isinstance(calendar_item, EncryptedCalendarItem):
-		serialized_entity = calendar_item.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedCalendarItem"})
-		return serialized_entity
-	elif isinstance(calendar_item, DecryptedCalendarItem):
-		serialized_entity = calendar_item.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedCalendarItem"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(calendar_item)} is not a known subclass of CalendarItem")
-
-def deserialize_calendar_item(data: Union[str, dict[str, JsonElement]]) -> 'CalendarItem':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedCalendarItem":
-		return EncryptedCalendarItem._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedCalendarItem":
-		return DecryptedCalendarItem._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of CalendarItem")
-
-@dataclass
-class EncryptedPatient:
-	id: str
-	identifier: list['Identifier'] = field(default_factory=list)
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	first_name: Optional[str] = None
-	last_name: Optional[str] = None
-	names: list['PersonName'] = field(default_factory=list)
-	company_name: Optional[str] = None
-	languages: list[str] = field(default_factory=list)
-	addresses: list['EncryptedAddress'] = field(default_factory=list)
-	civility: Optional[str] = None
-	gender: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
-	birth_sex: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
-	merge_to_patient_id: Optional[str] = None
-	merged_ids: set[str] = field(default_factory=set)
-	alias: Optional[str] = None
-	active: bool = True
-	deactivation_reason: str = "none"
-	deactivation_date: Optional[int] = None
-	ssin: Optional[str] = None
-	maiden_name: Optional[str] = None
-	spouse_name: Optional[str] = None
-	partner_name: Optional[str] = None
-	personal_status: Optional['PersonalStatus'] = field(default_factory=lambda: PersonalStatus.Unknown)
-	date_of_birth: Optional[int] = None
-	date_of_death: Optional[int] = None
-	timestamp_of_latest_eid_reading: Optional[int] = None
-	place_of_birth: Optional[str] = None
-	place_of_death: Optional[str] = None
-	deceased: Optional[bool] = None
-	education: Optional[str] = None
-	profession: Optional[str] = None
-	notes: list['EncryptedAnnotation'] = field(default_factory=list)
-	note: Optional[str] = None
-	administrative_note: Optional[str] = None
-	nationality: Optional[str] = None
-	race: Optional[str] = None
-	ethnicity: Optional[str] = None
-	insurabilities: list['EncryptedInsurability'] = field(default_factory=list)
-	partnerships: list['EncryptedPartnership'] = field(default_factory=list)
-	patient_health_care_parties: list['EncryptedPatientHealthCareParty'] = field(default_factory=list)
-	financial_institution_information: list['EncryptedFinancialInstitutionInformation'] = field(default_factory=list)
-	medical_house_contracts: list['EncryptedMedicalHouseContract'] = field(default_factory=list)
-	patient_professions: list['CodeStub'] = field(default_factory=list)
-	parameters: dict[str, list[str]] = field(default_factory=dict)
-	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
-	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
-	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
-	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
-	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
-	public_key: Optional['SpkiHexString'] = None
-	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	parent_id: None = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"firstName": self.first_name,
-			"lastName": self.last_name,
-			"names": [x0.__serialize__() for x0 in self.names],
-			"companyName": self.company_name,
-			"languages": [x0 for x0 in self.languages],
-			"addresses": [x0.__serialize__() for x0 in self.addresses],
-			"civility": self.civility,
-			"gender": self.gender.__serialize__() if self.gender is not None else None,
-			"birthSex": self.birth_sex.__serialize__() if self.birth_sex is not None else None,
-			"mergeToPatientId": self.merge_to_patient_id,
-			"mergedIds": [x0 for x0 in self.merged_ids],
-			"alias": self.alias,
-			"active": self.active,
-			"deactivationReason": self.deactivation_reason,
-			"deactivationDate": self.deactivation_date,
-			"ssin": self.ssin,
-			"maidenName": self.maiden_name,
-			"spouseName": self.spouse_name,
-			"partnerName": self.partner_name,
-			"personalStatus": self.personal_status.__serialize__() if self.personal_status is not None else None,
-			"dateOfBirth": self.date_of_birth,
-			"dateOfDeath": self.date_of_death,
-			"timestampOfLatestEidReading": self.timestamp_of_latest_eid_reading,
-			"placeOfBirth": self.place_of_birth,
-			"placeOfDeath": self.place_of_death,
-			"deceased": self.deceased,
-			"education": self.education,
-			"profession": self.profession,
-			"notes": [x0.__serialize__() for x0 in self.notes],
-			"note": self.note,
-			"administrativeNote": self.administrative_note,
-			"nationality": self.nationality,
-			"race": self.race,
-			"ethnicity": self.ethnicity,
-			"insurabilities": [x0.__serialize__() for x0 in self.insurabilities],
-			"partnerships": [x0.__serialize__() for x0 in self.partnerships],
-			"patientHealthCareParties": [x0.__serialize__() for x0 in self.patient_health_care_parties],
-			"financialInstitutionInformation": [x0.__serialize__() for x0 in self.financial_institution_information],
-			"medicalHouseContracts": [x0.__serialize__() for x0 in self.medical_house_contracts],
-			"patientProfessions": [x0.__serialize__() for x0 in self.patient_professions],
-			"parameters": {k0: [x1 for x1 in v0] for k0, v0 in self.parameters.items()},
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
-			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
-			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
-			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
-			"publicKey": self.public_key,
-			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
-			"parentId": self.parent_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPatient':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			first_name=deserialized_dict.get("firstName"),
-			last_name=deserialized_dict.get("lastName"),
-			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
-			company_name=deserialized_dict.get("companyName"),
-			languages=[x0 for x0 in deserialized_dict["languages"]],
-			addresses=[EncryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
-			civility=deserialized_dict.get("civility"),
-			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
-			birth_sex=Gender._deserialize(deserialized_dict.get("birthSex")) if deserialized_dict.get("birthSex") is not None else None,
-			merge_to_patient_id=deserialized_dict.get("mergeToPatientId"),
-			merged_ids={x0 for x0 in deserialized_dict["mergedIds"]},
-			alias=deserialized_dict.get("alias"),
-			active=deserialized_dict["active"],
-			deactivation_reason=deserialized_dict["deactivationReason"],
-			deactivation_date=deserialized_dict.get("deactivationDate"),
-			ssin=deserialized_dict.get("ssin"),
-			maiden_name=deserialized_dict.get("maidenName"),
-			spouse_name=deserialized_dict.get("spouseName"),
-			partner_name=deserialized_dict.get("partnerName"),
-			personal_status=PersonalStatus._deserialize(deserialized_dict.get("personalStatus")) if deserialized_dict.get("personalStatus") is not None else None,
-			date_of_birth=deserialized_dict.get("dateOfBirth"),
-			date_of_death=deserialized_dict.get("dateOfDeath"),
-			timestamp_of_latest_eid_reading=deserialized_dict.get("timestampOfLatestEidReading"),
-			place_of_birth=deserialized_dict.get("placeOfBirth"),
-			place_of_death=deserialized_dict.get("placeOfDeath"),
-			deceased=deserialized_dict.get("deceased"),
-			education=deserialized_dict.get("education"),
-			profession=deserialized_dict.get("profession"),
-			notes=[EncryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
-			note=deserialized_dict.get("note"),
-			administrative_note=deserialized_dict.get("administrativeNote"),
-			nationality=deserialized_dict.get("nationality"),
-			race=deserialized_dict.get("race"),
-			ethnicity=deserialized_dict.get("ethnicity"),
-			insurabilities=[EncryptedInsurability._deserialize(x0) for x0 in deserialized_dict["insurabilities"]],
-			partnerships=[EncryptedPartnership._deserialize(x0) for x0 in deserialized_dict["partnerships"]],
-			patient_health_care_parties=[EncryptedPatientHealthCareParty._deserialize(x0) for x0 in deserialized_dict["patientHealthCareParties"]],
-			financial_institution_information=[EncryptedFinancialInstitutionInformation._deserialize(x0) for x0 in deserialized_dict["financialInstitutionInformation"]],
-			medical_house_contracts=[EncryptedMedicalHouseContract._deserialize(x0) for x0 in deserialized_dict["medicalHouseContracts"]],
-			patient_professions=[CodeStub._deserialize(x0) for x0 in deserialized_dict["patientProfessions"]],
-			parameters=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["parameters"].items())),
-			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
-			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
-			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
-			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
-			public_key=deserialized_dict.get("publicKey"),
-			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
-			parent_id=deserialized_dict["parentId"],
-		)
-
-@dataclass
-class DecryptedPatient:
-	id: str
-	identifier: list['Identifier'] = field(default_factory=list)
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	first_name: Optional[str] = None
-	last_name: Optional[str] = None
-	names: list['PersonName'] = field(default_factory=list)
-	company_name: Optional[str] = None
-	languages: list[str] = field(default_factory=list)
-	addresses: list['DecryptedAddress'] = field(default_factory=list)
-	civility: Optional[str] = None
-	gender: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
-	birth_sex: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
-	merge_to_patient_id: Optional[str] = None
-	merged_ids: set[str] = field(default_factory=set)
-	alias: Optional[str] = None
-	active: bool = True
-	deactivation_reason: str = "none"
-	deactivation_date: Optional[int] = None
-	ssin: Optional[str] = None
-	maiden_name: Optional[str] = None
-	spouse_name: Optional[str] = None
-	partner_name: Optional[str] = None
-	personal_status: Optional['PersonalStatus'] = field(default_factory=lambda: PersonalStatus.Unknown)
-	date_of_birth: Optional[int] = None
-	date_of_death: Optional[int] = None
-	timestamp_of_latest_eid_reading: Optional[int] = None
-	place_of_birth: Optional[str] = None
-	place_of_death: Optional[str] = None
-	deceased: Optional[bool] = None
-	education: Optional[str] = None
-	profession: Optional[str] = None
-	notes: list['DecryptedAnnotation'] = field(default_factory=list)
-	note: Optional[str] = None
-	administrative_note: Optional[str] = None
-	nationality: Optional[str] = None
-	race: Optional[str] = None
-	ethnicity: Optional[str] = None
-	insurabilities: list['DecryptedInsurability'] = field(default_factory=list)
-	partnerships: list['DecryptedPartnership'] = field(default_factory=list)
-	patient_health_care_parties: list['DecryptedPatientHealthCareParty'] = field(default_factory=list)
-	financial_institution_information: list['DecryptedFinancialInstitutionInformation'] = field(default_factory=list)
-	medical_house_contracts: list['DecryptedMedicalHouseContract'] = field(default_factory=list)
-	patient_professions: list['CodeStub'] = field(default_factory=list)
-	parameters: dict[str, list[str]] = field(default_factory=dict)
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
-	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
-	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
-	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
-	public_key: Optional['SpkiHexString'] = None
-	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	parent_id: None = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"firstName": self.first_name,
-			"lastName": self.last_name,
-			"names": [x0.__serialize__() for x0 in self.names],
-			"companyName": self.company_name,
-			"languages": [x0 for x0 in self.languages],
-			"addresses": [x0.__serialize__() for x0 in self.addresses],
-			"civility": self.civility,
-			"gender": self.gender.__serialize__() if self.gender is not None else None,
-			"birthSex": self.birth_sex.__serialize__() if self.birth_sex is not None else None,
-			"mergeToPatientId": self.merge_to_patient_id,
-			"mergedIds": [x0 for x0 in self.merged_ids],
-			"alias": self.alias,
-			"active": self.active,
-			"deactivationReason": self.deactivation_reason,
-			"deactivationDate": self.deactivation_date,
-			"ssin": self.ssin,
-			"maidenName": self.maiden_name,
-			"spouseName": self.spouse_name,
-			"partnerName": self.partner_name,
-			"personalStatus": self.personal_status.__serialize__() if self.personal_status is not None else None,
-			"dateOfBirth": self.date_of_birth,
-			"dateOfDeath": self.date_of_death,
-			"timestampOfLatestEidReading": self.timestamp_of_latest_eid_reading,
-			"placeOfBirth": self.place_of_birth,
-			"placeOfDeath": self.place_of_death,
-			"deceased": self.deceased,
-			"education": self.education,
-			"profession": self.profession,
-			"notes": [x0.__serialize__() for x0 in self.notes],
-			"note": self.note,
-			"administrativeNote": self.administrative_note,
-			"nationality": self.nationality,
-			"race": self.race,
-			"ethnicity": self.ethnicity,
-			"insurabilities": [x0.__serialize__() for x0 in self.insurabilities],
-			"partnerships": [x0.__serialize__() for x0 in self.partnerships],
-			"patientHealthCareParties": [x0.__serialize__() for x0 in self.patient_health_care_parties],
-			"financialInstitutionInformation": [x0.__serialize__() for x0 in self.financial_institution_information],
-			"medicalHouseContracts": [x0.__serialize__() for x0 in self.medical_house_contracts],
-			"patientProfessions": [x0.__serialize__() for x0 in self.patient_professions],
-			"parameters": {k0: [x1 for x1 in v0] for k0, v0 in self.parameters.items()},
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
-			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
-			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
-			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
-			"publicKey": self.public_key,
-			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
-			"parentId": self.parent_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPatient':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			first_name=deserialized_dict.get("firstName"),
-			last_name=deserialized_dict.get("lastName"),
-			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
-			company_name=deserialized_dict.get("companyName"),
-			languages=[x0 for x0 in deserialized_dict["languages"]],
-			addresses=[DecryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
-			civility=deserialized_dict.get("civility"),
-			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
-			birth_sex=Gender._deserialize(deserialized_dict.get("birthSex")) if deserialized_dict.get("birthSex") is not None else None,
-			merge_to_patient_id=deserialized_dict.get("mergeToPatientId"),
-			merged_ids={x0 for x0 in deserialized_dict["mergedIds"]},
-			alias=deserialized_dict.get("alias"),
-			active=deserialized_dict["active"],
-			deactivation_reason=deserialized_dict["deactivationReason"],
-			deactivation_date=deserialized_dict.get("deactivationDate"),
-			ssin=deserialized_dict.get("ssin"),
-			maiden_name=deserialized_dict.get("maidenName"),
-			spouse_name=deserialized_dict.get("spouseName"),
-			partner_name=deserialized_dict.get("partnerName"),
-			personal_status=PersonalStatus._deserialize(deserialized_dict.get("personalStatus")) if deserialized_dict.get("personalStatus") is not None else None,
-			date_of_birth=deserialized_dict.get("dateOfBirth"),
-			date_of_death=deserialized_dict.get("dateOfDeath"),
-			timestamp_of_latest_eid_reading=deserialized_dict.get("timestampOfLatestEidReading"),
-			place_of_birth=deserialized_dict.get("placeOfBirth"),
-			place_of_death=deserialized_dict.get("placeOfDeath"),
-			deceased=deserialized_dict.get("deceased"),
-			education=deserialized_dict.get("education"),
-			profession=deserialized_dict.get("profession"),
-			notes=[DecryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
-			note=deserialized_dict.get("note"),
-			administrative_note=deserialized_dict.get("administrativeNote"),
-			nationality=deserialized_dict.get("nationality"),
-			race=deserialized_dict.get("race"),
-			ethnicity=deserialized_dict.get("ethnicity"),
-			insurabilities=[DecryptedInsurability._deserialize(x0) for x0 in deserialized_dict["insurabilities"]],
-			partnerships=[DecryptedPartnership._deserialize(x0) for x0 in deserialized_dict["partnerships"]],
-			patient_health_care_parties=[DecryptedPatientHealthCareParty._deserialize(x0) for x0 in deserialized_dict["patientHealthCareParties"]],
-			financial_institution_information=[DecryptedFinancialInstitutionInformation._deserialize(x0) for x0 in deserialized_dict["financialInstitutionInformation"]],
-			medical_house_contracts=[DecryptedMedicalHouseContract._deserialize(x0) for x0 in deserialized_dict["medicalHouseContracts"]],
-			patient_professions=[CodeStub._deserialize(x0) for x0 in deserialized_dict["patientProfessions"]],
-			parameters=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["parameters"].items())),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
-			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
-			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
-			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
-			public_key=deserialized_dict.get("publicKey"),
-			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
-			parent_id=deserialized_dict["parentId"],
-		)
-
-type Patient = Union['EncryptedPatient', 'DecryptedPatient']
-
-def serialize_patient(patient: Patient) -> Any:
-	if isinstance(patient, EncryptedPatient):
-		serialized_entity = patient.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedPatient"})
-		return serialized_entity
-	elif isinstance(patient, DecryptedPatient):
-		serialized_entity = patient.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedPatient"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(patient)} is not a known subclass of Patient")
-
-def deserialize_patient(data: Union[str, dict[str, JsonElement]]) -> 'Patient':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedPatient":
-		return EncryptedPatient._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedPatient":
-		return DecryptedPatient._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of Patient")
-
-@dataclass
-class User:
-	id: str
-	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	created: Optional[int] = None
-	identifier: list['Identifier'] = field(default_factory=list)
-	name: Optional[str] = None
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	permissions: list['Permission'] = field(default_factory=list)
-	roles: set[str] = field(default_factory=set)
-	status: Optional['UsersStatus'] = None
-	login: Optional[str] = None
-	password_hash: Optional[str] = None
-	group_id: Optional[str] = None
-	healthcare_party_id: Optional[str] = None
-	patient_id: Optional[str] = None
-	device_id: Optional[str] = None
-	auto_delegations: dict['DelegationTag', set[str]] = field(default_factory=dict)
-	terms_of_use_date: Optional[int] = None
-	email: Optional[str] = None
-	mobile_phone: Optional[str] = None
-	authentication_tokens: dict[str, 'AuthenticationToken'] = field(default_factory=dict)
-	system_metadata: Optional['UserSystemMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"created": self.created,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"name": self.name,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"permissions": [x0.__serialize__() for x0 in self.permissions],
-			"roles": [x0 for x0 in self.roles],
-			"status": self.status.__serialize__() if self.status is not None else None,
-			"login": self.login,
-			"passwordHash": self.password_hash,
-			"groupId": self.group_id,
-			"healthcarePartyId": self.healthcare_party_id,
-			"patientId": self.patient_id,
-			"deviceId": self.device_id,
-			"autoDelegations": {k0.__serialize__(): [x1 for x1 in v0] for k0, v0 in self.auto_delegations.items()},
-			"termsOfUseDate": self.terms_of_use_date,
-			"email": self.email,
-			"mobilePhone": self.mobile_phone,
-			"authenticationTokens": {k0: v0.__serialize__() for k0, v0 in self.authentication_tokens.items()},
-			"systemMetadata": self.system_metadata.__serialize__() if self.system_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'User':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			created=deserialized_dict.get("created"),
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			name=deserialized_dict.get("name"),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			permissions=[Permission._deserialize(x0) for x0 in deserialized_dict["permissions"]],
-			roles={x0 for x0 in deserialized_dict["roles"]},
-			status=UsersStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
-			login=deserialized_dict.get("login"),
-			password_hash=deserialized_dict.get("passwordHash"),
-			group_id=deserialized_dict.get("groupId"),
-			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
-			patient_id=deserialized_dict.get("patientId"),
-			device_id=deserialized_dict.get("deviceId"),
-			auto_delegations=dict(map(lambda kv0: (DelegationTag._deserialize(kv0[0]), {x1 for x1 in kv0[1]}), deserialized_dict["autoDelegations"].items())),
-			terms_of_use_date=deserialized_dict.get("termsOfUseDate"),
-			email=deserialized_dict.get("email"),
-			mobile_phone=deserialized_dict.get("mobilePhone"),
-			authentication_tokens=dict(map(lambda kv0: (kv0[0], AuthenticationToken._deserialize(kv0[1])), deserialized_dict["authenticationTokens"].items())),
-			system_metadata=UserSystemMetadata._deserialize(deserialized_dict.get("systemMetadata")) if deserialized_dict.get("systemMetadata") is not None else None,
-		)
-
-@dataclass
-class UserSystemMetadata:
-	roles: set[str]
-	is_admin: bool
-	inherits_roles: bool
-	login_identifiers: list['LoginIdentifier'] = field(default_factory=list)
-	verified_email: Optional[bool] = None
-	verified_mobile_phone: Optional[bool] = None
-	uses2fa: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"roles": [x0 for x0 in self.roles],
-			"isAdmin": self.is_admin,
-			"inheritsRoles": self.inherits_roles,
-			"loginIdentifiers": [x0.__serialize__() for x0 in self.login_identifiers],
-			"verifiedEmail": self.verified_email,
-			"verifiedMobilePhone": self.verified_mobile_phone,
-			"uses2fa": self.uses2fa,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserSystemMetadata':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			roles={x0 for x0 in deserialized_dict["roles"]},
-			is_admin=deserialized_dict["isAdmin"],
-			inherits_roles=deserialized_dict["inheritsRoles"],
-			login_identifiers=[LoginIdentifier._deserialize(x0) for x0 in deserialized_dict["loginIdentifiers"]],
-			verified_email=deserialized_dict.get("verifiedEmail"),
-			verified_mobile_phone=deserialized_dict.get("verifiedMobilePhone"),
-			uses2fa=deserialized_dict.get("uses2fa"),
-		)
-
-class AccessLevel(Enum):
-	Read = "READ"
-	Write = "WRITE"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AccessLevel':
-		if data == "READ":
-			return AccessLevel.Read
-		elif data == "WRITE":
-			return AccessLevel.Write
-		else:
-			raise Exception(f"{data} is not a valid value for AccessLevel enum.")
-
-class SecretIdUseOptionUseAnyConfidential(metaclass=SingletonMeta):
-
-	def __serialize__(self) -> Any:
-		return {}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAnyConfidential':
-		return cls()
-
-class SecretIdUseOptionUseAllConfidential(metaclass=SingletonMeta):
-
-	def __serialize__(self) -> Any:
-		return {}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAllConfidential':
-		return cls()
-
-class SecretIdUseOptionUseAnySharedWithParent(metaclass=SingletonMeta):
-
-	def __serialize__(self) -> Any:
-		return {}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAnySharedWithParent':
-		return cls()
-
-class SecretIdUseOptionUseAllSharedWithParent(metaclass=SingletonMeta):
-
-	def __serialize__(self) -> Any:
-		return {}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAllSharedWithParent':
-		return cls()
-
-@dataclass
-class SecretIdUseOptionUse:
-	secret_ids: set[str]
-
-	def __serialize__(self) -> Any:
-		return {
-			"secretIds": [x0 for x0 in self.secret_ids],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUse':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			secret_ids={x0 for x0 in deserialized_dict["secretIds"]},
-		)
-
-class SecretIdUseOptionUseNone(metaclass=SingletonMeta):
-
-	def __serialize__(self) -> Any:
-		return {}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseNone':
-		return cls()
-
-type SecretIdUseOption = Union['SecretIdUseOptionUseAnyConfidential', 'SecretIdUseOptionUseAllConfidential', 'SecretIdUseOptionUseAnySharedWithParent', 'SecretIdUseOptionUseAllSharedWithParent', 'SecretIdUseOptionUse', 'SecretIdUseOptionUseNone']
-
-def serialize_secret_id_use_option(secret_id_use_option: SecretIdUseOption) -> Any:
-	if isinstance(secret_id_use_option, SecretIdUseOptionUseAnyConfidential):
-		serialized_entity = secret_id_use_option.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnyConfidential"})
-		return serialized_entity
-	elif isinstance(secret_id_use_option, SecretIdUseOptionUseAllConfidential):
-		serialized_entity = secret_id_use_option.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllConfidential"})
-		return serialized_entity
-	elif isinstance(secret_id_use_option, SecretIdUseOptionUseAnySharedWithParent):
-		serialized_entity = secret_id_use_option.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent"})
-		return serialized_entity
-	elif isinstance(secret_id_use_option, SecretIdUseOptionUseAllSharedWithParent):
-		serialized_entity = secret_id_use_option.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent"})
-		return serialized_entity
-	elif isinstance(secret_id_use_option, SecretIdUseOptionUse):
-		serialized_entity = secret_id_use_option.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.Use"})
-		return serialized_entity
-	elif isinstance(secret_id_use_option, SecretIdUseOptionUseNone):
-		serialized_entity = secret_id_use_option.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseNone"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(secret_id_use_option)} is not a known subclass of SecretIdUseOption")
-
-def deserialize_secret_id_use_option(data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOption':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnyConfidential":
-		return SecretIdUseOptionUseAnyConfidential._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllConfidential":
-		return SecretIdUseOptionUseAllConfidential._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent":
-		return SecretIdUseOptionUseAnySharedWithParent._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent":
-		return SecretIdUseOptionUseAllSharedWithParent._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.Use":
-		return SecretIdUseOptionUse._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseNone":
-		return SecretIdUseOptionUseNone._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of SecretIdUseOption")
-
-@dataclass
-class CalendarItemDelegateOptions:
-	access_level: 'AccessLevel'
-	share_encryption_key: bool = False
-	share_secret_id: bool = False
-	share_patient_id: bool = False
-
-	def __serialize__(self) -> Any:
-		return {
-			"accessLevel": self.access_level.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key,
-			"shareSecretId": self.share_secret_id,
-			"sharePatientId": self.share_patient_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemDelegateOptions':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
-			share_encryption_key=deserialized_dict["shareEncryptionKey"],
-			share_secret_id=deserialized_dict["shareSecretId"],
-			share_patient_id=deserialized_dict["sharePatientId"],
-		)
-
-@dataclass
-class CalendarItemOccupancy:
-	timestamp: int
-	occupancy: int
-
-	def __serialize__(self) -> Any:
-		return {
-			"timestamp": self.timestamp,
-			"occupancy": self.occupancy,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemOccupancy':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			timestamp=deserialized_dict["timestamp"],
-			occupancy=deserialized_dict["occupancy"],
-		)
-
-@dataclass
-class CalendarItemShareOptions:
-	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
-	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_patient_id: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
-
-	def __serialize__(self) -> Any:
-		return {
-			"requestedPermissions": self.requested_permissions.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
-			"sharePatientId": self.share_patient_id.__serialize__(),
-			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemShareOptions':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
-			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
-			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
-			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
-		)
-
-@dataclass
-class IndexingInfo:
-	statuses: Optional[dict[str, int]] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"statuses": {k0: v0 for k0, v0 in self.statuses.items()} if self.statuses is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'IndexingInfo':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			statuses=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("statuses").items())) if deserialized_dict.get("statuses") is not None else None,
-		)
-
-@dataclass
-class ReplicationInfo:
-	active: bool = False
-	running: bool = False
-	pending_from: Optional[int] = None
-	pending_to: Optional[int] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"active": self.active,
-			"running": self.running,
-			"pendingFrom": self.pending_from,
-			"pendingTo": self.pending_to,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReplicationInfo':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			active=deserialized_dict["active"],
-			running=deserialized_dict["running"],
-			pending_from=deserialized_dict.get("pendingFrom"),
-			pending_to=deserialized_dict.get("pendingTo"),
-		)
-
-@dataclass
-class IdWithRev:
-	id: str
-	rev: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'IdWithRev':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-		)
-
-@dataclass
-class ReplicatorDocument:
-	id: str
-	rev: Optional[str] = None
-	source: Optional['Remote'] = None
-	target: Optional['Remote'] = None
-	owner: Optional[str] = None
-	create_target: Optional[bool] = None
-	continuous: Optional[bool] = None
-	doc_ids: Optional[list[str]] = None
-	replication_state: Optional[str] = None
-	replication_state_time: Optional[str] = None
-	replication_stats: Optional['ReplicationStats'] = None
-	error_count: Optional[int] = None
-	revs_info: Optional[list[dict[str, str]]] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"source": self.source.__serialize__() if self.source is not None else None,
-			"target": self.target.__serialize__() if self.target is not None else None,
-			"owner": self.owner,
-			"create_target": self.create_target,
-			"continuous": self.continuous,
-			"doc_ids": [x0 for x0 in self.doc_ids] if self.doc_ids is not None else None,
-			"replicationState": self.replication_state,
-			"replicationStateTime": self.replication_state_time,
-			"replicationStats": self.replication_stats.__serialize__() if self.replication_stats is not None else None,
-			"errorCount": self.error_count,
-			"revsInfo": [{k1: v1 for k1, v1 in x0.items()} for x0 in self.revs_info] if self.revs_info is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReplicatorDocument':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			source=Remote._deserialize(deserialized_dict.get("source")) if deserialized_dict.get("source") is not None else None,
-			target=Remote._deserialize(deserialized_dict.get("target")) if deserialized_dict.get("target") is not None else None,
-			owner=deserialized_dict.get("owner"),
-			create_target=deserialized_dict.get("create_target"),
-			continuous=deserialized_dict.get("continuous"),
-			doc_ids=[x0 for x0 in deserialized_dict.get("doc_ids")] if deserialized_dict.get("doc_ids") is not None else None,
-			replication_state=deserialized_dict.get("replicationState"),
-			replication_state_time=deserialized_dict.get("replicationStateTime"),
-			replication_stats=ReplicationStats._deserialize(deserialized_dict.get("replicationStats")) if deserialized_dict.get("replicationStats") is not None else None,
-			error_count=deserialized_dict.get("errorCount"),
-			revs_info=[dict(map(lambda kv1: (kv1[0], kv1[1]), x0.items())) for x0 in deserialized_dict.get("revsInfo")] if deserialized_dict.get("revsInfo") is not None else None,
-		)
-
-@dataclass
-class Group:
-	id: str
-	minimum_authentication_class_for_elevated_privileges: 'AuthenticationClass'
-	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	public_tags: set['CodeStub'] = field(default_factory=set)
-	name: Optional[str] = None
-	password: Optional[str] = None
-	servers: Optional[list[str]] = None
-	super_admin: bool = False
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	default_user_roles: dict['UserType', set[str]] = field(default_factory=dict)
-	operation_tokens: dict[str, 'OperationToken'] = field(default_factory=dict)
-	shared_entities: dict[str, str] = field(default_factory=dict)
-	minimum_kraken_version: Optional[str] = None
-	external_jwt_config: dict[str, 'ExternalJwtConfig'] = field(default_factory=dict)
-	super_group: Optional[str] = None
-	project_id: Optional[str] = None
-	templates: Optional['GroupTemplatesConfiguration'] = None
-	design_doc_schema_versions: set[int] = field(default_factory=set)
-	default_children_schema_version: Optional[int] = None
-	status: Optional['GroupStatus'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"publicTags": [x0.__serialize__() for x0 in self.public_tags],
-			"name": self.name,
-			"password": self.password,
-			"servers": [x0 for x0 in self.servers] if self.servers is not None else None,
-			"superAdmin": self.super_admin,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"defaultUserRoles": {k0.__serialize__(): [x1 for x1 in v0] for k0, v0 in self.default_user_roles.items()},
-			"operationTokens": {k0: v0.__serialize__() for k0, v0 in self.operation_tokens.items()},
-			"sharedEntities": {k0: v0 for k0, v0 in self.shared_entities.items()},
-			"minimumKrakenVersion": self.minimum_kraken_version,
-			"externalJwtConfig": {k0: v0.__serialize__() for k0, v0 in self.external_jwt_config.items()},
-			"minimumAuthenticationClassForElevatedPrivileges": self.minimum_authentication_class_for_elevated_privileges.__serialize__(),
-			"superGroup": self.super_group,
-			"projectId": self.project_id,
-			"templates": self.templates.__serialize__() if self.templates is not None else None,
-			"designDocSchemaVersions": [x0 for x0 in self.design_doc_schema_versions],
-			"defaultChildrenSchemaVersion": self.default_children_schema_version,
-			"status": self.status.__serialize__() if self.status is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Group':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			public_tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["publicTags"]},
-			name=deserialized_dict.get("name"),
-			password=deserialized_dict.get("password"),
-			servers=[x0 for x0 in deserialized_dict.get("servers")] if deserialized_dict.get("servers") is not None else None,
-			super_admin=deserialized_dict["superAdmin"],
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			default_user_roles=dict(map(lambda kv0: (UserType._deserialize(kv0[0]), {x1 for x1 in kv0[1]}), deserialized_dict["defaultUserRoles"].items())),
-			operation_tokens=dict(map(lambda kv0: (kv0[0], OperationToken._deserialize(kv0[1])), deserialized_dict["operationTokens"].items())),
-			shared_entities=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["sharedEntities"].items())),
-			minimum_kraken_version=deserialized_dict.get("minimumKrakenVersion"),
-			external_jwt_config=dict(map(lambda kv0: (kv0[0], ExternalJwtConfig._deserialize(kv0[1])), deserialized_dict["externalJwtConfig"].items())),
-			minimum_authentication_class_for_elevated_privileges=AuthenticationClass._deserialize(deserialized_dict["minimumAuthenticationClassForElevatedPrivileges"]),
-			super_group=deserialized_dict.get("superGroup"),
-			project_id=deserialized_dict.get("projectId"),
-			templates=GroupTemplatesConfiguration._deserialize(deserialized_dict.get("templates")) if deserialized_dict.get("templates") is not None else None,
-			design_doc_schema_versions={x0 for x0 in deserialized_dict["designDocSchemaVersions"]},
-			default_children_schema_version=deserialized_dict.get("defaultChildrenSchemaVersion"),
-			status=GroupStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
-		)
-
-@dataclass
-class GroupTemplatesConfiguration:
-	spec_id: str
-	email_sender: Optional[str] = None
-	sms_sender: Optional[str] = None
-	email_verification_template_id: Optional[str] = None
-	mobile_phone_verification_template_id: Optional[str] = None
-	existing_email_notification_template_id: Optional[str] = None
-	existing_mobile_phone_notification_template_id: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"specId": self.spec_id,
-			"emailSender": self.email_sender,
-			"smsSender": self.sms_sender,
-			"emailVerificationTemplateId": self.email_verification_template_id,
-			"mobilePhoneVerificationTemplateId": self.mobile_phone_verification_template_id,
-			"existingEmailNotificationTemplateId": self.existing_email_notification_template_id,
-			"existingMobilePhoneNotificationTemplateId": self.existing_mobile_phone_notification_template_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupTemplatesConfiguration':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			spec_id=deserialized_dict["specId"],
-			email_sender=deserialized_dict.get("emailSender"),
-			sms_sender=deserialized_dict.get("smsSender"),
-			email_verification_template_id=deserialized_dict.get("emailVerificationTemplateId"),
-			mobile_phone_verification_template_id=deserialized_dict.get("mobilePhoneVerificationTemplateId"),
-			existing_email_notification_template_id=deserialized_dict.get("existingEmailNotificationTemplateId"),
-			existing_mobile_phone_notification_template_id=deserialized_dict.get("existingMobilePhoneNotificationTemplateId"),
-		)
-
-class GroupType(Enum):
-	Root = "root"
-	App = "app"
-	Database = "database"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupType':
-		if data == "root":
-			return GroupType.Root
-		elif data == "app":
-			return GroupType.App
-		elif data == "database":
-			return GroupType.Database
-		else:
-			raise Exception(f"{data} is not a valid value for GroupType enum.")
-
-@dataclass
-class DatabaseInitialisation:
-	users: Optional[list['User']] = field(default_factory=list)
-	healthcare_parties: Optional[list['HealthcareParty']] = field(default_factory=list)
-	replication: Optional['Replication'] = None
-	minimum_kraken_version: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"users": [x0.__serialize__() for x0 in self.users] if self.users is not None else None,
-			"healthcareParties": [x0.__serialize__() for x0 in self.healthcare_parties] if self.healthcare_parties is not None else None,
-			"replication": self.replication.__serialize__() if self.replication is not None else None,
-			"minimumKrakenVersion": self.minimum_kraken_version,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseInitialisation':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			users=[User._deserialize(x0) for x0 in deserialized_dict.get("users")] if deserialized_dict.get("users") is not None else None,
-			healthcare_parties=[HealthcareParty._deserialize(x0) for x0 in deserialized_dict.get("healthcareParties")] if deserialized_dict.get("healthcareParties") is not None else None,
-			replication=Replication._deserialize(deserialized_dict.get("replication")) if deserialized_dict.get("replication") is not None else None,
-			minimum_kraken_version=deserialized_dict.get("minimumKrakenVersion"),
-		)
-
-@dataclass
-class RegistrationSuccess:
-	group_id: str
-	user_id: str
-	token: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"groupId": self.group_id,
-			"userId": self.user_id,
-			"token": self.token,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RegistrationSuccess':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			group_id=deserialized_dict["groupId"],
-			user_id=deserialized_dict["userId"],
-			token=deserialized_dict["token"],
-		)
-
-@dataclass
-class RegistrationInformation:
-	email_address: str
-	project_id: Optional[str] = None
-	first_name: Optional[str] = None
-	last_name: Optional[str] = None
-	company_name: Optional[str] = None
-	user_options: Optional[str] = None
-	user_roles: set[str] = field(default_factory=set)
-	minimum_kraken_version: Optional[str] = None
-	cluster: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"projectId": self.project_id,
-			"firstName": self.first_name,
-			"lastName": self.last_name,
-			"companyName": self.company_name,
-			"emailAddress": self.email_address,
-			"userOptions": self.user_options,
-			"userRoles": [x0 for x0 in self.user_roles],
-			"minimumKrakenVersion": self.minimum_kraken_version,
-			"cluster": self.cluster,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RegistrationInformation':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			project_id=deserialized_dict.get("projectId"),
-			first_name=deserialized_dict.get("firstName"),
-			last_name=deserialized_dict.get("lastName"),
-			company_name=deserialized_dict.get("companyName"),
-			email_address=deserialized_dict["emailAddress"],
-			user_options=deserialized_dict.get("userOptions"),
-			user_roles={x0 for x0 in deserialized_dict["userRoles"]},
-			minimum_kraken_version=deserialized_dict.get("minimumKrakenVersion"),
-			cluster=deserialized_dict.get("cluster"),
-		)
-
-class Operation(Enum):
-	TransferGroup = "TRANSFER_GROUP"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Operation':
-		if data == "TRANSFER_GROUP":
-			return Operation.TransferGroup
-		else:
-			raise Exception(f"{data} is not a valid value for Operation enum.")
-
-class UserType(Enum):
-	Hcp = "HCP"
-	Patient = "PATIENT"
-	Device = "DEVICE"
-	User = "USER"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserType':
-		if data == "HCP":
-			return UserType.Hcp
-		elif data == "PATIENT":
-			return UserType.Patient
-		elif data == "DEVICE":
-			return UserType.Device
-		elif data == "USER":
-			return UserType.User
-		else:
-			raise Exception(f"{data} is not a valid value for UserType enum.")
-
-@dataclass
-class RoleConfiguration:
-	source: 'RoleConfigurationSource'
-	roles: set[str] = field(default_factory=set)
-
-	def __serialize__(self) -> Any:
-		return {
-			"source": self.source.__serialize__(),
-			"roles": [x0 for x0 in self.roles],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RoleConfiguration':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			source=RoleConfigurationSource._deserialize(deserialized_dict["source"]),
-			roles={x0 for x0 in deserialized_dict["roles"]},
-		)
-
-class RoleConfigurationSource(Enum):
-	Configuration = "CONFIGURATION"
-	Inherited = "INHERITED"
-	Default = "DEFAULT"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RoleConfigurationSource':
-		if data == "CONFIGURATION":
-			return RoleConfigurationSource.Configuration
-		elif data == "INHERITED":
-			return RoleConfigurationSource.Inherited
-		elif data == "DEFAULT":
-			return RoleConfigurationSource.Default
-		else:
-			raise Exception(f"{data} is not a valid value for Source enum.")
-
-@dataclass
-class GroupDeletionReport:
-	type: str
-	id: str
-	server: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"type": self.type,
-			"id": self.id,
-			"server": self.server,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupDeletionReport':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			type=deserialized_dict["type"],
-			id=deserialized_dict["id"],
-			server=deserialized_dict["server"],
-		)
-
-@dataclass
-class ListOfProperties:
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-
-	def __serialize__(self) -> Any:
-		return {
-			"properties": [x0.__serialize__() for x0 in self.properties],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ListOfProperties':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-		)
-
-@dataclass
-class DesignDocument:
-	id: str
-	rev: Optional[str] = None
-	language: Optional[str] = None
-	views: dict[str, 'View'] = field(default_factory=dict)
-	lists: dict[str, str] = field(default_factory=dict)
-	shows: dict[str, str] = field(default_factory=dict)
-	update_handlers: Optional[dict[str, str]] = None
-	filters: dict[str, str] = field(default_factory=dict)
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"language": self.language,
-			"views": {k0: v0.__serialize__() for k0, v0 in self.views.items()},
-			"lists": {k0: v0 for k0, v0 in self.lists.items()},
-			"shows": {k0: v0 for k0, v0 in self.shows.items()},
-			"updateHandlers": {k0: v0 for k0, v0 in self.update_handlers.items()} if self.update_handlers is not None else None,
-			"filters": {k0: v0 for k0, v0 in self.filters.items()},
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DesignDocument':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			language=deserialized_dict.get("language"),
-			views=dict(map(lambda kv0: (kv0[0], View._deserialize(kv0[1])), deserialized_dict["views"].items())),
-			lists=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["lists"].items())),
-			shows=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["shows"].items())),
-			update_handlers=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("updateHandlers").items())) if deserialized_dict.get("updateHandlers") is not None else None,
-			filters=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["filters"].items())),
-		)
-
-@dataclass
-class GroupDatabasesInfo:
-	group_id: str
-	databases_info: list['DatabaseInfo']
-	gcp_storage_size: int
-
-	def __serialize__(self) -> Any:
-		return {
-			"groupId": self.group_id,
-			"databasesInfo": [x0.__serialize__() for x0 in self.databases_info],
-			"gcpStorageSize": self.gcp_storage_size,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupDatabasesInfo':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			group_id=deserialized_dict["groupId"],
-			databases_info=[DatabaseInfo._deserialize(x0) for x0 in deserialized_dict["databasesInfo"]],
-			gcp_storage_size=deserialized_dict["gcpStorageSize"],
-		)
-
-@dataclass
-class DocIdentifier:
-	id: Optional[str] = None
-	rev: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DocIdentifier':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict.get("id"),
-			rev=deserialized_dict.get("rev"),
-		)
-
-@dataclass
-class ExternalJwtConfig:
-	validation_method: 'ExternalJwtConfigValidationMethod'
-	field_selector: 'ExternalJwtConfigFieldSelector'
-	authentication_class: 'AuthenticationClass' = field(default_factory=lambda: AuthenticationClass.ExternalAuthentication)
-
-	def __serialize__(self) -> Any:
-		return {
-			"validationMethod": serialize_external_jwt_config_validation_method(self.validation_method),
-			"fieldSelector": serialize_external_jwt_config_field_selector(self.field_selector),
-			"authenticationClass": self.authentication_class.__serialize__(),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfig':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			validation_method=deserialize_external_jwt_config_validation_method(deserialized_dict["validationMethod"]),
-			field_selector=deserialize_external_jwt_config_field_selector(deserialized_dict["fieldSelector"]),
-			authentication_class=AuthenticationClass._deserialize(deserialized_dict["authenticationClass"]),
-		)
-
-@dataclass
-class ExternalJwtConfigValidationMethodPublicKey:
-	key: str
-	signature_algorithm: Optional[str] = None
-	client_id: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"key": self.key,
-			"signatureAlgorithm": self.signature_algorithm,
-			"clientId": self.client_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigValidationMethodPublicKey':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			key=deserialized_dict["key"],
-			signature_algorithm=deserialized_dict.get("signatureAlgorithm"),
-			client_id=deserialized_dict.get("clientId"),
-		)
-
-@dataclass
-class ExternalJwtConfigValidationMethodOidc:
-	issuer_location: str
-	client_id: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"issuerLocation": self.issuer_location,
-			"clientId": self.client_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigValidationMethodOidc':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			issuer_location=deserialized_dict["issuerLocation"],
-			client_id=deserialized_dict.get("clientId"),
-		)
-
-type ExternalJwtConfigValidationMethod = Union['ExternalJwtConfigValidationMethodPublicKey', 'ExternalJwtConfigValidationMethodOidc']
-
-def serialize_external_jwt_config_validation_method(external_jwt_config_validation_method: ExternalJwtConfigValidationMethod) -> Any:
-	if isinstance(external_jwt_config_validation_method, ExternalJwtConfigValidationMethodPublicKey):
-		serialized_entity = external_jwt_config_validation_method.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey"})
-		return serialized_entity
-	elif isinstance(external_jwt_config_validation_method, ExternalJwtConfigValidationMethodOidc):
-		serialized_entity = external_jwt_config_validation_method.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(external_jwt_config_validation_method)} is not a known subclass of ValidationMethod")
-
-def deserialize_external_jwt_config_validation_method(data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigValidationMethod':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey":
-		return ExternalJwtConfigValidationMethodPublicKey._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc":
-		return ExternalJwtConfigValidationMethodOidc._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of ValidationMethod")
-
-@dataclass
-class ExternalJwtConfigFieldSelectorLocalId:
-	field_name: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"fieldName": self.field_name,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorLocalId':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field_name=deserialized_dict["fieldName"],
-		)
-
-@dataclass
-class ExternalJwtConfigFieldSelectorEmail:
-	field_name: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"fieldName": self.field_name,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorEmail':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field_name=deserialized_dict["fieldName"],
-		)
-
-@dataclass
-class ExternalJwtConfigFieldSelectorMobilePhone:
-	field_name: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"fieldName": self.field_name,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorMobilePhone':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field_name=deserialized_dict["fieldName"],
-		)
-
-@dataclass
-class ExternalJwtConfigFieldSelectorUsername:
-	field_name: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"fieldName": self.field_name,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorUsername':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field_name=deserialized_dict["fieldName"],
-		)
-
-@dataclass
-class ExternalJwtConfigFieldSelectorIdentifier:
-	identifier_assigner: str
-	field_name: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"identifierAssigner": self.identifier_assigner,
-			"fieldName": self.field_name,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorIdentifier':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			identifier_assigner=deserialized_dict["identifierAssigner"],
-			field_name=deserialized_dict["fieldName"],
-		)
-
-type ExternalJwtConfigFieldSelector = Union['ExternalJwtConfigFieldSelectorLocalId', 'ExternalJwtConfigFieldSelectorEmail', 'ExternalJwtConfigFieldSelectorMobilePhone', 'ExternalJwtConfigFieldSelectorUsername', 'ExternalJwtConfigFieldSelectorIdentifier']
-
-def serialize_external_jwt_config_field_selector(external_jwt_config_field_selector: ExternalJwtConfigFieldSelector) -> Any:
-	if isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorLocalId):
-		serialized_entity = external_jwt_config_field_selector.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId"})
-		return serialized_entity
-	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorEmail):
-		serialized_entity = external_jwt_config_field_selector.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email"})
-		return serialized_entity
-	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorMobilePhone):
-		serialized_entity = external_jwt_config_field_selector.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone"})
-		return serialized_entity
-	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorUsername):
-		serialized_entity = external_jwt_config_field_selector.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username"})
-		return serialized_entity
-	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorIdentifier):
-		serialized_entity = external_jwt_config_field_selector.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(external_jwt_config_field_selector)} is not a known subclass of FieldSelector")
-
-def deserialize_external_jwt_config_field_selector(data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelector':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId":
-		return ExternalJwtConfigFieldSelectorLocalId._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email":
-		return ExternalJwtConfigFieldSelectorEmail._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone":
-		return ExternalJwtConfigFieldSelectorMobilePhone._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username":
-		return ExternalJwtConfigFieldSelectorUsername._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier":
-		return ExternalJwtConfigFieldSelectorIdentifier._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of FieldSelector")
-
-@dataclass(frozen=True)
-class CodeStub:
-	id: Optional[str] = None
-	context: Optional[str] = None
-	type: Optional[str] = None
-	code: Optional[str] = None
-	version: Optional[str] = None
-	context_label: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"context": self.context,
-			"type": self.type,
-			"code": self.code,
-			"version": self.version,
-			"contextLabel": self.context_label,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CodeStub':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict.get("id"),
-			context=deserialized_dict.get("context"),
-			type=deserialized_dict.get("type"),
-			code=deserialized_dict.get("code"),
-			version=deserialized_dict.get("version"),
-			context_label=deserialized_dict.get("contextLabel"),
 		)
 
 @dataclass
@@ -3670,35 +482,6 @@ def deserialize_invoice(data: Union[str, dict[str, JsonElement]]) -> 'Invoice':
 		raise Exception(f"{qualifier} is not a known subclass of Invoice")
 
 @dataclass
-class InvoiceDelegateOptions:
-	access_level: 'AccessLevel'
-	share_encryption_key: bool = False
-	share_secret_id: bool = False
-	share_patient_id: bool = False
-
-	def __serialize__(self) -> Any:
-		return {
-			"accessLevel": self.access_level.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key,
-			"shareSecretId": self.share_secret_id,
-			"sharePatientId": self.share_patient_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'InvoiceDelegateOptions':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
-			share_encryption_key=deserialized_dict["shareEncryptionKey"],
-			share_secret_id=deserialized_dict["shareSecretId"],
-			share_patient_id=deserialized_dict["sharePatientId"],
-		)
-
-@dataclass
 class LabelledOccurence:
 	label: str
 	occurence: int
@@ -3722,220 +505,26 @@ class LabelledOccurence:
 		)
 
 @dataclass
-class InvoiceShareOptions:
-	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
-	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_patient_id: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
+class EntityAccessInformation:
+	permissions_by_data_owner_id: dict['EntityReferenceInGroup', 'AccessLevel']
+	has_unknown_anonymous_data_owners: bool
 
 	def __serialize__(self) -> Any:
 		return {
-			"requestedPermissions": self.requested_permissions.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
-			"sharePatientId": self.share_patient_id.__serialize__(),
-			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
+			"permissionsByDataOwnerId": [{ "k": k0.__serialize__(), "v": v0.__serialize__() } for k0, v0 in self.permissions_by_data_owner_id.items()],
+			"hasUnknownAnonymousDataOwners": self.has_unknown_anonymous_data_owners,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'InvoiceShareOptions':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntityAccessInformation':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
-			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
-			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
-			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
-		)
-
-@dataclass
-class DecryptedInvoicingCode:
-	id: Optional[str]
-	date_code: Optional[int] = None
-	logical_id: Optional[str] = None
-	label: Optional[str] = None
-	user_id: Optional[str] = None
-	contact_id: Optional[str] = None
-	service_id: Optional[str] = None
-	pricing_id: Optional[str] = None
-	code: Optional[str] = None
-	payment_type: Optional['PaymentType'] = None
-	paid: Optional[float] = None
-	total_amount: Optional[float] = None
-	reimbursement: Optional[float] = None
-	patient_intervention: Optional[float] = None
-	ami_intervention: Optional[float] = None
-	doctor_supplement: Optional[float] = None
-	convention_amount: Optional[float] = None
-	vat: Optional[float] = None
-	error: Optional[str] = None
-	contract: Optional[str] = None
-	contract_date: Optional[int] = None
-	units: Optional[int] = None
-	side: Optional[int] = None
-	time_of_day: Optional[int] = None
-	eid_reading_hour: Optional[int] = None
-	eid_reading_value: Optional[str] = None
-	override3rd_payer_code: Optional[int] = None
-	override3rd_payer_reason: Optional[str] = None
-	transplantation_code: Optional[int] = None
-	prescriber_norm: Optional[int] = None
-	product_label: Optional[str] = None
-	percent_norm: Optional[int] = None
-	prescriber_nihii: Optional[str] = None
-	related_code: Optional[str] = None
-	prescription_date: Optional[int] = None
-	derogation_max_number: Optional[int] = None
-	prescriber_ssin: Optional[str] = None
-	prescriber_last_name: Optional[str] = None
-	prescriber_first_name: Optional[str] = None
-	prescriber_cd_hc_party: Optional[str] = None
-	location_nihii: Optional[str] = None
-	location_cd_hc_party: Optional[str] = None
-	location_service: Optional[int] = None
-	admission_date: Optional[int] = None
-	canceled: Optional[bool] = None
-	accepted: Optional[bool] = None
-	pending: Optional[bool] = None
-	resent: Optional[bool] = None
-	archived: Optional[bool] = None
-	lost: Optional[bool] = None
-	insurance_justification: Optional[int] = None
-	agreement_number: Optional[str] = None
-	cancel_patient_intervention_reason: Optional[int] = None
-	status: Optional[int] = None
-	code_label: Optional[str] = None
-	options: dict[str, str] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"dateCode": self.date_code,
-			"logicalId": self.logical_id,
-			"label": self.label,
-			"userId": self.user_id,
-			"contactId": self.contact_id,
-			"serviceId": self.service_id,
-			"pricingId": self.pricing_id,
-			"code": self.code,
-			"paymentType": self.payment_type.__serialize__() if self.payment_type is not None else None,
-			"paid": self.paid,
-			"totalAmount": self.total_amount,
-			"reimbursement": self.reimbursement,
-			"patientIntervention": self.patient_intervention,
-			"amiIntervention": self.ami_intervention,
-			"doctorSupplement": self.doctor_supplement,
-			"conventionAmount": self.convention_amount,
-			"vat": self.vat,
-			"error": self.error,
-			"contract": self.contract,
-			"contractDate": self.contract_date,
-			"units": self.units,
-			"side": self.side,
-			"timeOfDay": self.time_of_day,
-			"eidReadingHour": self.eid_reading_hour,
-			"eidReadingValue": self.eid_reading_value,
-			"override3rdPayerCode": self.override3rd_payer_code,
-			"override3rdPayerReason": self.override3rd_payer_reason,
-			"transplantationCode": self.transplantation_code,
-			"prescriberNorm": self.prescriber_norm,
-			"productLabel": self.product_label,
-			"percentNorm": self.percent_norm,
-			"prescriberNihii": self.prescriber_nihii,
-			"relatedCode": self.related_code,
-			"prescriptionDate": self.prescription_date,
-			"derogationMaxNumber": self.derogation_max_number,
-			"prescriberSsin": self.prescriber_ssin,
-			"prescriberLastName": self.prescriber_last_name,
-			"prescriberFirstName": self.prescriber_first_name,
-			"prescriberCdHcParty": self.prescriber_cd_hc_party,
-			"locationNihii": self.location_nihii,
-			"locationCdHcParty": self.location_cd_hc_party,
-			"locationService": self.location_service,
-			"admissionDate": self.admission_date,
-			"canceled": self.canceled,
-			"accepted": self.accepted,
-			"pending": self.pending,
-			"resent": self.resent,
-			"archived": self.archived,
-			"lost": self.lost,
-			"insuranceJustification": self.insurance_justification,
-			"agreementNumber": self.agreement_number,
-			"cancelPatientInterventionReason": self.cancel_patient_intervention_reason,
-			"status": self.status,
-			"codeLabel": self.code_label,
-			"options": {k0: v0 for k0, v0 in self.options.items()},
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedInvoicingCode':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict.get("id"),
-			date_code=deserialized_dict.get("dateCode"),
-			logical_id=deserialized_dict.get("logicalId"),
-			label=deserialized_dict.get("label"),
-			user_id=deserialized_dict.get("userId"),
-			contact_id=deserialized_dict.get("contactId"),
-			service_id=deserialized_dict.get("serviceId"),
-			pricing_id=deserialized_dict.get("pricingId"),
-			code=deserialized_dict.get("code"),
-			payment_type=PaymentType._deserialize(deserialized_dict.get("paymentType")) if deserialized_dict.get("paymentType") is not None else None,
-			paid=deserialized_dict.get("paid"),
-			total_amount=deserialized_dict.get("totalAmount"),
-			reimbursement=deserialized_dict.get("reimbursement"),
-			patient_intervention=deserialized_dict.get("patientIntervention"),
-			ami_intervention=deserialized_dict.get("amiIntervention"),
-			doctor_supplement=deserialized_dict.get("doctorSupplement"),
-			convention_amount=deserialized_dict.get("conventionAmount"),
-			vat=deserialized_dict.get("vat"),
-			error=deserialized_dict.get("error"),
-			contract=deserialized_dict.get("contract"),
-			contract_date=deserialized_dict.get("contractDate"),
-			units=deserialized_dict.get("units"),
-			side=deserialized_dict.get("side"),
-			time_of_day=deserialized_dict.get("timeOfDay"),
-			eid_reading_hour=deserialized_dict.get("eidReadingHour"),
-			eid_reading_value=deserialized_dict.get("eidReadingValue"),
-			override3rd_payer_code=deserialized_dict.get("override3rdPayerCode"),
-			override3rd_payer_reason=deserialized_dict.get("override3rdPayerReason"),
-			transplantation_code=deserialized_dict.get("transplantationCode"),
-			prescriber_norm=deserialized_dict.get("prescriberNorm"),
-			product_label=deserialized_dict.get("productLabel"),
-			percent_norm=deserialized_dict.get("percentNorm"),
-			prescriber_nihii=deserialized_dict.get("prescriberNihii"),
-			related_code=deserialized_dict.get("relatedCode"),
-			prescription_date=deserialized_dict.get("prescriptionDate"),
-			derogation_max_number=deserialized_dict.get("derogationMaxNumber"),
-			prescriber_ssin=deserialized_dict.get("prescriberSsin"),
-			prescriber_last_name=deserialized_dict.get("prescriberLastName"),
-			prescriber_first_name=deserialized_dict.get("prescriberFirstName"),
-			prescriber_cd_hc_party=deserialized_dict.get("prescriberCdHcParty"),
-			location_nihii=deserialized_dict.get("locationNihii"),
-			location_cd_hc_party=deserialized_dict.get("locationCdHcParty"),
-			location_service=deserialized_dict.get("locationService"),
-			admission_date=deserialized_dict.get("admissionDate"),
-			canceled=deserialized_dict.get("canceled"),
-			accepted=deserialized_dict.get("accepted"),
-			pending=deserialized_dict.get("pending"),
-			resent=deserialized_dict.get("resent"),
-			archived=deserialized_dict.get("archived"),
-			lost=deserialized_dict.get("lost"),
-			insurance_justification=deserialized_dict.get("insuranceJustification"),
-			agreement_number=deserialized_dict.get("agreementNumber"),
-			cancel_patient_intervention_reason=deserialized_dict.get("cancelPatientInterventionReason"),
-			status=deserialized_dict.get("status"),
-			code_label=deserialized_dict.get("codeLabel"),
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["options"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			permissions_by_data_owner_id={ EntityReferenceInGroup._deserialize(x0["k"]): AccessLevel._deserialize(x0["v"]) for x0 in cast(list[dict[str, JsonElement]], deserialized_dict["permissionsByDataOwnerId"]) },
+			has_unknown_anonymous_data_owners=deserialized_dict["hasUnknownAnonymousDataOwners"],
 		)
 
 @dataclass
@@ -4126,16 +715,204 @@ class EncryptedInvoicingCode:
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
-type InvoicingCode = Union['DecryptedInvoicingCode', 'EncryptedInvoicingCode']
+@dataclass
+class DecryptedInvoicingCode:
+	id: Optional[str]
+	date_code: Optional[int] = None
+	logical_id: Optional[str] = None
+	label: Optional[str] = None
+	user_id: Optional[str] = None
+	contact_id: Optional[str] = None
+	service_id: Optional[str] = None
+	pricing_id: Optional[str] = None
+	code: Optional[str] = None
+	payment_type: Optional['PaymentType'] = None
+	paid: Optional[float] = None
+	total_amount: Optional[float] = None
+	reimbursement: Optional[float] = None
+	patient_intervention: Optional[float] = None
+	ami_intervention: Optional[float] = None
+	doctor_supplement: Optional[float] = None
+	convention_amount: Optional[float] = None
+	vat: Optional[float] = None
+	error: Optional[str] = None
+	contract: Optional[str] = None
+	contract_date: Optional[int] = None
+	units: Optional[int] = None
+	side: Optional[int] = None
+	time_of_day: Optional[int] = None
+	eid_reading_hour: Optional[int] = None
+	eid_reading_value: Optional[str] = None
+	override3rd_payer_code: Optional[int] = None
+	override3rd_payer_reason: Optional[str] = None
+	transplantation_code: Optional[int] = None
+	prescriber_norm: Optional[int] = None
+	product_label: Optional[str] = None
+	percent_norm: Optional[int] = None
+	prescriber_nihii: Optional[str] = None
+	related_code: Optional[str] = None
+	prescription_date: Optional[int] = None
+	derogation_max_number: Optional[int] = None
+	prescriber_ssin: Optional[str] = None
+	prescriber_last_name: Optional[str] = None
+	prescriber_first_name: Optional[str] = None
+	prescriber_cd_hc_party: Optional[str] = None
+	location_nihii: Optional[str] = None
+	location_cd_hc_party: Optional[str] = None
+	location_service: Optional[int] = None
+	admission_date: Optional[int] = None
+	canceled: Optional[bool] = None
+	accepted: Optional[bool] = None
+	pending: Optional[bool] = None
+	resent: Optional[bool] = None
+	archived: Optional[bool] = None
+	lost: Optional[bool] = None
+	insurance_justification: Optional[int] = None
+	agreement_number: Optional[str] = None
+	cancel_patient_intervention_reason: Optional[int] = None
+	status: Optional[int] = None
+	code_label: Optional[str] = None
+	options: dict[str, str] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"dateCode": self.date_code,
+			"logicalId": self.logical_id,
+			"label": self.label,
+			"userId": self.user_id,
+			"contactId": self.contact_id,
+			"serviceId": self.service_id,
+			"pricingId": self.pricing_id,
+			"code": self.code,
+			"paymentType": self.payment_type.__serialize__() if self.payment_type is not None else None,
+			"paid": self.paid,
+			"totalAmount": self.total_amount,
+			"reimbursement": self.reimbursement,
+			"patientIntervention": self.patient_intervention,
+			"amiIntervention": self.ami_intervention,
+			"doctorSupplement": self.doctor_supplement,
+			"conventionAmount": self.convention_amount,
+			"vat": self.vat,
+			"error": self.error,
+			"contract": self.contract,
+			"contractDate": self.contract_date,
+			"units": self.units,
+			"side": self.side,
+			"timeOfDay": self.time_of_day,
+			"eidReadingHour": self.eid_reading_hour,
+			"eidReadingValue": self.eid_reading_value,
+			"override3rdPayerCode": self.override3rd_payer_code,
+			"override3rdPayerReason": self.override3rd_payer_reason,
+			"transplantationCode": self.transplantation_code,
+			"prescriberNorm": self.prescriber_norm,
+			"productLabel": self.product_label,
+			"percentNorm": self.percent_norm,
+			"prescriberNihii": self.prescriber_nihii,
+			"relatedCode": self.related_code,
+			"prescriptionDate": self.prescription_date,
+			"derogationMaxNumber": self.derogation_max_number,
+			"prescriberSsin": self.prescriber_ssin,
+			"prescriberLastName": self.prescriber_last_name,
+			"prescriberFirstName": self.prescriber_first_name,
+			"prescriberCdHcParty": self.prescriber_cd_hc_party,
+			"locationNihii": self.location_nihii,
+			"locationCdHcParty": self.location_cd_hc_party,
+			"locationService": self.location_service,
+			"admissionDate": self.admission_date,
+			"canceled": self.canceled,
+			"accepted": self.accepted,
+			"pending": self.pending,
+			"resent": self.resent,
+			"archived": self.archived,
+			"lost": self.lost,
+			"insuranceJustification": self.insurance_justification,
+			"agreementNumber": self.agreement_number,
+			"cancelPatientInterventionReason": self.cancel_patient_intervention_reason,
+			"status": self.status,
+			"codeLabel": self.code_label,
+			"options": {k0: v0 for k0, v0 in self.options.items()},
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedInvoicingCode':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict.get("id"),
+			date_code=deserialized_dict.get("dateCode"),
+			logical_id=deserialized_dict.get("logicalId"),
+			label=deserialized_dict.get("label"),
+			user_id=deserialized_dict.get("userId"),
+			contact_id=deserialized_dict.get("contactId"),
+			service_id=deserialized_dict.get("serviceId"),
+			pricing_id=deserialized_dict.get("pricingId"),
+			code=deserialized_dict.get("code"),
+			payment_type=PaymentType._deserialize(deserialized_dict.get("paymentType")) if deserialized_dict.get("paymentType") is not None else None,
+			paid=deserialized_dict.get("paid"),
+			total_amount=deserialized_dict.get("totalAmount"),
+			reimbursement=deserialized_dict.get("reimbursement"),
+			patient_intervention=deserialized_dict.get("patientIntervention"),
+			ami_intervention=deserialized_dict.get("amiIntervention"),
+			doctor_supplement=deserialized_dict.get("doctorSupplement"),
+			convention_amount=deserialized_dict.get("conventionAmount"),
+			vat=deserialized_dict.get("vat"),
+			error=deserialized_dict.get("error"),
+			contract=deserialized_dict.get("contract"),
+			contract_date=deserialized_dict.get("contractDate"),
+			units=deserialized_dict.get("units"),
+			side=deserialized_dict.get("side"),
+			time_of_day=deserialized_dict.get("timeOfDay"),
+			eid_reading_hour=deserialized_dict.get("eidReadingHour"),
+			eid_reading_value=deserialized_dict.get("eidReadingValue"),
+			override3rd_payer_code=deserialized_dict.get("override3rdPayerCode"),
+			override3rd_payer_reason=deserialized_dict.get("override3rdPayerReason"),
+			transplantation_code=deserialized_dict.get("transplantationCode"),
+			prescriber_norm=deserialized_dict.get("prescriberNorm"),
+			product_label=deserialized_dict.get("productLabel"),
+			percent_norm=deserialized_dict.get("percentNorm"),
+			prescriber_nihii=deserialized_dict.get("prescriberNihii"),
+			related_code=deserialized_dict.get("relatedCode"),
+			prescription_date=deserialized_dict.get("prescriptionDate"),
+			derogation_max_number=deserialized_dict.get("derogationMaxNumber"),
+			prescriber_ssin=deserialized_dict.get("prescriberSsin"),
+			prescriber_last_name=deserialized_dict.get("prescriberLastName"),
+			prescriber_first_name=deserialized_dict.get("prescriberFirstName"),
+			prescriber_cd_hc_party=deserialized_dict.get("prescriberCdHcParty"),
+			location_nihii=deserialized_dict.get("locationNihii"),
+			location_cd_hc_party=deserialized_dict.get("locationCdHcParty"),
+			location_service=deserialized_dict.get("locationService"),
+			admission_date=deserialized_dict.get("admissionDate"),
+			canceled=deserialized_dict.get("canceled"),
+			accepted=deserialized_dict.get("accepted"),
+			pending=deserialized_dict.get("pending"),
+			resent=deserialized_dict.get("resent"),
+			archived=deserialized_dict.get("archived"),
+			lost=deserialized_dict.get("lost"),
+			insurance_justification=deserialized_dict.get("insuranceJustification"),
+			agreement_number=deserialized_dict.get("agreementNumber"),
+			cancel_patient_intervention_reason=deserialized_dict.get("cancelPatientInterventionReason"),
+			status=deserialized_dict.get("status"),
+			code_label=deserialized_dict.get("codeLabel"),
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["options"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type InvoicingCode = Union['EncryptedInvoicingCode', 'DecryptedInvoicingCode']
 
 def serialize_invoicing_code(invoicing_code: InvoicingCode) -> Any:
-	if isinstance(invoicing_code, DecryptedInvoicingCode):
-		serialized_entity = invoicing_code.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode"})
-		return serialized_entity
-	elif isinstance(invoicing_code, EncryptedInvoicingCode):
+	if isinstance(invoicing_code, EncryptedInvoicingCode):
 		serialized_entity = invoicing_code.__serialize__()
 		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode"})
+		return serialized_entity
+	elif isinstance(invoicing_code, DecryptedInvoicingCode):
+		serialized_entity = invoicing_code.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode"})
 		return serialized_entity
 	else:
 		raise Exception(f"{type(invoicing_code)} is not a known subclass of InvoicingCode")
@@ -4149,10 +926,10 @@ def deserialize_invoicing_code(data: Union[str, dict[str, JsonElement]]) -> 'Inv
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode":
-		return DecryptedInvoicingCode._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode":
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedInvoicingCode":
 		return EncryptedInvoicingCode._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedInvoicingCode":
+		return DecryptedInvoicingCode._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of InvoicingCode")
 
@@ -4214,6 +991,853 @@ class InvoiceType(Enum):
 			return InvoiceType.Other
 		else:
 			raise Exception(f"{data} is not a valid value for InvoiceType enum.")
+
+@dataclass
+class GroupScoped[E]:
+	entity: E
+	group_id: str
+
+	def __serialize__(self, serialize_e: Callable[[E], Any]) -> Any:
+		return {
+			"entity": serialize_e(self.entity),
+			"groupId": self.group_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]], deserialize_e: Callable[[dict[str, JsonElement]], E]) -> 'GroupScoped[E]':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			entity=deserialize_e(cast(dict, deserialized_dict["entity"])),
+			group_id=deserialized_dict["groupId"],
+		)
+
+@dataclass
+class CryptoActorStub:
+	id: str
+	rev: str
+	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
+	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
+	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
+	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
+	public_key: Optional['SpkiHexString'] = None
+	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
+	parent_id: Optional[str] = None
+	crypto_actor_properties: Optional[list['DecryptedPropertyStub']] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
+			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
+			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
+			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
+			"publicKey": self.public_key,
+			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
+			"parentId": self.parent_id,
+			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties] if self.crypto_actor_properties is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CryptoActorStub':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict["rev"],
+			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
+			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
+			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
+			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
+			public_key=deserialized_dict.get("publicKey"),
+			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
+			parent_id=deserialized_dict.get("parentId"),
+			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict.get("cryptoActorProperties")] if deserialized_dict.get("cryptoActorProperties") is not None else None,
+		)
+
+@dataclass
+class DecryptedPatient:
+	id: str
+	identifier: list['Identifier'] = field(default_factory=list)
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	first_name: Optional[str] = None
+	last_name: Optional[str] = None
+	names: list['PersonName'] = field(default_factory=list)
+	company_name: Optional[str] = None
+	languages: list[str] = field(default_factory=list)
+	addresses: list['DecryptedAddress'] = field(default_factory=list)
+	civility: Optional[str] = None
+	gender: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
+	birth_sex: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
+	merge_to_patient_id: Optional[str] = None
+	merged_ids: set[str] = field(default_factory=set)
+	alias: Optional[str] = None
+	active: bool = True
+	deactivation_reason: str = "none"
+	deactivation_date: Optional[int] = None
+	ssin: Optional[str] = None
+	maiden_name: Optional[str] = None
+	spouse_name: Optional[str] = None
+	partner_name: Optional[str] = None
+	personal_status: Optional['PersonalStatus'] = field(default_factory=lambda: PersonalStatus.Unknown)
+	date_of_birth: Optional[int] = None
+	date_of_death: Optional[int] = None
+	timestamp_of_latest_eid_reading: Optional[int] = None
+	place_of_birth: Optional[str] = None
+	place_of_death: Optional[str] = None
+	deceased: Optional[bool] = None
+	education: Optional[str] = None
+	profession: Optional[str] = None
+	notes: list['DecryptedAnnotation'] = field(default_factory=list)
+	note: Optional[str] = None
+	administrative_note: Optional[str] = None
+	nationality: Optional[str] = None
+	race: Optional[str] = None
+	ethnicity: Optional[str] = None
+	insurabilities: list['DecryptedInsurability'] = field(default_factory=list)
+	partnerships: list['DecryptedPartnership'] = field(default_factory=list)
+	patient_health_care_parties: list['DecryptedPatientHealthCareParty'] = field(default_factory=list)
+	financial_institution_information: list['DecryptedFinancialInstitutionInformation'] = field(default_factory=list)
+	medical_house_contracts: list['DecryptedMedicalHouseContract'] = field(default_factory=list)
+	patient_professions: list['CodeStub'] = field(default_factory=list)
+	parameters: dict[str, list[str]] = field(default_factory=dict)
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
+	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
+	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
+	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
+	public_key: Optional['SpkiHexString'] = None
+	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	parent_id: None = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"firstName": self.first_name,
+			"lastName": self.last_name,
+			"names": [x0.__serialize__() for x0 in self.names],
+			"companyName": self.company_name,
+			"languages": [x0 for x0 in self.languages],
+			"addresses": [x0.__serialize__() for x0 in self.addresses],
+			"civility": self.civility,
+			"gender": self.gender.__serialize__() if self.gender is not None else None,
+			"birthSex": self.birth_sex.__serialize__() if self.birth_sex is not None else None,
+			"mergeToPatientId": self.merge_to_patient_id,
+			"mergedIds": [x0 for x0 in self.merged_ids],
+			"alias": self.alias,
+			"active": self.active,
+			"deactivationReason": self.deactivation_reason,
+			"deactivationDate": self.deactivation_date,
+			"ssin": self.ssin,
+			"maidenName": self.maiden_name,
+			"spouseName": self.spouse_name,
+			"partnerName": self.partner_name,
+			"personalStatus": self.personal_status.__serialize__() if self.personal_status is not None else None,
+			"dateOfBirth": self.date_of_birth,
+			"dateOfDeath": self.date_of_death,
+			"timestampOfLatestEidReading": self.timestamp_of_latest_eid_reading,
+			"placeOfBirth": self.place_of_birth,
+			"placeOfDeath": self.place_of_death,
+			"deceased": self.deceased,
+			"education": self.education,
+			"profession": self.profession,
+			"notes": [x0.__serialize__() for x0 in self.notes],
+			"note": self.note,
+			"administrativeNote": self.administrative_note,
+			"nationality": self.nationality,
+			"race": self.race,
+			"ethnicity": self.ethnicity,
+			"insurabilities": [x0.__serialize__() for x0 in self.insurabilities],
+			"partnerships": [x0.__serialize__() for x0 in self.partnerships],
+			"patientHealthCareParties": [x0.__serialize__() for x0 in self.patient_health_care_parties],
+			"financialInstitutionInformation": [x0.__serialize__() for x0 in self.financial_institution_information],
+			"medicalHouseContracts": [x0.__serialize__() for x0 in self.medical_house_contracts],
+			"patientProfessions": [x0.__serialize__() for x0 in self.patient_professions],
+			"parameters": {k0: [x1 for x1 in v0] for k0, v0 in self.parameters.items()},
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
+			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
+			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
+			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
+			"publicKey": self.public_key,
+			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
+			"parentId": self.parent_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPatient':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			first_name=deserialized_dict.get("firstName"),
+			last_name=deserialized_dict.get("lastName"),
+			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
+			company_name=deserialized_dict.get("companyName"),
+			languages=[x0 for x0 in deserialized_dict["languages"]],
+			addresses=[DecryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
+			civility=deserialized_dict.get("civility"),
+			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
+			birth_sex=Gender._deserialize(deserialized_dict.get("birthSex")) if deserialized_dict.get("birthSex") is not None else None,
+			merge_to_patient_id=deserialized_dict.get("mergeToPatientId"),
+			merged_ids={x0 for x0 in deserialized_dict["mergedIds"]},
+			alias=deserialized_dict.get("alias"),
+			active=deserialized_dict["active"],
+			deactivation_reason=deserialized_dict["deactivationReason"],
+			deactivation_date=deserialized_dict.get("deactivationDate"),
+			ssin=deserialized_dict.get("ssin"),
+			maiden_name=deserialized_dict.get("maidenName"),
+			spouse_name=deserialized_dict.get("spouseName"),
+			partner_name=deserialized_dict.get("partnerName"),
+			personal_status=PersonalStatus._deserialize(deserialized_dict.get("personalStatus")) if deserialized_dict.get("personalStatus") is not None else None,
+			date_of_birth=deserialized_dict.get("dateOfBirth"),
+			date_of_death=deserialized_dict.get("dateOfDeath"),
+			timestamp_of_latest_eid_reading=deserialized_dict.get("timestampOfLatestEidReading"),
+			place_of_birth=deserialized_dict.get("placeOfBirth"),
+			place_of_death=deserialized_dict.get("placeOfDeath"),
+			deceased=deserialized_dict.get("deceased"),
+			education=deserialized_dict.get("education"),
+			profession=deserialized_dict.get("profession"),
+			notes=[DecryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
+			note=deserialized_dict.get("note"),
+			administrative_note=deserialized_dict.get("administrativeNote"),
+			nationality=deserialized_dict.get("nationality"),
+			race=deserialized_dict.get("race"),
+			ethnicity=deserialized_dict.get("ethnicity"),
+			insurabilities=[DecryptedInsurability._deserialize(x0) for x0 in deserialized_dict["insurabilities"]],
+			partnerships=[DecryptedPartnership._deserialize(x0) for x0 in deserialized_dict["partnerships"]],
+			patient_health_care_parties=[DecryptedPatientHealthCareParty._deserialize(x0) for x0 in deserialized_dict["patientHealthCareParties"]],
+			financial_institution_information=[DecryptedFinancialInstitutionInformation._deserialize(x0) for x0 in deserialized_dict["financialInstitutionInformation"]],
+			medical_house_contracts=[DecryptedMedicalHouseContract._deserialize(x0) for x0 in deserialized_dict["medicalHouseContracts"]],
+			patient_professions=[CodeStub._deserialize(x0) for x0 in deserialized_dict["patientProfessions"]],
+			parameters=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["parameters"].items())),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
+			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
+			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
+			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
+			public_key=deserialized_dict.get("publicKey"),
+			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
+			parent_id=deserialized_dict["parentId"],
+		)
+
+@dataclass
+class EncryptedPatient:
+	id: str
+	identifier: list['Identifier'] = field(default_factory=list)
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	first_name: Optional[str] = None
+	last_name: Optional[str] = None
+	names: list['PersonName'] = field(default_factory=list)
+	company_name: Optional[str] = None
+	languages: list[str] = field(default_factory=list)
+	addresses: list['EncryptedAddress'] = field(default_factory=list)
+	civility: Optional[str] = None
+	gender: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
+	birth_sex: Optional['Gender'] = field(default_factory=lambda: Gender.Unknown)
+	merge_to_patient_id: Optional[str] = None
+	merged_ids: set[str] = field(default_factory=set)
+	alias: Optional[str] = None
+	active: bool = True
+	deactivation_reason: str = "none"
+	deactivation_date: Optional[int] = None
+	ssin: Optional[str] = None
+	maiden_name: Optional[str] = None
+	spouse_name: Optional[str] = None
+	partner_name: Optional[str] = None
+	personal_status: Optional['PersonalStatus'] = field(default_factory=lambda: PersonalStatus.Unknown)
+	date_of_birth: Optional[int] = None
+	date_of_death: Optional[int] = None
+	timestamp_of_latest_eid_reading: Optional[int] = None
+	place_of_birth: Optional[str] = None
+	place_of_death: Optional[str] = None
+	deceased: Optional[bool] = None
+	education: Optional[str] = None
+	profession: Optional[str] = None
+	notes: list['EncryptedAnnotation'] = field(default_factory=list)
+	note: Optional[str] = None
+	administrative_note: Optional[str] = None
+	nationality: Optional[str] = None
+	race: Optional[str] = None
+	ethnicity: Optional[str] = None
+	insurabilities: list['EncryptedInsurability'] = field(default_factory=list)
+	partnerships: list['EncryptedPartnership'] = field(default_factory=list)
+	patient_health_care_parties: list['EncryptedPatientHealthCareParty'] = field(default_factory=list)
+	financial_institution_information: list['EncryptedFinancialInstitutionInformation'] = field(default_factory=list)
+	medical_house_contracts: list['EncryptedMedicalHouseContract'] = field(default_factory=list)
+	patient_professions: list['CodeStub'] = field(default_factory=list)
+	parameters: dict[str, list[str]] = field(default_factory=dict)
+	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
+	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
+	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
+	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
+	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
+	public_key: Optional['SpkiHexString'] = None
+	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	parent_id: None = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"firstName": self.first_name,
+			"lastName": self.last_name,
+			"names": [x0.__serialize__() for x0 in self.names],
+			"companyName": self.company_name,
+			"languages": [x0 for x0 in self.languages],
+			"addresses": [x0.__serialize__() for x0 in self.addresses],
+			"civility": self.civility,
+			"gender": self.gender.__serialize__() if self.gender is not None else None,
+			"birthSex": self.birth_sex.__serialize__() if self.birth_sex is not None else None,
+			"mergeToPatientId": self.merge_to_patient_id,
+			"mergedIds": [x0 for x0 in self.merged_ids],
+			"alias": self.alias,
+			"active": self.active,
+			"deactivationReason": self.deactivation_reason,
+			"deactivationDate": self.deactivation_date,
+			"ssin": self.ssin,
+			"maidenName": self.maiden_name,
+			"spouseName": self.spouse_name,
+			"partnerName": self.partner_name,
+			"personalStatus": self.personal_status.__serialize__() if self.personal_status is not None else None,
+			"dateOfBirth": self.date_of_birth,
+			"dateOfDeath": self.date_of_death,
+			"timestampOfLatestEidReading": self.timestamp_of_latest_eid_reading,
+			"placeOfBirth": self.place_of_birth,
+			"placeOfDeath": self.place_of_death,
+			"deceased": self.deceased,
+			"education": self.education,
+			"profession": self.profession,
+			"notes": [x0.__serialize__() for x0 in self.notes],
+			"note": self.note,
+			"administrativeNote": self.administrative_note,
+			"nationality": self.nationality,
+			"race": self.race,
+			"ethnicity": self.ethnicity,
+			"insurabilities": [x0.__serialize__() for x0 in self.insurabilities],
+			"partnerships": [x0.__serialize__() for x0 in self.partnerships],
+			"patientHealthCareParties": [x0.__serialize__() for x0 in self.patient_health_care_parties],
+			"financialInstitutionInformation": [x0.__serialize__() for x0 in self.financial_institution_information],
+			"medicalHouseContracts": [x0.__serialize__() for x0 in self.medical_house_contracts],
+			"patientProfessions": [x0.__serialize__() for x0 in self.patient_professions],
+			"parameters": {k0: [x1 for x1 in v0] for k0, v0 in self.parameters.items()},
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
+			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
+			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
+			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
+			"publicKey": self.public_key,
+			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
+			"parentId": self.parent_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPatient':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			first_name=deserialized_dict.get("firstName"),
+			last_name=deserialized_dict.get("lastName"),
+			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
+			company_name=deserialized_dict.get("companyName"),
+			languages=[x0 for x0 in deserialized_dict["languages"]],
+			addresses=[EncryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
+			civility=deserialized_dict.get("civility"),
+			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
+			birth_sex=Gender._deserialize(deserialized_dict.get("birthSex")) if deserialized_dict.get("birthSex") is not None else None,
+			merge_to_patient_id=deserialized_dict.get("mergeToPatientId"),
+			merged_ids={x0 for x0 in deserialized_dict["mergedIds"]},
+			alias=deserialized_dict.get("alias"),
+			active=deserialized_dict["active"],
+			deactivation_reason=deserialized_dict["deactivationReason"],
+			deactivation_date=deserialized_dict.get("deactivationDate"),
+			ssin=deserialized_dict.get("ssin"),
+			maiden_name=deserialized_dict.get("maidenName"),
+			spouse_name=deserialized_dict.get("spouseName"),
+			partner_name=deserialized_dict.get("partnerName"),
+			personal_status=PersonalStatus._deserialize(deserialized_dict.get("personalStatus")) if deserialized_dict.get("personalStatus") is not None else None,
+			date_of_birth=deserialized_dict.get("dateOfBirth"),
+			date_of_death=deserialized_dict.get("dateOfDeath"),
+			timestamp_of_latest_eid_reading=deserialized_dict.get("timestampOfLatestEidReading"),
+			place_of_birth=deserialized_dict.get("placeOfBirth"),
+			place_of_death=deserialized_dict.get("placeOfDeath"),
+			deceased=deserialized_dict.get("deceased"),
+			education=deserialized_dict.get("education"),
+			profession=deserialized_dict.get("profession"),
+			notes=[EncryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
+			note=deserialized_dict.get("note"),
+			administrative_note=deserialized_dict.get("administrativeNote"),
+			nationality=deserialized_dict.get("nationality"),
+			race=deserialized_dict.get("race"),
+			ethnicity=deserialized_dict.get("ethnicity"),
+			insurabilities=[EncryptedInsurability._deserialize(x0) for x0 in deserialized_dict["insurabilities"]],
+			partnerships=[EncryptedPartnership._deserialize(x0) for x0 in deserialized_dict["partnerships"]],
+			patient_health_care_parties=[EncryptedPatientHealthCareParty._deserialize(x0) for x0 in deserialized_dict["patientHealthCareParties"]],
+			financial_institution_information=[EncryptedFinancialInstitutionInformation._deserialize(x0) for x0 in deserialized_dict["financialInstitutionInformation"]],
+			medical_house_contracts=[EncryptedMedicalHouseContract._deserialize(x0) for x0 in deserialized_dict["medicalHouseContracts"]],
+			patient_professions=[CodeStub._deserialize(x0) for x0 in deserialized_dict["patientProfessions"]],
+			parameters=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["parameters"].items())),
+			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
+			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
+			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
+			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
+			public_key=deserialized_dict.get("publicKey"),
+			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
+			parent_id=deserialized_dict["parentId"],
+		)
+
+type Patient = Union['DecryptedPatient', 'EncryptedPatient']
+
+def serialize_patient(patient: Patient) -> Any:
+	if isinstance(patient, DecryptedPatient):
+		serialized_entity = patient.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedPatient"})
+		return serialized_entity
+	elif isinstance(patient, EncryptedPatient):
+		serialized_entity = patient.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedPatient"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(patient)} is not a known subclass of Patient")
+
+def deserialize_patient(data: Union[str, dict[str, JsonElement]]) -> 'Patient':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.DecryptedPatient":
+		return DecryptedPatient._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedPatient":
+		return EncryptedPatient._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of Patient")
+
+@dataclass
+class HealthcareParty:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	deletion_date: Optional[int] = None
+	identifier: list['Identifier'] = field(default_factory=list)
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	name: Optional[str] = None
+	last_name: Optional[str] = None
+	first_name: Optional[str] = None
+	names: list['PersonName'] = field(default_factory=list)
+	gender: Optional['Gender'] = None
+	civility: Optional[str] = None
+	company_name: Optional[str] = None
+	speciality: Optional[str] = None
+	bank_account: Optional[str] = None
+	bic: Optional[str] = None
+	proxy_bank_account: Optional[str] = None
+	proxy_bic: Optional[str] = None
+	invoice_header: Optional[str] = None
+	parent_id: Optional[str] = None
+	ssin: Optional[str] = None
+	addresses: list['DecryptedAddress'] = field(default_factory=list)
+	languages: list[str] = field(default_factory=list)
+	speciality_codes: set['CodeStub'] = field(default_factory=set)
+	notes: Optional[str] = None
+	financial_institution_information: list['DecryptedFinancialInstitutionInformation'] = field(default_factory=list)
+	descr: dict[str, str] = field(default_factory=dict)
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	public: bool = False
+	public_properties: Optional[list['DecryptedPropertyStub']] = None
+	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
+	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
+	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
+	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
+	public_key: Optional['SpkiHexString'] = None
+	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"deletionDate": self.deletion_date,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"name": self.name,
+			"lastName": self.last_name,
+			"firstName": self.first_name,
+			"names": [x0.__serialize__() for x0 in self.names],
+			"gender": self.gender.__serialize__() if self.gender is not None else None,
+			"civility": self.civility,
+			"companyName": self.company_name,
+			"speciality": self.speciality,
+			"bankAccount": self.bank_account,
+			"bic": self.bic,
+			"proxyBankAccount": self.proxy_bank_account,
+			"proxyBic": self.proxy_bic,
+			"invoiceHeader": self.invoice_header,
+			"parentId": self.parent_id,
+			"ssin": self.ssin,
+			"addresses": [x0.__serialize__() for x0 in self.addresses],
+			"languages": [x0 for x0 in self.languages],
+			"specialityCodes": [x0.__serialize__() for x0 in self.speciality_codes],
+			"notes": self.notes,
+			"financialInstitutionInformation": [x0.__serialize__() for x0 in self.financial_institution_information],
+			"descr": {k0: v0 for k0, v0 in self.descr.items()},
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"public": self.public,
+			"publicProperties": [x0.__serialize__() for x0 in self.public_properties] if self.public_properties is not None else None,
+			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
+			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
+			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
+			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
+			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
+			"publicKey": self.public_key,
+			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthcareParty':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			name=deserialized_dict.get("name"),
+			last_name=deserialized_dict.get("lastName"),
+			first_name=deserialized_dict.get("firstName"),
+			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
+			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
+			civility=deserialized_dict.get("civility"),
+			company_name=deserialized_dict.get("companyName"),
+			speciality=deserialized_dict.get("speciality"),
+			bank_account=deserialized_dict.get("bankAccount"),
+			bic=deserialized_dict.get("bic"),
+			proxy_bank_account=deserialized_dict.get("proxyBankAccount"),
+			proxy_bic=deserialized_dict.get("proxyBic"),
+			invoice_header=deserialized_dict.get("invoiceHeader"),
+			parent_id=deserialized_dict.get("parentId"),
+			ssin=deserialized_dict.get("ssin"),
+			addresses=[DecryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
+			languages=[x0 for x0 in deserialized_dict["languages"]],
+			speciality_codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["specialityCodes"]},
+			notes=deserialized_dict.get("notes"),
+			financial_institution_information=[DecryptedFinancialInstitutionInformation._deserialize(x0) for x0 in deserialized_dict["financialInstitutionInformation"]],
+			descr=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["descr"].items())),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			public=deserialized_dict["public"],
+			public_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict.get("publicProperties")] if deserialized_dict.get("publicProperties") is not None else None,
+			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
+			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
+			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
+			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
+			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
+			public_key=deserialized_dict.get("publicKey"),
+			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
+		)
+
+@dataclass
+class Device:
+	id: str
+	rev: Optional[str] = None
+	deletion_date: Optional[int] = None
+	identifiers: list['Identifier'] = field(default_factory=list)
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	name: Optional[str] = None
+	type: Optional[str] = None
+	brand: Optional[str] = None
+	model: Optional[str] = None
+	serial_number: Optional[str] = None
+	parent_id: Optional[str] = None
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
+	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
+	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
+	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
+	public_key: Optional['SpkiHexString'] = None
+	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
+	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"deletionDate": self.deletion_date,
+			"identifiers": [x0.__serialize__() for x0 in self.identifiers],
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"name": self.name,
+			"type": self.type,
+			"brand": self.brand,
+			"model": self.model,
+			"serialNumber": self.serial_number,
+			"parentId": self.parent_id,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
+			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
+			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
+			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
+			"publicKey": self.public_key,
+			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
+			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Device':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			identifiers=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifiers"]],
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			name=deserialized_dict.get("name"),
+			type=deserialized_dict.get("type"),
+			brand=deserialized_dict.get("brand"),
+			model=deserialized_dict.get("model"),
+			serial_number=deserialized_dict.get("serialNumber"),
+			parent_id=deserialized_dict.get("parentId"),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
+			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
+			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
+			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
+			public_key=deserialized_dict.get("publicKey"),
+			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
+			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
+		)
+
+type CryptoActor = Union['CryptoActorStub', 'DecryptedPatient', 'EncryptedPatient', 'HealthcareParty', 'Device']
+
+def serialize_crypto_actor(crypto_actor: CryptoActor) -> Any:
+	if isinstance(crypto_actor, CryptoActorStub):
+		serialized_entity = crypto_actor.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.CryptoActorStub"})
+		return serialized_entity
+	elif isinstance(crypto_actor, DecryptedPatient):
+		serialized_entity = crypto_actor.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedPatient"})
+		return serialized_entity
+	elif isinstance(crypto_actor, EncryptedPatient):
+		serialized_entity = crypto_actor.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedPatient"})
+		return serialized_entity
+	elif isinstance(crypto_actor, HealthcareParty):
+		serialized_entity = crypto_actor.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.HealthcareParty"})
+		return serialized_entity
+	elif isinstance(crypto_actor, Device):
+		serialized_entity = crypto_actor.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.Device"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(crypto_actor)} is not a known subclass of CryptoActor")
+
+def deserialize_crypto_actor(data: Union[str, dict[str, JsonElement]]) -> 'CryptoActor':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.CryptoActorStub":
+		return CryptoActorStub._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedPatient":
+		return DecryptedPatient._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedPatient":
+		return EncryptedPatient._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.HealthcareParty":
+		return HealthcareParty._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.Device":
+		return Device._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of CryptoActor")
+
+@dataclass
+class CryptoActorStubWithType:
+	type: 'DataOwnerType'
+	stub: 'CryptoActorStub'
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type.__serialize__(),
+			"stub": self.stub.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CryptoActorStubWithType':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=DataOwnerType._deserialize(deserialized_dict["type"]),
+			stub=CryptoActorStub._deserialize(deserialized_dict["stub"]),
+		)
+
+@dataclass
+class ShamirUpdateRequest:
+	notaries_ids: set[str]
+	min_shares: int
+
+	def __serialize__(self) -> Any:
+		return {
+			"notariesIds": [x0 for x0 in self.notaries_ids],
+			"minShares": self.min_shares,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ShamirUpdateRequest':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			notaries_ids={x0 for x0 in deserialized_dict["notariesIds"]},
+			min_shares=deserialized_dict["minShares"],
+		)
 
 @dataclass
 class CalendarItemType:
@@ -4357,7 +1981,145 @@ def deserialize_calendar_item_type_duration_config(data: Union[str, dict[str, Js
 		raise Exception(f"{qualifier} is not a known subclass of DurationConfig")
 
 @dataclass
-class EncryptedContact:
+class DataOwnerWithTypeHcpDataOwner:
+	data_owner: 'HealthcareParty'
+
+	def __serialize__(self) -> Any:
+		return {
+			"dataOwner": self.data_owner.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithTypeHcpDataOwner':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			data_owner=HealthcareParty._deserialize(deserialized_dict["dataOwner"]),
+		)
+
+@dataclass
+class DataOwnerWithTypePatientDataOwner:
+	data_owner: 'EncryptedPatient'
+
+	def __serialize__(self) -> Any:
+		return {
+			"dataOwner": self.data_owner.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithTypePatientDataOwner':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			data_owner=EncryptedPatient._deserialize(deserialized_dict["dataOwner"]),
+		)
+
+@dataclass
+class DataOwnerWithTypeDeviceDataOwner:
+	data_owner: 'Device'
+
+	def __serialize__(self) -> Any:
+		return {
+			"dataOwner": self.data_owner.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithTypeDeviceDataOwner':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			data_owner=Device._deserialize(deserialized_dict["dataOwner"]),
+		)
+
+type DataOwnerWithType = Union['DataOwnerWithTypeHcpDataOwner', 'DataOwnerWithTypePatientDataOwner', 'DataOwnerWithTypeDeviceDataOwner']
+
+def serialize_data_owner_with_type(data_owner_with_type: DataOwnerWithType) -> Any:
+	if isinstance(data_owner_with_type, DataOwnerWithTypeHcpDataOwner):
+		serialized_entity = data_owner_with_type.__serialize__()
+		serialized_entity.update({"kotlinType": "hcp"})
+		return serialized_entity
+	elif isinstance(data_owner_with_type, DataOwnerWithTypePatientDataOwner):
+		serialized_entity = data_owner_with_type.__serialize__()
+		serialized_entity.update({"kotlinType": "patient"})
+		return serialized_entity
+	elif isinstance(data_owner_with_type, DataOwnerWithTypeDeviceDataOwner):
+		serialized_entity = data_owner_with_type.__serialize__()
+		serialized_entity.update({"kotlinType": "device"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(data_owner_with_type)} is not a known subclass of DataOwnerWithType")
+
+def deserialize_data_owner_with_type(data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithType':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "hcp":
+		return DataOwnerWithTypeHcpDataOwner._deserialize(deserialized_dict)
+	elif qualifier == "patient":
+		return DataOwnerWithTypePatientDataOwner._deserialize(deserialized_dict)
+	elif qualifier == "device":
+		return DataOwnerWithTypeDeviceDataOwner._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of DataOwnerWithType")
+
+@dataclass(frozen=True)
+class EntityReferenceInGroup:
+	entity_id: str
+	group_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"entityId": self.entity_id,
+			"groupId": self.group_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntityReferenceInGroup':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			entity_id=deserialized_dict["entityId"],
+			group_id=deserialized_dict.get("groupId"),
+		)
+
+class DataOwnerType(Enum):
+	Hcp = "hcp"
+	Device = "device"
+	Patient = "patient"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerType':
+		if data == "hcp":
+			return DataOwnerType.Hcp
+		elif data == "device":
+			return DataOwnerType.Device
+		elif data == "patient":
+			return DataOwnerType.Patient
+		else:
+			raise Exception(f"{data} is not a valid value for DataOwnerType enum.")
+
+@dataclass
+class DecryptedReceipt:
 	id: str
 	rev: Optional[str] = None
 	created: Optional[int] = None
@@ -4366,26 +2128,20 @@ class EncryptedContact:
 	responsible: Optional[str] = None
 	tags: set['CodeStub'] = field(default_factory=set)
 	codes: set['CodeStub'] = field(default_factory=set)
-	identifier: list['Identifier'] = field(default_factory=list)
-	end_of_life: Optional[int] = None
 	deletion_date: Optional[int] = None
-	group_id: Optional[str] = None
-	opening_date: Optional[int] = None
-	closing_date: Optional[int] = None
-	descr: Optional[str] = None
-	location: Optional[str] = None
-	encounter_type: Optional['CodeStub'] = None
-	encounter_location: Optional['EncryptedAddress'] = None
-	sub_contacts: list['EncryptedSubContact'] = field(default_factory=list)
-	services: list['EncryptedService'] = field(default_factory=list)
-	participant_list: list['ContactParticipant'] = field(default_factory=list)
+	attachment_ids: dict['ReceiptBlobType', str] = field(default_factory=dict)
+	attachment_infos: dict['ReceiptBlobType', 'DataAttachment'] = field(default_factory=dict)
+	deleted_attachments: list['DeletedAttachment'] = field(default_factory=list)
+	references: list[str] = field(default_factory=list)
+	document_id: Optional[str] = None
+	category: Optional[str] = None
+	sub_category: Optional[str] = None
 	secret_foreign_keys: set[str] = field(default_factory=set)
 	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
 	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
 	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
 	encrypted_self: Optional['Base64String'] = None
 	security_metadata: Optional['SecurityMetadata'] = None
-	notes: list['EncryptedAnnotation'] = field(default_factory=list)
 
 	def __serialize__(self) -> Any:
 		return {
@@ -4397,30 +2153,24 @@ class EncryptedContact:
 			"responsible": self.responsible,
 			"tags": [x0.__serialize__() for x0 in self.tags],
 			"codes": [x0.__serialize__() for x0 in self.codes],
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"endOfLife": self.end_of_life,
 			"deletionDate": self.deletion_date,
-			"groupId": self.group_id,
-			"openingDate": self.opening_date,
-			"closingDate": self.closing_date,
-			"descr": self.descr,
-			"location": self.location,
-			"encounterType": self.encounter_type.__serialize__() if self.encounter_type is not None else None,
-			"encounterLocation": self.encounter_location.__serialize__() if self.encounter_location is not None else None,
-			"subContacts": [x0.__serialize__() for x0 in self.sub_contacts],
-			"services": [x0.__serialize__() for x0 in self.services],
-			"participantList": [x0.__serialize__() for x0 in self.participant_list],
+			"attachmentIds": {k0.__serialize__(): v0 for k0, v0 in self.attachment_ids.items()},
+			"attachmentInfos": {k0.__serialize__(): v0.__serialize__() for k0, v0 in self.attachment_infos.items()},
+			"deletedAttachments": [x0.__serialize__() for x0 in self.deleted_attachments],
+			"references": [x0 for x0 in self.references],
+			"documentId": self.document_id,
+			"category": self.category,
+			"subCategory": self.sub_category,
 			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
 			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
 			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
 			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
 			"encryptedSelf": self.encrypted_self,
 			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-			"notes": [x0.__serialize__() for x0 in self.notes],
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedContact':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedReceipt':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -4435,26 +2185,441 @@ class EncryptedContact:
 			responsible=deserialized_dict.get("responsible"),
 			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
 			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			end_of_life=deserialized_dict.get("endOfLife"),
 			deletion_date=deserialized_dict.get("deletionDate"),
-			group_id=deserialized_dict.get("groupId"),
-			opening_date=deserialized_dict.get("openingDate"),
-			closing_date=deserialized_dict.get("closingDate"),
-			descr=deserialized_dict.get("descr"),
-			location=deserialized_dict.get("location"),
-			encounter_type=CodeStub._deserialize(deserialized_dict.get("encounterType")) if deserialized_dict.get("encounterType") is not None else None,
-			encounter_location=EncryptedAddress._deserialize(deserialized_dict.get("encounterLocation")) if deserialized_dict.get("encounterLocation") is not None else None,
-			sub_contacts=[EncryptedSubContact._deserialize(x0) for x0 in deserialized_dict["subContacts"]],
-			services=[EncryptedService._deserialize(x0) for x0 in deserialized_dict["services"]],
-			participant_list=[ContactParticipant._deserialize(x0) for x0 in deserialized_dict["participantList"]],
+			attachment_ids=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), kv0[1]), deserialized_dict["attachmentIds"].items())),
+			attachment_infos=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), DataAttachment._deserialize(kv0[1])), deserialized_dict["attachmentInfos"].items())),
+			deleted_attachments=[DeletedAttachment._deserialize(x0) for x0 in deserialized_dict["deletedAttachments"]],
+			references=[x0 for x0 in deserialized_dict["references"]],
+			document_id=deserialized_dict.get("documentId"),
+			category=deserialized_dict.get("category"),
+			sub_category=deserialized_dict.get("subCategory"),
 			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
 			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
 			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
 			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-			notes=[EncryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
+		)
+
+@dataclass
+class EncryptedReceipt:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	attachment_ids: dict['ReceiptBlobType', str] = field(default_factory=dict)
+	attachment_infos: dict['ReceiptBlobType', 'DataAttachment'] = field(default_factory=dict)
+	deleted_attachments: list['DeletedAttachment'] = field(default_factory=list)
+	references: list[str] = field(default_factory=list)
+	document_id: Optional[str] = None
+	category: Optional[str] = None
+	sub_category: Optional[str] = None
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"attachmentIds": {k0.__serialize__(): v0 for k0, v0 in self.attachment_ids.items()},
+			"attachmentInfos": {k0.__serialize__(): v0.__serialize__() for k0, v0 in self.attachment_infos.items()},
+			"deletedAttachments": [x0.__serialize__() for x0 in self.deleted_attachments],
+			"references": [x0 for x0 in self.references],
+			"documentId": self.document_id,
+			"category": self.category,
+			"subCategory": self.sub_category,
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedReceipt':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			attachment_ids=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), kv0[1]), deserialized_dict["attachmentIds"].items())),
+			attachment_infos=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), DataAttachment._deserialize(kv0[1])), deserialized_dict["attachmentInfos"].items())),
+			deleted_attachments=[DeletedAttachment._deserialize(x0) for x0 in deserialized_dict["deletedAttachments"]],
+			references=[x0 for x0 in deserialized_dict["references"]],
+			document_id=deserialized_dict.get("documentId"),
+			category=deserialized_dict.get("category"),
+			sub_category=deserialized_dict.get("subCategory"),
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+type Receipt = Union['DecryptedReceipt', 'EncryptedReceipt']
+
+def serialize_receipt(receipt: Receipt) -> Any:
+	if isinstance(receipt, DecryptedReceipt):
+		serialized_entity = receipt.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedReceipt"})
+		return serialized_entity
+	elif isinstance(receipt, EncryptedReceipt):
+		serialized_entity = receipt.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedReceipt"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(receipt)} is not a known subclass of Receipt")
+
+def deserialize_receipt(data: Union[str, dict[str, JsonElement]]) -> 'Receipt':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.DecryptedReceipt":
+		return DecryptedReceipt._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedReceipt":
+		return EncryptedReceipt._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of Receipt")
+
+@dataclass
+class User:
+	id: str
+	rev: Optional[str] = None
+	deletion_date: Optional[int] = None
+	created: Optional[int] = None
+	identifier: list['Identifier'] = field(default_factory=list)
+	name: Optional[str] = None
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	permissions: list['Permission'] = field(default_factory=list)
+	roles: set[str] = field(default_factory=set)
+	status: Optional['UsersStatus'] = None
+	login: Optional[str] = None
+	password_hash: Optional[str] = None
+	group_id: Optional[str] = None
+	healthcare_party_id: Optional[str] = None
+	patient_id: Optional[str] = None
+	device_id: Optional[str] = None
+	auto_delegations: dict['DelegationTag', set[str]] = field(default_factory=dict)
+	terms_of_use_date: Optional[int] = None
+	email: Optional[str] = None
+	mobile_phone: Optional[str] = None
+	authentication_tokens: dict[str, 'AuthenticationToken'] = field(default_factory=dict)
+	system_metadata: Optional['UserSystemMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"deletionDate": self.deletion_date,
+			"created": self.created,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"name": self.name,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"permissions": [x0.__serialize__() for x0 in self.permissions],
+			"roles": [x0 for x0 in self.roles],
+			"status": self.status.__serialize__() if self.status is not None else None,
+			"login": self.login,
+			"passwordHash": self.password_hash,
+			"groupId": self.group_id,
+			"healthcarePartyId": self.healthcare_party_id,
+			"patientId": self.patient_id,
+			"deviceId": self.device_id,
+			"autoDelegations": {k0.__serialize__(): [x1 for x1 in v0] for k0, v0 in self.auto_delegations.items()},
+			"termsOfUseDate": self.terms_of_use_date,
+			"email": self.email,
+			"mobilePhone": self.mobile_phone,
+			"authenticationTokens": {k0: v0.__serialize__() for k0, v0 in self.authentication_tokens.items()},
+			"systemMetadata": self.system_metadata.__serialize__() if self.system_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'User':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			created=deserialized_dict.get("created"),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			name=deserialized_dict.get("name"),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			permissions=[Permission._deserialize(x0) for x0 in deserialized_dict["permissions"]],
+			roles={x0 for x0 in deserialized_dict["roles"]},
+			status=UsersStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
+			login=deserialized_dict.get("login"),
+			password_hash=deserialized_dict.get("passwordHash"),
+			group_id=deserialized_dict.get("groupId"),
+			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
+			patient_id=deserialized_dict.get("patientId"),
+			device_id=deserialized_dict.get("deviceId"),
+			auto_delegations=dict(map(lambda kv0: (DelegationTag._deserialize(kv0[0]), {x1 for x1 in kv0[1]}), deserialized_dict["autoDelegations"].items())),
+			terms_of_use_date=deserialized_dict.get("termsOfUseDate"),
+			email=deserialized_dict.get("email"),
+			mobile_phone=deserialized_dict.get("mobilePhone"),
+			authentication_tokens=dict(map(lambda kv0: (kv0[0], AuthenticationToken._deserialize(kv0[1])), deserialized_dict["authenticationTokens"].items())),
+			system_metadata=UserSystemMetadata._deserialize(deserialized_dict.get("systemMetadata")) if deserialized_dict.get("systemMetadata") is not None else None,
+		)
+
+@dataclass
+class UserSystemMetadata:
+	roles: set[str]
+	is_admin: bool
+	inherits_roles: bool
+	login_identifiers: list['LoginIdentifier'] = field(default_factory=list)
+	verified_email: Optional[bool] = None
+	verified_mobile_phone: Optional[bool] = None
+	uses2fa: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"roles": [x0 for x0 in self.roles],
+			"isAdmin": self.is_admin,
+			"inheritsRoles": self.inherits_roles,
+			"loginIdentifiers": [x0.__serialize__() for x0 in self.login_identifiers],
+			"verifiedEmail": self.verified_email,
+			"verifiedMobilePhone": self.verified_mobile_phone,
+			"uses2fa": self.uses2fa,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserSystemMetadata':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			roles={x0 for x0 in deserialized_dict["roles"]},
+			is_admin=deserialized_dict["isAdmin"],
+			inherits_roles=deserialized_dict["inheritsRoles"],
+			login_identifiers=[LoginIdentifier._deserialize(x0) for x0 in deserialized_dict["loginIdentifiers"]],
+			verified_email=deserialized_dict.get("verifiedEmail"),
+			verified_mobile_phone=deserialized_dict.get("verifiedMobilePhone"),
+			uses2fa=deserialized_dict.get("uses2fa"),
+		)
+
+class AccessLevel(Enum):
+	Read = "READ"
+	Write = "WRITE"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AccessLevel':
+		if data == "READ":
+			return AccessLevel.Read
+		elif data == "WRITE":
+			return AccessLevel.Write
+		else:
+			raise Exception(f"{data} is not a valid value for AccessLevel enum.")
+
+class SecretIdUseOptionUseAnyConfidential(metaclass=SingletonMeta):
+
+	def __serialize__(self) -> Any:
+		return {}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAnyConfidential':
+		return cls()
+
+class SecretIdUseOptionUseAllConfidential(metaclass=SingletonMeta):
+
+	def __serialize__(self) -> Any:
+		return {}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAllConfidential':
+		return cls()
+
+class SecretIdUseOptionUseAnySharedWithParent(metaclass=SingletonMeta):
+
+	def __serialize__(self) -> Any:
+		return {}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAnySharedWithParent':
+		return cls()
+
+class SecretIdUseOptionUseAllSharedWithParent(metaclass=SingletonMeta):
+
+	def __serialize__(self) -> Any:
+		return {}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseAllSharedWithParent':
+		return cls()
+
+@dataclass
+class SecretIdUseOptionUse:
+	secret_ids: set[str]
+
+	def __serialize__(self) -> Any:
+		return {
+			"secretIds": [x0 for x0 in self.secret_ids],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUse':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			secret_ids={x0 for x0 in deserialized_dict["secretIds"]},
+		)
+
+class SecretIdUseOptionUseNone(metaclass=SingletonMeta):
+
+	def __serialize__(self) -> Any:
+		return {}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOptionUseNone':
+		return cls()
+
+type SecretIdUseOption = Union['SecretIdUseOptionUseAnyConfidential', 'SecretIdUseOptionUseAllConfidential', 'SecretIdUseOptionUseAnySharedWithParent', 'SecretIdUseOptionUseAllSharedWithParent', 'SecretIdUseOptionUse', 'SecretIdUseOptionUseNone']
+
+def serialize_secret_id_use_option(secret_id_use_option: SecretIdUseOption) -> Any:
+	if isinstance(secret_id_use_option, SecretIdUseOptionUseAnyConfidential):
+		serialized_entity = secret_id_use_option.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnyConfidential"})
+		return serialized_entity
+	elif isinstance(secret_id_use_option, SecretIdUseOptionUseAllConfidential):
+		serialized_entity = secret_id_use_option.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllConfidential"})
+		return serialized_entity
+	elif isinstance(secret_id_use_option, SecretIdUseOptionUseAnySharedWithParent):
+		serialized_entity = secret_id_use_option.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent"})
+		return serialized_entity
+	elif isinstance(secret_id_use_option, SecretIdUseOptionUseAllSharedWithParent):
+		serialized_entity = secret_id_use_option.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent"})
+		return serialized_entity
+	elif isinstance(secret_id_use_option, SecretIdUseOptionUse):
+		serialized_entity = secret_id_use_option.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.Use"})
+		return serialized_entity
+	elif isinstance(secret_id_use_option, SecretIdUseOptionUseNone):
+		serialized_entity = secret_id_use_option.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseNone"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(secret_id_use_option)} is not a known subclass of SecretIdUseOption")
+
+def deserialize_secret_id_use_option(data: Union[str, dict[str, JsonElement]]) -> 'SecretIdUseOption':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnyConfidential":
+		return SecretIdUseOptionUseAnyConfidential._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllConfidential":
+		return SecretIdUseOptionUseAllConfidential._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent":
+		return SecretIdUseOptionUseAnySharedWithParent._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAllSharedWithParent":
+		return SecretIdUseOptionUseAllSharedWithParent._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.Use":
+		return SecretIdUseOptionUse._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseNone":
+		return SecretIdUseOptionUseNone._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of SecretIdUseOption")
+
+@dataclass
+class ReceiptDelegateOptions:
+	access_level: 'AccessLevel'
+	share_encryption_key: bool = False
+	share_secret_id: bool = False
+
+	def __serialize__(self) -> Any:
+		return {
+			"accessLevel": self.access_level.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key,
+			"shareSecretId": self.share_secret_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReceiptDelegateOptions':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
+			share_encryption_key=deserialized_dict["shareEncryptionKey"],
+			share_secret_id=deserialized_dict["shareSecretId"],
+		)
+
+@dataclass
+class ReceiptShareOptions:
+	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
+	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
+
+	def __serialize__(self) -> Any:
+		return {
+			"requestedPermissions": self.requested_permissions.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
+			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReceiptShareOptions':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
+			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
+			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
 		)
 
 @dataclass
@@ -4558,16 +2723,117 @@ class DecryptedContact:
 			notes=[DecryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
 		)
 
-type Contact = Union['EncryptedContact', 'DecryptedContact']
+@dataclass
+class EncryptedContact:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	identifier: list['Identifier'] = field(default_factory=list)
+	end_of_life: Optional[int] = None
+	deletion_date: Optional[int] = None
+	group_id: Optional[str] = None
+	opening_date: Optional[int] = None
+	closing_date: Optional[int] = None
+	descr: Optional[str] = None
+	location: Optional[str] = None
+	encounter_type: Optional['CodeStub'] = None
+	encounter_location: Optional['EncryptedAddress'] = None
+	sub_contacts: list['EncryptedSubContact'] = field(default_factory=list)
+	services: list['EncryptedService'] = field(default_factory=list)
+	participant_list: list['ContactParticipant'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+	notes: list['EncryptedAnnotation'] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"endOfLife": self.end_of_life,
+			"deletionDate": self.deletion_date,
+			"groupId": self.group_id,
+			"openingDate": self.opening_date,
+			"closingDate": self.closing_date,
+			"descr": self.descr,
+			"location": self.location,
+			"encounterType": self.encounter_type.__serialize__() if self.encounter_type is not None else None,
+			"encounterLocation": self.encounter_location.__serialize__() if self.encounter_location is not None else None,
+			"subContacts": [x0.__serialize__() for x0 in self.sub_contacts],
+			"services": [x0.__serialize__() for x0 in self.services],
+			"participantList": [x0.__serialize__() for x0 in self.participant_list],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+			"notes": [x0.__serialize__() for x0 in self.notes],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedContact':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			end_of_life=deserialized_dict.get("endOfLife"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			group_id=deserialized_dict.get("groupId"),
+			opening_date=deserialized_dict.get("openingDate"),
+			closing_date=deserialized_dict.get("closingDate"),
+			descr=deserialized_dict.get("descr"),
+			location=deserialized_dict.get("location"),
+			encounter_type=CodeStub._deserialize(deserialized_dict.get("encounterType")) if deserialized_dict.get("encounterType") is not None else None,
+			encounter_location=EncryptedAddress._deserialize(deserialized_dict.get("encounterLocation")) if deserialized_dict.get("encounterLocation") is not None else None,
+			sub_contacts=[EncryptedSubContact._deserialize(x0) for x0 in deserialized_dict["subContacts"]],
+			services=[EncryptedService._deserialize(x0) for x0 in deserialized_dict["services"]],
+			participant_list=[ContactParticipant._deserialize(x0) for x0 in deserialized_dict["participantList"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+			notes=[EncryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
+		)
+
+type Contact = Union['DecryptedContact', 'EncryptedContact']
 
 def serialize_contact(contact: Contact) -> Any:
-	if isinstance(contact, EncryptedContact):
-		serialized_entity = contact.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedContact"})
-		return serialized_entity
-	elif isinstance(contact, DecryptedContact):
+	if isinstance(contact, DecryptedContact):
 		serialized_entity = contact.__serialize__()
 		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedContact"})
+		return serialized_entity
+	elif isinstance(contact, EncryptedContact):
+		serialized_entity = contact.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedContact"})
 		return serialized_entity
 	else:
 		raise Exception(f"{type(contact)} is not a known subclass of Contact")
@@ -4581,10 +2847,10 @@ def deserialize_contact(data: Union[str, dict[str, JsonElement]]) -> 'Contact':
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedContact":
-		return EncryptedContact._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedContact":
+	if qualifier == "com.icure.cardinal.sdk.model.DecryptedContact":
 		return DecryptedContact._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedContact":
+		return EncryptedContact._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of Contact")
 
@@ -4845,100 +3111,121 @@ def deserialize_service(data: Union[str, dict[str, JsonElement]]) -> 'Service':
 		raise Exception(f"{qualifier} is not a known subclass of Service")
 
 @dataclass
-class ContactDelegateOptions:
-	access_level: 'AccessLevel'
-	share_encryption_key: bool = False
-	share_secret_id: bool = False
-	share_patient_id: bool = False
+class EntitySubscriptionConfiguration:
+	channel_buffer_capacity: int = 100
+	on_buffer_full: 'EntitySubscriptionConfigurationFullBufferBehaviour' = field(default_factory=lambda: EntitySubscriptionConfigurationFullBufferBehaviour.Close)
+	reconnection_delay: timedelta = timedelta(seconds=2)
+	retry_delay_exponent_factor: float = 2.0
+	connection_max_retries: int = 5
 
 	def __serialize__(self) -> Any:
 		return {
-			"accessLevel": self.access_level.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key,
-			"shareSecretId": self.share_secret_id,
-			"sharePatientId": self.share_patient_id,
+			"channelBufferCapacity": self.channel_buffer_capacity,
+			"onBufferFull": self.on_buffer_full.__serialize__(),
+			"reconnectionDelay": serialize_timedelta(self.reconnection_delay),
+			"retryDelayExponentFactor": self.retry_delay_exponent_factor,
+			"connectionMaxRetries": self.connection_max_retries,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ContactDelegateOptions':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntitySubscriptionConfiguration':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
-			share_encryption_key=deserialized_dict["shareEncryptionKey"],
-			share_secret_id=deserialized_dict["shareSecretId"],
-			share_patient_id=deserialized_dict["sharePatientId"],
+			channel_buffer_capacity=deserialized_dict["channelBufferCapacity"],
+			on_buffer_full=EntitySubscriptionConfigurationFullBufferBehaviour._deserialize(deserialized_dict["onBufferFull"]),
+			reconnection_delay=deserialize_timedelta(deserialized_dict["reconnectionDelay"]),
+			retry_delay_exponent_factor=deserialized_dict["retryDelayExponentFactor"],
+			connection_max_retries=deserialized_dict["connectionMaxRetries"],
 		)
 
-@dataclass
-class ContactShareOptions:
-	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
-	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_patient_id: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
+class EntitySubscriptionConfigurationFullBufferBehaviour(Enum):
+	Close = "Close"
+	DropOldest = "DropOldest"
+	Ignore = "Ignore"
 
 	def __serialize__(self) -> Any:
-		return {
-			"requestedPermissions": self.requested_permissions.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
-			"sharePatientId": self.share_patient_id.__serialize__(),
-			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
-		}
+		return self.value
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ContactShareOptions':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntitySubscriptionConfigurationFullBufferBehaviour':
+		if data == "Close":
+			return EntitySubscriptionConfigurationFullBufferBehaviour.Close
+		elif data == "DropOldest":
+			return EntitySubscriptionConfigurationFullBufferBehaviour.DropOldest
+		elif data == "Ignore":
+			return EntitySubscriptionConfigurationFullBufferBehaviour.Ignore
 		else:
-			deserialized_dict = data
-		return cls(
-			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
-			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
-			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
-			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
-		)
+			raise Exception(f"{data} is not a valid value for FullBufferBehaviour enum.")
+
+class SubscriptionEventType(Enum):
+	Create = "Create"
+	Update = "Update"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SubscriptionEventType':
+		if data == "Create":
+			return SubscriptionEventType.Create
+		elif data == "Update":
+			return SubscriptionEventType.Update
+		else:
+			raise Exception(f"{data} is not a valid value for SubscriptionEventType enum.")
 
 @dataclass
-class Code:
+class EncryptedMaintenanceTask:
 	id: str
 	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	context: Optional[str] = None
-	type: Optional[str] = None
-	code: Optional[str] = None
-	version: Optional[str] = None
-	label: dict[str, str] = field(default_factory=dict)
+	identifier: list['Identifier'] = field(default_factory=list)
+	created: Optional[int] = None
+	modified: Optional[int] = None
 	author: Optional[str] = None
-	regions: set[str] = field(default_factory=set)
-	links: set[str] = field(default_factory=set)
-	qualified_links: dict[str, list[str]] = field(default_factory=dict)
-	search_terms: dict[str, set[str]] = field(default_factory=dict)
-	disabled: bool = False
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	deletion_date: Optional[int] = None
+	task_type: Optional[str] = None
+	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
+	status: 'TaskStatus' = field(default_factory=lambda: TaskStatus.Pending)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
 
 	def __serialize__(self) -> Any:
 		return {
 			"id": self.id,
 			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"context": self.context,
-			"type": self.type,
-			"code": self.code,
-			"version": self.version,
-			"label": {k0: v0 for k0, v0 in self.label.items()},
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"created": self.created,
+			"modified": self.modified,
 			"author": self.author,
-			"regions": [x0 for x0 in self.regions],
-			"links": [x0 for x0 in self.links],
-			"qualifiedLinks": {k0: [x1 for x1 in v0] for k0, v0 in self.qualified_links.items()},
-			"searchTerms": {k0: [x1 for x1 in v0] for k0, v0 in self.search_terms.items()},
-			"disabled": self.disabled,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"deletionDate": self.deletion_date,
+			"taskType": self.task_type,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"status": self.status.__serialize__(),
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Code':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedMaintenanceTask':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -4947,39 +3234,449 @@ class Code:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			context=deserialized_dict.get("context"),
-			type=deserialized_dict.get("type"),
-			code=deserialized_dict.get("code"),
-			version=deserialized_dict.get("version"),
-			label=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["label"].items())),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
 			author=deserialized_dict.get("author"),
-			regions={x0 for x0 in deserialized_dict["regions"]},
-			links={x0 for x0 in deserialized_dict["links"]},
-			qualified_links=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["qualifiedLinks"].items())),
-			search_terms=dict(map(lambda kv0: (kv0[0], {x1 for x1 in kv0[1]}), deserialized_dict["searchTerms"].items())),
-			disabled=deserialized_dict["disabled"],
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			task_type=deserialized_dict.get("taskType"),
+			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			status=TaskStatus._deserialize(deserialized_dict["status"]),
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
 
 @dataclass
-class BooleanResponse:
-	response: bool
+class DecryptedMaintenanceTask:
+	id: str
+	rev: Optional[str] = None
+	identifier: list['Identifier'] = field(default_factory=list)
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	deletion_date: Optional[int] = None
+	task_type: Optional[str] = None
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	status: 'TaskStatus' = field(default_factory=lambda: TaskStatus.Pending)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"response": self.response,
+			"id": self.id,
+			"rev": self.rev,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"deletionDate": self.deletion_date,
+			"taskType": self.task_type,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"status": self.status.__serialize__(),
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'BooleanResponse':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedMaintenanceTask':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			response=deserialized_dict["response"],
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			task_type=deserialized_dict.get("taskType"),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			status=TaskStatus._deserialize(deserialized_dict["status"]),
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
+
+type MaintenanceTask = Union['EncryptedMaintenanceTask', 'DecryptedMaintenanceTask']
+
+def serialize_maintenance_task(maintenance_task: MaintenanceTask) -> Any:
+	if isinstance(maintenance_task, EncryptedMaintenanceTask):
+		serialized_entity = maintenance_task.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedMaintenanceTask"})
+		return serialized_entity
+	elif isinstance(maintenance_task, DecryptedMaintenanceTask):
+		serialized_entity = maintenance_task.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedMaintenanceTask"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(maintenance_task)} is not a known subclass of MaintenanceTask")
+
+def deserialize_maintenance_task(data: Union[str, dict[str, JsonElement]]) -> 'MaintenanceTask':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.EncryptedMaintenanceTask":
+		return EncryptedMaintenanceTask._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedMaintenanceTask":
+		return DecryptedMaintenanceTask._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of MaintenanceTask")
+
+@dataclass
+class DocIdentifier:
+	id: Optional[str] = None
+	rev: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DocIdentifier':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict.get("id"),
+			rev=deserialized_dict.get("rev"),
+		)
+
+@dataclass
+class MaintenanceTaskShareOptions:
+	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
+	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
+
+	def __serialize__(self) -> Any:
+		return {
+			"requestedPermissions": self.requested_permissions.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
+			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MaintenanceTaskShareOptions':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
+			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
+			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
+		)
+
+@dataclass
+class EncryptedHealthElement:
+	id: str
+	identifiers: list['Identifier'] = field(default_factory=list)
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	deletion_date: Optional[int] = None
+	health_element_id: Optional[str] = None
+	value_date: Optional[int] = None
+	opening_date: Optional[int] = None
+	closing_date: Optional[int] = None
+	descr: Optional[str] = None
+	note: Optional[str] = None
+	notes: list['EncryptedAnnotation'] = field(default_factory=list)
+	relevant: bool = True
+	id_opening_contact: Optional[str] = None
+	id_closing_contact: Optional[str] = None
+	id_service: Optional[str] = None
+	laterality: Optional['Laterality'] = None
+	plans_of_action: list['EncryptedPlanOfAction'] = field(default_factory=list)
+	episodes: list['EncryptedEpisode'] = field(default_factory=list)
+	care_team: list['EncryptedCareTeamMember'] = field(default_factory=list)
+	qualified_links: list['HealthElementQualifiedLink'] = field(default_factory=list)
+	asserters: list['HealthElementAsserter'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"identifiers": [x0.__serialize__() for x0 in self.identifiers],
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"deletionDate": self.deletion_date,
+			"healthElementId": self.health_element_id,
+			"valueDate": self.value_date,
+			"openingDate": self.opening_date,
+			"closingDate": self.closing_date,
+			"descr": self.descr,
+			"note": self.note,
+			"notes": [x0.__serialize__() for x0 in self.notes],
+			"relevant": self.relevant,
+			"idOpeningContact": self.id_opening_contact,
+			"idClosingContact": self.id_closing_contact,
+			"idService": self.id_service,
+			"laterality": self.laterality.__serialize__() if self.laterality is not None else None,
+			"plansOfAction": [x0.__serialize__() for x0 in self.plans_of_action],
+			"episodes": [x0.__serialize__() for x0 in self.episodes],
+			"careTeam": [x0.__serialize__() for x0 in self.care_team],
+			"qualifiedLinks": [x0.__serialize__() for x0 in self.qualified_links],
+			"asserters": [x0.__serialize__() for x0 in self.asserters],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedHealthElement':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			identifiers=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifiers"]],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			health_element_id=deserialized_dict.get("healthElementId"),
+			value_date=deserialized_dict.get("valueDate"),
+			opening_date=deserialized_dict.get("openingDate"),
+			closing_date=deserialized_dict.get("closingDate"),
+			descr=deserialized_dict.get("descr"),
+			note=deserialized_dict.get("note"),
+			notes=[EncryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
+			relevant=deserialized_dict["relevant"],
+			id_opening_contact=deserialized_dict.get("idOpeningContact"),
+			id_closing_contact=deserialized_dict.get("idClosingContact"),
+			id_service=deserialized_dict.get("idService"),
+			laterality=Laterality._deserialize(deserialized_dict.get("laterality")) if deserialized_dict.get("laterality") is not None else None,
+			plans_of_action=[EncryptedPlanOfAction._deserialize(x0) for x0 in deserialized_dict["plansOfAction"]],
+			episodes=[EncryptedEpisode._deserialize(x0) for x0 in deserialized_dict["episodes"]],
+			care_team=[EncryptedCareTeamMember._deserialize(x0) for x0 in deserialized_dict["careTeam"]],
+			qualified_links=[HealthElementQualifiedLink._deserialize(x0) for x0 in deserialized_dict["qualifiedLinks"]],
+			asserters=[HealthElementAsserter._deserialize(x0) for x0 in deserialized_dict["asserters"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+@dataclass
+class DecryptedHealthElement:
+	id: str
+	identifiers: list['Identifier'] = field(default_factory=list)
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	deletion_date: Optional[int] = None
+	health_element_id: Optional[str] = None
+	value_date: Optional[int] = None
+	opening_date: Optional[int] = None
+	closing_date: Optional[int] = None
+	descr: Optional[str] = None
+	note: Optional[str] = None
+	notes: list['DecryptedAnnotation'] = field(default_factory=list)
+	relevant: bool = True
+	id_opening_contact: Optional[str] = None
+	id_closing_contact: Optional[str] = None
+	id_service: Optional[str] = None
+	laterality: Optional['Laterality'] = None
+	plans_of_action: list['DecryptedPlanOfAction'] = field(default_factory=list)
+	episodes: list['DecryptedEpisode'] = field(default_factory=list)
+	care_team: list['DecryptedCareTeamMember'] = field(default_factory=list)
+	qualified_links: list['HealthElementQualifiedLink'] = field(default_factory=list)
+	asserters: list['HealthElementAsserter'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"identifiers": [x0.__serialize__() for x0 in self.identifiers],
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"deletionDate": self.deletion_date,
+			"healthElementId": self.health_element_id,
+			"valueDate": self.value_date,
+			"openingDate": self.opening_date,
+			"closingDate": self.closing_date,
+			"descr": self.descr,
+			"note": self.note,
+			"notes": [x0.__serialize__() for x0 in self.notes],
+			"relevant": self.relevant,
+			"idOpeningContact": self.id_opening_contact,
+			"idClosingContact": self.id_closing_contact,
+			"idService": self.id_service,
+			"laterality": self.laterality.__serialize__() if self.laterality is not None else None,
+			"plansOfAction": [x0.__serialize__() for x0 in self.plans_of_action],
+			"episodes": [x0.__serialize__() for x0 in self.episodes],
+			"careTeam": [x0.__serialize__() for x0 in self.care_team],
+			"qualifiedLinks": [x0.__serialize__() for x0 in self.qualified_links],
+			"asserters": [x0.__serialize__() for x0 in self.asserters],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedHealthElement':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			identifiers=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifiers"]],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			health_element_id=deserialized_dict.get("healthElementId"),
+			value_date=deserialized_dict.get("valueDate"),
+			opening_date=deserialized_dict.get("openingDate"),
+			closing_date=deserialized_dict.get("closingDate"),
+			descr=deserialized_dict.get("descr"),
+			note=deserialized_dict.get("note"),
+			notes=[DecryptedAnnotation._deserialize(x0) for x0 in deserialized_dict["notes"]],
+			relevant=deserialized_dict["relevant"],
+			id_opening_contact=deserialized_dict.get("idOpeningContact"),
+			id_closing_contact=deserialized_dict.get("idClosingContact"),
+			id_service=deserialized_dict.get("idService"),
+			laterality=Laterality._deserialize(deserialized_dict.get("laterality")) if deserialized_dict.get("laterality") is not None else None,
+			plans_of_action=[DecryptedPlanOfAction._deserialize(x0) for x0 in deserialized_dict["plansOfAction"]],
+			episodes=[DecryptedEpisode._deserialize(x0) for x0 in deserialized_dict["episodes"]],
+			care_team=[DecryptedCareTeamMember._deserialize(x0) for x0 in deserialized_dict["careTeam"]],
+			qualified_links=[HealthElementQualifiedLink._deserialize(x0) for x0 in deserialized_dict["qualifiedLinks"]],
+			asserters=[HealthElementAsserter._deserialize(x0) for x0 in deserialized_dict["asserters"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+type HealthElement = Union['EncryptedHealthElement', 'DecryptedHealthElement']
+
+def serialize_health_element(health_element: HealthElement) -> Any:
+	if isinstance(health_element, EncryptedHealthElement):
+		serialized_entity = health_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedHealthElement"})
+		return serialized_entity
+	elif isinstance(health_element, DecryptedHealthElement):
+		serialized_entity = health_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedHealthElement"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(health_element)} is not a known subclass of HealthElement")
+
+def deserialize_health_element(data: Union[str, dict[str, JsonElement]]) -> 'HealthElement':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.EncryptedHealthElement":
+		return EncryptedHealthElement._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedHealthElement":
+		return DecryptedHealthElement._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of HealthElement")
 
 @dataclass
 class HealthElementDelegateOptions:
@@ -5036,650 +3733,6 @@ class HealthElementShareOptions:
 			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
 			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
 			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
-			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
-		)
-
-@dataclass
-class Place:
-	id: str
-	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	name: Optional[str] = None
-	address: Optional['DecryptedAddress'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"name": self.name,
-			"address": self.address.__serialize__() if self.address is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Place':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			name=deserialized_dict.get("name"),
-			address=DecryptedAddress._deserialize(deserialized_dict.get("address")) if deserialized_dict.get("address") is not None else None,
-		)
-
-@dataclass
-class HealthcareParty:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	deletion_date: Optional[int] = None
-	identifier: list['Identifier'] = field(default_factory=list)
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	name: Optional[str] = None
-	last_name: Optional[str] = None
-	first_name: Optional[str] = None
-	names: list['PersonName'] = field(default_factory=list)
-	gender: Optional['Gender'] = None
-	civility: Optional[str] = None
-	company_name: Optional[str] = None
-	speciality: Optional[str] = None
-	bank_account: Optional[str] = None
-	bic: Optional[str] = None
-	proxy_bank_account: Optional[str] = None
-	proxy_bic: Optional[str] = None
-	invoice_header: Optional[str] = None
-	parent_id: Optional[str] = None
-	ssin: Optional[str] = None
-	addresses: list['DecryptedAddress'] = field(default_factory=list)
-	languages: list[str] = field(default_factory=list)
-	speciality_codes: set['CodeStub'] = field(default_factory=set)
-	notes: Optional[str] = None
-	financial_institution_information: list['DecryptedFinancialInstitutionInformation'] = field(default_factory=list)
-	descr: dict[str, str] = field(default_factory=dict)
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	public: bool = False
-	public_properties: Optional[list['DecryptedPropertyStub']] = None
-	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
-	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
-	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
-	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
-	public_key: Optional['SpkiHexString'] = None
-	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"deletionDate": self.deletion_date,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"name": self.name,
-			"lastName": self.last_name,
-			"firstName": self.first_name,
-			"names": [x0.__serialize__() for x0 in self.names],
-			"gender": self.gender.__serialize__() if self.gender is not None else None,
-			"civility": self.civility,
-			"companyName": self.company_name,
-			"speciality": self.speciality,
-			"bankAccount": self.bank_account,
-			"bic": self.bic,
-			"proxyBankAccount": self.proxy_bank_account,
-			"proxyBic": self.proxy_bic,
-			"invoiceHeader": self.invoice_header,
-			"parentId": self.parent_id,
-			"ssin": self.ssin,
-			"addresses": [x0.__serialize__() for x0 in self.addresses],
-			"languages": [x0 for x0 in self.languages],
-			"specialityCodes": [x0.__serialize__() for x0 in self.speciality_codes],
-			"notes": self.notes,
-			"financialInstitutionInformation": [x0.__serialize__() for x0 in self.financial_institution_information],
-			"descr": {k0: v0 for k0, v0 in self.descr.items()},
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"public": self.public,
-			"publicProperties": [x0.__serialize__() for x0 in self.public_properties] if self.public_properties is not None else None,
-			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
-			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
-			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
-			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
-			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
-			"publicKey": self.public_key,
-			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthcareParty':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			name=deserialized_dict.get("name"),
-			last_name=deserialized_dict.get("lastName"),
-			first_name=deserialized_dict.get("firstName"),
-			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
-			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
-			civility=deserialized_dict.get("civility"),
-			company_name=deserialized_dict.get("companyName"),
-			speciality=deserialized_dict.get("speciality"),
-			bank_account=deserialized_dict.get("bankAccount"),
-			bic=deserialized_dict.get("bic"),
-			proxy_bank_account=deserialized_dict.get("proxyBankAccount"),
-			proxy_bic=deserialized_dict.get("proxyBic"),
-			invoice_header=deserialized_dict.get("invoiceHeader"),
-			parent_id=deserialized_dict.get("parentId"),
-			ssin=deserialized_dict.get("ssin"),
-			addresses=[DecryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
-			languages=[x0 for x0 in deserialized_dict["languages"]],
-			speciality_codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["specialityCodes"]},
-			notes=deserialized_dict.get("notes"),
-			financial_institution_information=[DecryptedFinancialInstitutionInformation._deserialize(x0) for x0 in deserialized_dict["financialInstitutionInformation"]],
-			descr=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["descr"].items())),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			public=deserialized_dict["public"],
-			public_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict.get("publicProperties")] if deserialized_dict.get("publicProperties") is not None else None,
-			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
-			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
-			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
-			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
-			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
-			public_key=deserialized_dict.get("publicKey"),
-			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
-		)
-
-@dataclass
-class Device:
-	id: str
-	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	identifiers: list['Identifier'] = field(default_factory=list)
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	name: Optional[str] = None
-	type: Optional[str] = None
-	brand: Optional[str] = None
-	model: Optional[str] = None
-	serial_number: Optional[str] = None
-	parent_id: Optional[str] = None
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
-	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
-	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
-	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
-	public_key: Optional['SpkiHexString'] = None
-	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
-	crypto_actor_properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"identifiers": [x0.__serialize__() for x0 in self.identifiers],
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"name": self.name,
-			"type": self.type,
-			"brand": self.brand,
-			"model": self.model,
-			"serialNumber": self.serial_number,
-			"parentId": self.parent_id,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
-			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
-			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
-			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
-			"publicKey": self.public_key,
-			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
-			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Device':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			identifiers=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifiers"]],
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			name=deserialized_dict.get("name"),
-			type=deserialized_dict.get("type"),
-			brand=deserialized_dict.get("brand"),
-			model=deserialized_dict.get("model"),
-			serial_number=deserialized_dict.get("serialNumber"),
-			parent_id=deserialized_dict.get("parentId"),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
-			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
-			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
-			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
-			public_key=deserialized_dict.get("publicKey"),
-			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
-			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["cryptoActorProperties"]],
-		)
-
-@dataclass
-class CryptoActorStub:
-	id: str
-	rev: str
-	hc_party_keys: dict[str, list['HexString']] = field(default_factory=dict)
-	aes_exchange_keys: dict['AesExchangeKeyEntryKeyString', dict[str, dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']]] = field(default_factory=dict)
-	transfer_keys: dict['AesExchangeKeyEncryptionKeypairIdentifier', dict['AesExchangeKeyEncryptionKeypairIdentifier', 'HexString']] = field(default_factory=dict)
-	private_key_shamir_partitions: dict[str, 'HexString'] = field(default_factory=dict)
-	public_key: Optional['SpkiHexString'] = None
-	public_keys_for_oaep_with_sha256: set['SpkiHexString'] = field(default_factory=set)
-	parent_id: Optional[str] = None
-	crypto_actor_properties: Optional[list['DecryptedPropertyStub']] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"hcPartyKeys": {k0: [x1 for x1 in v0] for k0, v0 in self.hc_party_keys.items()},
-			"aesExchangeKeys": {k0: {k1: {k2: v2 for k2, v2 in v1.items()} for k1, v1 in v0.items()} for k0, v0 in self.aes_exchange_keys.items()},
-			"transferKeys": {k0: {k1: v1 for k1, v1 in v0.items()} for k0, v0 in self.transfer_keys.items()},
-			"privateKeyShamirPartitions": {k0: v0 for k0, v0 in self.private_key_shamir_partitions.items()},
-			"publicKey": self.public_key,
-			"publicKeysForOaepWithSha256": [x0 for x0 in self.public_keys_for_oaep_with_sha256],
-			"parentId": self.parent_id,
-			"cryptoActorProperties": [x0.__serialize__() for x0 in self.crypto_actor_properties] if self.crypto_actor_properties is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CryptoActorStub':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict["rev"],
-			hc_party_keys=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["hcPartyKeys"].items())),
-			aes_exchange_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], dict(map(lambda kv2: (kv2[0], kv2[1]), kv1[1].items()))), kv0[1].items()))), deserialized_dict["aesExchangeKeys"].items())),
-			transfer_keys=dict(map(lambda kv0: (kv0[0], dict(map(lambda kv1: (kv1[0], kv1[1]), kv0[1].items()))), deserialized_dict["transferKeys"].items())),
-			private_key_shamir_partitions=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["privateKeyShamirPartitions"].items())),
-			public_key=deserialized_dict.get("publicKey"),
-			public_keys_for_oaep_with_sha256={x0 for x0 in deserialized_dict["publicKeysForOaepWithSha256"]},
-			parent_id=deserialized_dict.get("parentId"),
-			crypto_actor_properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict.get("cryptoActorProperties")] if deserialized_dict.get("cryptoActorProperties") is not None else None,
-		)
-
-type CryptoActor = Union['HealthcareParty', 'EncryptedPatient', 'DecryptedPatient', 'Device', 'CryptoActorStub']
-
-def serialize_crypto_actor(crypto_actor: CryptoActor) -> Any:
-	if isinstance(crypto_actor, HealthcareParty):
-		serialized_entity = crypto_actor.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.HealthcareParty"})
-		return serialized_entity
-	elif isinstance(crypto_actor, EncryptedPatient):
-		serialized_entity = crypto_actor.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedPatient"})
-		return serialized_entity
-	elif isinstance(crypto_actor, DecryptedPatient):
-		serialized_entity = crypto_actor.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedPatient"})
-		return serialized_entity
-	elif isinstance(crypto_actor, Device):
-		serialized_entity = crypto_actor.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.Device"})
-		return serialized_entity
-	elif isinstance(crypto_actor, CryptoActorStub):
-		serialized_entity = crypto_actor.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.CryptoActorStub"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(crypto_actor)} is not a known subclass of CryptoActor")
-
-def deserialize_crypto_actor(data: Union[str, dict[str, JsonElement]]) -> 'CryptoActor':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.HealthcareParty":
-		return HealthcareParty._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedPatient":
-		return EncryptedPatient._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedPatient":
-		return DecryptedPatient._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.Device":
-		return Device._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.CryptoActorStub":
-		return CryptoActorStub._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of CryptoActor")
-
-@dataclass
-class CryptoActorStubWithType:
-	type: 'DataOwnerType'
-	stub: 'CryptoActorStub'
-
-	def __serialize__(self) -> Any:
-		return {
-			"type": self.type.__serialize__(),
-			"stub": self.stub.__serialize__(),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CryptoActorStubWithType':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			type=DataOwnerType._deserialize(deserialized_dict["type"]),
-			stub=CryptoActorStub._deserialize(deserialized_dict["stub"]),
-		)
-
-@dataclass
-class ShamirUpdateRequest:
-	notaries_ids: set[str]
-	min_shares: int
-
-	def __serialize__(self) -> Any:
-		return {
-			"notariesIds": [x0 for x0 in self.notaries_ids],
-			"minShares": self.min_shares,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ShamirUpdateRequest':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			notaries_ids={x0 for x0 in deserialized_dict["notariesIds"]},
-			min_shares=deserialized_dict["minShares"],
-		)
-
-@dataclass
-class EncryptedReceipt:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	attachment_ids: dict['ReceiptBlobType', str] = field(default_factory=dict)
-	attachment_infos: dict['ReceiptBlobType', 'DataAttachment'] = field(default_factory=dict)
-	deleted_attachments: list['DeletedAttachment'] = field(default_factory=list)
-	references: list[str] = field(default_factory=list)
-	document_id: Optional[str] = None
-	category: Optional[str] = None
-	sub_category: Optional[str] = None
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"attachmentIds": {k0.__serialize__(): v0 for k0, v0 in self.attachment_ids.items()},
-			"attachmentInfos": {k0.__serialize__(): v0.__serialize__() for k0, v0 in self.attachment_infos.items()},
-			"deletedAttachments": [x0.__serialize__() for x0 in self.deleted_attachments],
-			"references": [x0 for x0 in self.references],
-			"documentId": self.document_id,
-			"category": self.category,
-			"subCategory": self.sub_category,
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedReceipt':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			attachment_ids=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), kv0[1]), deserialized_dict["attachmentIds"].items())),
-			attachment_infos=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), DataAttachment._deserialize(kv0[1])), deserialized_dict["attachmentInfos"].items())),
-			deleted_attachments=[DeletedAttachment._deserialize(x0) for x0 in deserialized_dict["deletedAttachments"]],
-			references=[x0 for x0 in deserialized_dict["references"]],
-			document_id=deserialized_dict.get("documentId"),
-			category=deserialized_dict.get("category"),
-			sub_category=deserialized_dict.get("subCategory"),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class DecryptedReceipt:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	attachment_ids: dict['ReceiptBlobType', str] = field(default_factory=dict)
-	attachment_infos: dict['ReceiptBlobType', 'DataAttachment'] = field(default_factory=dict)
-	deleted_attachments: list['DeletedAttachment'] = field(default_factory=list)
-	references: list[str] = field(default_factory=list)
-	document_id: Optional[str] = None
-	category: Optional[str] = None
-	sub_category: Optional[str] = None
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"attachmentIds": {k0.__serialize__(): v0 for k0, v0 in self.attachment_ids.items()},
-			"attachmentInfos": {k0.__serialize__(): v0.__serialize__() for k0, v0 in self.attachment_infos.items()},
-			"deletedAttachments": [x0.__serialize__() for x0 in self.deleted_attachments],
-			"references": [x0 for x0 in self.references],
-			"documentId": self.document_id,
-			"category": self.category,
-			"subCategory": self.sub_category,
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedReceipt':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			attachment_ids=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), kv0[1]), deserialized_dict["attachmentIds"].items())),
-			attachment_infos=dict(map(lambda kv0: (ReceiptBlobType._deserialize(kv0[0]), DataAttachment._deserialize(kv0[1])), deserialized_dict["attachmentInfos"].items())),
-			deleted_attachments=[DeletedAttachment._deserialize(x0) for x0 in deserialized_dict["deletedAttachments"]],
-			references=[x0 for x0 in deserialized_dict["references"]],
-			document_id=deserialized_dict.get("documentId"),
-			category=deserialized_dict.get("category"),
-			sub_category=deserialized_dict.get("subCategory"),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-type Receipt = Union['EncryptedReceipt', 'DecryptedReceipt']
-
-def serialize_receipt(receipt: Receipt) -> Any:
-	if isinstance(receipt, EncryptedReceipt):
-		serialized_entity = receipt.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedReceipt"})
-		return serialized_entity
-	elif isinstance(receipt, DecryptedReceipt):
-		serialized_entity = receipt.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedReceipt"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(receipt)} is not a known subclass of Receipt")
-
-def deserialize_receipt(data: Union[str, dict[str, JsonElement]]) -> 'Receipt':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedReceipt":
-		return EncryptedReceipt._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedReceipt":
-		return DecryptedReceipt._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of Receipt")
-
-@dataclass
-class ReceiptDelegateOptions:
-	access_level: 'AccessLevel'
-	share_encryption_key: bool = False
-	share_secret_id: bool = False
-
-	def __serialize__(self) -> Any:
-		return {
-			"accessLevel": self.access_level.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key,
-			"shareSecretId": self.share_secret_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReceiptDelegateOptions':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
-			share_encryption_key=deserialized_dict["shareEncryptionKey"],
-			share_secret_id=deserialized_dict["shareSecretId"],
-		)
-
-@dataclass
-class ReceiptShareOptions:
-	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
-	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
-
-	def __serialize__(self) -> Any:
-		return {
-			"requestedPermissions": self.requested_permissions.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
-			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReceiptShareOptions':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
-			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
 			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
 		)
 
@@ -5911,251 +3964,7 @@ class PatientShareOptions:
 		)
 
 @dataclass
-class DecryptedMessage:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	from_address: Optional[str] = None
-	from_healthcare_party_id: Optional[str] = None
-	recipients: set[str] = field(default_factory=set)
-	to_addresses: set[str] = field(default_factory=set)
-	received: Optional[int] = None
-	sent: Optional[int] = None
-	metas: dict[str, str] = field(default_factory=dict)
-	read_status: dict[str, 'MessageReadStatus'] = field(default_factory=dict)
-	transport_guid: Optional[str] = None
-	remark: Optional[str] = None
-	conversation_guid: Optional[str] = None
-	subject: Optional[str] = None
-	invoice_ids: set[str] = field(default_factory=set)
-	parent_id: Optional[str] = None
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"fromAddress": self.from_address,
-			"fromHealthcarePartyId": self.from_healthcare_party_id,
-			"recipients": [x0 for x0 in self.recipients],
-			"toAddresses": [x0 for x0 in self.to_addresses],
-			"received": self.received,
-			"sent": self.sent,
-			"metas": {k0: v0 for k0, v0 in self.metas.items()},
-			"readStatus": {k0: v0.__serialize__() for k0, v0 in self.read_status.items()},
-			"transportGuid": self.transport_guid,
-			"remark": self.remark,
-			"conversationGuid": self.conversation_guid,
-			"subject": self.subject,
-			"invoiceIds": [x0 for x0 in self.invoice_ids],
-			"parentId": self.parent_id,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedMessage':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			from_address=deserialized_dict.get("fromAddress"),
-			from_healthcare_party_id=deserialized_dict.get("fromHealthcarePartyId"),
-			recipients={x0 for x0 in deserialized_dict["recipients"]},
-			to_addresses={x0 for x0 in deserialized_dict["toAddresses"]},
-			received=deserialized_dict.get("received"),
-			sent=deserialized_dict.get("sent"),
-			metas=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["metas"].items())),
-			read_status=dict(map(lambda kv0: (kv0[0], MessageReadStatus._deserialize(kv0[1])), deserialized_dict["readStatus"].items())),
-			transport_guid=deserialized_dict.get("transportGuid"),
-			remark=deserialized_dict.get("remark"),
-			conversation_guid=deserialized_dict.get("conversationGuid"),
-			subject=deserialized_dict.get("subject"),
-			invoice_ids={x0 for x0 in deserialized_dict["invoiceIds"]},
-			parent_id=deserialized_dict.get("parentId"),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class EncryptedMessage:
-	id: str
-	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	deletion_date: Optional[int] = None
-	from_address: Optional[str] = None
-	from_healthcare_party_id: Optional[str] = None
-	recipients: set[str] = field(default_factory=set)
-	to_addresses: set[str] = field(default_factory=set)
-	received: Optional[int] = None
-	sent: Optional[int] = None
-	metas: dict[str, str] = field(default_factory=dict)
-	read_status: dict[str, 'MessageReadStatus'] = field(default_factory=dict)
-	transport_guid: Optional[str] = None
-	remark: Optional[str] = None
-	conversation_guid: Optional[str] = None
-	subject: Optional[str] = None
-	invoice_ids: set[str] = field(default_factory=set)
-	parent_id: Optional[str] = None
-	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"deletionDate": self.deletion_date,
-			"fromAddress": self.from_address,
-			"fromHealthcarePartyId": self.from_healthcare_party_id,
-			"recipients": [x0 for x0 in self.recipients],
-			"toAddresses": [x0 for x0 in self.to_addresses],
-			"received": self.received,
-			"sent": self.sent,
-			"metas": {k0: v0 for k0, v0 in self.metas.items()},
-			"readStatus": {k0: v0.__serialize__() for k0, v0 in self.read_status.items()},
-			"transportGuid": self.transport_guid,
-			"remark": self.remark,
-			"conversationGuid": self.conversation_guid,
-			"subject": self.subject,
-			"invoiceIds": [x0 for x0 in self.invoice_ids],
-			"parentId": self.parent_id,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedMessage':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			deletion_date=deserialized_dict.get("deletionDate"),
-			from_address=deserialized_dict.get("fromAddress"),
-			from_healthcare_party_id=deserialized_dict.get("fromHealthcarePartyId"),
-			recipients={x0 for x0 in deserialized_dict["recipients"]},
-			to_addresses={x0 for x0 in deserialized_dict["toAddresses"]},
-			received=deserialized_dict.get("received"),
-			sent=deserialized_dict.get("sent"),
-			metas=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["metas"].items())),
-			read_status=dict(map(lambda kv0: (kv0[0], MessageReadStatus._deserialize(kv0[1])), deserialized_dict["readStatus"].items())),
-			transport_guid=deserialized_dict.get("transportGuid"),
-			remark=deserialized_dict.get("remark"),
-			conversation_guid=deserialized_dict.get("conversationGuid"),
-			subject=deserialized_dict.get("subject"),
-			invoice_ids={x0 for x0 in deserialized_dict["invoiceIds"]},
-			parent_id=deserialized_dict.get("parentId"),
-			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-type Message = Union['DecryptedMessage', 'EncryptedMessage']
-
-def serialize_message(message: Message) -> Any:
-	if isinstance(message, DecryptedMessage):
-		serialized_entity = message.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedMessage"})
-		return serialized_entity
-	elif isinstance(message, EncryptedMessage):
-		serialized_entity = message.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedMessage"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(message)} is not a known subclass of Message")
-
-def deserialize_message(data: Union[str, dict[str, JsonElement]]) -> 'Message':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.DecryptedMessage":
-		return DecryptedMessage._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedMessage":
-		return EncryptedMessage._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of Message")
-
-@dataclass
-class MessageDelegateOptions:
+class ContactDelegateOptions:
 	access_level: 'AccessLevel'
 	share_encryption_key: bool = False
 	share_secret_id: bool = False
@@ -6170,7 +3979,7 @@ class MessageDelegateOptions:
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MessageDelegateOptions':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ContactDelegateOptions':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -6184,7 +3993,7 @@ class MessageDelegateOptions:
 		)
 
 @dataclass
-class MessageShareOptions:
+class ContactShareOptions:
 	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
 	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
 	share_patient_id: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
@@ -6199,7 +4008,7 @@ class MessageShareOptions:
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MessageShareOptions':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ContactShareOptions':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -6213,54 +4022,42 @@ class MessageShareOptions:
 		)
 
 @dataclass
-class EncryptedMaintenanceTask:
+class Code:
 	id: str
 	rev: Optional[str] = None
-	identifier: list['Identifier'] = field(default_factory=list)
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
 	deletion_date: Optional[int] = None
-	task_type: Optional[str] = None
-	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
-	status: 'TaskStatus' = field(default_factory=lambda: TaskStatus.Pending)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
+	context: Optional[str] = None
+	type: Optional[str] = None
+	code: Optional[str] = None
+	version: Optional[str] = None
+	label: dict[str, str] = field(default_factory=dict)
+	author: Optional[str] = None
+	regions: set[str] = field(default_factory=set)
+	links: set[str] = field(default_factory=set)
+	qualified_links: dict[str, list[str]] = field(default_factory=dict)
+	search_terms: dict[str, set[str]] = field(default_factory=dict)
+	disabled: bool = False
 
 	def __serialize__(self) -> Any:
 		return {
 			"id": self.id,
 			"rev": self.rev,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
 			"deletionDate": self.deletion_date,
-			"taskType": self.task_type,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"status": self.status.__serialize__(),
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+			"context": self.context,
+			"type": self.type,
+			"code": self.code,
+			"version": self.version,
+			"label": {k0: v0 for k0, v0 in self.label.items()},
+			"author": self.author,
+			"regions": [x0 for x0 in self.regions],
+			"links": [x0 for x0 in self.links],
+			"qualifiedLinks": {k0: [x1 for x1 in v0] for k0, v0 in self.qualified_links.items()},
+			"searchTerms": {k0: [x1 for x1 in v0] for k0, v0 in self.search_terms.items()},
+			"disabled": self.disabled,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedMaintenanceTask':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Code':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -6269,395 +4066,1774 @@ class EncryptedMaintenanceTask:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
 			deletion_date=deserialized_dict.get("deletionDate"),
-			task_type=deserialized_dict.get("taskType"),
-			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			status=TaskStatus._deserialize(deserialized_dict["status"]),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-		)
-
-@dataclass
-class DecryptedMaintenanceTask:
-	id: str
-	rev: Optional[str] = None
-	identifier: list['Identifier'] = field(default_factory=list)
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
-	deletion_date: Optional[int] = None
-	task_type: Optional[str] = None
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	status: 'TaskStatus' = field(default_factory=lambda: TaskStatus.Pending)
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	security_metadata: Optional['SecurityMetadata'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
-			"deletionDate": self.deletion_date,
-			"taskType": self.task_type,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"status": self.status.__serialize__(),
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedMaintenanceTask':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
+			context=deserialized_dict.get("context"),
+			type=deserialized_dict.get("type"),
+			code=deserialized_dict.get("code"),
+			version=deserialized_dict.get("version"),
+			label=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["label"].items())),
 			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			task_type=deserialized_dict.get("taskType"),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			status=TaskStatus._deserialize(deserialized_dict["status"]),
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+			regions={x0 for x0 in deserialized_dict["regions"]},
+			links={x0 for x0 in deserialized_dict["links"]},
+			qualified_links=dict(map(lambda kv0: (kv0[0], [x1 for x1 in kv0[1]]), deserialized_dict["qualifiedLinks"].items())),
+			search_terms=dict(map(lambda kv0: (kv0[0], {x1 for x1 in kv0[1]}), deserialized_dict["searchTerms"].items())),
+			disabled=deserialized_dict["disabled"],
 		)
 
-type MaintenanceTask = Union['EncryptedMaintenanceTask', 'DecryptedMaintenanceTask']
-
-def serialize_maintenance_task(maintenance_task: MaintenanceTask) -> Any:
-	if isinstance(maintenance_task, EncryptedMaintenanceTask):
-		serialized_entity = maintenance_task.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedMaintenanceTask"})
-		return serialized_entity
-	elif isinstance(maintenance_task, DecryptedMaintenanceTask):
-		serialized_entity = maintenance_task.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedMaintenanceTask"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(maintenance_task)} is not a known subclass of MaintenanceTask")
-
-def deserialize_maintenance_task(data: Union[str, dict[str, JsonElement]]) -> 'MaintenanceTask':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedMaintenanceTask":
-		return EncryptedMaintenanceTask._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedMaintenanceTask":
-		return DecryptedMaintenanceTask._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of MaintenanceTask")
-
 @dataclass
-class MaintenanceTaskShareOptions:
-	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
-	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
-	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
+class BooleanResponse:
+	response: bool
 
 	def __serialize__(self) -> Any:
 		return {
-			"requestedPermissions": self.requested_permissions.__serialize__(),
-			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
-			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
+			"response": self.response,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MaintenanceTaskShareOptions':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'BooleanResponse':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
-			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
-			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
+			response=deserialized_dict["response"],
 		)
 
-@dataclass
-class EncryptedPropertyStub:
-	id: Optional[str] = None
-	type: Optional['PropertyTypeStub'] = None
-	typed_value: Optional['EncryptedTypedValue'] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"type": self.type.__serialize__() if self.type is not None else None,
-			"typedValue": self.typed_value.__serialize__() if self.typed_value is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPropertyStub':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict.get("id"),
-			type=PropertyTypeStub._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
-			typed_value=EncryptedTypedValue._deserialize(deserialized_dict.get("typedValue")) if deserialized_dict.get("typedValue") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class DecryptedPropertyStub:
-	id: Optional[str] = None
-	type: Optional['PropertyTypeStub'] = None
-	typed_value: Optional['DecryptedTypedValue'] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"type": self.type.__serialize__() if self.type is not None else None,
-			"typedValue": self.typed_value.__serialize__() if self.typed_value is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPropertyStub':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict.get("id"),
-			type=PropertyTypeStub._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
-			typed_value=DecryptedTypedValue._deserialize(deserialized_dict.get("typedValue")) if deserialized_dict.get("typedValue") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type PropertyStub = Union['EncryptedPropertyStub', 'DecryptedPropertyStub']
-
-def serialize_property_stub(property_stub: PropertyStub) -> Any:
-	if isinstance(property_stub, EncryptedPropertyStub):
-		serialized_entity = property_stub.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedPropertyStub"})
-		return serialized_entity
-	elif isinstance(property_stub, DecryptedPropertyStub):
-		serialized_entity = property_stub.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedPropertyStub"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(property_stub)} is not a known subclass of PropertyStub")
-
-def deserialize_property_stub(data: Union[str, dict[str, JsonElement]]) -> 'PropertyStub':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.EncryptedPropertyStub":
-		return EncryptedPropertyStub._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedPropertyStub":
-		return DecryptedPropertyStub._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of PropertyStub")
-
-@dataclass
-class UserGroup:
-	group_id: Optional[str] = None
-	group_name: Optional[str] = None
-	groups_hierarchy: list['Group'] = field(default_factory=list)
-	user_id: Optional[str] = None
-	login: Optional[str] = None
-	name: Optional[str] = None
-	email: Optional[str] = None
-	phone: Optional[str] = None
-	patient_id: Optional[str] = None
-	healthcare_party_id: Optional[str] = None
-	device_id: Optional[str] = None
-	name_of_parent_of_topmost_group_in_hierarchy: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"groupId": self.group_id,
-			"groupName": self.group_name,
-			"groupsHierarchy": [x0.__serialize__() for x0 in self.groups_hierarchy],
-			"userId": self.user_id,
-			"login": self.login,
-			"name": self.name,
-			"email": self.email,
-			"phone": self.phone,
-			"patientId": self.patient_id,
-			"healthcarePartyId": self.healthcare_party_id,
-			"deviceId": self.device_id,
-			"nameOfParentOfTopmostGroupInHierarchy": self.name_of_parent_of_topmost_group_in_hierarchy,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserGroup':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			group_id=deserialized_dict.get("groupId"),
-			group_name=deserialized_dict.get("groupName"),
-			groups_hierarchy=[Group._deserialize(x0) for x0 in deserialized_dict["groupsHierarchy"]],
-			user_id=deserialized_dict.get("userId"),
-			login=deserialized_dict.get("login"),
-			name=deserialized_dict.get("name"),
-			email=deserialized_dict.get("email"),
-			phone=deserialized_dict.get("phone"),
-			patient_id=deserialized_dict.get("patientId"),
-			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
-			device_id=deserialized_dict.get("deviceId"),
-			name_of_parent_of_topmost_group_in_hierarchy=deserialized_dict.get("nameOfParentOfTopmostGroupInHierarchy"),
-		)
-
-@dataclass
-class Enable2faRequest:
-	secret: str
-	otp_length: int
-	otp: str
-	algorithm: Optional['Enable2faRequestAlgorithm'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"secret": self.secret,
-			"otpLength": self.otp_length,
-			"otp": self.otp,
-			"algorithm": self.algorithm.__serialize__() if self.algorithm is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Enable2faRequest':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			secret=deserialized_dict["secret"],
-			otp_length=deserialized_dict["otpLength"],
-			otp=deserialized_dict["otp"],
-			algorithm=Enable2faRequestAlgorithm._deserialize(deserialized_dict.get("algorithm")) if deserialized_dict.get("algorithm") is not None else None,
-		)
-
-class Enable2faRequestAlgorithm(Enum):
-	Sha1 = "SHA1"
-	Sha256 = "SHA256"
-	Sha512 = "SHA512"
+class EntityWithEncryptionMetadataTypeName(Enum):
+	Article = "Article"
+	AccessLog = "AccessLog"
+	CalendarItem = "CalendarItem"
+	Classification = "Classification"
+	ClassificationTemplate = "ClassificationTemplate"
+	Contact = "Contact"
+	Service = "Service"
+	Document = "Document"
+	Form = "Form"
+	HealthElement = "HealthElement"
+	Invoice = "Invoice"
+	MaintenanceTask = "MaintenanceTask"
+	Message = "Message"
+	Patient = "Patient"
+	Receipt = "Receipt"
+	RelatedPerson = "RelatedPerson"
+	Topic = "Topic"
 
 	def __serialize__(self) -> Any:
 		return self.value
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Enable2faRequestAlgorithm':
-		if data == "SHA1":
-			return Enable2faRequestAlgorithm.Sha1
-		elif data == "SHA256":
-			return Enable2faRequestAlgorithm.Sha256
-		elif data == "SHA512":
-			return Enable2faRequestAlgorithm.Sha512
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EntityWithEncryptionMetadataTypeName':
+		if data == "Article":
+			return EntityWithEncryptionMetadataTypeName.Article
+		elif data == "AccessLog":
+			return EntityWithEncryptionMetadataTypeName.AccessLog
+		elif data == "CalendarItem":
+			return EntityWithEncryptionMetadataTypeName.CalendarItem
+		elif data == "Classification":
+			return EntityWithEncryptionMetadataTypeName.Classification
+		elif data == "ClassificationTemplate":
+			return EntityWithEncryptionMetadataTypeName.ClassificationTemplate
+		elif data == "Contact":
+			return EntityWithEncryptionMetadataTypeName.Contact
+		elif data == "Service":
+			return EntityWithEncryptionMetadataTypeName.Service
+		elif data == "Document":
+			return EntityWithEncryptionMetadataTypeName.Document
+		elif data == "Form":
+			return EntityWithEncryptionMetadataTypeName.Form
+		elif data == "HealthElement":
+			return EntityWithEncryptionMetadataTypeName.HealthElement
+		elif data == "Invoice":
+			return EntityWithEncryptionMetadataTypeName.Invoice
+		elif data == "MaintenanceTask":
+			return EntityWithEncryptionMetadataTypeName.MaintenanceTask
+		elif data == "Message":
+			return EntityWithEncryptionMetadataTypeName.Message
+		elif data == "Patient":
+			return EntityWithEncryptionMetadataTypeName.Patient
+		elif data == "Receipt":
+			return EntityWithEncryptionMetadataTypeName.Receipt
+		elif data == "RelatedPerson":
+			return EntityWithEncryptionMetadataTypeName.RelatedPerson
+		elif data == "Topic":
+			return EntityWithEncryptionMetadataTypeName.Topic
 		else:
-			raise Exception(f"{data} is not a valid value for Algorithm enum.")
+			raise Exception(f"{data} is not a valid value for EntityWithEncryptionMetadataTypeName enum.")
 
 @dataclass
-class TokenWithGroup:
-	token: str
-	group_id: str
-	group_name: Optional[str] = None
+class RawDecryptedExchangeData:
+	exchange_data_id: str
+	exchange_key: bytearray
+	access_control_secret: bytearray
+	shared_signature_key: bytearray
 
 	def __serialize__(self) -> Any:
 		return {
-			"token": self.token,
-			"groupId": self.group_id,
-			"groupName": self.group_name,
+			"exchangeDataId": self.exchange_data_id,
+			"exchangeKey": base64.b64encode(self.exchange_key).decode('utf-8'),
+			"accessControlSecret": base64.b64encode(self.access_control_secret).decode('utf-8'),
+			"sharedSignatureKey": base64.b64encode(self.shared_signature_key).decode('utf-8'),
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TokenWithGroup':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RawDecryptedExchangeData':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			token=deserialized_dict["token"],
-			group_id=deserialized_dict["groupId"],
-			group_name=deserialized_dict.get("groupName"),
+			exchange_data_id=deserialized_dict["exchangeDataId"],
+			exchange_key=bytearray(base64.b64decode(deserialized_dict["exchangeKey"])),
+			access_control_secret=bytearray(base64.b64decode(deserialized_dict["accessControlSecret"])),
+			shared_signature_key=bytearray(base64.b64decode(deserialized_dict["sharedSignatureKey"])),
 		)
 
 @dataclass
-class LoginIdentifier:
-	assigner: str
-	value: str
+class ExchangeDataInjectionDetails:
+	exchange_data_id: str
+	access_control_secret: bytearray
+	exchange_key: bytearray
+	shared_signature_key: bytearray
+	verified: bool
 
 	def __serialize__(self) -> Any:
 		return {
-			"assigner": self.assigner,
-			"value": self.value,
+			"exchangeDataId": self.exchange_data_id,
+			"accessControlSecret": base64.b64encode(self.access_control_secret).decode('utf-8'),
+			"exchangeKey": base64.b64encode(self.exchange_key).decode('utf-8'),
+			"sharedSignatureKey": base64.b64encode(self.shared_signature_key).decode('utf-8'),
+			"verified": self.verified,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'LoginIdentifier':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExchangeDataInjectionDetails':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			assigner=deserialized_dict["assigner"],
-			value=deserialized_dict["value"],
+			exchange_data_id=deserialized_dict["exchangeDataId"],
+			access_control_secret=bytearray(base64.b64decode(deserialized_dict["accessControlSecret"])),
+			exchange_key=bytearray(base64.b64decode(deserialized_dict["exchangeKey"])),
+			shared_signature_key=bytearray(base64.b64decode(deserialized_dict["sharedSignatureKey"])),
+			verified=deserialized_dict["verified"],
+		)
+
+@dataclass
+class RecoveryKeyOptionsGenerate:
+	recovery_key_size: 'RecoveryKeySize'
+
+	def __serialize__(self) -> Any:
+		return {
+			"recoveryKeySize": self.recovery_key_size.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeyOptionsGenerate':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			recovery_key_size=RecoveryKeySize._deserialize(deserialized_dict["recoveryKeySize"]),
+		)
+
+@dataclass
+class RecoveryKeyOptionsUse:
+	key: 'RecoveryDataKey'
+
+	def __serialize__(self) -> Any:
+		return {
+			"key": self.key.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeyOptionsUse':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			key=RecoveryDataKey._deserialize(deserialized_dict["key"]),
+		)
+
+type RecoveryKeyOptions = Union['RecoveryKeyOptionsGenerate', 'RecoveryKeyOptionsUse']
+
+def serialize_recovery_key_options(recovery_key_options: RecoveryKeyOptions) -> Any:
+	if isinstance(recovery_key_options, RecoveryKeyOptionsGenerate):
+		serialized_entity = recovery_key_options.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Generate"})
+		return serialized_entity
+	elif isinstance(recovery_key_options, RecoveryKeyOptionsUse):
+		serialized_entity = recovery_key_options.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Use"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(recovery_key_options)} is not a known subclass of RecoveryKeyOptions")
+
+def deserialize_recovery_key_options(data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeyOptions':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Generate":
+		return RecoveryKeyOptionsGenerate._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Use":
+		return RecoveryKeyOptionsUse._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of RecoveryKeyOptions")
+
+class RecoveryKeySize(Enum):
+	Bytes16 = "Bytes16"
+	Bytes32 = "Bytes32"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeySize':
+		if data == "Bytes16":
+			return RecoveryKeySize.Bytes16
+		elif data == "Bytes32":
+			return RecoveryKeySize.Bytes32
+		else:
+			raise Exception(f"{data} is not a valid value for RecoveryKeySize enum.")
+
+@dataclass
+class Agenda:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	deletion_date: Optional[int] = None
+	day_split_hour: Optional[int] = None
+	unpublished: bool = False
+	name: Optional[str] = None
+	user_id: Optional[str] = None
+	zone_id: Optional[str] = None
+	user_rights: dict[str, 'UserAccessLevel'] = field(default_factory=dict)
+	slotting_algorithm: Optional['AgendaSlottingAlgorithm'] = None
+	public_booking_quota: Optional[int] = None
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	schedules: list['ResourceGroupAllocationSchedule'] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"deletionDate": self.deletion_date,
+			"daySplitHour": self.day_split_hour,
+			"unpublished": self.unpublished,
+			"name": self.name,
+			"userId": self.user_id,
+			"zoneId": self.zone_id,
+			"userRights": {k0: v0.__serialize__() for k0, v0 in self.user_rights.items()},
+			"slottingAlgorithm": serialize_agenda_slotting_algorithm(self.slotting_algorithm) if self.slotting_algorithm is not None else None,
+			"publicBookingQuota": self.public_booking_quota,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"schedules": [x0.__serialize__() for x0 in self.schedules],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Agenda':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			day_split_hour=deserialized_dict.get("daySplitHour"),
+			unpublished=deserialized_dict["unpublished"],
+			name=deserialized_dict.get("name"),
+			user_id=deserialized_dict.get("userId"),
+			zone_id=deserialized_dict.get("zoneId"),
+			user_rights=dict(map(lambda kv0: (kv0[0], UserAccessLevel._deserialize(kv0[1])), deserialized_dict["userRights"].items())),
+			slotting_algorithm=deserialize_agenda_slotting_algorithm(deserialized_dict.get("slottingAlgorithm")) if deserialized_dict.get("slottingAlgorithm") is not None else None,
+			public_booking_quota=deserialized_dict.get("publicBookingQuota"),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			schedules=[ResourceGroupAllocationSchedule._deserialize(x0) for x0 in deserialized_dict["schedules"]],
+		)
+
+@dataclass
+class IndexingInfo:
+	statuses: Optional[dict[str, int]] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"statuses": {k0: v0 for k0, v0 in self.statuses.items()} if self.statuses is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'IndexingInfo':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			statuses=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("statuses").items())) if deserialized_dict.get("statuses") is not None else None,
+		)
+
+@dataclass
+class ReplicationInfo:
+	active: bool = False
+	running: bool = False
+	pending_from: Optional[int] = None
+	pending_to: Optional[int] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"active": self.active,
+			"running": self.running,
+			"pendingFrom": self.pending_from,
+			"pendingTo": self.pending_to,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReplicationInfo':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			active=deserialized_dict["active"],
+			running=deserialized_dict["running"],
+			pending_from=deserialized_dict.get("pendingFrom"),
+			pending_to=deserialized_dict.get("pendingTo"),
+		)
+
+@dataclass
+class IdWithRev:
+	id: str
+	rev: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'IdWithRev':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+		)
+
+@dataclass
+class ReplicatorDocument:
+	id: str
+	rev: Optional[str] = None
+	source: Optional['Remote'] = None
+	target: Optional['Remote'] = None
+	owner: Optional[str] = None
+	create_target: Optional[bool] = None
+	continuous: Optional[bool] = None
+	doc_ids: Optional[list[str]] = None
+	replication_state: Optional[str] = None
+	replication_state_time: Optional[str] = None
+	replication_stats: Optional['ReplicationStats'] = None
+	error_count: Optional[int] = None
+	revs_info: Optional[list[dict[str, str]]] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"source": self.source.__serialize__() if self.source is not None else None,
+			"target": self.target.__serialize__() if self.target is not None else None,
+			"owner": self.owner,
+			"create_target": self.create_target,
+			"continuous": self.continuous,
+			"doc_ids": [x0 for x0 in self.doc_ids] if self.doc_ids is not None else None,
+			"replicationState": self.replication_state,
+			"replicationStateTime": self.replication_state_time,
+			"replicationStats": self.replication_stats.__serialize__() if self.replication_stats is not None else None,
+			"errorCount": self.error_count,
+			"revsInfo": [{k1: v1 for k1, v1 in x0.items()} for x0 in self.revs_info] if self.revs_info is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReplicatorDocument':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			source=Remote._deserialize(deserialized_dict.get("source")) if deserialized_dict.get("source") is not None else None,
+			target=Remote._deserialize(deserialized_dict.get("target")) if deserialized_dict.get("target") is not None else None,
+			owner=deserialized_dict.get("owner"),
+			create_target=deserialized_dict.get("create_target"),
+			continuous=deserialized_dict.get("continuous"),
+			doc_ids=[x0 for x0 in deserialized_dict.get("doc_ids")] if deserialized_dict.get("doc_ids") is not None else None,
+			replication_state=deserialized_dict.get("replicationState"),
+			replication_state_time=deserialized_dict.get("replicationStateTime"),
+			replication_stats=ReplicationStats._deserialize(deserialized_dict.get("replicationStats")) if deserialized_dict.get("replicationStats") is not None else None,
+			error_count=deserialized_dict.get("errorCount"),
+			revs_info=[dict(map(lambda kv1: (kv1[0], kv1[1]), x0.items())) for x0 in deserialized_dict.get("revsInfo")] if deserialized_dict.get("revsInfo") is not None else None,
+		)
+
+@dataclass
+class Place:
+	id: str
+	rev: Optional[str] = None
+	deletion_date: Optional[int] = None
+	name: Optional[str] = None
+	address: Optional['DecryptedAddress'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"deletionDate": self.deletion_date,
+			"name": self.name,
+			"address": self.address.__serialize__() if self.address is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Place':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			name=deserialized_dict.get("name"),
+			address=DecryptedAddress._deserialize(deserialized_dict.get("address")) if deserialized_dict.get("address") is not None else None,
+		)
+
+@dataclass
+class EncryptedTopic:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	health_element_id: Optional[str] = None
+	contact_id: Optional[str] = None
+	description: Optional[str] = None
+	codes: set['CodeStub'] = field(default_factory=set)
+	tags: set['CodeStub'] = field(default_factory=set)
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	deletion_date: Optional[int] = None
+	active_participants: dict[str, 'TopicRole'] = field(default_factory=dict)
+	security_metadata: Optional['SecurityMetadata'] = None
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	linked_health_elements: set[str] = field(default_factory=set)
+	linked_services: set[str] = field(default_factory=set)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"healthElementId": self.health_element_id,
+			"contactId": self.contact_id,
+			"description": self.description,
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"author": self.author,
+			"responsible": self.responsible,
+			"deletionDate": self.deletion_date,
+			"activeParticipants": {k0: v0.__serialize__() for k0, v0 in self.active_participants.items()},
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"linkedHealthElements": [x0 for x0 in self.linked_health_elements],
+			"linkedServices": [x0 for x0 in self.linked_services],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedTopic':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			health_element_id=deserialized_dict.get("healthElementId"),
+			contact_id=deserialized_dict.get("contactId"),
+			description=deserialized_dict.get("description"),
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			active_participants=dict(map(lambda kv0: (kv0[0], TopicRole._deserialize(kv0[1])), deserialized_dict["activeParticipants"].items())),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			linked_health_elements={x0 for x0 in deserialized_dict["linkedHealthElements"]},
+			linked_services={x0 for x0 in deserialized_dict["linkedServices"]},
+		)
+
+@dataclass
+class DecryptedTopic:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	health_element_id: Optional[str] = None
+	contact_id: Optional[str] = None
+	description: Optional[str] = None
+	codes: set['CodeStub'] = field(default_factory=set)
+	tags: set['CodeStub'] = field(default_factory=set)
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	deletion_date: Optional[int] = None
+	active_participants: dict[str, 'TopicRole'] = field(default_factory=dict)
+	security_metadata: Optional['SecurityMetadata'] = None
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	linked_health_elements: set[str] = field(default_factory=set)
+	linked_services: set[str] = field(default_factory=set)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"healthElementId": self.health_element_id,
+			"contactId": self.contact_id,
+			"description": self.description,
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"author": self.author,
+			"responsible": self.responsible,
+			"deletionDate": self.deletion_date,
+			"activeParticipants": {k0: v0.__serialize__() for k0, v0 in self.active_participants.items()},
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"linkedHealthElements": [x0 for x0 in self.linked_health_elements],
+			"linkedServices": [x0 for x0 in self.linked_services],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedTopic':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			health_element_id=deserialized_dict.get("healthElementId"),
+			contact_id=deserialized_dict.get("contactId"),
+			description=deserialized_dict.get("description"),
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			active_participants=dict(map(lambda kv0: (kv0[0], TopicRole._deserialize(kv0[1])), deserialized_dict["activeParticipants"].items())),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			linked_health_elements={x0 for x0 in deserialized_dict["linkedHealthElements"]},
+			linked_services={x0 for x0 in deserialized_dict["linkedServices"]},
+		)
+
+type Topic = Union['EncryptedTopic', 'DecryptedTopic']
+
+def serialize_topic(topic: Topic) -> Any:
+	if isinstance(topic, EncryptedTopic):
+		serialized_entity = topic.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedTopic"})
+		return serialized_entity
+	elif isinstance(topic, DecryptedTopic):
+		serialized_entity = topic.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedTopic"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(topic)} is not a known subclass of Topic")
+
+def deserialize_topic(data: Union[str, dict[str, JsonElement]]) -> 'Topic':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.EncryptedTopic":
+		return EncryptedTopic._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedTopic":
+		return DecryptedTopic._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of Topic")
+
+class TopicRole(Enum):
+	Participant = "PARTICIPANT"
+	Admin = "ADMIN"
+	Owner = "OWNER"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TopicRole':
+		if data == "PARTICIPANT":
+			return TopicRole.Participant
+		elif data == "ADMIN":
+			return TopicRole.Admin
+		elif data == "OWNER":
+			return TopicRole.Owner
+		else:
+			raise Exception(f"{data} is not a valid value for TopicRole enum.")
+
+@dataclass
+class PublicKey:
+	hc_party_id: Optional[str] = None
+	hex_string: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"hcPartyId": self.hc_party_id,
+			"hexString": self.hex_string,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'PublicKey':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			hc_party_id=deserialized_dict.get("hcPartyId"),
+			hex_string=deserialized_dict.get("hexString"),
+		)
+
+@dataclass
+class DataOwnerRegistrationSuccess:
+	user_login: str
+	user_id: str
+	token: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"userLogin": self.user_login,
+			"userId": self.user_id,
+			"token": self.token,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerRegistrationSuccess':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			user_login=deserialized_dict["userLogin"],
+			user_id=deserialized_dict["userId"],
+			token=deserialized_dict["token"],
+		)
+
+@dataclass
+class Group:
+	id: str
+	minimum_authentication_class_for_elevated_privileges: 'AuthenticationClass'
+	rev: Optional[str] = None
+	deletion_date: Optional[int] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	public_tags: set['CodeStub'] = field(default_factory=set)
+	name: Optional[str] = None
+	password: Optional[str] = None
+	servers: Optional[list[str]] = None
+	super_admin: bool = False
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	default_user_roles: dict['UserType', set[str]] = field(default_factory=dict)
+	operation_tokens: dict[str, 'OperationToken'] = field(default_factory=dict)
+	shared_entities: dict[str, str] = field(default_factory=dict)
+	minimum_kraken_version: Optional[str] = None
+	external_jwt_config: dict[str, 'ExternalJwtConfig'] = field(default_factory=dict)
+	super_group: Optional[str] = None
+	project_id: Optional[str] = None
+	templates: Optional['GroupTemplatesConfiguration'] = None
+	design_doc_schema_versions: set[int] = field(default_factory=set)
+	default_children_schema_version: Optional[int] = None
+	status: Optional['GroupStatus'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"deletionDate": self.deletion_date,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"publicTags": [x0.__serialize__() for x0 in self.public_tags],
+			"name": self.name,
+			"password": self.password,
+			"servers": [x0 for x0 in self.servers] if self.servers is not None else None,
+			"superAdmin": self.super_admin,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"defaultUserRoles": {k0.__serialize__(): [x1 for x1 in v0] for k0, v0 in self.default_user_roles.items()},
+			"operationTokens": {k0: v0.__serialize__() for k0, v0 in self.operation_tokens.items()},
+			"sharedEntities": {k0: v0 for k0, v0 in self.shared_entities.items()},
+			"minimumKrakenVersion": self.minimum_kraken_version,
+			"externalJwtConfig": {k0: v0.__serialize__() for k0, v0 in self.external_jwt_config.items()},
+			"minimumAuthenticationClassForElevatedPrivileges": self.minimum_authentication_class_for_elevated_privileges.__serialize__(),
+			"superGroup": self.super_group,
+			"projectId": self.project_id,
+			"templates": self.templates.__serialize__() if self.templates is not None else None,
+			"designDocSchemaVersions": [x0 for x0 in self.design_doc_schema_versions],
+			"defaultChildrenSchemaVersion": self.default_children_schema_version,
+			"status": self.status.__serialize__() if self.status is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Group':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			public_tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["publicTags"]},
+			name=deserialized_dict.get("name"),
+			password=deserialized_dict.get("password"),
+			servers=[x0 for x0 in deserialized_dict.get("servers")] if deserialized_dict.get("servers") is not None else None,
+			super_admin=deserialized_dict["superAdmin"],
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			default_user_roles=dict(map(lambda kv0: (UserType._deserialize(kv0[0]), {x1 for x1 in kv0[1]}), deserialized_dict["defaultUserRoles"].items())),
+			operation_tokens=dict(map(lambda kv0: (kv0[0], OperationToken._deserialize(kv0[1])), deserialized_dict["operationTokens"].items())),
+			shared_entities=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["sharedEntities"].items())),
+			minimum_kraken_version=deserialized_dict.get("minimumKrakenVersion"),
+			external_jwt_config=dict(map(lambda kv0: (kv0[0], ExternalJwtConfig._deserialize(kv0[1])), deserialized_dict["externalJwtConfig"].items())),
+			minimum_authentication_class_for_elevated_privileges=AuthenticationClass._deserialize(deserialized_dict["minimumAuthenticationClassForElevatedPrivileges"]),
+			super_group=deserialized_dict.get("superGroup"),
+			project_id=deserialized_dict.get("projectId"),
+			templates=GroupTemplatesConfiguration._deserialize(deserialized_dict.get("templates")) if deserialized_dict.get("templates") is not None else None,
+			design_doc_schema_versions={x0 for x0 in deserialized_dict["designDocSchemaVersions"]},
+			default_children_schema_version=deserialized_dict.get("defaultChildrenSchemaVersion"),
+			status=GroupStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
+		)
+
+@dataclass
+class GroupTemplatesConfiguration:
+	spec_id: str
+	email_sender: Optional[str] = None
+	sms_sender: Optional[str] = None
+	email_verification_template_id: Optional[str] = None
+	mobile_phone_verification_template_id: Optional[str] = None
+	existing_email_notification_template_id: Optional[str] = None
+	existing_mobile_phone_notification_template_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"specId": self.spec_id,
+			"emailSender": self.email_sender,
+			"smsSender": self.sms_sender,
+			"emailVerificationTemplateId": self.email_verification_template_id,
+			"mobilePhoneVerificationTemplateId": self.mobile_phone_verification_template_id,
+			"existingEmailNotificationTemplateId": self.existing_email_notification_template_id,
+			"existingMobilePhoneNotificationTemplateId": self.existing_mobile_phone_notification_template_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupTemplatesConfiguration':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			spec_id=deserialized_dict["specId"],
+			email_sender=deserialized_dict.get("emailSender"),
+			sms_sender=deserialized_dict.get("smsSender"),
+			email_verification_template_id=deserialized_dict.get("emailVerificationTemplateId"),
+			mobile_phone_verification_template_id=deserialized_dict.get("mobilePhoneVerificationTemplateId"),
+			existing_email_notification_template_id=deserialized_dict.get("existingEmailNotificationTemplateId"),
+			existing_mobile_phone_notification_template_id=deserialized_dict.get("existingMobilePhoneNotificationTemplateId"),
+		)
+
+class GroupType(Enum):
+	Root = "root"
+	App = "app"
+	Database = "database"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupType':
+		if data == "root":
+			return GroupType.Root
+		elif data == "app":
+			return GroupType.App
+		elif data == "database":
+			return GroupType.Database
+		else:
+			raise Exception(f"{data} is not a valid value for GroupType enum.")
+
+@dataclass
+class DatabaseInitialisation:
+	users: Optional[list['User']] = field(default_factory=list)
+	healthcare_parties: Optional[list['HealthcareParty']] = field(default_factory=list)
+	replication: Optional['Replication'] = None
+	minimum_kraken_version: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"users": [x0.__serialize__() for x0 in self.users] if self.users is not None else None,
+			"healthcareParties": [x0.__serialize__() for x0 in self.healthcare_parties] if self.healthcare_parties is not None else None,
+			"replication": self.replication.__serialize__() if self.replication is not None else None,
+			"minimumKrakenVersion": self.minimum_kraken_version,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseInitialisation':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			users=[User._deserialize(x0) for x0 in deserialized_dict.get("users")] if deserialized_dict.get("users") is not None else None,
+			healthcare_parties=[HealthcareParty._deserialize(x0) for x0 in deserialized_dict.get("healthcareParties")] if deserialized_dict.get("healthcareParties") is not None else None,
+			replication=Replication._deserialize(deserialized_dict.get("replication")) if deserialized_dict.get("replication") is not None else None,
+			minimum_kraken_version=deserialized_dict.get("minimumKrakenVersion"),
+		)
+
+@dataclass
+class RegistrationSuccess:
+	group_id: str
+	user_id: str
+	token: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"groupId": self.group_id,
+			"userId": self.user_id,
+			"token": self.token,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RegistrationSuccess':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			group_id=deserialized_dict["groupId"],
+			user_id=deserialized_dict["userId"],
+			token=deserialized_dict["token"],
+		)
+
+@dataclass
+class RegistrationInformation:
+	email_address: str
+	project_id: Optional[str] = None
+	first_name: Optional[str] = None
+	last_name: Optional[str] = None
+	company_name: Optional[str] = None
+	user_options: Optional[str] = None
+	user_roles: set[str] = field(default_factory=set)
+	minimum_kraken_version: Optional[str] = None
+	cluster: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"projectId": self.project_id,
+			"firstName": self.first_name,
+			"lastName": self.last_name,
+			"companyName": self.company_name,
+			"emailAddress": self.email_address,
+			"userOptions": self.user_options,
+			"userRoles": [x0 for x0 in self.user_roles],
+			"minimumKrakenVersion": self.minimum_kraken_version,
+			"cluster": self.cluster,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RegistrationInformation':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			project_id=deserialized_dict.get("projectId"),
+			first_name=deserialized_dict.get("firstName"),
+			last_name=deserialized_dict.get("lastName"),
+			company_name=deserialized_dict.get("companyName"),
+			email_address=deserialized_dict["emailAddress"],
+			user_options=deserialized_dict.get("userOptions"),
+			user_roles={x0 for x0 in deserialized_dict["userRoles"]},
+			minimum_kraken_version=deserialized_dict.get("minimumKrakenVersion"),
+			cluster=deserialized_dict.get("cluster"),
+		)
+
+class Operation(Enum):
+	TransferGroup = "TRANSFER_GROUP"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Operation':
+		if data == "TRANSFER_GROUP":
+			return Operation.TransferGroup
+		else:
+			raise Exception(f"{data} is not a valid value for Operation enum.")
+
+class UserType(Enum):
+	Hcp = "HCP"
+	Patient = "PATIENT"
+	Device = "DEVICE"
+	User = "USER"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserType':
+		if data == "HCP":
+			return UserType.Hcp
+		elif data == "PATIENT":
+			return UserType.Patient
+		elif data == "DEVICE":
+			return UserType.Device
+		elif data == "USER":
+			return UserType.User
+		else:
+			raise Exception(f"{data} is not a valid value for UserType enum.")
+
+@dataclass
+class RoleConfiguration:
+	source: 'RoleConfigurationSource'
+	roles: set[str] = field(default_factory=set)
+
+	def __serialize__(self) -> Any:
+		return {
+			"source": self.source.__serialize__(),
+			"roles": [x0 for x0 in self.roles],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RoleConfiguration':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			source=RoleConfigurationSource._deserialize(deserialized_dict["source"]),
+			roles={x0 for x0 in deserialized_dict["roles"]},
+		)
+
+class RoleConfigurationSource(Enum):
+	Configuration = "CONFIGURATION"
+	Inherited = "INHERITED"
+	Default = "DEFAULT"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RoleConfigurationSource':
+		if data == "CONFIGURATION":
+			return RoleConfigurationSource.Configuration
+		elif data == "INHERITED":
+			return RoleConfigurationSource.Inherited
+		elif data == "DEFAULT":
+			return RoleConfigurationSource.Default
+		else:
+			raise Exception(f"{data} is not a valid value for Source enum.")
+
+@dataclass
+class GroupDeletionReport:
+	type: str
+	id: str
+	server: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type,
+			"id": self.id,
+			"server": self.server,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupDeletionReport':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=deserialized_dict["type"],
+			id=deserialized_dict["id"],
+			server=deserialized_dict["server"],
+		)
+
+@dataclass
+class ListOfProperties:
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"properties": [x0.__serialize__() for x0 in self.properties],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ListOfProperties':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+		)
+
+@dataclass
+class DesignDocument:
+	id: str
+	rev: Optional[str] = None
+	language: Optional[str] = None
+	views: dict[str, 'View'] = field(default_factory=dict)
+	lists: dict[str, str] = field(default_factory=dict)
+	shows: dict[str, str] = field(default_factory=dict)
+	update_handlers: Optional[dict[str, str]] = None
+	filters: dict[str, str] = field(default_factory=dict)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"language": self.language,
+			"views": {k0: v0.__serialize__() for k0, v0 in self.views.items()},
+			"lists": {k0: v0 for k0, v0 in self.lists.items()},
+			"shows": {k0: v0 for k0, v0 in self.shows.items()},
+			"updateHandlers": {k0: v0 for k0, v0 in self.update_handlers.items()} if self.update_handlers is not None else None,
+			"filters": {k0: v0 for k0, v0 in self.filters.items()},
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DesignDocument':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			language=deserialized_dict.get("language"),
+			views=dict(map(lambda kv0: (kv0[0], View._deserialize(kv0[1])), deserialized_dict["views"].items())),
+			lists=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["lists"].items())),
+			shows=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["shows"].items())),
+			update_handlers=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("updateHandlers").items())) if deserialized_dict.get("updateHandlers") is not None else None,
+			filters=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["filters"].items())),
+		)
+
+@dataclass
+class GroupDatabasesInfo:
+	group_id: str
+	databases_info: list['DatabaseInfo']
+	gcp_storage_size: int
+
+	def __serialize__(self) -> Any:
+		return {
+			"groupId": self.group_id,
+			"databasesInfo": [x0.__serialize__() for x0 in self.databases_info],
+			"gcpStorageSize": self.gcp_storage_size,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupDatabasesInfo':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			group_id=deserialized_dict["groupId"],
+			databases_info=[DatabaseInfo._deserialize(x0) for x0 in deserialized_dict["databasesInfo"]],
+			gcp_storage_size=deserialized_dict["gcpStorageSize"],
+		)
+
+@dataclass
+class ExternalJwtConfig:
+	validation_method: 'ExternalJwtConfigValidationMethod'
+	field_selector: 'ExternalJwtConfigFieldSelector'
+	authentication_class: 'AuthenticationClass' = field(default_factory=lambda: AuthenticationClass.ExternalAuthentication)
+
+	def __serialize__(self) -> Any:
+		return {
+			"validationMethod": serialize_external_jwt_config_validation_method(self.validation_method),
+			"fieldSelector": serialize_external_jwt_config_field_selector(self.field_selector),
+			"authenticationClass": self.authentication_class.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfig':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			validation_method=deserialize_external_jwt_config_validation_method(deserialized_dict["validationMethod"]),
+			field_selector=deserialize_external_jwt_config_field_selector(deserialized_dict["fieldSelector"]),
+			authentication_class=AuthenticationClass._deserialize(deserialized_dict["authenticationClass"]),
+		)
+
+@dataclass
+class ExternalJwtConfigValidationMethodPublicKey:
+	key: str
+	signature_algorithm: Optional[str] = None
+	client_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"key": self.key,
+			"signatureAlgorithm": self.signature_algorithm,
+			"clientId": self.client_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigValidationMethodPublicKey':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			key=deserialized_dict["key"],
+			signature_algorithm=deserialized_dict.get("signatureAlgorithm"),
+			client_id=deserialized_dict.get("clientId"),
+		)
+
+@dataclass
+class ExternalJwtConfigValidationMethodOidc:
+	issuer_location: str
+	client_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"issuerLocation": self.issuer_location,
+			"clientId": self.client_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigValidationMethodOidc':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			issuer_location=deserialized_dict["issuerLocation"],
+			client_id=deserialized_dict.get("clientId"),
+		)
+
+type ExternalJwtConfigValidationMethod = Union['ExternalJwtConfigValidationMethodPublicKey', 'ExternalJwtConfigValidationMethodOidc']
+
+def serialize_external_jwt_config_validation_method(external_jwt_config_validation_method: ExternalJwtConfigValidationMethod) -> Any:
+	if isinstance(external_jwt_config_validation_method, ExternalJwtConfigValidationMethodPublicKey):
+		serialized_entity = external_jwt_config_validation_method.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey"})
+		return serialized_entity
+	elif isinstance(external_jwt_config_validation_method, ExternalJwtConfigValidationMethodOidc):
+		serialized_entity = external_jwt_config_validation_method.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(external_jwt_config_validation_method)} is not a known subclass of ValidationMethod")
+
+def deserialize_external_jwt_config_validation_method(data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigValidationMethod':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.PublicKey":
+		return ExternalJwtConfigValidationMethodPublicKey._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.ValidationMethod.Oidc":
+		return ExternalJwtConfigValidationMethodOidc._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of ValidationMethod")
+
+@dataclass
+class ExternalJwtConfigFieldSelectorLocalId:
+	field_name: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"fieldName": self.field_name,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorLocalId':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field_name=deserialized_dict["fieldName"],
+		)
+
+@dataclass
+class ExternalJwtConfigFieldSelectorEmail:
+	field_name: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"fieldName": self.field_name,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorEmail':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field_name=deserialized_dict["fieldName"],
+		)
+
+@dataclass
+class ExternalJwtConfigFieldSelectorMobilePhone:
+	field_name: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"fieldName": self.field_name,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorMobilePhone':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field_name=deserialized_dict["fieldName"],
+		)
+
+@dataclass
+class ExternalJwtConfigFieldSelectorUsername:
+	field_name: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"fieldName": self.field_name,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorUsername':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field_name=deserialized_dict["fieldName"],
+		)
+
+@dataclass
+class ExternalJwtConfigFieldSelectorIdentifier:
+	identifier_assigner: str
+	field_name: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"identifierAssigner": self.identifier_assigner,
+			"fieldName": self.field_name,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelectorIdentifier':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			identifier_assigner=deserialized_dict["identifierAssigner"],
+			field_name=deserialized_dict["fieldName"],
+		)
+
+type ExternalJwtConfigFieldSelector = Union['ExternalJwtConfigFieldSelectorLocalId', 'ExternalJwtConfigFieldSelectorEmail', 'ExternalJwtConfigFieldSelectorMobilePhone', 'ExternalJwtConfigFieldSelectorUsername', 'ExternalJwtConfigFieldSelectorIdentifier']
+
+def serialize_external_jwt_config_field_selector(external_jwt_config_field_selector: ExternalJwtConfigFieldSelector) -> Any:
+	if isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorLocalId):
+		serialized_entity = external_jwt_config_field_selector.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId"})
+		return serialized_entity
+	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorEmail):
+		serialized_entity = external_jwt_config_field_selector.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email"})
+		return serialized_entity
+	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorMobilePhone):
+		serialized_entity = external_jwt_config_field_selector.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone"})
+		return serialized_entity
+	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorUsername):
+		serialized_entity = external_jwt_config_field_selector.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username"})
+		return serialized_entity
+	elif isinstance(external_jwt_config_field_selector, ExternalJwtConfigFieldSelectorIdentifier):
+		serialized_entity = external_jwt_config_field_selector.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(external_jwt_config_field_selector)} is not a known subclass of FieldSelector")
+
+def deserialize_external_jwt_config_field_selector(data: Union[str, dict[str, JsonElement]]) -> 'ExternalJwtConfigFieldSelector':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.LocalId":
+		return ExternalJwtConfigFieldSelectorLocalId._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Email":
+		return ExternalJwtConfigFieldSelectorEmail._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.MobilePhone":
+		return ExternalJwtConfigFieldSelectorMobilePhone._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Username":
+		return ExternalJwtConfigFieldSelectorUsername._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.security.ExternalJwtConfig.FieldSelector.Identifier":
+		return ExternalJwtConfigFieldSelectorIdentifier._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of FieldSelector")
+
+@dataclass(frozen=True)
+class CodeStub:
+	id: Optional[str] = None
+	context: Optional[str] = None
+	type: Optional[str] = None
+	code: Optional[str] = None
+	version: Optional[str] = None
+	context_label: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"context": self.context,
+			"type": self.type,
+			"code": self.code,
+			"version": self.version,
+			"contextLabel": self.context_label,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CodeStub':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict.get("id"),
+			context=deserialized_dict.get("context"),
+			type=deserialized_dict.get("type"),
+			code=deserialized_dict.get("code"),
+			version=deserialized_dict.get("version"),
+			context_label=deserialized_dict.get("contextLabel"),
+		)
+
+@dataclass
+class EncryptedCalendarItem:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	title: Optional[str] = None
+	calendar_item_type_id: Optional[str] = None
+	master_calendar_item_id: Optional[str] = None
+	important: Optional[bool] = None
+	home_visit: Optional[bool] = None
+	phone_number: Optional[str] = None
+	place_id: Optional[str] = None
+	address: Optional['EncryptedAddress'] = None
+	address_text: Optional[str] = None
+	start_time: Optional[int] = None
+	end_time: Optional[int] = None
+	details: Optional[str] = None
+	was_migrated: Optional[bool] = None
+	agenda_id: Optional[str] = None
+	resource_group: Optional['CodeStub'] = None
+	availabilities_assignment_strategy: Optional['CalendarItemAvailabilitiesAssignmentStrategy'] = None
+	hcp_id: Optional[str] = None
+	recurrence_id: Optional[str] = None
+	meeting_tags: list['EncryptedCalendarItemTag'] = field(default_factory=list)
+	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"title": self.title,
+			"calendarItemTypeId": self.calendar_item_type_id,
+			"masterCalendarItemId": self.master_calendar_item_id,
+			"important": self.important,
+			"homeVisit": self.home_visit,
+			"phoneNumber": self.phone_number,
+			"placeId": self.place_id,
+			"address": self.address.__serialize__() if self.address is not None else None,
+			"addressText": self.address_text,
+			"startTime": self.start_time,
+			"endTime": self.end_time,
+			"details": self.details,
+			"wasMigrated": self.was_migrated,
+			"agendaId": self.agenda_id,
+			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
+			"availabilitiesAssignmentStrategy": self.availabilities_assignment_strategy.__serialize__() if self.availabilities_assignment_strategy is not None else None,
+			"hcpId": self.hcp_id,
+			"recurrenceId": self.recurrence_id,
+			"meetingTags": [x0.__serialize__() for x0 in self.meeting_tags],
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCalendarItem':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			title=deserialized_dict.get("title"),
+			calendar_item_type_id=deserialized_dict.get("calendarItemTypeId"),
+			master_calendar_item_id=deserialized_dict.get("masterCalendarItemId"),
+			important=deserialized_dict.get("important"),
+			home_visit=deserialized_dict.get("homeVisit"),
+			phone_number=deserialized_dict.get("phoneNumber"),
+			place_id=deserialized_dict.get("placeId"),
+			address=EncryptedAddress._deserialize(deserialized_dict.get("address")) if deserialized_dict.get("address") is not None else None,
+			address_text=deserialized_dict.get("addressText"),
+			start_time=deserialized_dict.get("startTime"),
+			end_time=deserialized_dict.get("endTime"),
+			details=deserialized_dict.get("details"),
+			was_migrated=deserialized_dict.get("wasMigrated"),
+			agenda_id=deserialized_dict.get("agendaId"),
+			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
+			availabilities_assignment_strategy=CalendarItemAvailabilitiesAssignmentStrategy._deserialize(deserialized_dict.get("availabilitiesAssignmentStrategy")) if deserialized_dict.get("availabilitiesAssignmentStrategy") is not None else None,
+			hcp_id=deserialized_dict.get("hcpId"),
+			recurrence_id=deserialized_dict.get("recurrenceId"),
+			meeting_tags=[EncryptedCalendarItemTag._deserialize(x0) for x0 in deserialized_dict["meetingTags"]],
+			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+@dataclass
+class DecryptedCalendarItem:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	title: Optional[str] = None
+	calendar_item_type_id: Optional[str] = None
+	master_calendar_item_id: Optional[str] = None
+	important: Optional[bool] = None
+	home_visit: Optional[bool] = None
+	phone_number: Optional[str] = None
+	place_id: Optional[str] = None
+	address: Optional['DecryptedAddress'] = None
+	address_text: Optional[str] = None
+	start_time: Optional[int] = None
+	end_time: Optional[int] = None
+	details: Optional[str] = None
+	was_migrated: Optional[bool] = None
+	agenda_id: Optional[str] = None
+	resource_group: Optional['CodeStub'] = None
+	availabilities_assignment_strategy: Optional['CalendarItemAvailabilitiesAssignmentStrategy'] = None
+	hcp_id: Optional[str] = None
+	recurrence_id: Optional[str] = None
+	meeting_tags: list['DecryptedCalendarItemTag'] = field(default_factory=list)
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"title": self.title,
+			"calendarItemTypeId": self.calendar_item_type_id,
+			"masterCalendarItemId": self.master_calendar_item_id,
+			"important": self.important,
+			"homeVisit": self.home_visit,
+			"phoneNumber": self.phone_number,
+			"placeId": self.place_id,
+			"address": self.address.__serialize__() if self.address is not None else None,
+			"addressText": self.address_text,
+			"startTime": self.start_time,
+			"endTime": self.end_time,
+			"details": self.details,
+			"wasMigrated": self.was_migrated,
+			"agendaId": self.agenda_id,
+			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
+			"availabilitiesAssignmentStrategy": self.availabilities_assignment_strategy.__serialize__() if self.availabilities_assignment_strategy is not None else None,
+			"hcpId": self.hcp_id,
+			"recurrenceId": self.recurrence_id,
+			"meetingTags": [x0.__serialize__() for x0 in self.meeting_tags],
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCalendarItem':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			title=deserialized_dict.get("title"),
+			calendar_item_type_id=deserialized_dict.get("calendarItemTypeId"),
+			master_calendar_item_id=deserialized_dict.get("masterCalendarItemId"),
+			important=deserialized_dict.get("important"),
+			home_visit=deserialized_dict.get("homeVisit"),
+			phone_number=deserialized_dict.get("phoneNumber"),
+			place_id=deserialized_dict.get("placeId"),
+			address=DecryptedAddress._deserialize(deserialized_dict.get("address")) if deserialized_dict.get("address") is not None else None,
+			address_text=deserialized_dict.get("addressText"),
+			start_time=deserialized_dict.get("startTime"),
+			end_time=deserialized_dict.get("endTime"),
+			details=deserialized_dict.get("details"),
+			was_migrated=deserialized_dict.get("wasMigrated"),
+			agenda_id=deserialized_dict.get("agendaId"),
+			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
+			availabilities_assignment_strategy=CalendarItemAvailabilitiesAssignmentStrategy._deserialize(deserialized_dict.get("availabilitiesAssignmentStrategy")) if deserialized_dict.get("availabilitiesAssignmentStrategy") is not None else None,
+			hcp_id=deserialized_dict.get("hcpId"),
+			recurrence_id=deserialized_dict.get("recurrenceId"),
+			meeting_tags=[DecryptedCalendarItemTag._deserialize(x0) for x0 in deserialized_dict["meetingTags"]],
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+class CalendarItemAvailabilitiesAssignmentStrategy(Enum):
+	Strict = "S"
+	Loose = "L"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemAvailabilitiesAssignmentStrategy':
+		if data == "S":
+			return CalendarItemAvailabilitiesAssignmentStrategy.Strict
+		elif data == "L":
+			return CalendarItemAvailabilitiesAssignmentStrategy.Loose
+		else:
+			raise Exception(f"{data} is not a valid value for AvailabilitiesAssignmentStrategy enum.")
+
+type CalendarItem = Union['EncryptedCalendarItem', 'DecryptedCalendarItem']
+
+def serialize_calendar_item(calendar_item: CalendarItem) -> Any:
+	if isinstance(calendar_item, EncryptedCalendarItem):
+		serialized_entity = calendar_item.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedCalendarItem"})
+		return serialized_entity
+	elif isinstance(calendar_item, DecryptedCalendarItem):
+		serialized_entity = calendar_item.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedCalendarItem"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(calendar_item)} is not a known subclass of CalendarItem")
+
+def deserialize_calendar_item(data: Union[str, dict[str, JsonElement]]) -> 'CalendarItem':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.EncryptedCalendarItem":
+		return EncryptedCalendarItem._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedCalendarItem":
+		return DecryptedCalendarItem._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of CalendarItem")
+
+@dataclass
+class CalendarItemOccupancy:
+	timestamp: int
+	occupancy: int
+
+	def __serialize__(self) -> Any:
+		return {
+			"timestamp": self.timestamp,
+			"occupancy": self.occupancy,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemOccupancy':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			timestamp=deserialized_dict["timestamp"],
+			occupancy=deserialized_dict["occupancy"],
 		)
 
 @dataclass
@@ -6937,56 +6113,40 @@ def deserialize_document(data: Union[str, dict[str, JsonElement]]) -> 'Document'
 		raise Exception(f"{qualifier} is not a known subclass of Document")
 
 @dataclass
-class DecryptedTopic:
+class FrontEndMigration:
 	id: str
 	rev: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	health_element_id: Optional[str] = None
-	contact_id: Optional[str] = None
-	description: Optional[str] = None
-	codes: set['CodeStub'] = field(default_factory=set)
-	tags: set['CodeStub'] = field(default_factory=set)
-	author: Optional[str] = None
-	responsible: Optional[str] = None
 	deletion_date: Optional[int] = None
-	active_participants: dict[str, 'TopicRole'] = field(default_factory=dict)
-	security_metadata: Optional['SecurityMetadata'] = None
-	secret_foreign_keys: set[str] = field(default_factory=set)
-	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
-	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-	linked_health_elements: set[str] = field(default_factory=set)
-	linked_services: set[str] = field(default_factory=set)
+	name: Optional[str] = None
+	start_date: Optional[int] = None
+	end_date: Optional[int] = None
+	status: Optional['FrontEndMigrationStatus'] = None
+	logs: Optional[str] = None
+	user_id: Optional[str] = None
+	start_key: Optional[str] = None
+	start_key_doc_id: Optional[str] = None
+	process_count: Optional[int] = None
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
 
 	def __serialize__(self) -> Any:
 		return {
 			"id": self.id,
 			"rev": self.rev,
-			"created": self.created,
-			"modified": self.modified,
-			"healthElementId": self.health_element_id,
-			"contactId": self.contact_id,
-			"description": self.description,
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"author": self.author,
-			"responsible": self.responsible,
 			"deletionDate": self.deletion_date,
-			"activeParticipants": {k0: v0.__serialize__() for k0, v0 in self.active_participants.items()},
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
-			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
-			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
-			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
-			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
-			"encryptedSelf": self.encrypted_self,
-			"linkedHealthElements": [x0 for x0 in self.linked_health_elements],
-			"linkedServices": [x0 for x0 in self.linked_services],
+			"name": self.name,
+			"startDate": self.start_date,
+			"endDate": self.end_date,
+			"status": self.status.__serialize__() if self.status is not None else None,
+			"logs": self.logs,
+			"userId": self.user_id,
+			"startKey": self.start_key,
+			"startKeyDocId": self.start_key_doc_id,
+			"processCount": self.process_count,
+			"properties": [x0.__serialize__() for x0 in self.properties],
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedTopic':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FrontEndMigration':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -6995,78 +6155,80 @@ class DecryptedTopic:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			health_element_id=deserialized_dict.get("healthElementId"),
-			contact_id=deserialized_dict.get("contactId"),
-			description=deserialized_dict.get("description"),
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
 			deletion_date=deserialized_dict.get("deletionDate"),
-			active_participants=dict(map(lambda kv0: (kv0[0], TopicRole._deserialize(kv0[1])), deserialized_dict["activeParticipants"].items())),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
-			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
-			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
-			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
-			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			linked_health_elements={x0 for x0 in deserialized_dict["linkedHealthElements"]},
-			linked_services={x0 for x0 in deserialized_dict["linkedServices"]},
+			name=deserialized_dict.get("name"),
+			start_date=deserialized_dict.get("startDate"),
+			end_date=deserialized_dict.get("endDate"),
+			status=FrontEndMigrationStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
+			logs=deserialized_dict.get("logs"),
+			user_id=deserialized_dict.get("userId"),
+			start_key=deserialized_dict.get("startKey"),
+			start_key_doc_id=deserialized_dict.get("startKeyDocId"),
+			process_count=deserialized_dict.get("processCount"),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
 		)
 
 @dataclass
-class EncryptedTopic:
+class EncryptedRelatedPerson:
 	id: str
 	rev: Optional[str] = None
+	identifier: list['Identifier'] = field(default_factory=list)
 	created: Optional[int] = None
 	modified: Optional[int] = None
-	health_element_id: Optional[str] = None
-	contact_id: Optional[str] = None
-	description: Optional[str] = None
-	codes: set['CodeStub'] = field(default_factory=set)
-	tags: set['CodeStub'] = field(default_factory=set)
 	author: Optional[str] = None
 	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
 	deletion_date: Optional[int] = None
-	active_participants: dict[str, 'TopicRole'] = field(default_factory=dict)
-	security_metadata: Optional['SecurityMetadata'] = None
+	first_name: Optional[str] = None
+	last_name: Optional[str] = None
+	names: list['PersonName'] = field(default_factory=list)
+	company_name: Optional[str] = None
+	languages: list[str] = field(default_factory=list)
+	addresses: list['EncryptedAddress'] = field(default_factory=list)
+	civility: Optional[str] = None
+	gender: Optional['Gender'] = None
+	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
 	secret_foreign_keys: set[str] = field(default_factory=set)
 	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
 	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
 	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
 	encrypted_self: Optional['Base64String'] = None
-	linked_health_elements: set[str] = field(default_factory=set)
-	linked_services: set[str] = field(default_factory=set)
+	security_metadata: Optional['SecurityMetadata'] = None
 
 	def __serialize__(self) -> Any:
 		return {
 			"id": self.id,
 			"rev": self.rev,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
 			"created": self.created,
 			"modified": self.modified,
-			"healthElementId": self.health_element_id,
-			"contactId": self.contact_id,
-			"description": self.description,
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"tags": [x0.__serialize__() for x0 in self.tags],
 			"author": self.author,
 			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
 			"deletionDate": self.deletion_date,
-			"activeParticipants": {k0: v0.__serialize__() for k0, v0 in self.active_participants.items()},
-			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+			"firstName": self.first_name,
+			"lastName": self.last_name,
+			"names": [x0.__serialize__() for x0 in self.names],
+			"companyName": self.company_name,
+			"languages": [x0 for x0 in self.languages],
+			"addresses": [x0.__serialize__() for x0 in self.addresses],
+			"civility": self.civility,
+			"gender": self.gender.__serialize__() if self.gender is not None else None,
+			"properties": [x0.__serialize__() for x0 in self.properties],
 			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
 			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
 			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
 			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
 			"encryptedSelf": self.encrypted_self,
-			"linkedHealthElements": [x0 for x0 in self.linked_health_elements],
-			"linkedServices": [x0 for x0 in self.linked_services],
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedTopic':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedRelatedPerson':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -7075,42 +6237,142 @@ class EncryptedTopic:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
 			created=deserialized_dict.get("created"),
 			modified=deserialized_dict.get("modified"),
-			health_element_id=deserialized_dict.get("healthElementId"),
-			contact_id=deserialized_dict.get("contactId"),
-			description=deserialized_dict.get("description"),
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
 			author=deserialized_dict.get("author"),
 			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
 			deletion_date=deserialized_dict.get("deletionDate"),
-			active_participants=dict(map(lambda kv0: (kv0[0], TopicRole._deserialize(kv0[1])), deserialized_dict["activeParticipants"].items())),
-			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+			first_name=deserialized_dict.get("firstName"),
+			last_name=deserialized_dict.get("lastName"),
+			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
+			company_name=deserialized_dict.get("companyName"),
+			languages=[x0 for x0 in deserialized_dict["languages"]],
+			addresses=[EncryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
+			civility=deserialized_dict.get("civility"),
+			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
+			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
 			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
 			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
 			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
 			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
-			linked_health_elements={x0 for x0 in deserialized_dict["linkedHealthElements"]},
-			linked_services={x0 for x0 in deserialized_dict["linkedServices"]},
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
 
-type Topic = Union['DecryptedTopic', 'EncryptedTopic']
+@dataclass
+class DecryptedRelatedPerson:
+	id: str
+	rev: Optional[str] = None
+	identifier: list['Identifier'] = field(default_factory=list)
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	deletion_date: Optional[int] = None
+	first_name: Optional[str] = None
+	last_name: Optional[str] = None
+	names: list['PersonName'] = field(default_factory=list)
+	company_name: Optional[str] = None
+	languages: list[str] = field(default_factory=list)
+	addresses: list['DecryptedAddress'] = field(default_factory=list)
+	civility: Optional[str] = None
+	gender: Optional['Gender'] = None
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
 
-def serialize_topic(topic: Topic) -> Any:
-	if isinstance(topic, DecryptedTopic):
-		serialized_entity = topic.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedTopic"})
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"deletionDate": self.deletion_date,
+			"firstName": self.first_name,
+			"lastName": self.last_name,
+			"names": [x0.__serialize__() for x0 in self.names],
+			"companyName": self.company_name,
+			"languages": [x0 for x0 in self.languages],
+			"addresses": [x0.__serialize__() for x0 in self.addresses],
+			"civility": self.civility,
+			"gender": self.gender.__serialize__() if self.gender is not None else None,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedRelatedPerson':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			first_name=deserialized_dict.get("firstName"),
+			last_name=deserialized_dict.get("lastName"),
+			names=[PersonName._deserialize(x0) for x0 in deserialized_dict["names"]],
+			company_name=deserialized_dict.get("companyName"),
+			languages=[x0 for x0 in deserialized_dict["languages"]],
+			addresses=[DecryptedAddress._deserialize(x0) for x0 in deserialized_dict["addresses"]],
+			civility=deserialized_dict.get("civility"),
+			gender=Gender._deserialize(deserialized_dict.get("gender")) if deserialized_dict.get("gender") is not None else None,
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+type RelatedPerson = Union['EncryptedRelatedPerson', 'DecryptedRelatedPerson']
+
+def serialize_related_person(related_person: RelatedPerson) -> Any:
+	if isinstance(related_person, EncryptedRelatedPerson):
+		serialized_entity = related_person.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedRelatedPerson"})
 		return serialized_entity
-	elif isinstance(topic, EncryptedTopic):
-		serialized_entity = topic.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedTopic"})
+	elif isinstance(related_person, DecryptedRelatedPerson):
+		serialized_entity = related_person.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedRelatedPerson"})
 		return serialized_entity
 	else:
-		raise Exception(f"{type(topic)} is not a known subclass of Topic")
+		raise Exception(f"{type(related_person)} is not a known subclass of RelatedPerson")
 
-def deserialize_topic(data: Union[str, dict[str, JsonElement]]) -> 'Topic':
+def deserialize_related_person(data: Union[str, dict[str, JsonElement]]) -> 'RelatedPerson':
 	deserialized_dict: dict[str, JsonElement]
 	if isinstance(data, str):
 		deserialized_dict = json.loads(data)
@@ -7119,12 +6381,250 @@ def deserialize_topic(data: Union[str, dict[str, JsonElement]]) -> 'Topic':
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.DecryptedTopic":
-		return DecryptedTopic._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedTopic":
-		return EncryptedTopic._deserialize(deserialized_dict)
+	if qualifier == "com.icure.cardinal.sdk.model.EncryptedRelatedPerson":
+		return EncryptedRelatedPerson._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedRelatedPerson":
+		return DecryptedRelatedPerson._deserialize(deserialized_dict)
 	else:
-		raise Exception(f"{qualifier} is not a known subclass of Topic")
+		raise Exception(f"{qualifier} is not a known subclass of RelatedPerson")
+
+@dataclass
+class EncryptedPropertyStub:
+	id: Optional[str] = None
+	type: Optional['PropertyTypeStub'] = None
+	typed_value: Optional['EncryptedTypedValue'] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"type": self.type.__serialize__() if self.type is not None else None,
+			"typedValue": self.typed_value.__serialize__() if self.typed_value is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPropertyStub':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict.get("id"),
+			type=PropertyTypeStub._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+			typed_value=EncryptedTypedValue._deserialize(deserialized_dict.get("typedValue")) if deserialized_dict.get("typedValue") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+@dataclass
+class DecryptedPropertyStub:
+	id: Optional[str] = None
+	type: Optional['PropertyTypeStub'] = None
+	typed_value: Optional['DecryptedTypedValue'] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"type": self.type.__serialize__() if self.type is not None else None,
+			"typedValue": self.typed_value.__serialize__() if self.typed_value is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPropertyStub':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict.get("id"),
+			type=PropertyTypeStub._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+			typed_value=DecryptedTypedValue._deserialize(deserialized_dict.get("typedValue")) if deserialized_dict.get("typedValue") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type PropertyStub = Union['EncryptedPropertyStub', 'DecryptedPropertyStub']
+
+def serialize_property_stub(property_stub: PropertyStub) -> Any:
+	if isinstance(property_stub, EncryptedPropertyStub):
+		serialized_entity = property_stub.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedPropertyStub"})
+		return serialized_entity
+	elif isinstance(property_stub, DecryptedPropertyStub):
+		serialized_entity = property_stub.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedPropertyStub"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(property_stub)} is not a known subclass of PropertyStub")
+
+def deserialize_property_stub(data: Union[str, dict[str, JsonElement]]) -> 'PropertyStub':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.EncryptedPropertyStub":
+		return EncryptedPropertyStub._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedPropertyStub":
+		return DecryptedPropertyStub._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of PropertyStub")
+
+@dataclass
+class UserGroup:
+	group_id: Optional[str] = None
+	group_name: Optional[str] = None
+	groups_hierarchy: list['Group'] = field(default_factory=list)
+	user_id: Optional[str] = None
+	login: Optional[str] = None
+	name: Optional[str] = None
+	email: Optional[str] = None
+	phone: Optional[str] = None
+	patient_id: Optional[str] = None
+	healthcare_party_id: Optional[str] = None
+	device_id: Optional[str] = None
+	name_of_parent_of_topmost_group_in_hierarchy: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"groupId": self.group_id,
+			"groupName": self.group_name,
+			"groupsHierarchy": [x0.__serialize__() for x0 in self.groups_hierarchy],
+			"userId": self.user_id,
+			"login": self.login,
+			"name": self.name,
+			"email": self.email,
+			"phone": self.phone,
+			"patientId": self.patient_id,
+			"healthcarePartyId": self.healthcare_party_id,
+			"deviceId": self.device_id,
+			"nameOfParentOfTopmostGroupInHierarchy": self.name_of_parent_of_topmost_group_in_hierarchy,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserGroup':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			group_id=deserialized_dict.get("groupId"),
+			group_name=deserialized_dict.get("groupName"),
+			groups_hierarchy=[Group._deserialize(x0) for x0 in deserialized_dict["groupsHierarchy"]],
+			user_id=deserialized_dict.get("userId"),
+			login=deserialized_dict.get("login"),
+			name=deserialized_dict.get("name"),
+			email=deserialized_dict.get("email"),
+			phone=deserialized_dict.get("phone"),
+			patient_id=deserialized_dict.get("patientId"),
+			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
+			device_id=deserialized_dict.get("deviceId"),
+			name_of_parent_of_topmost_group_in_hierarchy=deserialized_dict.get("nameOfParentOfTopmostGroupInHierarchy"),
+		)
+
+@dataclass
+class Enable2faRequest:
+	secret: str
+	otp_length: int
+	otp: str
+	algorithm: Optional['Enable2faRequestAlgorithm'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"secret": self.secret,
+			"otpLength": self.otp_length,
+			"otp": self.otp,
+			"algorithm": self.algorithm.__serialize__() if self.algorithm is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Enable2faRequest':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			secret=deserialized_dict["secret"],
+			otp_length=deserialized_dict["otpLength"],
+			otp=deserialized_dict["otp"],
+			algorithm=Enable2faRequestAlgorithm._deserialize(deserialized_dict.get("algorithm")) if deserialized_dict.get("algorithm") is not None else None,
+		)
+
+class Enable2faRequestAlgorithm(Enum):
+	Sha1 = "SHA1"
+	Sha256 = "SHA256"
+	Sha512 = "SHA512"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Enable2faRequestAlgorithm':
+		if data == "SHA1":
+			return Enable2faRequestAlgorithm.Sha1
+		elif data == "SHA256":
+			return Enable2faRequestAlgorithm.Sha256
+		elif data == "SHA512":
+			return Enable2faRequestAlgorithm.Sha512
+		else:
+			raise Exception(f"{data} is not a valid value for Algorithm enum.")
+
+@dataclass
+class TokenWithGroup:
+	token: str
+	group_id: str
+	group_name: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"token": self.token,
+			"groupId": self.group_id,
+			"groupName": self.group_name,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TokenWithGroup':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			token=deserialized_dict["token"],
+			group_id=deserialized_dict["groupId"],
+			group_name=deserialized_dict.get("groupName"),
+		)
+
+@dataclass
+class LoginIdentifier:
+	assigner: str
+	value: str
+
+	def __serialize__(self) -> Any:
+		return {
+			"assigner": self.assigner,
+			"value": self.value,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'LoginIdentifier':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			assigner=deserialized_dict["assigner"],
+			value=deserialized_dict["value"],
+		)
 
 @dataclass
 class TopicDelegateOptions:
@@ -7184,56 +6684,8 @@ class TopicShareOptions:
 			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
 		)
 
-class TopicRole(Enum):
-	Participant = "PARTICIPANT"
-	Admin = "ADMIN"
-	Owner = "OWNER"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TopicRole':
-		if data == "PARTICIPANT":
-			return TopicRole.Participant
-		elif data == "ADMIN":
-			return TopicRole.Admin
-		elif data == "OWNER":
-			return TopicRole.Owner
-		else:
-			raise Exception(f"{data} is not a valid value for TopicRole enum.")
-
 @dataclass
-class FilterOptionGroupWithViews:
-	name: str
-	factory_methods: list[str]
-	target_filter: str
-	views: list[str]
-
-	def __serialize__(self) -> Any:
-		return {
-			"name": self.name,
-			"factoryMethods": [x0 for x0 in self.factory_methods],
-			"targetFilter": self.target_filter,
-			"views": [x0 for x0 in self.views],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FilterOptionGroupWithViews':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			name=deserialized_dict["name"],
-			factory_methods=[x0 for x0 in deserialized_dict["factoryMethods"]],
-			target_filter=deserialized_dict["targetFilter"],
-			views=[x0 for x0 in deserialized_dict["views"]],
-		)
-
-@dataclass
-class Agenda:
+class DecryptedForm:
 	id: str
 	rev: Optional[str] = None
 	created: Optional[int] = None
@@ -7242,18 +6694,24 @@ class Agenda:
 	responsible: Optional[str] = None
 	tags: set['CodeStub'] = field(default_factory=set)
 	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
 	deletion_date: Optional[int] = None
-	day_split_hour: Optional[int] = None
-	unpublished: bool = False
-	name: Optional[str] = None
-	user_id: Optional[str] = None
-	zone_id: Optional[str] = None
-	user_rights: dict[str, 'UserAccessLevel'] = field(default_factory=dict)
-	slotting_algorithm: Optional['AgendaSlottingAlgorithm'] = None
-	public_booking_quota: Optional[int] = None
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
-	schedules: list['ResourceGroupAllocationSchedule'] = field(default_factory=list)
+	opening_date: Optional[int] = None
+	status: Optional[str] = None
+	version: Optional[int] = None
+	descr: Optional[str] = None
+	unique_id: Optional[str] = None
+	form_template_id: Optional[str] = None
+	contact_id: Optional[str] = None
+	health_element_id: Optional[str] = None
+	plan_of_action_id: Optional[str] = None
+	parent: Optional[str] = None
+	anchor_id: Optional[str] = None
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
 
 	def __serialize__(self) -> Any:
 		return {
@@ -7265,22 +6723,28 @@ class Agenda:
 			"responsible": self.responsible,
 			"tags": [x0.__serialize__() for x0 in self.tags],
 			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
 			"deletionDate": self.deletion_date,
-			"daySplitHour": self.day_split_hour,
-			"unpublished": self.unpublished,
-			"name": self.name,
-			"userId": self.user_id,
-			"zoneId": self.zone_id,
-			"userRights": {k0: v0.__serialize__() for k0, v0 in self.user_rights.items()},
-			"slottingAlgorithm": serialize_agenda_slotting_algorithm(self.slotting_algorithm) if self.slotting_algorithm is not None else None,
-			"publicBookingQuota": self.public_booking_quota,
-			"properties": [x0.__serialize__() for x0 in self.properties],
-			"schedules": [x0.__serialize__() for x0 in self.schedules],
+			"openingDate": self.opening_date,
+			"status": self.status,
+			"version": self.version,
+			"descr": self.descr,
+			"uniqueId": self.unique_id,
+			"formTemplateId": self.form_template_id,
+			"contactId": self.contact_id,
+			"healthElementId": self.health_element_id,
+			"planOfActionId": self.plan_of_action_id,
+			"parent": self.parent,
+			"anchorId": self.anchor_id,
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Agenda':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedForm':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -7295,99 +6759,136 @@ class Agenda:
 			responsible=deserialized_dict.get("responsible"),
 			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
 			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
 			deletion_date=deserialized_dict.get("deletionDate"),
-			day_split_hour=deserialized_dict.get("daySplitHour"),
-			unpublished=deserialized_dict["unpublished"],
-			name=deserialized_dict.get("name"),
-			user_id=deserialized_dict.get("userId"),
-			zone_id=deserialized_dict.get("zoneId"),
-			user_rights=dict(map(lambda kv0: (kv0[0], UserAccessLevel._deserialize(kv0[1])), deserialized_dict["userRights"].items())),
-			slotting_algorithm=deserialize_agenda_slotting_algorithm(deserialized_dict.get("slottingAlgorithm")) if deserialized_dict.get("slottingAlgorithm") is not None else None,
-			public_booking_quota=deserialized_dict.get("publicBookingQuota"),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
-			schedules=[ResourceGroupAllocationSchedule._deserialize(x0) for x0 in deserialized_dict["schedules"]],
+			opening_date=deserialized_dict.get("openingDate"),
+			status=deserialized_dict.get("status"),
+			version=deserialized_dict.get("version"),
+			descr=deserialized_dict.get("descr"),
+			unique_id=deserialized_dict.get("uniqueId"),
+			form_template_id=deserialized_dict.get("formTemplateId"),
+			contact_id=deserialized_dict.get("contactId"),
+			health_element_id=deserialized_dict.get("healthElementId"),
+			plan_of_action_id=deserialized_dict.get("planOfActionId"),
+			parent=deserialized_dict.get("parent"),
+			anchor_id=deserialized_dict.get("anchorId"),
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
 
 @dataclass
-class DataOwnerWithTypeHcpDataOwner:
-	data_owner: 'HealthcareParty'
+class EncryptedForm:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	opening_date: Optional[int] = None
+	status: Optional[str] = None
+	version: Optional[int] = None
+	descr: Optional[str] = None
+	unique_id: Optional[str] = None
+	form_template_id: Optional[str] = None
+	contact_id: Optional[str] = None
+	health_element_id: Optional[str] = None
+	plan_of_action_id: Optional[str] = None
+	parent: Optional[str] = None
+	anchor_id: Optional[str] = None
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"dataOwner": self.data_owner.__serialize__(),
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"openingDate": self.opening_date,
+			"status": self.status,
+			"version": self.version,
+			"descr": self.descr,
+			"uniqueId": self.unique_id,
+			"formTemplateId": self.form_template_id,
+			"contactId": self.contact_id,
+			"healthElementId": self.health_element_id,
+			"planOfActionId": self.plan_of_action_id,
+			"parent": self.parent,
+			"anchorId": self.anchor_id,
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithTypeHcpDataOwner':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedForm':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			data_owner=HealthcareParty._deserialize(deserialized_dict["dataOwner"]),
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			opening_date=deserialized_dict.get("openingDate"),
+			status=deserialized_dict.get("status"),
+			version=deserialized_dict.get("version"),
+			descr=deserialized_dict.get("descr"),
+			unique_id=deserialized_dict.get("uniqueId"),
+			form_template_id=deserialized_dict.get("formTemplateId"),
+			contact_id=deserialized_dict.get("contactId"),
+			health_element_id=deserialized_dict.get("healthElementId"),
+			plan_of_action_id=deserialized_dict.get("planOfActionId"),
+			parent=deserialized_dict.get("parent"),
+			anchor_id=deserialized_dict.get("anchorId"),
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
 
-@dataclass
-class DataOwnerWithTypePatientDataOwner:
-	data_owner: 'EncryptedPatient'
+type Form = Union['DecryptedForm', 'EncryptedForm']
 
-	def __serialize__(self) -> Any:
-		return {
-			"dataOwner": self.data_owner.__serialize__(),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithTypePatientDataOwner':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			data_owner=EncryptedPatient._deserialize(deserialized_dict["dataOwner"]),
-		)
-
-@dataclass
-class DataOwnerWithTypeDeviceDataOwner:
-	data_owner: 'Device'
-
-	def __serialize__(self) -> Any:
-		return {
-			"dataOwner": self.data_owner.__serialize__(),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithTypeDeviceDataOwner':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			data_owner=Device._deserialize(deserialized_dict["dataOwner"]),
-		)
-
-type DataOwnerWithType = Union['DataOwnerWithTypeHcpDataOwner', 'DataOwnerWithTypePatientDataOwner', 'DataOwnerWithTypeDeviceDataOwner']
-
-def serialize_data_owner_with_type(data_owner_with_type: DataOwnerWithType) -> Any:
-	if isinstance(data_owner_with_type, DataOwnerWithTypeHcpDataOwner):
-		serialized_entity = data_owner_with_type.__serialize__()
-		serialized_entity.update({"kotlinType": "hcp"})
+def serialize_form(form: Form) -> Any:
+	if isinstance(form, DecryptedForm):
+		serialized_entity = form.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedForm"})
 		return serialized_entity
-	elif isinstance(data_owner_with_type, DataOwnerWithTypePatientDataOwner):
-		serialized_entity = data_owner_with_type.__serialize__()
-		serialized_entity.update({"kotlinType": "patient"})
-		return serialized_entity
-	elif isinstance(data_owner_with_type, DataOwnerWithTypeDeviceDataOwner):
-		serialized_entity = data_owner_with_type.__serialize__()
-		serialized_entity.update({"kotlinType": "device"})
+	elif isinstance(form, EncryptedForm):
+		serialized_entity = form.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedForm"})
 		return serialized_entity
 	else:
-		raise Exception(f"{type(data_owner_with_type)} is not a known subclass of DataOwnerWithType")
+		raise Exception(f"{type(form)} is not a known subclass of Form")
 
-def deserialize_data_owner_with_type(data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerWithType':
+def deserialize_form(data: Union[str, dict[str, JsonElement]]) -> 'Form':
 	deserialized_dict: dict[str, JsonElement]
 	if isinstance(data, str):
 		deserialized_dict = json.loads(data)
@@ -7396,33 +6897,12 @@ def deserialize_data_owner_with_type(data: Union[str, dict[str, JsonElement]]) -
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "hcp":
-		return DataOwnerWithTypeHcpDataOwner._deserialize(deserialized_dict)
-	elif qualifier == "patient":
-		return DataOwnerWithTypePatientDataOwner._deserialize(deserialized_dict)
-	elif qualifier == "device":
-		return DataOwnerWithTypeDeviceDataOwner._deserialize(deserialized_dict)
+	if qualifier == "com.icure.cardinal.sdk.model.DecryptedForm":
+		return DecryptedForm._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedForm":
+		return EncryptedForm._deserialize(deserialized_dict)
 	else:
-		raise Exception(f"{qualifier} is not a known subclass of DataOwnerWithType")
-
-class DataOwnerType(Enum):
-	Hcp = "hcp"
-	Device = "device"
-	Patient = "patient"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerType':
-		if data == "hcp":
-			return DataOwnerType.Hcp
-		elif data == "device":
-			return DataOwnerType.Device
-		elif data == "patient":
-			return DataOwnerType.Patient
-		else:
-			raise Exception(f"{data} is not a valid value for DataOwnerType enum.")
+		raise Exception(f"{qualifier} is not a known subclass of Form")
 
 @dataclass
 class FormDelegateOptions:
@@ -7454,6 +6934,86 @@ class FormDelegateOptions:
 		)
 
 @dataclass
+class FormTemplate:
+	id: str
+	rev: Optional[str] = None
+	deletion_date: Optional[int] = None
+	template_layout: Optional['FormTemplateLayout'] = None
+	raw_template_layout: Optional[bytearray] = None
+	name: Optional[str] = None
+	guid: Optional[str] = None
+	group: Optional['DocumentGroup'] = None
+	descr: Optional[str] = None
+	disabled: Optional[str] = None
+	specialty: Optional['CodeStub'] = None
+	author: Optional[str] = None
+	form_instance_preferred_location: Optional[str] = None
+	keyboard_shortcut: Optional[str] = None
+	short_report: Optional[str] = None
+	medium_report: Optional[str] = None
+	long_report: Optional[str] = None
+	reports: set[str] = field(default_factory=set)
+	tags: set['CodeStub'] = field(default_factory=set)
+	layout_attachment_id: Optional[str] = None
+	template_layout_attachment_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"deletionDate": self.deletion_date,
+			"templateLayout": self.template_layout.__serialize__() if self.template_layout is not None else None,
+			"rawTemplateLayout": base64.b64encode(self.raw_template_layout).decode('utf-8') if self.raw_template_layout is not None else None,
+			"name": self.name,
+			"guid": self.guid,
+			"group": self.group.__serialize__() if self.group is not None else None,
+			"descr": self.descr,
+			"disabled": self.disabled,
+			"specialty": self.specialty.__serialize__() if self.specialty is not None else None,
+			"author": self.author,
+			"formInstancePreferredLocation": self.form_instance_preferred_location,
+			"keyboardShortcut": self.keyboard_shortcut,
+			"shortReport": self.short_report,
+			"mediumReport": self.medium_report,
+			"longReport": self.long_report,
+			"reports": [x0 for x0 in self.reports],
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"layoutAttachmentId": self.layout_attachment_id,
+			"templateLayoutAttachmentId": self.template_layout_attachment_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FormTemplate':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			template_layout=FormTemplateLayout._deserialize(deserialized_dict.get("templateLayout")) if deserialized_dict.get("templateLayout") is not None else None,
+			raw_template_layout=bytearray(base64.b64decode(deserialized_dict.get("rawTemplateLayout"))) if deserialized_dict.get("rawTemplateLayout") is not None else None,
+			name=deserialized_dict.get("name"),
+			guid=deserialized_dict.get("guid"),
+			group=DocumentGroup._deserialize(deserialized_dict.get("group")) if deserialized_dict.get("group") is not None else None,
+			descr=deserialized_dict.get("descr"),
+			disabled=deserialized_dict.get("disabled"),
+			specialty=CodeStub._deserialize(deserialized_dict.get("specialty")) if deserialized_dict.get("specialty") is not None else None,
+			author=deserialized_dict.get("author"),
+			form_instance_preferred_location=deserialized_dict.get("formInstancePreferredLocation"),
+			keyboard_shortcut=deserialized_dict.get("keyboardShortcut"),
+			short_report=deserialized_dict.get("shortReport"),
+			medium_report=deserialized_dict.get("mediumReport"),
+			long_report=deserialized_dict.get("longReport"),
+			reports={x0 for x0 in deserialized_dict["reports"]},
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			layout_attachment_id=deserialized_dict.get("layoutAttachmentId"),
+			template_layout_attachment_id=deserialized_dict.get("templateLayoutAttachmentId"),
+		)
+
+@dataclass
 class FormShareOptions:
 	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
 	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
@@ -7481,6 +7041,250 @@ class FormShareOptions:
 			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
 			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
 		)
+
+@dataclass
+class EncryptedMessage:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	from_address: Optional[str] = None
+	from_healthcare_party_id: Optional[str] = None
+	recipients: set[str] = field(default_factory=set)
+	to_addresses: set[str] = field(default_factory=set)
+	received: Optional[int] = None
+	sent: Optional[int] = None
+	metas: dict[str, str] = field(default_factory=dict)
+	read_status: dict[str, 'MessageReadStatus'] = field(default_factory=dict)
+	transport_guid: Optional[str] = None
+	remark: Optional[str] = None
+	conversation_guid: Optional[str] = None
+	subject: Optional[str] = None
+	invoice_ids: set[str] = field(default_factory=set)
+	parent_id: Optional[str] = None
+	properties: list['EncryptedPropertyStub'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"fromAddress": self.from_address,
+			"fromHealthcarePartyId": self.from_healthcare_party_id,
+			"recipients": [x0 for x0 in self.recipients],
+			"toAddresses": [x0 for x0 in self.to_addresses],
+			"received": self.received,
+			"sent": self.sent,
+			"metas": {k0: v0 for k0, v0 in self.metas.items()},
+			"readStatus": {k0: v0.__serialize__() for k0, v0 in self.read_status.items()},
+			"transportGuid": self.transport_guid,
+			"remark": self.remark,
+			"conversationGuid": self.conversation_guid,
+			"subject": self.subject,
+			"invoiceIds": [x0 for x0 in self.invoice_ids],
+			"parentId": self.parent_id,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedMessage':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			from_address=deserialized_dict.get("fromAddress"),
+			from_healthcare_party_id=deserialized_dict.get("fromHealthcarePartyId"),
+			recipients={x0 for x0 in deserialized_dict["recipients"]},
+			to_addresses={x0 for x0 in deserialized_dict["toAddresses"]},
+			received=deserialized_dict.get("received"),
+			sent=deserialized_dict.get("sent"),
+			metas=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["metas"].items())),
+			read_status=dict(map(lambda kv0: (kv0[0], MessageReadStatus._deserialize(kv0[1])), deserialized_dict["readStatus"].items())),
+			transport_guid=deserialized_dict.get("transportGuid"),
+			remark=deserialized_dict.get("remark"),
+			conversation_guid=deserialized_dict.get("conversationGuid"),
+			subject=deserialized_dict.get("subject"),
+			invoice_ids={x0 for x0 in deserialized_dict["invoiceIds"]},
+			parent_id=deserialized_dict.get("parentId"),
+			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+@dataclass
+class DecryptedMessage:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	from_address: Optional[str] = None
+	from_healthcare_party_id: Optional[str] = None
+	recipients: set[str] = field(default_factory=set)
+	to_addresses: set[str] = field(default_factory=set)
+	received: Optional[int] = None
+	sent: Optional[int] = None
+	metas: dict[str, str] = field(default_factory=dict)
+	read_status: dict[str, 'MessageReadStatus'] = field(default_factory=dict)
+	transport_guid: Optional[str] = None
+	remark: Optional[str] = None
+	conversation_guid: Optional[str] = None
+	subject: Optional[str] = None
+	invoice_ids: set[str] = field(default_factory=set)
+	parent_id: Optional[str] = None
+	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"fromAddress": self.from_address,
+			"fromHealthcarePartyId": self.from_healthcare_party_id,
+			"recipients": [x0 for x0 in self.recipients],
+			"toAddresses": [x0 for x0 in self.to_addresses],
+			"received": self.received,
+			"sent": self.sent,
+			"metas": {k0: v0 for k0, v0 in self.metas.items()},
+			"readStatus": {k0: v0.__serialize__() for k0, v0 in self.read_status.items()},
+			"transportGuid": self.transport_guid,
+			"remark": self.remark,
+			"conversationGuid": self.conversation_guid,
+			"subject": self.subject,
+			"invoiceIds": [x0 for x0 in self.invoice_ids],
+			"parentId": self.parent_id,
+			"properties": [x0.__serialize__() for x0 in self.properties],
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedMessage':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			from_address=deserialized_dict.get("fromAddress"),
+			from_healthcare_party_id=deserialized_dict.get("fromHealthcarePartyId"),
+			recipients={x0 for x0 in deserialized_dict["recipients"]},
+			to_addresses={x0 for x0 in deserialized_dict["toAddresses"]},
+			received=deserialized_dict.get("received"),
+			sent=deserialized_dict.get("sent"),
+			metas=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["metas"].items())),
+			read_status=dict(map(lambda kv0: (kv0[0], MessageReadStatus._deserialize(kv0[1])), deserialized_dict["readStatus"].items())),
+			transport_guid=deserialized_dict.get("transportGuid"),
+			remark=deserialized_dict.get("remark"),
+			conversation_guid=deserialized_dict.get("conversationGuid"),
+			subject=deserialized_dict.get("subject"),
+			invoice_ids={x0 for x0 in deserialized_dict["invoiceIds"]},
+			parent_id=deserialized_dict.get("parentId"),
+			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
+		)
+
+type Message = Union['EncryptedMessage', 'DecryptedMessage']
+
+def serialize_message(message: Message) -> Any:
+	if isinstance(message, EncryptedMessage):
+		serialized_entity = message.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedMessage"})
+		return serialized_entity
+	elif isinstance(message, DecryptedMessage):
+		serialized_entity = message.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedMessage"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(message)} is not a known subclass of Message")
+
+def deserialize_message(data: Union[str, dict[str, JsonElement]]) -> 'Message':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.EncryptedMessage":
+		return EncryptedMessage._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.DecryptedMessage":
+		return DecryptedMessage._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of Message")
 
 @dataclass
 class Role:
@@ -7521,36 +7325,54 @@ class Role:
 		)
 
 @dataclass
-class Insurance:
+class DecryptedAccessLog:
 	id: str
-	address: 'DecryptedAddress'
 	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	name: dict[str, str] = field(default_factory=dict)
-	identifier: list['Identifier'] = field(default_factory=list)
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
 	tags: set['CodeStub'] = field(default_factory=set)
 	codes: set['CodeStub'] = field(default_factory=set)
-	code: Optional[str] = None
-	agreement_number: Optional[str] = None
-	parent: Optional[str] = None
+	deletion_date: Optional[int] = None
+	object_id: Optional[str] = None
+	access_type: Optional[str] = None
+	user: Optional[str] = None
+	detail: Optional[str] = None
+	date: Optional[int] = None
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
 
 	def __serialize__(self) -> Any:
 		return {
 			"id": self.id,
 			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"name": {k0: v0 for k0, v0 in self.name.items()},
-			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
 			"tags": [x0.__serialize__() for x0 in self.tags],
 			"codes": [x0.__serialize__() for x0 in self.codes],
-			"code": self.code,
-			"agreementNumber": self.agreement_number,
-			"parent": self.parent,
-			"address": self.address.__serialize__(),
+			"deletionDate": self.deletion_date,
+			"objectId": self.object_id,
+			"accessType": self.access_type,
+			"user": self.user,
+			"detail": self.detail,
+			"date": self.date,
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Insurance':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedAccessLog':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -7559,65 +7381,132 @@ class Insurance:
 		return cls(
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			name=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["name"].items())),
-			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
 			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
 			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			code=deserialized_dict.get("code"),
-			agreement_number=deserialized_dict.get("agreementNumber"),
-			parent=deserialized_dict.get("parent"),
-			address=DecryptedAddress._deserialize(deserialized_dict["address"]),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			object_id=deserialized_dict.get("objectId"),
+			access_type=deserialized_dict.get("accessType"),
+			user=deserialized_dict.get("user"),
+			detail=deserialized_dict.get("detail"),
+			date=deserialized_dict.get("date"),
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
 
 @dataclass
-class PublicKey:
-	hc_party_id: Optional[str] = None
-	hex_string: Optional[str] = None
+class EncryptedAccessLog:
+	id: str
+	rev: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	deletion_date: Optional[int] = None
+	object_id: Optional[str] = None
+	access_type: Optional[str] = None
+	user: Optional[str] = None
+	detail: Optional[str] = None
+	date: Optional[int] = None
+	secret_foreign_keys: set[str] = field(default_factory=set)
+	crypted_foreign_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	delegations: dict[str, list['Delegation']] = field(default_factory=dict)
+	encryption_keys: dict[str, list['Delegation']] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+	security_metadata: Optional['SecurityMetadata'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"hcPartyId": self.hc_party_id,
-			"hexString": self.hex_string,
+			"id": self.id,
+			"rev": self.rev,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"deletionDate": self.deletion_date,
+			"objectId": self.object_id,
+			"accessType": self.access_type,
+			"user": self.user,
+			"detail": self.detail,
+			"date": self.date,
+			"secretForeignKeys": [x0 for x0 in self.secret_foreign_keys],
+			"cryptedForeignKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.crypted_foreign_keys.items()},
+			"delegations": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.delegations.items()},
+			"encryptionKeys": {k0: [x1.__serialize__() for x1 in v0] for k0, v0 in self.encryption_keys.items()},
+			"encryptedSelf": self.encrypted_self,
+			"securityMetadata": self.security_metadata.__serialize__() if self.security_metadata is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'PublicKey':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedAccessLog':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			hc_party_id=deserialized_dict.get("hcPartyId"),
-			hex_string=deserialized_dict.get("hexString"),
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			deletion_date=deserialized_dict.get("deletionDate"),
+			object_id=deserialized_dict.get("objectId"),
+			access_type=deserialized_dict.get("accessType"),
+			user=deserialized_dict.get("user"),
+			detail=deserialized_dict.get("detail"),
+			date=deserialized_dict.get("date"),
+			secret_foreign_keys={x0 for x0 in deserialized_dict["secretForeignKeys"]},
+			crypted_foreign_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["cryptedForeignKeys"].items())),
+			delegations=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["delegations"].items())),
+			encryption_keys=dict(map(lambda kv0: (kv0[0], [Delegation._deserialize(x1) for x1 in kv0[1]]), deserialized_dict["encryptionKeys"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+			security_metadata=SecurityMetadata._deserialize(deserialized_dict.get("securityMetadata")) if deserialized_dict.get("securityMetadata") is not None else None,
 		)
 
-@dataclass
-class DataOwnerRegistrationSuccess:
-	user_login: str
-	user_id: str
-	token: str
+type AccessLog = Union['DecryptedAccessLog', 'EncryptedAccessLog']
 
-	def __serialize__(self) -> Any:
-		return {
-			"userLogin": self.user_login,
-			"userId": self.user_id,
-			"token": self.token,
-		}
+def serialize_access_log(access_log: AccessLog) -> Any:
+	if isinstance(access_log, DecryptedAccessLog):
+		serialized_entity = access_log.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.DecryptedAccessLog"})
+		return serialized_entity
+	elif isinstance(access_log, EncryptedAccessLog):
+		serialized_entity = access_log.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.EncryptedAccessLog"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(access_log)} is not a known subclass of AccessLog")
 
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataOwnerRegistrationSuccess':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			user_login=deserialized_dict["userLogin"],
-			user_id=deserialized_dict["userId"],
-			token=deserialized_dict["token"],
-		)
+def deserialize_access_log(data: Union[str, dict[str, JsonElement]]) -> 'AccessLog':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.DecryptedAccessLog":
+		return DecryptedAccessLog._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.EncryptedAccessLog":
+		return EncryptedAccessLog._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of AccessLog")
 
 @dataclass
 class AccessLogDelegateOptions:
@@ -7678,126 +7567,94 @@ class AccessLogShareOptions:
 		)
 
 @dataclass
-class RecoveryKeyOptionsGenerate:
-	recovery_key_size: 'RecoveryKeySize'
+class InvoiceDelegateOptions:
+	access_level: 'AccessLevel'
+	share_encryption_key: bool = False
+	share_secret_id: bool = False
+	share_patient_id: bool = False
 
 	def __serialize__(self) -> Any:
 		return {
-			"recoveryKeySize": self.recovery_key_size.__serialize__(),
+			"accessLevel": self.access_level.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key,
+			"shareSecretId": self.share_secret_id,
+			"sharePatientId": self.share_patient_id,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeyOptionsGenerate':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'InvoiceDelegateOptions':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			recovery_key_size=RecoveryKeySize._deserialize(deserialized_dict["recoveryKeySize"]),
+			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
+			share_encryption_key=deserialized_dict["shareEncryptionKey"],
+			share_secret_id=deserialized_dict["shareSecretId"],
+			share_patient_id=deserialized_dict["sharePatientId"],
 		)
 
 @dataclass
-class RecoveryKeyOptionsUse:
-	key: 'RecoveryDataKey'
+class InvoiceShareOptions:
+	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
+	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_patient_id: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
 
 	def __serialize__(self) -> Any:
 		return {
-			"key": self.key.__serialize__(),
+			"requestedPermissions": self.requested_permissions.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
+			"sharePatientId": self.share_patient_id.__serialize__(),
+			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeyOptionsUse':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'InvoiceShareOptions':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			key=RecoveryDataKey._deserialize(deserialized_dict["key"]),
+			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
+			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
+			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
+			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
 		)
 
-type RecoveryKeyOptions = Union['RecoveryKeyOptionsGenerate', 'RecoveryKeyOptionsUse']
-
-def serialize_recovery_key_options(recovery_key_options: RecoveryKeyOptions) -> Any:
-	if isinstance(recovery_key_options, RecoveryKeyOptionsGenerate):
-		serialized_entity = recovery_key_options.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Generate"})
-		return serialized_entity
-	elif isinstance(recovery_key_options, RecoveryKeyOptionsUse):
-		serialized_entity = recovery_key_options.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Use"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(recovery_key_options)} is not a known subclass of RecoveryKeyOptions")
-
-def deserialize_recovery_key_options(data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeyOptions':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Generate":
-		return RecoveryKeyOptionsGenerate._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.crypto.entities.RecoveryKeyOptions.Use":
-		return RecoveryKeyOptionsUse._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of RecoveryKeyOptions")
-
-class RecoveryKeySize(Enum):
-	Bytes16 = "Bytes16"
-	Bytes32 = "Bytes32"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RecoveryKeySize':
-		if data == "Bytes16":
-			return RecoveryKeySize.Bytes16
-		elif data == "Bytes32":
-			return RecoveryKeySize.Bytes32
-		else:
-			raise Exception(f"{data} is not a valid value for RecoveryKeySize enum.")
-
 @dataclass
-class FrontEndMigration:
+class Insurance:
 	id: str
+	address: 'DecryptedAddress'
 	rev: Optional[str] = None
 	deletion_date: Optional[int] = None
-	name: Optional[str] = None
-	start_date: Optional[int] = None
-	end_date: Optional[int] = None
-	status: Optional['FrontEndMigrationStatus'] = None
-	logs: Optional[str] = None
-	user_id: Optional[str] = None
-	start_key: Optional[str] = None
-	start_key_doc_id: Optional[str] = None
-	process_count: Optional[int] = None
-	properties: list['DecryptedPropertyStub'] = field(default_factory=list)
+	name: dict[str, str] = field(default_factory=dict)
+	identifier: list['Identifier'] = field(default_factory=list)
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	code: Optional[str] = None
+	agreement_number: Optional[str] = None
+	parent: Optional[str] = None
 
 	def __serialize__(self) -> Any:
 		return {
 			"id": self.id,
 			"rev": self.rev,
 			"deletionDate": self.deletion_date,
-			"name": self.name,
-			"startDate": self.start_date,
-			"endDate": self.end_date,
-			"status": self.status.__serialize__() if self.status is not None else None,
-			"logs": self.logs,
-			"userId": self.user_id,
-			"startKey": self.start_key,
-			"startKeyDocId": self.start_key_doc_id,
-			"processCount": self.process_count,
-			"properties": [x0.__serialize__() for x0 in self.properties],
+			"name": {k0: v0 for k0, v0 in self.name.items()},
+			"identifier": [x0.__serialize__() for x0 in self.identifier],
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"code": self.code,
+			"agreementNumber": self.agreement_number,
+			"parent": self.parent,
+			"address": self.address.__serialize__(),
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FrontEndMigration':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Insurance':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -7807,16 +7664,124 @@ class FrontEndMigration:
 			id=deserialized_dict["id"],
 			rev=deserialized_dict.get("rev"),
 			deletion_date=deserialized_dict.get("deletionDate"),
-			name=deserialized_dict.get("name"),
-			start_date=deserialized_dict.get("startDate"),
-			end_date=deserialized_dict.get("endDate"),
-			status=FrontEndMigrationStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
-			logs=deserialized_dict.get("logs"),
-			user_id=deserialized_dict.get("userId"),
-			start_key=deserialized_dict.get("startKey"),
-			start_key_doc_id=deserialized_dict.get("startKeyDocId"),
-			process_count=deserialized_dict.get("processCount"),
-			properties=[DecryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict["properties"]],
+			name=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["name"].items())),
+			identifier=[Identifier._deserialize(x0) for x0 in deserialized_dict["identifier"]],
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			code=deserialized_dict.get("code"),
+			agreement_number=deserialized_dict.get("agreementNumber"),
+			parent=deserialized_dict.get("parent"),
+			address=DecryptedAddress._deserialize(deserialized_dict["address"]),
+		)
+
+@dataclass
+class RelatedPersonDelegateOptions:
+	access_level: 'AccessLevel'
+	share_encryption_key: bool = False
+	share_secret_id: bool = False
+
+	def __serialize__(self) -> Any:
+		return {
+			"accessLevel": self.access_level.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key,
+			"shareSecretId": self.share_secret_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RelatedPersonDelegateOptions':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
+			share_encryption_key=deserialized_dict["shareEncryptionKey"],
+			share_secret_id=deserialized_dict["shareSecretId"],
+		)
+
+@dataclass
+class RelatedPersonShareOptions:
+	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
+	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
+
+	def __serialize__(self) -> Any:
+		return {
+			"requestedPermissions": self.requested_permissions.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
+			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RelatedPersonShareOptions':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
+			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
+			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
+		)
+
+@dataclass
+class CalendarItemDelegateOptions:
+	access_level: 'AccessLevel'
+	share_encryption_key: bool = False
+	share_secret_id: bool = False
+	share_patient_id: bool = False
+
+	def __serialize__(self) -> Any:
+		return {
+			"accessLevel": self.access_level.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key,
+			"shareSecretId": self.share_secret_id,
+			"sharePatientId": self.share_patient_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemDelegateOptions':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
+			share_encryption_key=deserialized_dict["shareEncryptionKey"],
+			share_secret_id=deserialized_dict["shareSecretId"],
+			share_patient_id=deserialized_dict["sharePatientId"],
+		)
+
+@dataclass
+class CalendarItemShareOptions:
+	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
+	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_patient_id: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
+
+	def __serialize__(self) -> Any:
+		return {
+			"requestedPermissions": self.requested_permissions.__serialize__(),
+			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
+			"sharePatientId": self.share_patient_id.__serialize__(),
+			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemShareOptions':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
+			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
+			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
+			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
 		)
 
 @dataclass
@@ -7878,20 +7843,22 @@ class DocumentShareOptions:
 		)
 
 @dataclass
-class RelatedPersonDelegateOptions:
+class MessageDelegateOptions:
 	access_level: 'AccessLevel'
 	share_encryption_key: bool = False
 	share_secret_id: bool = False
+	share_patient_id: bool = False
 
 	def __serialize__(self) -> Any:
 		return {
 			"accessLevel": self.access_level.__serialize__(),
 			"shareEncryptionKey": self.share_encryption_key,
 			"shareSecretId": self.share_secret_id,
+			"sharePatientId": self.share_patient_id,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RelatedPersonDelegateOptions':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MessageDelegateOptions':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -7901,23 +7868,26 @@ class RelatedPersonDelegateOptions:
 			access_level=AccessLevel._deserialize(deserialized_dict["accessLevel"]),
 			share_encryption_key=deserialized_dict["shareEncryptionKey"],
 			share_secret_id=deserialized_dict["shareSecretId"],
+			share_patient_id=deserialized_dict["sharePatientId"],
 		)
 
 @dataclass
-class RelatedPersonShareOptions:
+class MessageShareOptions:
 	requested_permissions: 'RequestedPermission' = field(default_factory=lambda: RequestedPermission.MaxWrite)
 	share_encryption_key: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
+	share_patient_id: 'ShareMetadataBehaviour' = field(default_factory=lambda: ShareMetadataBehaviour.IfAvailable)
 	share_secret_ids: 'SecretIdShareOptions' = field(default_factory=lambda: SecretIdShareOptionsAllAvailable())
 
 	def __serialize__(self) -> Any:
 		return {
 			"requestedPermissions": self.requested_permissions.__serialize__(),
 			"shareEncryptionKey": self.share_encryption_key.__serialize__(),
+			"sharePatientId": self.share_patient_id.__serialize__(),
 			"shareSecretIds": serialize_secret_id_share_options(self.share_secret_ids),
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RelatedPersonShareOptions':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MessageShareOptions':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
@@ -7926,6 +7896,7 @@ class RelatedPersonShareOptions:
 		return cls(
 			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
 			share_encryption_key=ShareMetadataBehaviour._deserialize(deserialized_dict["shareEncryptionKey"]),
+			share_patient_id=ShareMetadataBehaviour._deserialize(deserialized_dict["sharePatientId"]),
 			share_secret_ids=deserialize_secret_id_share_options(deserialized_dict["shareSecretIds"]),
 		)
 
@@ -7987,6 +7958,150 @@ class Identifier:
 			type=CodeStub._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
 			use=deserialized_dict.get("use"),
 			value=deserialized_dict.get("value"),
+		)
+
+class PaymentType(Enum):
+	Cash = "cash"
+	Wired = "wired"
+	Insurance = "insurance"
+	Creditcard = "creditcard"
+	Debitcard = "debitcard"
+	Paypal = "paypal"
+	Bitcoin = "bitcoin"
+	Other = "other"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'PaymentType':
+		if data == "cash":
+			return PaymentType.Cash
+		elif data == "wired":
+			return PaymentType.Wired
+		elif data == "insurance":
+			return PaymentType.Insurance
+		elif data == "creditcard":
+			return PaymentType.Creditcard
+		elif data == "debitcard":
+			return PaymentType.Debitcard
+		elif data == "paypal":
+			return PaymentType.Paypal
+		elif data == "bitcoin":
+			return PaymentType.Bitcoin
+		elif data == "other":
+			return PaymentType.Other
+		else:
+			raise Exception(f"{data} is not a valid value for PaymentType enum.")
+
+@dataclass
+class Payment:
+	payment_date: int = 0
+	payment_type: Optional['PaymentType'] = None
+	paid: Optional[float] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"paymentDate": self.payment_date,
+			"paymentType": self.payment_type.__serialize__() if self.payment_type is not None else None,
+			"paid": self.paid,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Payment':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			payment_date=deserialized_dict["paymentDate"],
+			payment_type=PaymentType._deserialize(deserialized_dict.get("paymentType")) if deserialized_dict.get("paymentType") is not None else None,
+			paid=deserialized_dict.get("paid"),
+		)
+
+@dataclass
+class IdentityDocumentReader:
+	justificatif_document_number: Optional[str] = None
+	support_serial_number: Optional[str] = None
+	time_reading_eid_document: Optional[int] = None
+	eid_document_support_type: int = 0
+	reason_manual_encoding: int = 0
+	reason_using_vignette: int = 0
+
+	def __serialize__(self) -> Any:
+		return {
+			"justificatifDocumentNumber": self.justificatif_document_number,
+			"supportSerialNumber": self.support_serial_number,
+			"timeReadingEIdDocument": self.time_reading_eid_document,
+			"eidDocumentSupportType": self.eid_document_support_type,
+			"reasonManualEncoding": self.reason_manual_encoding,
+			"reasonUsingVignette": self.reason_using_vignette,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'IdentityDocumentReader':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			justificatif_document_number=deserialized_dict.get("justificatifDocumentNumber"),
+			support_serial_number=deserialized_dict.get("supportSerialNumber"),
+			time_reading_eid_document=deserialized_dict.get("timeReadingEIdDocument"),
+			eid_document_support_type=deserialized_dict["eidDocumentSupportType"],
+			reason_manual_encoding=deserialized_dict["reasonManualEncoding"],
+			reason_using_vignette=deserialized_dict["reasonUsingVignette"],
+		)
+
+@dataclass
+class Delegation:
+	owner: Optional[str] = None
+	delegated_to: Optional[str] = None
+	key: Optional['HexString'] = None
+	tags: list[str] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"owner": self.owner,
+			"delegatedTo": self.delegated_to,
+			"key": self.key,
+			"tags": [x0 for x0 in self.tags],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Delegation':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			owner=deserialized_dict.get("owner"),
+			delegated_to=deserialized_dict.get("delegatedTo"),
+			key=deserialized_dict.get("key"),
+			tags=[x0 for x0 in deserialized_dict["tags"]],
+		)
+
+@dataclass
+class SecurityMetadata:
+	secure_delegations: dict['SecureDelegationKeyString', 'SecureDelegation']
+
+	def __serialize__(self) -> Any:
+		return {
+			"secureDelegations": {k0: v0.__serialize__() for k0, v0 in self.secure_delegations.items()},
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecurityMetadata':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			secure_delegations=dict(map(lambda kv0: (kv0[0], SecureDelegation._deserialize(kv0[1])), deserialized_dict["secureDelegations"].items())),
 		)
 
 @dataclass
@@ -8221,814 +8336,6 @@ class Gender(Enum):
 		else:
 			raise Exception(f"{data} is not a valid value for Gender enum.")
 
-@dataclass
-class Delegation:
-	owner: Optional[str] = None
-	delegated_to: Optional[str] = None
-	key: Optional['HexString'] = None
-	tags: list[str] = field(default_factory=list)
-
-	def __serialize__(self) -> Any:
-		return {
-			"owner": self.owner,
-			"delegatedTo": self.delegated_to,
-			"key": self.key,
-			"tags": [x0 for x0 in self.tags],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Delegation':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			owner=deserialized_dict.get("owner"),
-			delegated_to=deserialized_dict.get("delegatedTo"),
-			key=deserialized_dict.get("key"),
-			tags=[x0 for x0 in deserialized_dict["tags"]],
-		)
-
-@dataclass
-class SecurityMetadata:
-	secure_delegations: dict['SecureDelegationKeyString', 'SecureDelegation']
-
-	def __serialize__(self) -> Any:
-		return {
-			"secureDelegations": {k0: v0.__serialize__() for k0, v0 in self.secure_delegations.items()},
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecurityMetadata':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			secure_delegations=dict(map(lambda kv0: (kv0[0], SecureDelegation._deserialize(kv0[1])), deserialized_dict["secureDelegations"].items())),
-		)
-
-@dataclass
-class FormTemplateLayout:
-	form: str
-	actions: list['Action'] = field(default_factory=list)
-	sections: list['Section'] = field(default_factory=list)
-	description: Optional[str] = None
-	keywords: Optional[list[str]] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"form": self.form,
-			"actions": [x0.__serialize__() for x0 in self.actions],
-			"sections": [x0.__serialize__() for x0 in self.sections],
-			"description": self.description,
-			"keywords": [x0 for x0 in self.keywords] if self.keywords is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FormTemplateLayout':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			form=deserialized_dict["form"],
-			actions=[Action._deserialize(x0) for x0 in deserialized_dict["actions"]],
-			sections=[Section._deserialize(x0) for x0 in deserialized_dict["sections"]],
-			description=deserialized_dict.get("description"),
-			keywords=[x0 for x0 in deserialized_dict.get("keywords")] if deserialized_dict.get("keywords") is not None else None,
-		)
-
-@dataclass
-class DocumentGroup:
-	guid: Optional[str] = None
-	name: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"guid": self.guid,
-			"name": self.name,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DocumentGroup':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			guid=deserialized_dict.get("guid"),
-			name=deserialized_dict.get("name"),
-		)
-
-@dataclass
-class DecryptedAnnotation:
-	id: str
-	author: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	text: Optional[str] = None
-	markdown: dict[str, str] = field(default_factory=dict)
-	location: Optional[str] = None
-	confidential: Optional[bool] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"author": self.author,
-			"created": self.created,
-			"modified": self.modified,
-			"text": self.text,
-			"markdown": {k0: v0 for k0, v0 in self.markdown.items()},
-			"location": self.location,
-			"confidential": self.confidential,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedAnnotation':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			author=deserialized_dict.get("author"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			text=deserialized_dict.get("text"),
-			markdown=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["markdown"].items())),
-			location=deserialized_dict.get("location"),
-			confidential=deserialized_dict.get("confidential"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class EncryptedAnnotation:
-	id: str
-	author: Optional[str] = None
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	text: Optional[str] = None
-	markdown: dict[str, str] = field(default_factory=dict)
-	location: Optional[str] = None
-	confidential: Optional[bool] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"author": self.author,
-			"created": self.created,
-			"modified": self.modified,
-			"text": self.text,
-			"markdown": {k0: v0 for k0, v0 in self.markdown.items()},
-			"location": self.location,
-			"confidential": self.confidential,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedAnnotation':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			author=deserialized_dict.get("author"),
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			text=deserialized_dict.get("text"),
-			markdown=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["markdown"].items())),
-			location=deserialized_dict.get("location"),
-			confidential=deserialized_dict.get("confidential"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type Annotation = Union['DecryptedAnnotation', 'EncryptedAnnotation']
-
-def serialize_annotation(annotation: Annotation) -> Any:
-	if isinstance(annotation, DecryptedAnnotation):
-		serialized_entity = annotation.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedAnnotation"})
-		return serialized_entity
-	elif isinstance(annotation, EncryptedAnnotation):
-		serialized_entity = annotation.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedAnnotation"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(annotation)} is not a known subclass of Annotation")
-
-def deserialize_annotation(data: Union[str, dict[str, JsonElement]]) -> 'Annotation':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedAnnotation":
-		return DecryptedAnnotation._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedAnnotation":
-		return EncryptedAnnotation._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of Annotation")
-
-class Laterality(Enum):
-	Left = "left"
-	Right = "right"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Laterality':
-		if data == "left":
-			return Laterality.Left
-		elif data == "right":
-			return Laterality.Right
-		else:
-			raise Exception(f"{data} is not a valid value for Laterality enum.")
-
-@dataclass
-class DecryptedPlanOfAction:
-	id: str
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
-	prescriber_id: Optional[str] = None
-	value_date: Optional[int] = None
-	opening_date: Optional[int] = None
-	closing_date: Optional[int] = None
-	deadline_date: Optional[int] = None
-	name: Optional[str] = None
-	descr: Optional[str] = None
-	note: Optional[str] = None
-	id_opening_contact: Optional[str] = None
-	id_closing_contact: Optional[str] = None
-	care_team_memberships: list['DecryptedCareTeamMembership'] = field(default_factory=list)
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
-			"prescriberId": self.prescriber_id,
-			"valueDate": self.value_date,
-			"openingDate": self.opening_date,
-			"closingDate": self.closing_date,
-			"deadlineDate": self.deadline_date,
-			"name": self.name,
-			"descr": self.descr,
-			"note": self.note,
-			"idOpeningContact": self.id_opening_contact,
-			"idClosingContact": self.id_closing_contact,
-			"careTeamMemberships": [x0.__serialize__() for x0 in self.care_team_memberships],
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPlanOfAction':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
-			prescriber_id=deserialized_dict.get("prescriberId"),
-			value_date=deserialized_dict.get("valueDate"),
-			opening_date=deserialized_dict.get("openingDate"),
-			closing_date=deserialized_dict.get("closingDate"),
-			deadline_date=deserialized_dict.get("deadlineDate"),
-			name=deserialized_dict.get("name"),
-			descr=deserialized_dict.get("descr"),
-			note=deserialized_dict.get("note"),
-			id_opening_contact=deserialized_dict.get("idOpeningContact"),
-			id_closing_contact=deserialized_dict.get("idClosingContact"),
-			care_team_memberships=[DecryptedCareTeamMembership._deserialize(x0) for x0 in deserialized_dict["careTeamMemberships"]],
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class EncryptedPlanOfAction:
-	id: str
-	created: Optional[int] = None
-	modified: Optional[int] = None
-	author: Optional[str] = None
-	responsible: Optional[str] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	end_of_life: Optional[int] = None
-	prescriber_id: Optional[str] = None
-	value_date: Optional[int] = None
-	opening_date: Optional[int] = None
-	closing_date: Optional[int] = None
-	deadline_date: Optional[int] = None
-	name: Optional[str] = None
-	descr: Optional[str] = None
-	note: Optional[str] = None
-	id_opening_contact: Optional[str] = None
-	id_closing_contact: Optional[str] = None
-	care_team_memberships: list['EncryptedCareTeamMembership'] = field(default_factory=list)
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"created": self.created,
-			"modified": self.modified,
-			"author": self.author,
-			"responsible": self.responsible,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"endOfLife": self.end_of_life,
-			"prescriberId": self.prescriber_id,
-			"valueDate": self.value_date,
-			"openingDate": self.opening_date,
-			"closingDate": self.closing_date,
-			"deadlineDate": self.deadline_date,
-			"name": self.name,
-			"descr": self.descr,
-			"note": self.note,
-			"idOpeningContact": self.id_opening_contact,
-			"idClosingContact": self.id_closing_contact,
-			"careTeamMemberships": [x0.__serialize__() for x0 in self.care_team_memberships],
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPlanOfAction':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			created=deserialized_dict.get("created"),
-			modified=deserialized_dict.get("modified"),
-			author=deserialized_dict.get("author"),
-			responsible=deserialized_dict.get("responsible"),
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			end_of_life=deserialized_dict.get("endOfLife"),
-			prescriber_id=deserialized_dict.get("prescriberId"),
-			value_date=deserialized_dict.get("valueDate"),
-			opening_date=deserialized_dict.get("openingDate"),
-			closing_date=deserialized_dict.get("closingDate"),
-			deadline_date=deserialized_dict.get("deadlineDate"),
-			name=deserialized_dict.get("name"),
-			descr=deserialized_dict.get("descr"),
-			note=deserialized_dict.get("note"),
-			id_opening_contact=deserialized_dict.get("idOpeningContact"),
-			id_closing_contact=deserialized_dict.get("idClosingContact"),
-			care_team_memberships=[EncryptedCareTeamMembership._deserialize(x0) for x0 in deserialized_dict["careTeamMemberships"]],
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type PlanOfAction = Union['DecryptedPlanOfAction', 'EncryptedPlanOfAction']
-
-def serialize_plan_of_action(plan_of_action: PlanOfAction) -> Any:
-	if isinstance(plan_of_action, DecryptedPlanOfAction):
-		serialized_entity = plan_of_action.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction"})
-		return serialized_entity
-	elif isinstance(plan_of_action, EncryptedPlanOfAction):
-		serialized_entity = plan_of_action.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(plan_of_action)} is not a known subclass of PlanOfAction")
-
-def deserialize_plan_of_action(data: Union[str, dict[str, JsonElement]]) -> 'PlanOfAction':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction":
-		return DecryptedPlanOfAction._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction":
-		return EncryptedPlanOfAction._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of PlanOfAction")
-
-@dataclass
-class DecryptedEpisode:
-	id: str
-	name: Optional[str] = None
-	comment: Optional[str] = None
-	start_date: Optional[int] = None
-	end_date: Optional[int] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"name": self.name,
-			"comment": self.comment,
-			"startDate": self.start_date,
-			"endDate": self.end_date,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedEpisode':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			name=deserialized_dict.get("name"),
-			comment=deserialized_dict.get("comment"),
-			start_date=deserialized_dict.get("startDate"),
-			end_date=deserialized_dict.get("endDate"),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class EncryptedEpisode:
-	id: str
-	name: Optional[str] = None
-	comment: Optional[str] = None
-	start_date: Optional[int] = None
-	end_date: Optional[int] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"name": self.name,
-			"comment": self.comment,
-			"startDate": self.start_date,
-			"endDate": self.end_date,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedEpisode':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			name=deserialized_dict.get("name"),
-			comment=deserialized_dict.get("comment"),
-			start_date=deserialized_dict.get("startDate"),
-			end_date=deserialized_dict.get("endDate"),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type Episode = Union['DecryptedEpisode', 'EncryptedEpisode']
-
-def serialize_episode(episode: Episode) -> Any:
-	if isinstance(episode, DecryptedEpisode):
-		serialized_entity = episode.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedEpisode"})
-		return serialized_entity
-	elif isinstance(episode, EncryptedEpisode):
-		serialized_entity = episode.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedEpisode"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(episode)} is not a known subclass of Episode")
-
-def deserialize_episode(data: Union[str, dict[str, JsonElement]]) -> 'Episode':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedEpisode":
-		return DecryptedEpisode._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedEpisode":
-		return EncryptedEpisode._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of Episode")
-
-@dataclass
-class EncryptedCareTeamMember:
-	id: str
-	care_team_member_type: Optional['CareTeamMemberType'] = None
-	healthcare_party_id: Optional[str] = None
-	quality: Optional['CodeStub'] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"careTeamMemberType": self.care_team_member_type.__serialize__() if self.care_team_member_type is not None else None,
-			"healthcarePartyId": self.healthcare_party_id,
-			"quality": self.quality.__serialize__() if self.quality is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCareTeamMember':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			care_team_member_type=CareTeamMemberType._deserialize(deserialized_dict.get("careTeamMemberType")) if deserialized_dict.get("careTeamMemberType") is not None else None,
-			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
-			quality=CodeStub._deserialize(deserialized_dict.get("quality")) if deserialized_dict.get("quality") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class DecryptedCareTeamMember:
-	id: str
-	care_team_member_type: Optional['CareTeamMemberType'] = None
-	healthcare_party_id: Optional[str] = None
-	quality: Optional['CodeStub'] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"careTeamMemberType": self.care_team_member_type.__serialize__() if self.care_team_member_type is not None else None,
-			"healthcarePartyId": self.healthcare_party_id,
-			"quality": self.quality.__serialize__() if self.quality is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCareTeamMember':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			care_team_member_type=CareTeamMemberType._deserialize(deserialized_dict.get("careTeamMemberType")) if deserialized_dict.get("careTeamMemberType") is not None else None,
-			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
-			quality=CodeStub._deserialize(deserialized_dict.get("quality")) if deserialized_dict.get("quality") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type CareTeamMember = Union['EncryptedCareTeamMember', 'DecryptedCareTeamMember']
-
-def serialize_care_team_member(care_team_member: CareTeamMember) -> Any:
-	if isinstance(care_team_member, EncryptedCareTeamMember):
-		serialized_entity = care_team_member.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember"})
-		return serialized_entity
-	elif isinstance(care_team_member, DecryptedCareTeamMember):
-		serialized_entity = care_team_member.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(care_team_member)} is not a known subclass of CareTeamMember")
-
-def deserialize_care_team_member(data: Union[str, dict[str, JsonElement]]) -> 'CareTeamMember':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember":
-		return EncryptedCareTeamMember._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember":
-		return DecryptedCareTeamMember._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of CareTeamMember")
-
-@dataclass
-class HealthElementQualifiedLink:
-	type: str
-	health_element_id: str
-	association_id: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"type": self.type,
-			"associationId": self.association_id,
-			"healthElementId": self.health_element_id,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementQualifiedLink':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			type=deserialized_dict["type"],
-			association_id=deserialized_dict.get("associationId"),
-			health_element_id=deserialized_dict["healthElementId"],
-		)
-
-@dataclass
-class HealthElementAsserter:
-	local_asserter_identifier: Optional['HealthElementAsserterLocalAsserterIdentifier'] = None
-	external_asserter_identifier: Optional['HealthElementAsserterExternalAsserterIdentifier'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"localAsserterIdentifier": self.local_asserter_identifier.__serialize__() if self.local_asserter_identifier is not None else None,
-			"externalAsserterIdentifier": self.external_asserter_identifier.__serialize__() if self.external_asserter_identifier is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserter':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			local_asserter_identifier=HealthElementAsserterLocalAsserterIdentifier._deserialize(deserialized_dict.get("localAsserterIdentifier")) if deserialized_dict.get("localAsserterIdentifier") is not None else None,
-			external_asserter_identifier=HealthElementAsserterExternalAsserterIdentifier._deserialize(deserialized_dict.get("externalAsserterIdentifier")) if deserialized_dict.get("externalAsserterIdentifier") is not None else None,
-		)
-
-@dataclass
-class HealthElementAsserterLocalAsserterIdentifier:
-	id: str
-	type: 'AsserterType'
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"type": self.type.__serialize__(),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserterLocalAsserterIdentifier':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			type=AsserterType._deserialize(deserialized_dict["type"]),
-		)
-
-@dataclass
-class HealthElementAsserterExternalAsserterIdentifier:
-	identifier: 'Identifier'
-
-	def __serialize__(self) -> Any:
-		return {
-			"identifier": self.identifier.__serialize__(),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserterExternalAsserterIdentifier':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			identifier=Identifier._deserialize(deserialized_dict["identifier"]),
-		)
-
-@dataclass
-class EncryptedCalendarItemTag:
-	code: Optional[str] = None
-	date: Optional[int] = None
-	user_id: Optional[str] = None
-	user_name: Optional[str] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"code": self.code,
-			"date": self.date,
-			"userId": self.user_id,
-			"userName": self.user_name,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCalendarItemTag':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			code=deserialized_dict.get("code"),
-			date=deserialized_dict.get("date"),
-			user_id=deserialized_dict.get("userId"),
-			user_name=deserialized_dict.get("userName"),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class DecryptedCalendarItemTag:
-	code: Optional[str] = None
-	date: Optional[int] = None
-	user_id: Optional[str] = None
-	user_name: Optional[str] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"code": self.code,
-			"date": self.date,
-			"userId": self.user_id,
-			"userName": self.user_name,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCalendarItemTag':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			code=deserialized_dict.get("code"),
-			date=deserialized_dict.get("date"),
-			user_id=deserialized_dict.get("userId"),
-			user_name=deserialized_dict.get("userName"),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type CalendarItemTag = Union['EncryptedCalendarItemTag', 'DecryptedCalendarItemTag']
-
-def serialize_calendar_item_tag(calendar_item_tag: CalendarItemTag) -> Any:
-	if isinstance(calendar_item_tag, EncryptedCalendarItemTag):
-		serialized_entity = calendar_item_tag.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag"})
-		return serialized_entity
-	elif isinstance(calendar_item_tag, DecryptedCalendarItemTag):
-		serialized_entity = calendar_item_tag.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedCalendarItemTag"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(calendar_item_tag)} is not a known subclass of CalendarItemTag")
-
-def deserialize_calendar_item_tag(data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemTag':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag":
-		return EncryptedCalendarItemTag._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedCalendarItemTag":
-		return DecryptedCalendarItemTag._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of CalendarItemTag")
-
 class PersonalStatus(Enum):
 	Single = "single"
 	InCouple = "in_couple"
@@ -9082,51 +8389,128 @@ class PersonalStatus(Enum):
 			raise Exception(f"{data} is not a valid value for PersonalStatus enum.")
 
 @dataclass
-class EncryptedInsurability:
-	parameters: dict[str, str] = field(default_factory=dict)
-	hospitalisation: Optional[bool] = None
-	ambulatory: Optional[bool] = None
-	dental: Optional[bool] = None
-	identification_number: Optional[str] = None
-	insurance_id: Optional[str] = None
-	start_date: Optional[int] = None
-	end_date: Optional[int] = None
-	titulary_id: Optional[str] = None
+class EncryptedAnnotation:
+	id: str
+	author: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	text: Optional[str] = None
+	markdown: dict[str, str] = field(default_factory=dict)
+	location: Optional[str] = None
+	confidential: Optional[bool] = None
+	tags: set['CodeStub'] = field(default_factory=set)
 	encrypted_self: Optional['Base64String'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"parameters": {k0: v0 for k0, v0 in self.parameters.items()},
-			"hospitalisation": self.hospitalisation,
-			"ambulatory": self.ambulatory,
-			"dental": self.dental,
-			"identificationNumber": self.identification_number,
-			"insuranceId": self.insurance_id,
-			"startDate": self.start_date,
-			"endDate": self.end_date,
-			"titularyId": self.titulary_id,
+			"id": self.id,
+			"author": self.author,
+			"created": self.created,
+			"modified": self.modified,
+			"text": self.text,
+			"markdown": {k0: v0 for k0, v0 in self.markdown.items()},
+			"location": self.location,
+			"confidential": self.confidential,
+			"tags": [x0.__serialize__() for x0 in self.tags],
 			"encryptedSelf": self.encrypted_self,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedInsurability':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedAnnotation':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			parameters=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["parameters"].items())),
-			hospitalisation=deserialized_dict.get("hospitalisation"),
-			ambulatory=deserialized_dict.get("ambulatory"),
-			dental=deserialized_dict.get("dental"),
-			identification_number=deserialized_dict.get("identificationNumber"),
-			insurance_id=deserialized_dict.get("insuranceId"),
-			start_date=deserialized_dict.get("startDate"),
-			end_date=deserialized_dict.get("endDate"),
-			titulary_id=deserialized_dict.get("titularyId"),
+			id=deserialized_dict["id"],
+			author=deserialized_dict.get("author"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			text=deserialized_dict.get("text"),
+			markdown=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["markdown"].items())),
+			location=deserialized_dict.get("location"),
+			confidential=deserialized_dict.get("confidential"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
+
+@dataclass
+class DecryptedAnnotation:
+	id: str
+	author: Optional[str] = None
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	text: Optional[str] = None
+	markdown: dict[str, str] = field(default_factory=dict)
+	location: Optional[str] = None
+	confidential: Optional[bool] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"author": self.author,
+			"created": self.created,
+			"modified": self.modified,
+			"text": self.text,
+			"markdown": {k0: v0 for k0, v0 in self.markdown.items()},
+			"location": self.location,
+			"confidential": self.confidential,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedAnnotation':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			author=deserialized_dict.get("author"),
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			text=deserialized_dict.get("text"),
+			markdown=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["markdown"].items())),
+			location=deserialized_dict.get("location"),
+			confidential=deserialized_dict.get("confidential"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type Annotation = Union['EncryptedAnnotation', 'DecryptedAnnotation']
+
+def serialize_annotation(annotation: Annotation) -> Any:
+	if isinstance(annotation, EncryptedAnnotation):
+		serialized_entity = annotation.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedAnnotation"})
+		return serialized_entity
+	elif isinstance(annotation, DecryptedAnnotation):
+		serialized_entity = annotation.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedAnnotation"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(annotation)} is not a known subclass of Annotation")
+
+def deserialize_annotation(data: Union[str, dict[str, JsonElement]]) -> 'Annotation':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedAnnotation":
+		return EncryptedAnnotation._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedAnnotation":
+		return DecryptedAnnotation._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of Annotation")
 
 @dataclass
 class DecryptedInsurability:
@@ -9175,16 +8559,63 @@ class DecryptedInsurability:
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
-type Insurability = Union['EncryptedInsurability', 'DecryptedInsurability']
+@dataclass
+class EncryptedInsurability:
+	parameters: dict[str, str] = field(default_factory=dict)
+	hospitalisation: Optional[bool] = None
+	ambulatory: Optional[bool] = None
+	dental: Optional[bool] = None
+	identification_number: Optional[str] = None
+	insurance_id: Optional[str] = None
+	start_date: Optional[int] = None
+	end_date: Optional[int] = None
+	titulary_id: Optional[str] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"parameters": {k0: v0 for k0, v0 in self.parameters.items()},
+			"hospitalisation": self.hospitalisation,
+			"ambulatory": self.ambulatory,
+			"dental": self.dental,
+			"identificationNumber": self.identification_number,
+			"insuranceId": self.insurance_id,
+			"startDate": self.start_date,
+			"endDate": self.end_date,
+			"titularyId": self.titulary_id,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedInsurability':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			parameters=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["parameters"].items())),
+			hospitalisation=deserialized_dict.get("hospitalisation"),
+			ambulatory=deserialized_dict.get("ambulatory"),
+			dental=deserialized_dict.get("dental"),
+			identification_number=deserialized_dict.get("identificationNumber"),
+			insurance_id=deserialized_dict.get("insuranceId"),
+			start_date=deserialized_dict.get("startDate"),
+			end_date=deserialized_dict.get("endDate"),
+			titulary_id=deserialized_dict.get("titularyId"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type Insurability = Union['DecryptedInsurability', 'EncryptedInsurability']
 
 def serialize_insurability(insurability: Insurability) -> Any:
-	if isinstance(insurability, EncryptedInsurability):
-		serialized_entity = insurability.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedInsurability"})
-		return serialized_entity
-	elif isinstance(insurability, DecryptedInsurability):
+	if isinstance(insurability, DecryptedInsurability):
 		serialized_entity = insurability.__serialize__()
 		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedInsurability"})
+		return serialized_entity
+	elif isinstance(insurability, EncryptedInsurability):
+		serialized_entity = insurability.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedInsurability"})
 		return serialized_entity
 	else:
 		raise Exception(f"{type(insurability)} is not a known subclass of Insurability")
@@ -9198,44 +8629,12 @@ def deserialize_insurability(data: Union[str, dict[str, JsonElement]]) -> 'Insur
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedInsurability":
-		return EncryptedInsurability._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedInsurability":
+	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedInsurability":
 		return DecryptedInsurability._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedInsurability":
+		return EncryptedInsurability._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of Insurability")
-
-@dataclass
-class DecryptedPartnership:
-	type: Optional['PartnershipType'] = None
-	status: Optional['PartnershipStatus'] = None
-	partner_id: Optional[str] = None
-	partner_type: Optional['PartnerType'] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"type": self.type.__serialize__() if self.type is not None else None,
-			"status": self.status.__serialize__() if self.status is not None else None,
-			"partnerId": self.partner_id,
-			"partnerType": self.partner_type.__serialize__() if self.partner_type is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPartnership':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			type=PartnershipType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
-			status=PartnershipStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
-			partner_id=deserialized_dict.get("partnerId"),
-			partner_type=PartnerType._deserialize(deserialized_dict.get("partnerType")) if deserialized_dict.get("partnerType") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
 
 @dataclass
 class EncryptedPartnership:
@@ -9269,16 +8668,48 @@ class EncryptedPartnership:
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
-type Partnership = Union['DecryptedPartnership', 'EncryptedPartnership']
+@dataclass
+class DecryptedPartnership:
+	type: Optional['PartnershipType'] = None
+	status: Optional['PartnershipStatus'] = None
+	partner_id: Optional[str] = None
+	partner_type: Optional['PartnerType'] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type.__serialize__() if self.type is not None else None,
+			"status": self.status.__serialize__() if self.status is not None else None,
+			"partnerId": self.partner_id,
+			"partnerType": self.partner_type.__serialize__() if self.partner_type is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPartnership':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=PartnershipType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+			status=PartnershipStatus._deserialize(deserialized_dict.get("status")) if deserialized_dict.get("status") is not None else None,
+			partner_id=deserialized_dict.get("partnerId"),
+			partner_type=PartnerType._deserialize(deserialized_dict.get("partnerType")) if deserialized_dict.get("partnerType") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type Partnership = Union['EncryptedPartnership', 'DecryptedPartnership']
 
 def serialize_partnership(partnership: Partnership) -> Any:
-	if isinstance(partnership, DecryptedPartnership):
-		serialized_entity = partnership.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedPartnership"})
-		return serialized_entity
-	elif isinstance(partnership, EncryptedPartnership):
+	if isinstance(partnership, EncryptedPartnership):
 		serialized_entity = partnership.__serialize__()
 		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedPartnership"})
+		return serialized_entity
+	elif isinstance(partnership, DecryptedPartnership):
+		serialized_entity = partnership.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedPartnership"})
 		return serialized_entity
 	else:
 		raise Exception(f"{type(partnership)} is not a known subclass of Partnership")
@@ -9292,47 +8723,12 @@ def deserialize_partnership(data: Union[str, dict[str, JsonElement]]) -> 'Partne
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedPartnership":
-		return DecryptedPartnership._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedPartnership":
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedPartnership":
 		return EncryptedPartnership._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedPartnership":
+		return DecryptedPartnership._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of Partnership")
-
-@dataclass
-class EncryptedPatientHealthCareParty:
-	type: Optional['PatientHealthCarePartyType'] = None
-	healthcare_party_id: Optional[str] = None
-	send_formats: dict['TelecomType', str] = field(default_factory=dict)
-	referral_periods: list['ReferralPeriod'] = field(default_factory=list)
-	properties: Optional[list['EncryptedPropertyStub']] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"type": self.type.__serialize__() if self.type is not None else None,
-			"healthcarePartyId": self.healthcare_party_id,
-			"sendFormats": {k0.__serialize__(): v0 for k0, v0 in self.send_formats.items()},
-			"referralPeriods": [x0.__serialize__() for x0 in self.referral_periods],
-			"properties": [x0.__serialize__() for x0 in self.properties] if self.properties is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPatientHealthCareParty':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			type=PatientHealthCarePartyType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
-			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
-			send_formats=dict(map(lambda kv0: (TelecomType._deserialize(kv0[0]), kv0[1]), deserialized_dict["sendFormats"].items())),
-			referral_periods=[ReferralPeriod._deserialize(x0) for x0 in deserialized_dict["referralPeriods"]],
-			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict.get("properties")] if deserialized_dict.get("properties") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
 
 @dataclass
 class DecryptedPatientHealthCareParty:
@@ -9369,16 +8765,51 @@ class DecryptedPatientHealthCareParty:
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
-type PatientHealthCareParty = Union['EncryptedPatientHealthCareParty', 'DecryptedPatientHealthCareParty']
+@dataclass
+class EncryptedPatientHealthCareParty:
+	type: Optional['PatientHealthCarePartyType'] = None
+	healthcare_party_id: Optional[str] = None
+	send_formats: dict['TelecomType', str] = field(default_factory=dict)
+	referral_periods: list['ReferralPeriod'] = field(default_factory=list)
+	properties: Optional[list['EncryptedPropertyStub']] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type.__serialize__() if self.type is not None else None,
+			"healthcarePartyId": self.healthcare_party_id,
+			"sendFormats": {k0.__serialize__(): v0 for k0, v0 in self.send_formats.items()},
+			"referralPeriods": [x0.__serialize__() for x0 in self.referral_periods],
+			"properties": [x0.__serialize__() for x0 in self.properties] if self.properties is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPatientHealthCareParty':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=PatientHealthCarePartyType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
+			send_formats=dict(map(lambda kv0: (TelecomType._deserialize(kv0[0]), kv0[1]), deserialized_dict["sendFormats"].items())),
+			referral_periods=[ReferralPeriod._deserialize(x0) for x0 in deserialized_dict["referralPeriods"]],
+			properties=[EncryptedPropertyStub._deserialize(x0) for x0 in deserialized_dict.get("properties")] if deserialized_dict.get("properties") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type PatientHealthCareParty = Union['DecryptedPatientHealthCareParty', 'EncryptedPatientHealthCareParty']
 
 def serialize_patient_health_care_party(patient_health_care_party: PatientHealthCareParty) -> Any:
-	if isinstance(patient_health_care_party, EncryptedPatientHealthCareParty):
-		serialized_entity = patient_health_care_party.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty"})
-		return serialized_entity
-	elif isinstance(patient_health_care_party, DecryptedPatientHealthCareParty):
+	if isinstance(patient_health_care_party, DecryptedPatientHealthCareParty):
 		serialized_entity = patient_health_care_party.__serialize__()
 		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty"})
+		return serialized_entity
+	elif isinstance(patient_health_care_party, EncryptedPatientHealthCareParty):
+		serialized_entity = patient_health_care_party.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty"})
 		return serialized_entity
 	else:
 		raise Exception(f"{type(patient_health_care_party)} is not a known subclass of PatientHealthCareParty")
@@ -9392,10 +8823,10 @@ def deserialize_patient_health_care_party(data: Union[str, dict[str, JsonElement
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty":
-		return EncryptedPatientHealthCareParty._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty":
+	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedPatientHealthCareParty":
 		return DecryptedPatientHealthCareParty._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedPatientHealthCareParty":
+		return EncryptedPatientHealthCareParty._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of PatientHealthCareParty")
 
@@ -9510,122 +8941,6 @@ def deserialize_financial_institution_information(data: Union[str, dict[str, Jso
 		return EncryptedFinancialInstitutionInformation._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of FinancialInstitutionInformation")
-
-@dataclass
-class DecryptedMedicalHouseContract:
-	contract_id: Optional[str] = None
-	valid_from: Optional[int] = None
-	valid_to: Optional[int] = None
-	mm_nihii: Optional[str] = None
-	hcp_id: Optional[str] = None
-	change_type: Optional['ContractChangeType'] = None
-	parent_contract_id: Optional[str] = None
-	changed_by: Optional[str] = None
-	start_of_contract: Optional[int] = None
-	start_of_coverage: Optional[int] = None
-	end_of_contract: Optional[int] = None
-	end_of_coverage: Optional[int] = None
-	kine: bool = False
-	gp: bool = False
-	ptd: bool = False
-	nurse: bool = False
-	no_kine: bool = False
-	no_gp: bool = False
-	no_nurse: bool = False
-	unsubscription_reason_id: Optional[int] = None
-	ptd_start: Optional[int] = None
-	ptd_end: Optional[int] = None
-	ptd_last_invoiced: Optional[int] = None
-	start_of_suspension: Optional[int] = None
-	end_of_suspension: Optional[int] = None
-	suspension_reason: Optional['SuspensionReason'] = None
-	suspension_source: Optional[str] = None
-	forced_suspension: bool = False
-	signature_type: Optional['MhcSignatureType'] = None
-	status: Optional[int] = None
-	options: dict[str, str] = field(default_factory=dict)
-	receipts: dict[str, str] = field(default_factory=dict)
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"contractId": self.contract_id,
-			"validFrom": self.valid_from,
-			"validTo": self.valid_to,
-			"mmNihii": self.mm_nihii,
-			"hcpId": self.hcp_id,
-			"changeType": self.change_type.__serialize__() if self.change_type is not None else None,
-			"parentContractId": self.parent_contract_id,
-			"changedBy": self.changed_by,
-			"startOfContract": self.start_of_contract,
-			"startOfCoverage": self.start_of_coverage,
-			"endOfContract": self.end_of_contract,
-			"endOfCoverage": self.end_of_coverage,
-			"kine": self.kine,
-			"gp": self.gp,
-			"ptd": self.ptd,
-			"nurse": self.nurse,
-			"noKine": self.no_kine,
-			"noGp": self.no_gp,
-			"noNurse": self.no_nurse,
-			"unsubscriptionReasonId": self.unsubscription_reason_id,
-			"ptdStart": self.ptd_start,
-			"ptdEnd": self.ptd_end,
-			"ptdLastInvoiced": self.ptd_last_invoiced,
-			"startOfSuspension": self.start_of_suspension,
-			"endOfSuspension": self.end_of_suspension,
-			"suspensionReason": self.suspension_reason.__serialize__() if self.suspension_reason is not None else None,
-			"suspensionSource": self.suspension_source,
-			"forcedSuspension": self.forced_suspension,
-			"signatureType": self.signature_type.__serialize__() if self.signature_type is not None else None,
-			"status": self.status,
-			"options": {k0: v0 for k0, v0 in self.options.items()},
-			"receipts": {k0: v0 for k0, v0 in self.receipts.items()},
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedMedicalHouseContract':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			contract_id=deserialized_dict.get("contractId"),
-			valid_from=deserialized_dict.get("validFrom"),
-			valid_to=deserialized_dict.get("validTo"),
-			mm_nihii=deserialized_dict.get("mmNihii"),
-			hcp_id=deserialized_dict.get("hcpId"),
-			change_type=ContractChangeType._deserialize(deserialized_dict.get("changeType")) if deserialized_dict.get("changeType") is not None else None,
-			parent_contract_id=deserialized_dict.get("parentContractId"),
-			changed_by=deserialized_dict.get("changedBy"),
-			start_of_contract=deserialized_dict.get("startOfContract"),
-			start_of_coverage=deserialized_dict.get("startOfCoverage"),
-			end_of_contract=deserialized_dict.get("endOfContract"),
-			end_of_coverage=deserialized_dict.get("endOfCoverage"),
-			kine=deserialized_dict["kine"],
-			gp=deserialized_dict["gp"],
-			ptd=deserialized_dict["ptd"],
-			nurse=deserialized_dict["nurse"],
-			no_kine=deserialized_dict["noKine"],
-			no_gp=deserialized_dict["noGp"],
-			no_nurse=deserialized_dict["noNurse"],
-			unsubscription_reason_id=deserialized_dict.get("unsubscriptionReasonId"),
-			ptd_start=deserialized_dict.get("ptdStart"),
-			ptd_end=deserialized_dict.get("ptdEnd"),
-			ptd_last_invoiced=deserialized_dict.get("ptdLastInvoiced"),
-			start_of_suspension=deserialized_dict.get("startOfSuspension"),
-			end_of_suspension=deserialized_dict.get("endOfSuspension"),
-			suspension_reason=SuspensionReason._deserialize(deserialized_dict.get("suspensionReason")) if deserialized_dict.get("suspensionReason") is not None else None,
-			suspension_source=deserialized_dict.get("suspensionSource"),
-			forced_suspension=deserialized_dict["forcedSuspension"],
-			signature_type=MhcSignatureType._deserialize(deserialized_dict.get("signatureType")) if deserialized_dict.get("signatureType") is not None else None,
-			status=deserialized_dict.get("status"),
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["options"].items())),
-			receipts=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["receipts"].items())),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
 
 @dataclass
 class EncryptedMedicalHouseContract:
@@ -9743,16 +9058,132 @@ class EncryptedMedicalHouseContract:
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
-type MedicalHouseContract = Union['DecryptedMedicalHouseContract', 'EncryptedMedicalHouseContract']
+@dataclass
+class DecryptedMedicalHouseContract:
+	contract_id: Optional[str] = None
+	valid_from: Optional[int] = None
+	valid_to: Optional[int] = None
+	mm_nihii: Optional[str] = None
+	hcp_id: Optional[str] = None
+	change_type: Optional['ContractChangeType'] = None
+	parent_contract_id: Optional[str] = None
+	changed_by: Optional[str] = None
+	start_of_contract: Optional[int] = None
+	start_of_coverage: Optional[int] = None
+	end_of_contract: Optional[int] = None
+	end_of_coverage: Optional[int] = None
+	kine: bool = False
+	gp: bool = False
+	ptd: bool = False
+	nurse: bool = False
+	no_kine: bool = False
+	no_gp: bool = False
+	no_nurse: bool = False
+	unsubscription_reason_id: Optional[int] = None
+	ptd_start: Optional[int] = None
+	ptd_end: Optional[int] = None
+	ptd_last_invoiced: Optional[int] = None
+	start_of_suspension: Optional[int] = None
+	end_of_suspension: Optional[int] = None
+	suspension_reason: Optional['SuspensionReason'] = None
+	suspension_source: Optional[str] = None
+	forced_suspension: bool = False
+	signature_type: Optional['MhcSignatureType'] = None
+	status: Optional[int] = None
+	options: dict[str, str] = field(default_factory=dict)
+	receipts: dict[str, str] = field(default_factory=dict)
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"contractId": self.contract_id,
+			"validFrom": self.valid_from,
+			"validTo": self.valid_to,
+			"mmNihii": self.mm_nihii,
+			"hcpId": self.hcp_id,
+			"changeType": self.change_type.__serialize__() if self.change_type is not None else None,
+			"parentContractId": self.parent_contract_id,
+			"changedBy": self.changed_by,
+			"startOfContract": self.start_of_contract,
+			"startOfCoverage": self.start_of_coverage,
+			"endOfContract": self.end_of_contract,
+			"endOfCoverage": self.end_of_coverage,
+			"kine": self.kine,
+			"gp": self.gp,
+			"ptd": self.ptd,
+			"nurse": self.nurse,
+			"noKine": self.no_kine,
+			"noGp": self.no_gp,
+			"noNurse": self.no_nurse,
+			"unsubscriptionReasonId": self.unsubscription_reason_id,
+			"ptdStart": self.ptd_start,
+			"ptdEnd": self.ptd_end,
+			"ptdLastInvoiced": self.ptd_last_invoiced,
+			"startOfSuspension": self.start_of_suspension,
+			"endOfSuspension": self.end_of_suspension,
+			"suspensionReason": self.suspension_reason.__serialize__() if self.suspension_reason is not None else None,
+			"suspensionSource": self.suspension_source,
+			"forcedSuspension": self.forced_suspension,
+			"signatureType": self.signature_type.__serialize__() if self.signature_type is not None else None,
+			"status": self.status,
+			"options": {k0: v0 for k0, v0 in self.options.items()},
+			"receipts": {k0: v0 for k0, v0 in self.receipts.items()},
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedMedicalHouseContract':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			contract_id=deserialized_dict.get("contractId"),
+			valid_from=deserialized_dict.get("validFrom"),
+			valid_to=deserialized_dict.get("validTo"),
+			mm_nihii=deserialized_dict.get("mmNihii"),
+			hcp_id=deserialized_dict.get("hcpId"),
+			change_type=ContractChangeType._deserialize(deserialized_dict.get("changeType")) if deserialized_dict.get("changeType") is not None else None,
+			parent_contract_id=deserialized_dict.get("parentContractId"),
+			changed_by=deserialized_dict.get("changedBy"),
+			start_of_contract=deserialized_dict.get("startOfContract"),
+			start_of_coverage=deserialized_dict.get("startOfCoverage"),
+			end_of_contract=deserialized_dict.get("endOfContract"),
+			end_of_coverage=deserialized_dict.get("endOfCoverage"),
+			kine=deserialized_dict["kine"],
+			gp=deserialized_dict["gp"],
+			ptd=deserialized_dict["ptd"],
+			nurse=deserialized_dict["nurse"],
+			no_kine=deserialized_dict["noKine"],
+			no_gp=deserialized_dict["noGp"],
+			no_nurse=deserialized_dict["noNurse"],
+			unsubscription_reason_id=deserialized_dict.get("unsubscriptionReasonId"),
+			ptd_start=deserialized_dict.get("ptdStart"),
+			ptd_end=deserialized_dict.get("ptdEnd"),
+			ptd_last_invoiced=deserialized_dict.get("ptdLastInvoiced"),
+			start_of_suspension=deserialized_dict.get("startOfSuspension"),
+			end_of_suspension=deserialized_dict.get("endOfSuspension"),
+			suspension_reason=SuspensionReason._deserialize(deserialized_dict.get("suspensionReason")) if deserialized_dict.get("suspensionReason") is not None else None,
+			suspension_source=deserialized_dict.get("suspensionSource"),
+			forced_suspension=deserialized_dict["forcedSuspension"],
+			signature_type=MhcSignatureType._deserialize(deserialized_dict.get("signatureType")) if deserialized_dict.get("signatureType") is not None else None,
+			status=deserialized_dict.get("status"),
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["options"].items())),
+			receipts=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict["receipts"].items())),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type MedicalHouseContract = Union['EncryptedMedicalHouseContract', 'DecryptedMedicalHouseContract']
 
 def serialize_medical_house_contract(medical_house_contract: MedicalHouseContract) -> Any:
-	if isinstance(medical_house_contract, DecryptedMedicalHouseContract):
-		serialized_entity = medical_house_contract.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract"})
-		return serialized_entity
-	elif isinstance(medical_house_contract, EncryptedMedicalHouseContract):
+	if isinstance(medical_house_contract, EncryptedMedicalHouseContract):
 		serialized_entity = medical_house_contract.__serialize__()
 		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract"})
+		return serialized_entity
+	elif isinstance(medical_house_contract, DecryptedMedicalHouseContract):
+		serialized_entity = medical_house_contract.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract"})
 		return serialized_entity
 	else:
 		raise Exception(f"{type(medical_house_contract)} is not a known subclass of MedicalHouseContract")
@@ -9766,12 +9197,110 @@ def deserialize_medical_house_contract(data: Union[str, dict[str, JsonElement]])
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract":
-		return DecryptedMedicalHouseContract._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract":
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedMedicalHouseContract":
 		return EncryptedMedicalHouseContract._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedMedicalHouseContract":
+		return DecryptedMedicalHouseContract._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of MedicalHouseContract")
+
+class ReceiptBlobType(Enum):
+	Xades = "xades"
+	KmehrRequest = "kmehrRequest"
+	KmehrResponse = "kmehrResponse"
+	SoapRequest = "soapRequest"
+	SoapResponse = "soapResponse"
+	SoapConversation = "soapConversation"
+	Tack = "tack"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReceiptBlobType':
+		if data == "xades":
+			return ReceiptBlobType.Xades
+		elif data == "kmehrRequest":
+			return ReceiptBlobType.KmehrRequest
+		elif data == "kmehrResponse":
+			return ReceiptBlobType.KmehrResponse
+		elif data == "soapRequest":
+			return ReceiptBlobType.SoapRequest
+		elif data == "soapResponse":
+			return ReceiptBlobType.SoapResponse
+		elif data == "soapConversation":
+			return ReceiptBlobType.SoapConversation
+		elif data == "tack":
+			return ReceiptBlobType.Tack
+		else:
+			raise Exception(f"{data} is not a valid value for ReceiptBlobType enum.")
+
+@dataclass
+class DataAttachment:
+	couch_db_attachment_id: Optional[str] = None
+	object_store_attachment_id: Optional[str] = None
+	utis: list[str] = field(default_factory=list)
+	compression_algorithm: Optional[str] = None
+	tried_compression_algorithms_version: Optional[str] = None
+	stored_data_size: Optional[int] = None
+	real_data_size: Optional[int] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"couchDbAttachmentId": self.couch_db_attachment_id,
+			"objectStoreAttachmentId": self.object_store_attachment_id,
+			"utis": [x0 for x0 in self.utis],
+			"compressionAlgorithm": self.compression_algorithm,
+			"triedCompressionAlgorithmsVersion": self.tried_compression_algorithms_version,
+			"storedDataSize": self.stored_data_size,
+			"realDataSize": self.real_data_size,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataAttachment':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			couch_db_attachment_id=deserialized_dict.get("couchDbAttachmentId"),
+			object_store_attachment_id=deserialized_dict.get("objectStoreAttachmentId"),
+			utis=[x0 for x0 in deserialized_dict["utis"]],
+			compression_algorithm=deserialized_dict.get("compressionAlgorithm"),
+			tried_compression_algorithms_version=deserialized_dict.get("triedCompressionAlgorithmsVersion"),
+			stored_data_size=deserialized_dict.get("storedDataSize"),
+			real_data_size=deserialized_dict.get("realDataSize"),
+		)
+
+@dataclass
+class DeletedAttachment:
+	couch_db_attachment_id: Optional[str] = None
+	object_store_attachment_id: Optional[str] = None
+	key: Optional[str] = None
+	deletion_time: Optional[int] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"couchDbAttachmentId": self.couch_db_attachment_id,
+			"objectStoreAttachmentId": self.object_store_attachment_id,
+			"key": self.key,
+			"deletionTime": self.deletion_time,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DeletedAttachment':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			couch_db_attachment_id=deserialized_dict.get("couchDbAttachmentId"),
+			object_store_attachment_id=deserialized_dict.get("objectStoreAttachmentId"),
+			key=deserialized_dict.get("key"),
+			deletion_time=deserialized_dict.get("deletionTime"),
+		)
 
 @dataclass
 class Permission:
@@ -10030,349 +9559,6 @@ def deserialize_secret_id_share_options(data: Union[str, dict[str, JsonElement]]
 		return SecretIdShareOptionsUseExactly._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of SecretIdShareOptions")
-
-@dataclass
-class Remote:
-	url: str
-	auth: Optional['RemoteAuthentication'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"url": self.url,
-			"auth": self.auth.__serialize__() if self.auth is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Remote':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			url=deserialized_dict["url"],
-			auth=RemoteAuthentication._deserialize(deserialized_dict.get("auth")) if deserialized_dict.get("auth") is not None else None,
-		)
-
-@dataclass
-class ReplicationStats:
-	revisions_checked: Optional[int] = None
-	missing_revisions_found: Optional[int] = None
-	docs_read: Optional[int] = None
-	docs_written: Optional[int] = None
-	changes_pending: Optional[int] = None
-	doc_write_failures: Optional[int] = None
-	checkpointed_source_seq: Optional[str] = None
-	start_time: Optional[str] = None
-	error: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"revisionsChecked": self.revisions_checked,
-			"missingRevisionsFound": self.missing_revisions_found,
-			"docsRead": self.docs_read,
-			"docsWritten": self.docs_written,
-			"changesPending": self.changes_pending,
-			"docWriteFailures": self.doc_write_failures,
-			"checkpointedSourceSeq": self.checkpointed_source_seq,
-			"startTime": self.start_time,
-			"error": self.error,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReplicationStats':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			revisions_checked=deserialized_dict.get("revisionsChecked"),
-			missing_revisions_found=deserialized_dict.get("missingRevisionsFound"),
-			docs_read=deserialized_dict.get("docsRead"),
-			docs_written=deserialized_dict.get("docsWritten"),
-			changes_pending=deserialized_dict.get("changesPending"),
-			doc_write_failures=deserialized_dict.get("docWriteFailures"),
-			checkpointed_source_seq=deserialized_dict.get("checkpointedSourceSeq"),
-			start_time=deserialized_dict.get("startTime"),
-			error=deserialized_dict.get("error"),
-		)
-
-@dataclass
-class OperationToken:
-	token_hash: str
-	creation_time: int
-	validity: int
-	operation: 'Operation'
-	description: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"tokenHash": self.token_hash,
-			"creationTime": self.creation_time,
-			"validity": self.validity,
-			"operation": self.operation.__serialize__(),
-			"description": self.description,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'OperationToken':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			token_hash=deserialized_dict["tokenHash"],
-			creation_time=deserialized_dict["creationTime"],
-			validity=deserialized_dict["validity"],
-			operation=Operation._deserialize(deserialized_dict["operation"]),
-			description=deserialized_dict.get("description"),
-		)
-
-class AuthenticationClass(Enum):
-	DigitalId = "DIGITAL_ID"
-	TwoFactorAuthentication = "TWO_FACTOR_AUTHENTICATION"
-	ShortLivedToken = "SHORT_LIVED_TOKEN"
-	ExternalAuthentication = "EXTERNAL_AUTHENTICATION"
-	Password = "PASSWORD"
-	LongLivedToken = "LONG_LIVED_TOKEN"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AuthenticationClass':
-		if data == "DIGITAL_ID":
-			return AuthenticationClass.DigitalId
-		elif data == "TWO_FACTOR_AUTHENTICATION":
-			return AuthenticationClass.TwoFactorAuthentication
-		elif data == "SHORT_LIVED_TOKEN":
-			return AuthenticationClass.ShortLivedToken
-		elif data == "EXTERNAL_AUTHENTICATION":
-			return AuthenticationClass.ExternalAuthentication
-		elif data == "PASSWORD":
-			return AuthenticationClass.Password
-		elif data == "LONG_LIVED_TOKEN":
-			return AuthenticationClass.LongLivedToken
-		else:
-			raise Exception(f"{data} is not a valid value for AuthenticationClass enum.")
-
-class GroupStatus(Enum):
-	Paying = "PAYING"
-	Free = "FREE"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupStatus':
-		if data == "PAYING":
-			return GroupStatus.Paying
-		elif data == "FREE":
-			return GroupStatus.Free
-		else:
-			raise Exception(f"{data} is not a valid value for GroupStatus enum.")
-
-@dataclass
-class Replication:
-	id: str
-	rev: Optional[str] = None
-	deletion_date: Optional[int] = None
-	name: Optional[str] = None
-	context: Optional[str] = None
-	database_synchronizations: list['DatabaseSynchronization'] = field(default_factory=list)
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"rev": self.rev,
-			"deletionDate": self.deletion_date,
-			"name": self.name,
-			"context": self.context,
-			"databaseSynchronizations": [x0.__serialize__() for x0 in self.database_synchronizations],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Replication':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			rev=deserialized_dict.get("rev"),
-			deletion_date=deserialized_dict.get("deletionDate"),
-			name=deserialized_dict.get("name"),
-			context=deserialized_dict.get("context"),
-			database_synchronizations=[DatabaseSynchronization._deserialize(x0) for x0 in deserialized_dict["databaseSynchronizations"]],
-		)
-
-@dataclass
-class View:
-	map: str
-	reduce: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"map": self.map,
-			"reduce": self.reduce,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'View':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			map=deserialized_dict["map"],
-			reduce=deserialized_dict.get("reduce"),
-		)
-
-@dataclass
-class DatabaseInfo:
-	id: str
-	update_seq: Optional[str] = None
-	file_size: Optional[int] = None
-	external_size: Optional[int] = None
-	active_size: Optional[int] = None
-	docs: Optional[int] = None
-	q: Optional[int] = None
-	n: Optional[int] = None
-	w: Optional[int] = None
-	r: Optional[int] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"id": self.id,
-			"updateSeq": self.update_seq,
-			"fileSize": self.file_size,
-			"externalSize": self.external_size,
-			"activeSize": self.active_size,
-			"docs": self.docs,
-			"q": self.q,
-			"n": self.n,
-			"w": self.w,
-			"r": self.r,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseInfo':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			id=deserialized_dict["id"],
-			update_seq=deserialized_dict.get("updateSeq"),
-			file_size=deserialized_dict.get("fileSize"),
-			external_size=deserialized_dict.get("externalSize"),
-			active_size=deserialized_dict.get("activeSize"),
-			docs=deserialized_dict.get("docs"),
-			q=deserialized_dict.get("q"),
-			n=deserialized_dict.get("n"),
-			w=deserialized_dict.get("w"),
-			r=deserialized_dict.get("r"),
-		)
-
-class PaymentType(Enum):
-	Cash = "cash"
-	Wired = "wired"
-	Insurance = "insurance"
-	Creditcard = "creditcard"
-	Debitcard = "debitcard"
-	Paypal = "paypal"
-	Bitcoin = "bitcoin"
-	Other = "other"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'PaymentType':
-		if data == "cash":
-			return PaymentType.Cash
-		elif data == "wired":
-			return PaymentType.Wired
-		elif data == "insurance":
-			return PaymentType.Insurance
-		elif data == "creditcard":
-			return PaymentType.Creditcard
-		elif data == "debitcard":
-			return PaymentType.Debitcard
-		elif data == "paypal":
-			return PaymentType.Paypal
-		elif data == "bitcoin":
-			return PaymentType.Bitcoin
-		elif data == "other":
-			return PaymentType.Other
-		else:
-			raise Exception(f"{data} is not a valid value for PaymentType enum.")
-
-@dataclass
-class Payment:
-	payment_date: int = 0
-	payment_type: Optional['PaymentType'] = None
-	paid: Optional[float] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"paymentDate": self.payment_date,
-			"paymentType": self.payment_type.__serialize__() if self.payment_type is not None else None,
-			"paid": self.paid,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Payment':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			payment_date=deserialized_dict["paymentDate"],
-			payment_type=PaymentType._deserialize(deserialized_dict.get("paymentType")) if deserialized_dict.get("paymentType") is not None else None,
-			paid=deserialized_dict.get("paid"),
-		)
-
-@dataclass
-class IdentityDocumentReader:
-	justificatif_document_number: Optional[str] = None
-	support_serial_number: Optional[str] = None
-	time_reading_eid_document: Optional[int] = None
-	eid_document_support_type: int = 0
-	reason_manual_encoding: int = 0
-	reason_using_vignette: int = 0
-
-	def __serialize__(self) -> Any:
-		return {
-			"justificatifDocumentNumber": self.justificatif_document_number,
-			"supportSerialNumber": self.support_serial_number,
-			"timeReadingEIdDocument": self.time_reading_eid_document,
-			"eidDocumentSupportType": self.eid_document_support_type,
-			"reasonManualEncoding": self.reason_manual_encoding,
-			"reasonUsingVignette": self.reason_using_vignette,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'IdentityDocumentReader':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			justificatif_document_number=deserialized_dict.get("justificatifDocumentNumber"),
-			support_serial_number=deserialized_dict.get("supportSerialNumber"),
-			time_reading_eid_document=deserialized_dict.get("timeReadingEIdDocument"),
-			eid_document_support_type=deserialized_dict["eidDocumentSupportType"],
-			reason_manual_encoding=deserialized_dict["reasonManualEncoding"],
-			reason_using_vignette=deserialized_dict["reasonUsingVignette"],
-		)
 
 @dataclass
 class DecryptedSubContact:
@@ -10769,102 +9955,524 @@ class LinkQualification(Enum):
 		else:
 			raise Exception(f"{data} is not a valid value for LinkQualification enum.")
 
-class ReceiptBlobType(Enum):
-	Xades = "xades"
-	KmehrRequest = "kmehrRequest"
-	KmehrResponse = "kmehrResponse"
-	SoapRequest = "soapRequest"
-	SoapResponse = "soapResponse"
-	SoapConversation = "soapConversation"
-	Tack = "tack"
+class TaskStatus(Enum):
+	Pending = "pending"
+	Ongoing = "ongoing"
+	Cancelled = "cancelled"
+	Completed = "completed"
 
 	def __serialize__(self) -> Any:
 		return self.value
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReceiptBlobType':
-		if data == "xades":
-			return ReceiptBlobType.Xades
-		elif data == "kmehrRequest":
-			return ReceiptBlobType.KmehrRequest
-		elif data == "kmehrResponse":
-			return ReceiptBlobType.KmehrResponse
-		elif data == "soapRequest":
-			return ReceiptBlobType.SoapRequest
-		elif data == "soapResponse":
-			return ReceiptBlobType.SoapResponse
-		elif data == "soapConversation":
-			return ReceiptBlobType.SoapConversation
-		elif data == "tack":
-			return ReceiptBlobType.Tack
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TaskStatus':
+		if data == "pending":
+			return TaskStatus.Pending
+		elif data == "ongoing":
+			return TaskStatus.Ongoing
+		elif data == "cancelled":
+			return TaskStatus.Cancelled
+		elif data == "completed":
+			return TaskStatus.Completed
 		else:
-			raise Exception(f"{data} is not a valid value for ReceiptBlobType enum.")
+			raise Exception(f"{data} is not a valid value for TaskStatus enum.")
+
+class Laterality(Enum):
+	Left = "left"
+	Right = "right"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Laterality':
+		if data == "left":
+			return Laterality.Left
+		elif data == "right":
+			return Laterality.Right
+		else:
+			raise Exception(f"{data} is not a valid value for Laterality enum.")
 
 @dataclass
-class DataAttachment:
-	couch_db_attachment_id: Optional[str] = None
-	object_store_attachment_id: Optional[str] = None
-	utis: list[str] = field(default_factory=list)
-	compression_algorithm: Optional[str] = None
-	tried_compression_algorithms_version: Optional[str] = None
-	stored_data_size: Optional[int] = None
-	real_data_size: Optional[int] = None
+class DecryptedPlanOfAction:
+	id: str
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	prescriber_id: Optional[str] = None
+	value_date: Optional[int] = None
+	opening_date: Optional[int] = None
+	closing_date: Optional[int] = None
+	deadline_date: Optional[int] = None
+	name: Optional[str] = None
+	descr: Optional[str] = None
+	note: Optional[str] = None
+	id_opening_contact: Optional[str] = None
+	id_closing_contact: Optional[str] = None
+	care_team_memberships: list['DecryptedCareTeamMembership'] = field(default_factory=list)
+	encrypted_self: Optional['Base64String'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"couchDbAttachmentId": self.couch_db_attachment_id,
-			"objectStoreAttachmentId": self.object_store_attachment_id,
-			"utis": [x0 for x0 in self.utis],
-			"compressionAlgorithm": self.compression_algorithm,
-			"triedCompressionAlgorithmsVersion": self.tried_compression_algorithms_version,
-			"storedDataSize": self.stored_data_size,
-			"realDataSize": self.real_data_size,
+			"id": self.id,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"prescriberId": self.prescriber_id,
+			"valueDate": self.value_date,
+			"openingDate": self.opening_date,
+			"closingDate": self.closing_date,
+			"deadlineDate": self.deadline_date,
+			"name": self.name,
+			"descr": self.descr,
+			"note": self.note,
+			"idOpeningContact": self.id_opening_contact,
+			"idClosingContact": self.id_closing_contact,
+			"careTeamMemberships": [x0.__serialize__() for x0 in self.care_team_memberships],
+			"encryptedSelf": self.encrypted_self,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DataAttachment':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedPlanOfAction':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			couch_db_attachment_id=deserialized_dict.get("couchDbAttachmentId"),
-			object_store_attachment_id=deserialized_dict.get("objectStoreAttachmentId"),
-			utis=[x0 for x0 in deserialized_dict["utis"]],
-			compression_algorithm=deserialized_dict.get("compressionAlgorithm"),
-			tried_compression_algorithms_version=deserialized_dict.get("triedCompressionAlgorithmsVersion"),
-			stored_data_size=deserialized_dict.get("storedDataSize"),
-			real_data_size=deserialized_dict.get("realDataSize"),
+			id=deserialized_dict["id"],
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			prescriber_id=deserialized_dict.get("prescriberId"),
+			value_date=deserialized_dict.get("valueDate"),
+			opening_date=deserialized_dict.get("openingDate"),
+			closing_date=deserialized_dict.get("closingDate"),
+			deadline_date=deserialized_dict.get("deadlineDate"),
+			name=deserialized_dict.get("name"),
+			descr=deserialized_dict.get("descr"),
+			note=deserialized_dict.get("note"),
+			id_opening_contact=deserialized_dict.get("idOpeningContact"),
+			id_closing_contact=deserialized_dict.get("idClosingContact"),
+			care_team_memberships=[DecryptedCareTeamMembership._deserialize(x0) for x0 in deserialized_dict["careTeamMemberships"]],
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
 @dataclass
-class DeletedAttachment:
-	couch_db_attachment_id: Optional[str] = None
-	object_store_attachment_id: Optional[str] = None
-	key: Optional[str] = None
-	deletion_time: Optional[int] = None
+class EncryptedPlanOfAction:
+	id: str
+	created: Optional[int] = None
+	modified: Optional[int] = None
+	author: Optional[str] = None
+	responsible: Optional[str] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	end_of_life: Optional[int] = None
+	prescriber_id: Optional[str] = None
+	value_date: Optional[int] = None
+	opening_date: Optional[int] = None
+	closing_date: Optional[int] = None
+	deadline_date: Optional[int] = None
+	name: Optional[str] = None
+	descr: Optional[str] = None
+	note: Optional[str] = None
+	id_opening_contact: Optional[str] = None
+	id_closing_contact: Optional[str] = None
+	care_team_memberships: list['EncryptedCareTeamMembership'] = field(default_factory=list)
+	encrypted_self: Optional['Base64String'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"couchDbAttachmentId": self.couch_db_attachment_id,
-			"objectStoreAttachmentId": self.object_store_attachment_id,
-			"key": self.key,
-			"deletionTime": self.deletion_time,
+			"id": self.id,
+			"created": self.created,
+			"modified": self.modified,
+			"author": self.author,
+			"responsible": self.responsible,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"endOfLife": self.end_of_life,
+			"prescriberId": self.prescriber_id,
+			"valueDate": self.value_date,
+			"openingDate": self.opening_date,
+			"closingDate": self.closing_date,
+			"deadlineDate": self.deadline_date,
+			"name": self.name,
+			"descr": self.descr,
+			"note": self.note,
+			"idOpeningContact": self.id_opening_contact,
+			"idClosingContact": self.id_closing_contact,
+			"careTeamMemberships": [x0.__serialize__() for x0 in self.care_team_memberships],
+			"encryptedSelf": self.encrypted_self,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DeletedAttachment':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedPlanOfAction':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			couch_db_attachment_id=deserialized_dict.get("couchDbAttachmentId"),
-			object_store_attachment_id=deserialized_dict.get("objectStoreAttachmentId"),
-			key=deserialized_dict.get("key"),
-			deletion_time=deserialized_dict.get("deletionTime"),
+			id=deserialized_dict["id"],
+			created=deserialized_dict.get("created"),
+			modified=deserialized_dict.get("modified"),
+			author=deserialized_dict.get("author"),
+			responsible=deserialized_dict.get("responsible"),
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			end_of_life=deserialized_dict.get("endOfLife"),
+			prescriber_id=deserialized_dict.get("prescriberId"),
+			value_date=deserialized_dict.get("valueDate"),
+			opening_date=deserialized_dict.get("openingDate"),
+			closing_date=deserialized_dict.get("closingDate"),
+			deadline_date=deserialized_dict.get("deadlineDate"),
+			name=deserialized_dict.get("name"),
+			descr=deserialized_dict.get("descr"),
+			note=deserialized_dict.get("note"),
+			id_opening_contact=deserialized_dict.get("idOpeningContact"),
+			id_closing_contact=deserialized_dict.get("idClosingContact"),
+			care_team_memberships=[EncryptedCareTeamMembership._deserialize(x0) for x0 in deserialized_dict["careTeamMemberships"]],
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type PlanOfAction = Union['DecryptedPlanOfAction', 'EncryptedPlanOfAction']
+
+def serialize_plan_of_action(plan_of_action: PlanOfAction) -> Any:
+	if isinstance(plan_of_action, DecryptedPlanOfAction):
+		serialized_entity = plan_of_action.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction"})
+		return serialized_entity
+	elif isinstance(plan_of_action, EncryptedPlanOfAction):
+		serialized_entity = plan_of_action.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(plan_of_action)} is not a known subclass of PlanOfAction")
+
+def deserialize_plan_of_action(data: Union[str, dict[str, JsonElement]]) -> 'PlanOfAction':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedPlanOfAction":
+		return DecryptedPlanOfAction._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedPlanOfAction":
+		return EncryptedPlanOfAction._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of PlanOfAction")
+
+@dataclass
+class DecryptedEpisode:
+	id: str
+	name: Optional[str] = None
+	comment: Optional[str] = None
+	start_date: Optional[int] = None
+	end_date: Optional[int] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"name": self.name,
+			"comment": self.comment,
+			"startDate": self.start_date,
+			"endDate": self.end_date,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedEpisode':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			name=deserialized_dict.get("name"),
+			comment=deserialized_dict.get("comment"),
+			start_date=deserialized_dict.get("startDate"),
+			end_date=deserialized_dict.get("endDate"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+@dataclass
+class EncryptedEpisode:
+	id: str
+	name: Optional[str] = None
+	comment: Optional[str] = None
+	start_date: Optional[int] = None
+	end_date: Optional[int] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"name": self.name,
+			"comment": self.comment,
+			"startDate": self.start_date,
+			"endDate": self.end_date,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedEpisode':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			name=deserialized_dict.get("name"),
+			comment=deserialized_dict.get("comment"),
+			start_date=deserialized_dict.get("startDate"),
+			end_date=deserialized_dict.get("endDate"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type Episode = Union['DecryptedEpisode', 'EncryptedEpisode']
+
+def serialize_episode(episode: Episode) -> Any:
+	if isinstance(episode, DecryptedEpisode):
+		serialized_entity = episode.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedEpisode"})
+		return serialized_entity
+	elif isinstance(episode, EncryptedEpisode):
+		serialized_entity = episode.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedEpisode"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(episode)} is not a known subclass of Episode")
+
+def deserialize_episode(data: Union[str, dict[str, JsonElement]]) -> 'Episode':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedEpisode":
+		return DecryptedEpisode._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedEpisode":
+		return EncryptedEpisode._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of Episode")
+
+@dataclass
+class EncryptedCareTeamMember:
+	id: str
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	care_team_member_type: Optional['CareTeamMemberType'] = None
+	healthcare_party_id: Optional[str] = None
+	quality: Optional['CodeStub'] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"careTeamMemberType": self.care_team_member_type.__serialize__() if self.care_team_member_type is not None else None,
+			"healthcarePartyId": self.healthcare_party_id,
+			"quality": self.quality.__serialize__() if self.quality is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCareTeamMember':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			care_team_member_type=CareTeamMemberType._deserialize(deserialized_dict.get("careTeamMemberType")) if deserialized_dict.get("careTeamMemberType") is not None else None,
+			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
+			quality=CodeStub._deserialize(deserialized_dict.get("quality")) if deserialized_dict.get("quality") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+@dataclass
+class DecryptedCareTeamMember:
+	id: str
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	care_team_member_type: Optional['CareTeamMemberType'] = None
+	healthcare_party_id: Optional[str] = None
+	quality: Optional['CodeStub'] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"careTeamMemberType": self.care_team_member_type.__serialize__() if self.care_team_member_type is not None else None,
+			"healthcarePartyId": self.healthcare_party_id,
+			"quality": self.quality.__serialize__() if self.quality is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCareTeamMember':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			care_team_member_type=CareTeamMemberType._deserialize(deserialized_dict.get("careTeamMemberType")) if deserialized_dict.get("careTeamMemberType") is not None else None,
+			healthcare_party_id=deserialized_dict.get("healthcarePartyId"),
+			quality=CodeStub._deserialize(deserialized_dict.get("quality")) if deserialized_dict.get("quality") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type CareTeamMember = Union['EncryptedCareTeamMember', 'DecryptedCareTeamMember']
+
+def serialize_care_team_member(care_team_member: CareTeamMember) -> Any:
+	if isinstance(care_team_member, EncryptedCareTeamMember):
+		serialized_entity = care_team_member.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember"})
+		return serialized_entity
+	elif isinstance(care_team_member, DecryptedCareTeamMember):
+		serialized_entity = care_team_member.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(care_team_member)} is not a known subclass of CareTeamMember")
+
+def deserialize_care_team_member(data: Union[str, dict[str, JsonElement]]) -> 'CareTeamMember':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMember":
+		return EncryptedCareTeamMember._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember":
+		return DecryptedCareTeamMember._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of CareTeamMember")
+
+@dataclass
+class HealthElementQualifiedLink:
+	type: str
+	health_element_id: str
+	association_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type,
+			"associationId": self.association_id,
+			"healthElementId": self.health_element_id,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementQualifiedLink':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=deserialized_dict["type"],
+			association_id=deserialized_dict.get("associationId"),
+			health_element_id=deserialized_dict["healthElementId"],
+		)
+
+@dataclass
+class HealthElementAsserter:
+	local_asserter_identifier: Optional['HealthElementAsserterLocalAsserterIdentifier'] = None
+	external_asserter_identifier: Optional['HealthElementAsserterExternalAsserterIdentifier'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"localAsserterIdentifier": self.local_asserter_identifier.__serialize__() if self.local_asserter_identifier is not None else None,
+			"externalAsserterIdentifier": self.external_asserter_identifier.__serialize__() if self.external_asserter_identifier is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserter':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			local_asserter_identifier=HealthElementAsserterLocalAsserterIdentifier._deserialize(deserialized_dict.get("localAsserterIdentifier")) if deserialized_dict.get("localAsserterIdentifier") is not None else None,
+			external_asserter_identifier=HealthElementAsserterExternalAsserterIdentifier._deserialize(deserialized_dict.get("externalAsserterIdentifier")) if deserialized_dict.get("externalAsserterIdentifier") is not None else None,
+		)
+
+@dataclass
+class HealthElementAsserterLocalAsserterIdentifier:
+	id: str
+	type: 'AsserterType'
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"type": self.type.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserterLocalAsserterIdentifier':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			type=AsserterType._deserialize(deserialized_dict["type"]),
+		)
+
+@dataclass
+class HealthElementAsserterExternalAsserterIdentifier:
+	identifier: 'Identifier'
+
+	def __serialize__(self) -> Any:
+		return {
+			"identifier": self.identifier.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'HealthElementAsserterExternalAsserterIdentifier':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			identifier=Identifier._deserialize(deserialized_dict["identifier"]),
 		)
 
 @dataclass
@@ -10905,165 +10513,56 @@ class FailedRequestDetails:
 			should_retry=deserialized_dict["shouldRetry"],
 		)
 
-@dataclass
-class MessageReadStatus:
-	time: Optional[int] = None
-	read: bool = False
-
-	def __serialize__(self) -> Any:
-		return {
-			"time": self.time,
-			"read": self.read,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MessageReadStatus':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			time=deserialized_dict.get("time"),
-			read=deserialized_dict["read"],
-		)
-
-class TaskStatus(Enum):
-	Pending = "pending"
-	Ongoing = "ongoing"
-	Cancelled = "cancelled"
-	Completed = "completed"
+class UserAccessLevel(Enum):
+	Admin = "Admin"
+	Read = "Read"
+	Write = "Write"
 
 	def __serialize__(self) -> Any:
 		return self.value
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TaskStatus':
-		if data == "pending":
-			return TaskStatus.Pending
-		elif data == "ongoing":
-			return TaskStatus.Ongoing
-		elif data == "cancelled":
-			return TaskStatus.Cancelled
-		elif data == "completed":
-			return TaskStatus.Completed
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserAccessLevel':
+		if data == "Admin":
+			return UserAccessLevel.Admin
+		elif data == "Read":
+			return UserAccessLevel.Read
+		elif data == "Write":
+			return UserAccessLevel.Write
 		else:
-			raise Exception(f"{data} is not a valid value for TaskStatus enum.")
+			raise Exception(f"{data} is not a valid value for UserAccessLevel enum.")
 
 @dataclass
-class PropertyTypeStub:
-	identifier: Optional[str] = None
-	type: Optional['TypedValuesType'] = None
+class AgendaSlottingAlgorithmFixedIntervals:
+	interval_minutes: int
 
 	def __serialize__(self) -> Any:
 		return {
-			"identifier": self.identifier,
-			"type": self.type.__serialize__() if self.type is not None else None,
+			"intervalMinutes": self.interval_minutes,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'PropertyTypeStub':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AgendaSlottingAlgorithmFixedIntervals':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			identifier=deserialized_dict.get("identifier"),
-			type=TypedValuesType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+			interval_minutes=deserialized_dict["intervalMinutes"],
 		)
 
-@dataclass
-class DecryptedTypedValue:
-	type: Optional['TypedValuesType'] = None
-	boolean_value: Optional[bool] = None
-	integer_value: Optional[int] = None
-	double_value: Optional[float] = None
-	string_value: Optional[str] = None
-	date_value: Optional[int] = None
-	encrypted_self: Optional['Base64String'] = None
+type AgendaSlottingAlgorithm = Union['AgendaSlottingAlgorithmFixedIntervals']
 
-	def __serialize__(self) -> Any:
-		return {
-			"type": self.type.__serialize__() if self.type is not None else None,
-			"booleanValue": self.boolean_value,
-			"integerValue": self.integer_value,
-			"doubleValue": self.double_value,
-			"stringValue": self.string_value,
-			"dateValue": self.date_value,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedTypedValue':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			type=TypedValuesType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
-			boolean_value=deserialized_dict.get("booleanValue"),
-			integer_value=deserialized_dict.get("integerValue"),
-			double_value=deserialized_dict.get("doubleValue"),
-			string_value=deserialized_dict.get("stringValue"),
-			date_value=deserialized_dict.get("dateValue"),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class EncryptedTypedValue:
-	type: Optional['TypedValuesType'] = None
-	boolean_value: Optional[bool] = None
-	integer_value: Optional[int] = None
-	double_value: Optional[float] = None
-	string_value: Optional[str] = None
-	date_value: Optional[int] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"type": self.type.__serialize__() if self.type is not None else None,
-			"booleanValue": self.boolean_value,
-			"integerValue": self.integer_value,
-			"doubleValue": self.double_value,
-			"stringValue": self.string_value,
-			"dateValue": self.date_value,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedTypedValue':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			type=TypedValuesType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
-			boolean_value=deserialized_dict.get("booleanValue"),
-			integer_value=deserialized_dict.get("integerValue"),
-			double_value=deserialized_dict.get("doubleValue"),
-			string_value=deserialized_dict.get("stringValue"),
-			date_value=deserialized_dict.get("dateValue"),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type TypedValue = Union['DecryptedTypedValue', 'EncryptedTypedValue']
-
-def serialize_typed_value(typed_value: TypedValue) -> Any:
-	if isinstance(typed_value, DecryptedTypedValue):
-		serialized_entity = typed_value.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedTypedValue"})
-		return serialized_entity
-	elif isinstance(typed_value, EncryptedTypedValue):
-		serialized_entity = typed_value.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedTypedValue"})
+def serialize_agenda_slotting_algorithm(agenda_slotting_algorithm: AgendaSlottingAlgorithm) -> Any:
+	if isinstance(agenda_slotting_algorithm, AgendaSlottingAlgorithmFixedIntervals):
+		serialized_entity = agenda_slotting_algorithm.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals"})
 		return serialized_entity
 	else:
-		raise Exception(f"{type(typed_value)} is not a known subclass of TypedValue")
+		raise Exception(f"{type(agenda_slotting_algorithm)} is not a known subclass of AgendaSlottingAlgorithm")
 
-def deserialize_typed_value(data: Union[str, dict[str, JsonElement]]) -> 'TypedValue':
+def deserialize_agenda_slotting_algorithm(data: Union[str, dict[str, JsonElement]]) -> 'AgendaSlottingAlgorithm':
 	deserialized_dict: dict[str, JsonElement]
 	if isinstance(data, str):
 		deserialized_dict = json.loads(data)
@@ -11072,12 +10571,390 @@ def deserialize_typed_value(data: Union[str, dict[str, JsonElement]]) -> 'TypedV
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedTypedValue":
-		return DecryptedTypedValue._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedTypedValue":
-		return EncryptedTypedValue._deserialize(deserialized_dict)
+	if qualifier == "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals":
+		return AgendaSlottingAlgorithmFixedIntervals._deserialize(deserialized_dict)
 	else:
-		raise Exception(f"{qualifier} is not a known subclass of TypedValue")
+		raise Exception(f"{qualifier} is not a known subclass of AgendaSlottingAlgorithm")
+
+@dataclass
+class ResourceGroupAllocationSchedule:
+	resource_group: Optional['CodeStub'] = None
+	tags: set['CodeStub'] = field(default_factory=set)
+	codes: set['CodeStub'] = field(default_factory=set)
+	name: Optional[str] = None
+	start_date_time: Optional[int] = None
+	end_date_time: Optional[int] = None
+	items: list['EmbeddedTimeTableItem'] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
+			"tags": [x0.__serialize__() for x0 in self.tags],
+			"codes": [x0.__serialize__() for x0 in self.codes],
+			"name": self.name,
+			"startDateTime": self.start_date_time,
+			"endDateTime": self.end_date_time,
+			"items": [x0.__serialize__() for x0 in self.items],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ResourceGroupAllocationSchedule':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
+			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
+			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
+			name=deserialized_dict.get("name"),
+			start_date_time=deserialized_dict.get("startDateTime"),
+			end_date_time=deserialized_dict.get("endDateTime"),
+			items=[EmbeddedTimeTableItem._deserialize(x0) for x0 in deserialized_dict["items"]],
+		)
+
+@dataclass
+class Remote:
+	url: str
+	auth: Optional['RemoteAuthentication'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"url": self.url,
+			"auth": self.auth.__serialize__() if self.auth is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Remote':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			url=deserialized_dict["url"],
+			auth=RemoteAuthentication._deserialize(deserialized_dict.get("auth")) if deserialized_dict.get("auth") is not None else None,
+		)
+
+@dataclass
+class ReplicationStats:
+	revisions_checked: Optional[int] = None
+	missing_revisions_found: Optional[int] = None
+	docs_read: Optional[int] = None
+	docs_written: Optional[int] = None
+	changes_pending: Optional[int] = None
+	doc_write_failures: Optional[int] = None
+	checkpointed_source_seq: Optional[str] = None
+	start_time: Optional[str] = None
+	error: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"revisionsChecked": self.revisions_checked,
+			"missingRevisionsFound": self.missing_revisions_found,
+			"docsRead": self.docs_read,
+			"docsWritten": self.docs_written,
+			"changesPending": self.changes_pending,
+			"docWriteFailures": self.doc_write_failures,
+			"checkpointedSourceSeq": self.checkpointed_source_seq,
+			"startTime": self.start_time,
+			"error": self.error,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ReplicationStats':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			revisions_checked=deserialized_dict.get("revisionsChecked"),
+			missing_revisions_found=deserialized_dict.get("missingRevisionsFound"),
+			docs_read=deserialized_dict.get("docsRead"),
+			docs_written=deserialized_dict.get("docsWritten"),
+			changes_pending=deserialized_dict.get("changesPending"),
+			doc_write_failures=deserialized_dict.get("docWriteFailures"),
+			checkpointed_source_seq=deserialized_dict.get("checkpointedSourceSeq"),
+			start_time=deserialized_dict.get("startTime"),
+			error=deserialized_dict.get("error"),
+		)
+
+@dataclass
+class OperationToken:
+	token_hash: str
+	creation_time: int
+	validity: int
+	operation: 'Operation'
+	description: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"tokenHash": self.token_hash,
+			"creationTime": self.creation_time,
+			"validity": self.validity,
+			"operation": self.operation.__serialize__(),
+			"description": self.description,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'OperationToken':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			token_hash=deserialized_dict["tokenHash"],
+			creation_time=deserialized_dict["creationTime"],
+			validity=deserialized_dict["validity"],
+			operation=Operation._deserialize(deserialized_dict["operation"]),
+			description=deserialized_dict.get("description"),
+		)
+
+class AuthenticationClass(Enum):
+	DigitalId = "DIGITAL_ID"
+	TwoFactorAuthentication = "TWO_FACTOR_AUTHENTICATION"
+	ShortLivedToken = "SHORT_LIVED_TOKEN"
+	ExternalAuthentication = "EXTERNAL_AUTHENTICATION"
+	Password = "PASSWORD"
+	LongLivedToken = "LONG_LIVED_TOKEN"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AuthenticationClass':
+		if data == "DIGITAL_ID":
+			return AuthenticationClass.DigitalId
+		elif data == "TWO_FACTOR_AUTHENTICATION":
+			return AuthenticationClass.TwoFactorAuthentication
+		elif data == "SHORT_LIVED_TOKEN":
+			return AuthenticationClass.ShortLivedToken
+		elif data == "EXTERNAL_AUTHENTICATION":
+			return AuthenticationClass.ExternalAuthentication
+		elif data == "PASSWORD":
+			return AuthenticationClass.Password
+		elif data == "LONG_LIVED_TOKEN":
+			return AuthenticationClass.LongLivedToken
+		else:
+			raise Exception(f"{data} is not a valid value for AuthenticationClass enum.")
+
+class GroupStatus(Enum):
+	Paying = "PAYING"
+	Free = "FREE"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'GroupStatus':
+		if data == "PAYING":
+			return GroupStatus.Paying
+		elif data == "FREE":
+			return GroupStatus.Free
+		else:
+			raise Exception(f"{data} is not a valid value for GroupStatus enum.")
+
+@dataclass
+class Replication:
+	id: str
+	rev: Optional[str] = None
+	deletion_date: Optional[int] = None
+	name: Optional[str] = None
+	context: Optional[str] = None
+	database_synchronizations: list['DatabaseSynchronization'] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"rev": self.rev,
+			"deletionDate": self.deletion_date,
+			"name": self.name,
+			"context": self.context,
+			"databaseSynchronizations": [x0.__serialize__() for x0 in self.database_synchronizations],
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Replication':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			rev=deserialized_dict.get("rev"),
+			deletion_date=deserialized_dict.get("deletionDate"),
+			name=deserialized_dict.get("name"),
+			context=deserialized_dict.get("context"),
+			database_synchronizations=[DatabaseSynchronization._deserialize(x0) for x0 in deserialized_dict["databaseSynchronizations"]],
+		)
+
+@dataclass
+class View:
+	map: str
+	reduce: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"map": self.map,
+			"reduce": self.reduce,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'View':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			map=deserialized_dict["map"],
+			reduce=deserialized_dict.get("reduce"),
+		)
+
+@dataclass
+class DatabaseInfo:
+	id: str
+	update_seq: Optional[str] = None
+	file_size: Optional[int] = None
+	external_size: Optional[int] = None
+	active_size: Optional[int] = None
+	docs: Optional[int] = None
+	q: Optional[int] = None
+	n: Optional[int] = None
+	w: Optional[int] = None
+	r: Optional[int] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"id": self.id,
+			"updateSeq": self.update_seq,
+			"fileSize": self.file_size,
+			"externalSize": self.external_size,
+			"activeSize": self.active_size,
+			"docs": self.docs,
+			"q": self.q,
+			"n": self.n,
+			"w": self.w,
+			"r": self.r,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseInfo':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			id=deserialized_dict["id"],
+			update_seq=deserialized_dict.get("updateSeq"),
+			file_size=deserialized_dict.get("fileSize"),
+			external_size=deserialized_dict.get("externalSize"),
+			active_size=deserialized_dict.get("activeSize"),
+			docs=deserialized_dict.get("docs"),
+			q=deserialized_dict.get("q"),
+			n=deserialized_dict.get("n"),
+			w=deserialized_dict.get("w"),
+			r=deserialized_dict.get("r"),
+		)
+
+@dataclass
+class EncryptedCalendarItemTag:
+	code: Optional[str] = None
+	date: Optional[int] = None
+	user_id: Optional[str] = None
+	user_name: Optional[str] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"code": self.code,
+			"date": self.date,
+			"userId": self.user_id,
+			"userName": self.user_name,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCalendarItemTag':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			code=deserialized_dict.get("code"),
+			date=deserialized_dict.get("date"),
+			user_id=deserialized_dict.get("userId"),
+			user_name=deserialized_dict.get("userName"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+@dataclass
+class DecryptedCalendarItemTag:
+	code: Optional[str] = None
+	date: Optional[int] = None
+	user_id: Optional[str] = None
+	user_name: Optional[str] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"code": self.code,
+			"date": self.date,
+			"userId": self.user_id,
+			"userName": self.user_name,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCalendarItemTag':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			code=deserialized_dict.get("code"),
+			date=deserialized_dict.get("date"),
+			user_id=deserialized_dict.get("userId"),
+			user_name=deserialized_dict.get("userName"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type CalendarItemTag = Union['EncryptedCalendarItemTag', 'DecryptedCalendarItemTag']
+
+def serialize_calendar_item_tag(calendar_item_tag: CalendarItemTag) -> Any:
+	if isinstance(calendar_item_tag, EncryptedCalendarItemTag):
+		serialized_entity = calendar_item_tag.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag"})
+		return serialized_entity
+	elif isinstance(calendar_item_tag, DecryptedCalendarItemTag):
+		serialized_entity = calendar_item_tag.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedCalendarItemTag"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(calendar_item_tag)} is not a known subclass of CalendarItemTag")
+
+def deserialize_calendar_item_tag(data: Union[str, dict[str, JsonElement]]) -> 'CalendarItemTag':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedCalendarItemTag":
+		return EncryptedCalendarItemTag._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedCalendarItemTag":
+		return DecryptedCalendarItemTag._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of CalendarItemTag")
 
 class DocumentType(Enum):
 	Admission = "admission"
@@ -11243,107 +11120,6 @@ class DocumentStatus(Enum):
 		else:
 			raise Exception(f"{data} is not a valid value for DocumentStatus enum.")
 
-class UserAccessLevel(Enum):
-	Admin = "Admin"
-	Read = "Read"
-	Write = "Write"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'UserAccessLevel':
-		if data == "Admin":
-			return UserAccessLevel.Admin
-		elif data == "Read":
-			return UserAccessLevel.Read
-		elif data == "Write":
-			return UserAccessLevel.Write
-		else:
-			raise Exception(f"{data} is not a valid value for UserAccessLevel enum.")
-
-@dataclass
-class AgendaSlottingAlgorithmFixedIntervals:
-	interval_minutes: int
-
-	def __serialize__(self) -> Any:
-		return {
-			"intervalMinutes": self.interval_minutes,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AgendaSlottingAlgorithmFixedIntervals':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			interval_minutes=deserialized_dict["intervalMinutes"],
-		)
-
-type AgendaSlottingAlgorithm = Union['AgendaSlottingAlgorithmFixedIntervals']
-
-def serialize_agenda_slotting_algorithm(agenda_slotting_algorithm: AgendaSlottingAlgorithm) -> Any:
-	if isinstance(agenda_slotting_algorithm, AgendaSlottingAlgorithmFixedIntervals):
-		serialized_entity = agenda_slotting_algorithm.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(agenda_slotting_algorithm)} is not a known subclass of AgendaSlottingAlgorithm")
-
-def deserialize_agenda_slotting_algorithm(data: Union[str, dict[str, JsonElement]]) -> 'AgendaSlottingAlgorithm':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.AgendaSlottingAlgorithm.FixedIntervals":
-		return AgendaSlottingAlgorithmFixedIntervals._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of AgendaSlottingAlgorithm")
-
-@dataclass
-class ResourceGroupAllocationSchedule:
-	resource_group: Optional['CodeStub'] = None
-	tags: set['CodeStub'] = field(default_factory=set)
-	codes: set['CodeStub'] = field(default_factory=set)
-	name: Optional[str] = None
-	start_date_time: Optional[int] = None
-	end_date_time: Optional[int] = None
-	items: list['EmbeddedTimeTableItem'] = field(default_factory=list)
-
-	def __serialize__(self) -> Any:
-		return {
-			"resourceGroup": self.resource_group.__serialize__() if self.resource_group is not None else None,
-			"tags": [x0.__serialize__() for x0 in self.tags],
-			"codes": [x0.__serialize__() for x0 in self.codes],
-			"name": self.name,
-			"startDateTime": self.start_date_time,
-			"endDateTime": self.end_date_time,
-			"items": [x0.__serialize__() for x0 in self.items],
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'ResourceGroupAllocationSchedule':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			resource_group=CodeStub._deserialize(deserialized_dict.get("resourceGroup")) if deserialized_dict.get("resourceGroup") is not None else None,
-			tags={CodeStub._deserialize(x0) for x0 in deserialized_dict["tags"]},
-			codes={CodeStub._deserialize(x0) for x0 in deserialized_dict["codes"]},
-			name=deserialized_dict.get("name"),
-			start_date_time=deserialized_dict.get("startDateTime"),
-			end_date_time=deserialized_dict.get("endDateTime"),
-			items=[EmbeddedTimeTableItem._deserialize(x0) for x0 in deserialized_dict["items"]],
-		)
-
 class FrontEndMigrationStatus(Enum):
 	Started = "STARTED"
 	Paused = "PAUSED"
@@ -11365,6 +11141,254 @@ class FrontEndMigrationStatus(Enum):
 			return FrontEndMigrationStatus.Success
 		else:
 			raise Exception(f"{data} is not a valid value for FrontEndMigrationStatus enum.")
+
+@dataclass
+class PropertyTypeStub:
+	identifier: Optional[str] = None
+	type: Optional['TypedValuesType'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"identifier": self.identifier,
+			"type": self.type.__serialize__() if self.type is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'PropertyTypeStub':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			identifier=deserialized_dict.get("identifier"),
+			type=TypedValuesType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+		)
+
+@dataclass
+class EncryptedTypedValue:
+	type: Optional['TypedValuesType'] = None
+	boolean_value: Optional[bool] = None
+	integer_value: Optional[int] = None
+	double_value: Optional[float] = None
+	string_value: Optional[str] = None
+	date_value: Optional[int] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type.__serialize__() if self.type is not None else None,
+			"booleanValue": self.boolean_value,
+			"integerValue": self.integer_value,
+			"doubleValue": self.double_value,
+			"stringValue": self.string_value,
+			"dateValue": self.date_value,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedTypedValue':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=TypedValuesType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+			boolean_value=deserialized_dict.get("booleanValue"),
+			integer_value=deserialized_dict.get("integerValue"),
+			double_value=deserialized_dict.get("doubleValue"),
+			string_value=deserialized_dict.get("stringValue"),
+			date_value=deserialized_dict.get("dateValue"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+@dataclass
+class DecryptedTypedValue:
+	type: Optional['TypedValuesType'] = None
+	boolean_value: Optional[bool] = None
+	integer_value: Optional[int] = None
+	double_value: Optional[float] = None
+	string_value: Optional[str] = None
+	date_value: Optional[int] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"type": self.type.__serialize__() if self.type is not None else None,
+			"booleanValue": self.boolean_value,
+			"integerValue": self.integer_value,
+			"doubleValue": self.double_value,
+			"stringValue": self.string_value,
+			"dateValue": self.date_value,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedTypedValue':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			type=TypedValuesType._deserialize(deserialized_dict.get("type")) if deserialized_dict.get("type") is not None else None,
+			boolean_value=deserialized_dict.get("booleanValue"),
+			integer_value=deserialized_dict.get("integerValue"),
+			double_value=deserialized_dict.get("doubleValue"),
+			string_value=deserialized_dict.get("stringValue"),
+			date_value=deserialized_dict.get("dateValue"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type TypedValue = Union['EncryptedTypedValue', 'DecryptedTypedValue']
+
+def serialize_typed_value(typed_value: TypedValue) -> Any:
+	if isinstance(typed_value, EncryptedTypedValue):
+		serialized_entity = typed_value.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedTypedValue"})
+		return serialized_entity
+	elif isinstance(typed_value, DecryptedTypedValue):
+		serialized_entity = typed_value.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedTypedValue"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(typed_value)} is not a known subclass of TypedValue")
+
+def deserialize_typed_value(data: Union[str, dict[str, JsonElement]]) -> 'TypedValue':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedTypedValue":
+		return EncryptedTypedValue._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedTypedValue":
+		return DecryptedTypedValue._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of TypedValue")
+
+@dataclass
+class FormTemplateLayout:
+	form: str
+	actions: list['Action'] = field(default_factory=list)
+	sections: list['Section'] = field(default_factory=list)
+	description: Optional[str] = None
+	keywords: Optional[list[str]] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"form": self.form,
+			"actions": [x0.__serialize__() for x0 in self.actions],
+			"sections": [x0.__serialize__() for x0 in self.sections],
+			"description": self.description,
+			"keywords": [x0 for x0 in self.keywords] if self.keywords is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FormTemplateLayout':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			form=deserialized_dict["form"],
+			actions=[Action._deserialize(x0) for x0 in deserialized_dict["actions"]],
+			sections=[Section._deserialize(x0) for x0 in deserialized_dict["sections"]],
+			description=deserialized_dict.get("description"),
+			keywords=[x0 for x0 in deserialized_dict.get("keywords")] if deserialized_dict.get("keywords") is not None else None,
+		)
+
+@dataclass
+class DocumentGroup:
+	guid: Optional[str] = None
+	name: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"guid": self.guid,
+			"name": self.name,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DocumentGroup':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			guid=deserialized_dict.get("guid"),
+			name=deserialized_dict.get("name"),
+		)
+
+@dataclass
+class MessageReadStatus:
+	time: Optional[int] = None
+	read: bool = False
+
+	def __serialize__(self) -> Any:
+		return {
+			"time": self.time,
+			"read": self.read,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MessageReadStatus':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			time=deserialized_dict.get("time"),
+			read=deserialized_dict["read"],
+		)
+
+@dataclass
+class SecureDelegation:
+	permissions: 'AccessLevel'
+	delegator: Optional[str] = None
+	delegate: Optional[str] = None
+	secret_ids: set['Base64String'] = field(default_factory=set)
+	encryption_keys: set['Base64String'] = field(default_factory=set)
+	owning_entity_ids: set['Base64String'] = field(default_factory=set)
+	parent_delegations: set['SecureDelegationKeyString'] = field(default_factory=set)
+	exchange_data_id: Optional[str] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"delegator": self.delegator,
+			"delegate": self.delegate,
+			"secretIds": [x0 for x0 in self.secret_ids],
+			"encryptionKeys": [x0 for x0 in self.encryption_keys],
+			"owningEntityIds": [x0 for x0 in self.owning_entity_ids],
+			"parentDelegations": [x0 for x0 in self.parent_delegations],
+			"exchangeDataId": self.exchange_data_id,
+			"permissions": self.permissions.__serialize__(),
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecureDelegation':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			delegator=deserialized_dict.get("delegator"),
+			delegate=deserialized_dict.get("delegate"),
+			secret_ids={x0 for x0 in deserialized_dict["secretIds"]},
+			encryption_keys={x0 for x0 in deserialized_dict["encryptionKeys"]},
+			owning_entity_ids={x0 for x0 in deserialized_dict["owningEntityIds"]},
+			parent_delegations={x0 for x0 in deserialized_dict["parentDelegations"]},
+			exchange_data_id=deserialized_dict.get("exchangeDataId"),
+			permissions=AccessLevel._deserialize(deserialized_dict["permissions"]),
+		)
 
 class PersonNameUse(Enum):
 	Usual = "usual"
@@ -11447,35 +11471,6 @@ class AddressType(Enum):
 			raise Exception(f"{data} is not a valid value for AddressType enum.")
 
 @dataclass
-class DecryptedTelecom:
-	telecom_type: Optional['TelecomType'] = None
-	telecom_number: Optional[str] = None
-	telecom_description: Optional[str] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"telecomType": self.telecom_type.__serialize__() if self.telecom_type is not None else None,
-			"telecomNumber": self.telecom_number,
-			"telecomDescription": self.telecom_description,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedTelecom':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			telecom_type=TelecomType._deserialize(deserialized_dict.get("telecomType")) if deserialized_dict.get("telecomType") is not None else None,
-			telecom_number=deserialized_dict.get("telecomNumber"),
-			telecom_description=deserialized_dict.get("telecomDescription"),
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
 class EncryptedTelecom:
 	telecom_type: Optional['TelecomType'] = None
 	telecom_number: Optional[str] = None
@@ -11504,16 +11499,45 @@ class EncryptedTelecom:
 			encrypted_self=deserialized_dict.get("encryptedSelf"),
 		)
 
-type Telecom = Union['DecryptedTelecom', 'EncryptedTelecom']
+@dataclass
+class DecryptedTelecom:
+	telecom_type: Optional['TelecomType'] = None
+	telecom_number: Optional[str] = None
+	telecom_description: Optional[str] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"telecomType": self.telecom_type.__serialize__() if self.telecom_type is not None else None,
+			"telecomNumber": self.telecom_number,
+			"telecomDescription": self.telecom_description,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedTelecom':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			telecom_type=TelecomType._deserialize(deserialized_dict.get("telecomType")) if deserialized_dict.get("telecomType") is not None else None,
+			telecom_number=deserialized_dict.get("telecomNumber"),
+			telecom_description=deserialized_dict.get("telecomDescription"),
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type Telecom = Union['EncryptedTelecom', 'DecryptedTelecom']
 
 def serialize_telecom(telecom: Telecom) -> Any:
-	if isinstance(telecom, DecryptedTelecom):
-		serialized_entity = telecom.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedTelecom"})
-		return serialized_entity
-	elif isinstance(telecom, EncryptedTelecom):
+	if isinstance(telecom, EncryptedTelecom):
 		serialized_entity = telecom.__serialize__()
 		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedTelecom"})
+		return serialized_entity
+	elif isinstance(telecom, DecryptedTelecom):
+		serialized_entity = telecom.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedTelecom"})
 		return serialized_entity
 	else:
 		raise Exception(f"{type(telecom)} is not a known subclass of Telecom")
@@ -11527,240 +11551,12 @@ def deserialize_telecom(data: Union[str, dict[str, JsonElement]]) -> 'Telecom':
 	qualifier = deserialized_dict.get("kotlinType")
 	if qualifier is None:
 		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedTelecom":
-		return DecryptedTelecom._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedTelecom":
+	if qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedTelecom":
 		return EncryptedTelecom._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedTelecom":
+		return DecryptedTelecom._deserialize(deserialized_dict)
 	else:
 		raise Exception(f"{qualifier} is not a known subclass of Telecom")
-
-@dataclass
-class SecureDelegation:
-	permissions: 'AccessLevel'
-	delegator: Optional[str] = None
-	delegate: Optional[str] = None
-	secret_ids: set['Base64String'] = field(default_factory=set)
-	encryption_keys: set['Base64String'] = field(default_factory=set)
-	owning_entity_ids: set['Base64String'] = field(default_factory=set)
-	parent_delegations: set['SecureDelegationKeyString'] = field(default_factory=set)
-	exchange_data_id: Optional[str] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"delegator": self.delegator,
-			"delegate": self.delegate,
-			"secretIds": [x0 for x0 in self.secret_ids],
-			"encryptionKeys": [x0 for x0 in self.encryption_keys],
-			"owningEntityIds": [x0 for x0 in self.owning_entity_ids],
-			"parentDelegations": [x0 for x0 in self.parent_delegations],
-			"exchangeDataId": self.exchange_data_id,
-			"permissions": self.permissions.__serialize__(),
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'SecureDelegation':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			delegator=deserialized_dict.get("delegator"),
-			delegate=deserialized_dict.get("delegate"),
-			secret_ids={x0 for x0 in deserialized_dict["secretIds"]},
-			encryption_keys={x0 for x0 in deserialized_dict["encryptionKeys"]},
-			owning_entity_ids={x0 for x0 in deserialized_dict["owningEntityIds"]},
-			parent_delegations={x0 for x0 in deserialized_dict["parentDelegations"]},
-			exchange_data_id=deserialized_dict.get("exchangeDataId"),
-			permissions=AccessLevel._deserialize(deserialized_dict["permissions"]),
-		)
-
-@dataclass
-class Action:
-	launchers: Optional[list['Launcher']] = field(default_factory=list)
-	expression: Optional[str] = None
-	states: Optional[list['State']] = field(default_factory=list)
-
-	def __serialize__(self) -> Any:
-		return {
-			"launchers": [x0.__serialize__() for x0 in self.launchers] if self.launchers is not None else None,
-			"expression": self.expression,
-			"states": [x0.__serialize__() for x0 in self.states] if self.states is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Action':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			launchers=[Launcher._deserialize(x0) for x0 in deserialized_dict.get("launchers")] if deserialized_dict.get("launchers") is not None else None,
-			expression=deserialized_dict.get("expression"),
-			states=[State._deserialize(x0) for x0 in deserialized_dict.get("states")] if deserialized_dict.get("states") is not None else None,
-		)
-
-@dataclass
-class Section:
-	section: str
-	fields: list['StructureElement']
-	description: Optional[str] = None
-	keywords: Optional[list[str]] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"section": self.section,
-			"fields": [serialize_structure_element(x0) for x0 in self.fields],
-			"description": self.description,
-			"keywords": [x0 for x0 in self.keywords] if self.keywords is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Section':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			section=deserialized_dict["section"],
-			fields=[deserialize_structure_element(x0) for x0 in deserialized_dict["fields"]],
-			description=deserialized_dict.get("description"),
-			keywords=[x0 for x0 in deserialized_dict.get("keywords")] if deserialized_dict.get("keywords") is not None else None,
-		)
-
-@dataclass
-class DecryptedCareTeamMembership:
-	start_date: Optional[int] = None
-	end_date: Optional[int] = None
-	care_team_member_id: Optional[str] = None
-	membership_type: Optional['MembershipType'] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"startDate": self.start_date,
-			"endDate": self.end_date,
-			"careTeamMemberId": self.care_team_member_id,
-			"membershipType": self.membership_type.__serialize__() if self.membership_type is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCareTeamMembership':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			start_date=deserialized_dict.get("startDate"),
-			end_date=deserialized_dict.get("endDate"),
-			care_team_member_id=deserialized_dict.get("careTeamMemberId"),
-			membership_type=MembershipType._deserialize(deserialized_dict.get("membershipType")) if deserialized_dict.get("membershipType") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-@dataclass
-class EncryptedCareTeamMembership:
-	start_date: Optional[int] = None
-	end_date: Optional[int] = None
-	care_team_member_id: Optional[str] = None
-	membership_type: Optional['MembershipType'] = None
-	encrypted_self: Optional['Base64String'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"startDate": self.start_date,
-			"endDate": self.end_date,
-			"careTeamMemberId": self.care_team_member_id,
-			"membershipType": self.membership_type.__serialize__() if self.membership_type is not None else None,
-			"encryptedSelf": self.encrypted_self,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCareTeamMembership':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			start_date=deserialized_dict.get("startDate"),
-			end_date=deserialized_dict.get("endDate"),
-			care_team_member_id=deserialized_dict.get("careTeamMemberId"),
-			membership_type=MembershipType._deserialize(deserialized_dict.get("membershipType")) if deserialized_dict.get("membershipType") is not None else None,
-			encrypted_self=deserialized_dict.get("encryptedSelf"),
-		)
-
-type CareTeamMembership = Union['DecryptedCareTeamMembership', 'EncryptedCareTeamMembership']
-
-def serialize_care_team_membership(care_team_membership: CareTeamMembership) -> Any:
-	if isinstance(care_team_membership, DecryptedCareTeamMembership):
-		serialized_entity = care_team_membership.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMembership"})
-		return serialized_entity
-	elif isinstance(care_team_membership, EncryptedCareTeamMembership):
-		serialized_entity = care_team_membership.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(care_team_membership)} is not a known subclass of CareTeamMembership")
-
-def deserialize_care_team_membership(data: Union[str, dict[str, JsonElement]]) -> 'CareTeamMembership':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMembership":
-		return DecryptedCareTeamMembership._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership":
-		return EncryptedCareTeamMembership._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of CareTeamMembership")
-
-class CareTeamMemberType(Enum):
-	Physician = "physician"
-	Specialist = "specialist"
-	Other = "other"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CareTeamMemberType':
-		if data == "physician":
-			return CareTeamMemberType.Physician
-		elif data == "specialist":
-			return CareTeamMemberType.Specialist
-		elif data == "other":
-			return CareTeamMemberType.Other
-		else:
-			raise Exception(f"{data} is not a valid value for CareTeamMemberType enum.")
-
-class AsserterType(Enum):
-	Patient = "patient"
-	HealthcareParty = "healthcareParty"
-	RelatedPerson = "relatedPerson"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AsserterType':
-		if data == "patient":
-			return AsserterType.Patient
-		elif data == "healthcareParty":
-			return AsserterType.HealthcareParty
-		elif data == "relatedPerson":
-			return AsserterType.RelatedPerson
-		else:
-			raise Exception(f"{data} is not a valid value for AsserterType enum.")
 
 class PartnershipType(Enum):
 	PrimaryContact = "primary_contact"
@@ -12150,74 +11946,6 @@ def deserialize_permission_item(data: Union[str, dict[str, JsonElement]]) -> 'Pe
 		raise Exception(f"{qualifier} is not a known subclass of PermissionItem")
 
 @dataclass
-class RemoteAuthentication:
-	basic: Optional['Basic'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"basic": self.basic.__serialize__() if self.basic is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RemoteAuthentication':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			basic=Basic._deserialize(deserialized_dict.get("basic")) if deserialized_dict.get("basic") is not None else None,
-		)
-
-@dataclass
-class DatabaseSynchronization:
-	source: Optional[str] = None
-	target: Optional[str] = None
-	filter: Optional[str] = None
-	local_target: Optional['DatabaseSynchronizationTarget'] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"source": self.source,
-			"target": self.target,
-			"filter": self.filter,
-			"localTarget": self.local_target.__serialize__() if self.local_target is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseSynchronization':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			source=deserialized_dict.get("source"),
-			target=deserialized_dict.get("target"),
-			filter=deserialized_dict.get("filter"),
-			local_target=DatabaseSynchronizationTarget._deserialize(deserialized_dict.get("localTarget")) if deserialized_dict.get("localTarget") is not None else None,
-		)
-
-class DatabaseSynchronizationTarget(Enum):
-	Base = "base"
-	Healthdata = "healthdata"
-	Patient = "patient"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseSynchronizationTarget':
-		if data == "base":
-			return DatabaseSynchronizationTarget.Base
-		elif data == "healthdata":
-			return DatabaseSynchronizationTarget.Healthdata
-		elif data == "patient":
-			return DatabaseSynchronizationTarget.Patient
-		else:
-			raise Exception(f"{data} is not a valid value for Target enum.")
-
-@dataclass
 class ServiceLink:
 	service_id: Optional[str] = None
 
@@ -12470,6 +12198,138 @@ class TimeSeries:
 		)
 
 @dataclass
+class DecryptedCareTeamMembership:
+	start_date: Optional[int] = None
+	end_date: Optional[int] = None
+	care_team_member_id: Optional[str] = None
+	membership_type: Optional['MembershipType'] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"startDate": self.start_date,
+			"endDate": self.end_date,
+			"careTeamMemberId": self.care_team_member_id,
+			"membershipType": self.membership_type.__serialize__() if self.membership_type is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DecryptedCareTeamMembership':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			start_date=deserialized_dict.get("startDate"),
+			end_date=deserialized_dict.get("endDate"),
+			care_team_member_id=deserialized_dict.get("careTeamMemberId"),
+			membership_type=MembershipType._deserialize(deserialized_dict.get("membershipType")) if deserialized_dict.get("membershipType") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+@dataclass
+class EncryptedCareTeamMembership:
+	start_date: Optional[int] = None
+	end_date: Optional[int] = None
+	care_team_member_id: Optional[str] = None
+	membership_type: Optional['MembershipType'] = None
+	encrypted_self: Optional['Base64String'] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"startDate": self.start_date,
+			"endDate": self.end_date,
+			"careTeamMemberId": self.care_team_member_id,
+			"membershipType": self.membership_type.__serialize__() if self.membership_type is not None else None,
+			"encryptedSelf": self.encrypted_self,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'EncryptedCareTeamMembership':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			start_date=deserialized_dict.get("startDate"),
+			end_date=deserialized_dict.get("endDate"),
+			care_team_member_id=deserialized_dict.get("careTeamMemberId"),
+			membership_type=MembershipType._deserialize(deserialized_dict.get("membershipType")) if deserialized_dict.get("membershipType") is not None else None,
+			encrypted_self=deserialized_dict.get("encryptedSelf"),
+		)
+
+type CareTeamMembership = Union['DecryptedCareTeamMembership', 'EncryptedCareTeamMembership']
+
+def serialize_care_team_membership(care_team_membership: CareTeamMembership) -> Any:
+	if isinstance(care_team_membership, DecryptedCareTeamMembership):
+		serialized_entity = care_team_membership.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMembership"})
+		return serialized_entity
+	elif isinstance(care_team_membership, EncryptedCareTeamMembership):
+		serialized_entity = care_team_membership.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(care_team_membership)} is not a known subclass of CareTeamMembership")
+
+def deserialize_care_team_membership(data: Union[str, dict[str, JsonElement]]) -> 'CareTeamMembership':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMembership":
+		return DecryptedCareTeamMembership._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.EncryptedCareTeamMembership":
+		return EncryptedCareTeamMembership._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of CareTeamMembership")
+
+class CareTeamMemberType(Enum):
+	Physician = "physician"
+	Specialist = "specialist"
+	Other = "other"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CareTeamMemberType':
+		if data == "physician":
+			return CareTeamMemberType.Physician
+		elif data == "specialist":
+			return CareTeamMemberType.Specialist
+		elif data == "other":
+			return CareTeamMemberType.Other
+		else:
+			raise Exception(f"{data} is not a valid value for CareTeamMemberType enum.")
+
+class AsserterType(Enum):
+	Patient = "patient"
+	HealthcareParty = "healthcareParty"
+	RelatedPerson = "relatedPerson"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'AsserterType':
+		if data == "patient":
+			return AsserterType.Patient
+		elif data == "healthcareParty":
+			return AsserterType.HealthcareParty
+		elif data == "relatedPerson":
+			return AsserterType.RelatedPerson
+		else:
+			raise Exception(f"{data} is not a valid value for AsserterType enum.")
+
+@dataclass
 class DelegateShareOptions:
 	share_secret_ids: set[str]
 	share_encryption_keys: set['HexString']
@@ -12497,37 +12357,6 @@ class DelegateShareOptions:
 			share_owning_entity_ids={x0 for x0 in deserialized_dict["shareOwningEntityIds"]},
 			requested_permissions=RequestedPermission._deserialize(deserialized_dict["requestedPermissions"]),
 		)
-
-class TypedValuesType(Enum):
-	Boolean = "BOOLEAN"
-	Integer = "INTEGER"
-	Double = "DOUBLE"
-	String = "STRING"
-	Date = "DATE"
-	Clob = "CLOB"
-	Json = "JSON"
-
-	def __serialize__(self) -> Any:
-		return self.value
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TypedValuesType':
-		if data == "BOOLEAN":
-			return TypedValuesType.Boolean
-		elif data == "INTEGER":
-			return TypedValuesType.Integer
-		elif data == "DOUBLE":
-			return TypedValuesType.Double
-		elif data == "STRING":
-			return TypedValuesType.String
-		elif data == "DATE":
-			return TypedValuesType.Date
-		elif data == "CLOB":
-			return TypedValuesType.Clob
-		elif data == "JSON":
-			return TypedValuesType.Json
-		else:
-			raise Exception(f"{data} is not a valid value for TypedValuesType enum.")
 
 @dataclass
 class EmbeddedTimeTableItem:
@@ -12574,868 +12403,158 @@ class EmbeddedTimeTableItem:
 		)
 
 @dataclass
-class Launcher:
-	name: str
-	triggerer: 'Trigger'
-	should_pass_value: bool = False
+class RemoteAuthentication:
+	basic: Optional['Basic'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"name": self.name,
-			"triggerer": self.triggerer.__serialize__(),
-			"shouldPassValue": self.should_pass_value,
+			"basic": self.basic.__serialize__() if self.basic is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Launcher':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RemoteAuthentication':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			name=deserialized_dict["name"],
-			triggerer=Trigger._deserialize(deserialized_dict["triggerer"]),
-			should_pass_value=deserialized_dict["shouldPassValue"],
+			basic=Basic._deserialize(deserialized_dict.get("basic")) if deserialized_dict.get("basic") is not None else None,
 		)
 
 @dataclass
-class State:
-	name: str
-	state_to_update: 'StateToUpdate'
-	can_launch_launcher: bool = False
+class DatabaseSynchronization:
+	source: Optional[str] = None
+	target: Optional[str] = None
+	filter: Optional[str] = None
+	local_target: Optional['DatabaseSynchronizationTarget'] = None
 
 	def __serialize__(self) -> Any:
 		return {
-			"name": self.name,
-			"stateToUpdate": self.state_to_update.__serialize__(),
-			"canLaunchLauncher": self.can_launch_launcher,
+			"source": self.source,
+			"target": self.target,
+			"filter": self.filter,
+			"localTarget": self.local_target.__serialize__() if self.local_target is not None else None,
 		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'State':
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseSynchronization':
 		deserialized_dict: dict[str, JsonElement]
 		if isinstance(data, str):
 			deserialized_dict = json.loads(data)
 		else:
 			deserialized_dict = data
 		return cls(
-			name=deserialized_dict["name"],
-			state_to_update=StateToUpdate._deserialize(deserialized_dict["stateToUpdate"]),
-			can_launch_launcher=deserialized_dict["canLaunchLauncher"],
+			source=deserialized_dict.get("source"),
+			target=deserialized_dict.get("target"),
+			filter=deserialized_dict.get("filter"),
+			local_target=DatabaseSynchronizationTarget._deserialize(deserialized_dict.get("localTarget")) if deserialized_dict.get("localTarget") is not None else None,
 		)
 
-@dataclass
-class MultipleChoice:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MultipleChoice':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class NumberField:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'NumberField':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class CheckBox:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CheckBox':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class RadioButton:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RadioButton':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class TextField:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TextField':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class TimePicker:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TimePicker':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class DatePicker:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatePicker':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class MeasureField:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MeasureField':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class DropdownField:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DropdownField':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class DateTimePicker:
-	field: str
-	short_label: Optional[str] = None
-	rows: Optional[int] = None
-	columns: Optional[int] = None
-	grows: Optional[bool] = None
-	multiline: Optional[bool] = None
-	schema: Optional[str] = None
-	tags: Optional[list[str]] = None
-	codifications: Optional[list[str]] = None
-	options: Optional[dict[str, str]] = None
-	labels: Optional[dict[str, str]] = None
-	value: Optional[str] = None
-	unit: Optional[str] = None
-	required: Optional[bool] = None
-	hide_condition: Optional[str] = None
-	now: Optional[bool] = None
-	translate: Optional[bool] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"field": self.field,
-			"shortLabel": self.short_label,
-			"rows": self.rows,
-			"columns": self.columns,
-			"grows": self.grows,
-			"multiline": self.multiline,
-			"schema": self.schema,
-			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
-			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
-			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
-			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
-			"value": self.value,
-			"unit": self.unit,
-			"required": self.required,
-			"hideCondition": self.hide_condition,
-			"now": self.now,
-			"translate": self.translate,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DateTimePicker':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			field=deserialized_dict["field"],
-			short_label=deserialized_dict.get("shortLabel"),
-			rows=deserialized_dict.get("rows"),
-			columns=deserialized_dict.get("columns"),
-			grows=deserialized_dict.get("grows"),
-			multiline=deserialized_dict.get("multiline"),
-			schema=deserialized_dict.get("schema"),
-			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
-			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
-			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
-			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
-			value=deserialized_dict.get("value"),
-			unit=deserialized_dict.get("unit"),
-			required=deserialized_dict.get("required"),
-			hide_condition=deserialized_dict.get("hideCondition"),
-			now=deserialized_dict.get("now"),
-			translate=deserialized_dict.get("translate"),
-		)
-
-@dataclass
-class FieldsGroup:
-	group: str
-	fields: Optional[list['StructureElement']] = None
-
-	def __serialize__(self) -> Any:
-		return {
-			"group": self.group,
-			"fields": [serialize_structure_element(x0) for x0 in self.fields] if self.fields is not None else None,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FieldsGroup':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			group=deserialized_dict["group"],
-			fields=[deserialize_structure_element(x0) for x0 in deserialized_dict.get("fields")] if deserialized_dict.get("fields") is not None else None,
-		)
-
-type StructureElement = Union['MultipleChoice', 'NumberField', 'CheckBox', 'RadioButton', 'TextField', 'TimePicker', 'DatePicker', 'MeasureField', 'DropdownField', 'DateTimePicker', 'FieldsGroup']
-
-def serialize_structure_element(structure_element: StructureElement) -> Any:
-	if isinstance(structure_element, MultipleChoice):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.MultipleChoice"})
-		return serialized_entity
-	elif isinstance(structure_element, NumberField):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.NumberField"})
-		return serialized_entity
-	elif isinstance(structure_element, CheckBox):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.CheckBox"})
-		return serialized_entity
-	elif isinstance(structure_element, RadioButton):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.RadioButton"})
-		return serialized_entity
-	elif isinstance(structure_element, TextField):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.TextField"})
-		return serialized_entity
-	elif isinstance(structure_element, TimePicker):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.TimePicker"})
-		return serialized_entity
-	elif isinstance(structure_element, DatePicker):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.DatePicker"})
-		return serialized_entity
-	elif isinstance(structure_element, MeasureField):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.MeasureField"})
-		return serialized_entity
-	elif isinstance(structure_element, DropdownField):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.DropdownField"})
-		return serialized_entity
-	elif isinstance(structure_element, DateTimePicker):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker"})
-		return serialized_entity
-	elif isinstance(structure_element, FieldsGroup):
-		serialized_entity = structure_element.__serialize__()
-		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup"})
-		return serialized_entity
-	else:
-		raise Exception(f"{type(structure_element)} is not a known subclass of StructureElement")
-
-def deserialize_structure_element(data: Union[str, dict[str, JsonElement]]) -> 'StructureElement':
-	deserialized_dict: dict[str, JsonElement]
-	if isinstance(data, str):
-		deserialized_dict = json.loads(data)
-	else:
-		deserialized_dict = data
-	qualifier = deserialized_dict.get("kotlinType")
-	if qualifier is None:
-		raise Exception("Missing qualifier: kotlinType")
-	if qualifier == "com.icure.cardinal.sdk.model.embed.form.template.MultipleChoice":
-		return MultipleChoice._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.NumberField":
-		return NumberField._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.CheckBox":
-		return CheckBox._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.RadioButton":
-		return RadioButton._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.TextField":
-		return TextField._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.TimePicker":
-		return TimePicker._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.DatePicker":
-		return DatePicker._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.MeasureField":
-		return MeasureField._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.DropdownField":
-		return DropdownField._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker":
-		return DateTimePicker._deserialize(deserialized_dict)
-	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup":
-		return FieldsGroup._deserialize(deserialized_dict)
-	else:
-		raise Exception(f"{qualifier} is not a known subclass of StructureElement")
-
-class MembershipType(Enum):
-	Doctor = "doctor"
-	Mutuality = "mutuality"
+class DatabaseSynchronizationTarget(Enum):
+	Base = "base"
+	Healthdata = "healthdata"
 	Patient = "patient"
-	Specialist = "specialist"
-	Other = "other"
 
 	def __serialize__(self) -> Any:
 		return self.value
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MembershipType':
-		if data == "doctor":
-			return MembershipType.Doctor
-		elif data == "mutuality":
-			return MembershipType.Mutuality
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatabaseSynchronizationTarget':
+		if data == "base":
+			return DatabaseSynchronizationTarget.Base
+		elif data == "healthdata":
+			return DatabaseSynchronizationTarget.Healthdata
 		elif data == "patient":
-			return MembershipType.Patient
-		elif data == "specialist":
-			return MembershipType.Specialist
-		elif data == "other":
-			return MembershipType.Other
+			return DatabaseSynchronizationTarget.Patient
 		else:
-			raise Exception(f"{data} is not a valid value for MembershipType enum.")
+			raise Exception(f"{data} is not a valid value for Target enum.")
+
+class TypedValuesType(Enum):
+	Boolean = "BOOLEAN"
+	Integer = "INTEGER"
+	Double = "DOUBLE"
+	String = "STRING"
+	Date = "DATE"
+	Clob = "CLOB"
+	Json = "JSON"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TypedValuesType':
+		if data == "BOOLEAN":
+			return TypedValuesType.Boolean
+		elif data == "INTEGER":
+			return TypedValuesType.Integer
+		elif data == "DOUBLE":
+			return TypedValuesType.Double
+		elif data == "STRING":
+			return TypedValuesType.String
+		elif data == "DATE":
+			return TypedValuesType.Date
+		elif data == "CLOB":
+			return TypedValuesType.Clob
+		elif data == "JSON":
+			return TypedValuesType.Json
+		else:
+			raise Exception(f"{data} is not a valid value for TypedValuesType enum.")
+
+@dataclass
+class Action:
+	launchers: Optional[list['Launcher']] = field(default_factory=list)
+	expression: Optional[str] = None
+	states: Optional[list['State']] = field(default_factory=list)
+
+	def __serialize__(self) -> Any:
+		return {
+			"launchers": [x0.__serialize__() for x0 in self.launchers] if self.launchers is not None else None,
+			"expression": self.expression,
+			"states": [x0.__serialize__() for x0 in self.states] if self.states is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Action':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			launchers=[Launcher._deserialize(x0) for x0 in deserialized_dict.get("launchers")] if deserialized_dict.get("launchers") is not None else None,
+			expression=deserialized_dict.get("expression"),
+			states=[State._deserialize(x0) for x0 in deserialized_dict.get("states")] if deserialized_dict.get("states") is not None else None,
+		)
+
+@dataclass
+class Section:
+	section: str
+	fields: list['StructureElement']
+	description: Optional[str] = None
+	keywords: Optional[list[str]] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"section": self.section,
+			"fields": [serialize_structure_element(x0) for x0 in self.fields],
+			"description": self.description,
+			"keywords": [x0 for x0 in self.keywords] if self.keywords is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Section':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			section=deserialized_dict["section"],
+			fields=[deserialize_structure_element(x0) for x0 in deserialized_dict["fields"]],
+			description=deserialized_dict.get("description"),
+			keywords=[x0 for x0 in deserialized_dict.get("keywords")] if deserialized_dict.get("keywords") is not None else None,
+		)
 
 class PermissionType(Enum):
 	Authenticate = "AUTHENTICATE"
@@ -13504,29 +12623,6 @@ class AlwaysPredicate:
 		else:
 			deserialized_dict = data
 		return cls(
-		)
-
-@dataclass
-class Basic:
-	username: str
-	password: str
-
-	def __serialize__(self) -> Any:
-		return {
-			"username": self.username,
-			"password": self.password,
-		}
-
-	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Basic':
-		deserialized_dict: dict[str, JsonElement]
-		if isinstance(data, str):
-			deserialized_dict = json.loads(data)
-		else:
-			deserialized_dict = data
-		return cls(
-			username=deserialized_dict["username"],
-			password=deserialized_dict["password"],
 		)
 
 @dataclass
@@ -13735,6 +12831,31 @@ class RegimenItem:
 			administrated_quantity=AdministrationQuantity._deserialize(deserialized_dict.get("administratedQuantity")) if deserialized_dict.get("administratedQuantity") is not None else None,
 		)
 
+class MembershipType(Enum):
+	Doctor = "doctor"
+	Mutuality = "mutuality"
+	Patient = "patient"
+	Specialist = "specialist"
+	Other = "other"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MembershipType':
+		if data == "doctor":
+			return MembershipType.Doctor
+		elif data == "mutuality":
+			return MembershipType.Mutuality
+		elif data == "patient":
+			return MembershipType.Patient
+		elif data == "specialist":
+			return MembershipType.Specialist
+		elif data == "other":
+			return MembershipType.Other
+		else:
+			raise Exception(f"{data} is not a valid value for MembershipType enum.")
+
 @dataclass
 class EmbeddedTimeTableHour:
 	start_hour: int
@@ -13758,61 +12879,867 @@ class EmbeddedTimeTableHour:
 			end_hour=deserialized_dict["endHour"],
 		)
 
-class Trigger(Enum):
-	Init = "INIT"
-	Change = "CHANGE"
-	Click = "CLICK"
-	Visible = "VISIBLE"
-	Error = "ERROR"
-	Valid = "VALID"
-	Event = "EVENT"
+@dataclass
+class Basic:
+	username: str
+	password: str
 
 	def __serialize__(self) -> Any:
-		return self.value
+		return {
+			"username": self.username,
+			"password": self.password,
+		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Trigger':
-		if data == "INIT":
-			return Trigger.Init
-		elif data == "CHANGE":
-			return Trigger.Change
-		elif data == "CLICK":
-			return Trigger.Click
-		elif data == "VISIBLE":
-			return Trigger.Visible
-		elif data == "ERROR":
-			return Trigger.Error
-		elif data == "VALID":
-			return Trigger.Valid
-		elif data == "EVENT":
-			return Trigger.Event
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Basic':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
 		else:
-			raise Exception(f"{data} is not a valid value for Trigger enum.")
+			deserialized_dict = data
+		return cls(
+			username=deserialized_dict["username"],
+			password=deserialized_dict["password"],
+		)
 
-class StateToUpdate(Enum):
-	Value = "VALUE"
-	Visible = "VISIBLE"
-	Readonly = "READONLY"
-	Clazz = "CLAZZ"
-	Required = "REQUIRED"
+@dataclass
+class Launcher:
+	name: str
+	triggerer: 'Trigger'
+	should_pass_value: bool = False
 
 	def __serialize__(self) -> Any:
-		return self.value
+		return {
+			"name": self.name,
+			"triggerer": self.triggerer.__serialize__(),
+			"shouldPassValue": self.should_pass_value,
+		}
 
 	@classmethod
-	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'StateToUpdate':
-		if data == "VALUE":
-			return StateToUpdate.Value
-		elif data == "VISIBLE":
-			return StateToUpdate.Visible
-		elif data == "READONLY":
-			return StateToUpdate.Readonly
-		elif data == "CLAZZ":
-			return StateToUpdate.Clazz
-		elif data == "REQUIRED":
-			return StateToUpdate.Required
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Launcher':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
 		else:
-			raise Exception(f"{data} is not a valid value for StateToUpdate enum.")
+			deserialized_dict = data
+		return cls(
+			name=deserialized_dict["name"],
+			triggerer=Trigger._deserialize(deserialized_dict["triggerer"]),
+			should_pass_value=deserialized_dict["shouldPassValue"],
+		)
+
+@dataclass
+class State:
+	name: str
+	state_to_update: 'StateToUpdate'
+	can_launch_launcher: bool = False
+
+	def __serialize__(self) -> Any:
+		return {
+			"name": self.name,
+			"stateToUpdate": self.state_to_update.__serialize__(),
+			"canLaunchLauncher": self.can_launch_launcher,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'State':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			name=deserialized_dict["name"],
+			state_to_update=StateToUpdate._deserialize(deserialized_dict["stateToUpdate"]),
+			can_launch_launcher=deserialized_dict["canLaunchLauncher"],
+		)
+
+@dataclass
+class CheckBox:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'CheckBox':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class DatePicker:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DatePicker':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class DropdownField:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DropdownField':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class TextField:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TextField':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class MultipleChoice:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MultipleChoice':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class RadioButton:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'RadioButton':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class NumberField:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'NumberField':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class DateTimePicker:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'DateTimePicker':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class TimePicker:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'TimePicker':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class MeasureField:
+	field: str
+	short_label: Optional[str] = None
+	rows: Optional[int] = None
+	columns: Optional[int] = None
+	grows: Optional[bool] = None
+	multiline: Optional[bool] = None
+	schema: Optional[str] = None
+	tags: Optional[list[str]] = None
+	codifications: Optional[list[str]] = None
+	options: Optional[dict[str, str]] = None
+	labels: Optional[dict[str, str]] = None
+	value: Optional[str] = None
+	unit: Optional[str] = None
+	required: Optional[bool] = None
+	hide_condition: Optional[str] = None
+	now: Optional[bool] = None
+	translate: Optional[bool] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"field": self.field,
+			"shortLabel": self.short_label,
+			"rows": self.rows,
+			"columns": self.columns,
+			"grows": self.grows,
+			"multiline": self.multiline,
+			"schema": self.schema,
+			"tags": [x0 for x0 in self.tags] if self.tags is not None else None,
+			"codifications": [x0 for x0 in self.codifications] if self.codifications is not None else None,
+			"options": {k0: v0 for k0, v0 in self.options.items()} if self.options is not None else None,
+			"labels": {k0: v0 for k0, v0 in self.labels.items()} if self.labels is not None else None,
+			"value": self.value,
+			"unit": self.unit,
+			"required": self.required,
+			"hideCondition": self.hide_condition,
+			"now": self.now,
+			"translate": self.translate,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'MeasureField':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			field=deserialized_dict["field"],
+			short_label=deserialized_dict.get("shortLabel"),
+			rows=deserialized_dict.get("rows"),
+			columns=deserialized_dict.get("columns"),
+			grows=deserialized_dict.get("grows"),
+			multiline=deserialized_dict.get("multiline"),
+			schema=deserialized_dict.get("schema"),
+			tags=[x0 for x0 in deserialized_dict.get("tags")] if deserialized_dict.get("tags") is not None else None,
+			codifications=[x0 for x0 in deserialized_dict.get("codifications")] if deserialized_dict.get("codifications") is not None else None,
+			options=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("options").items())) if deserialized_dict.get("options") is not None else None,
+			labels=dict(map(lambda kv0: (kv0[0], kv0[1]), deserialized_dict.get("labels").items())) if deserialized_dict.get("labels") is not None else None,
+			value=deserialized_dict.get("value"),
+			unit=deserialized_dict.get("unit"),
+			required=deserialized_dict.get("required"),
+			hide_condition=deserialized_dict.get("hideCondition"),
+			now=deserialized_dict.get("now"),
+			translate=deserialized_dict.get("translate"),
+		)
+
+@dataclass
+class FieldsGroup:
+	group: str
+	fields: Optional[list['StructureElement']] = None
+
+	def __serialize__(self) -> Any:
+		return {
+			"group": self.group,
+			"fields": [serialize_structure_element(x0) for x0 in self.fields] if self.fields is not None else None,
+		}
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'FieldsGroup':
+		deserialized_dict: dict[str, JsonElement]
+		if isinstance(data, str):
+			deserialized_dict = json.loads(data)
+		else:
+			deserialized_dict = data
+		return cls(
+			group=deserialized_dict["group"],
+			fields=[deserialize_structure_element(x0) for x0 in deserialized_dict.get("fields")] if deserialized_dict.get("fields") is not None else None,
+		)
+
+type StructureElement = Union['CheckBox', 'DatePicker', 'DropdownField', 'TextField', 'MultipleChoice', 'RadioButton', 'NumberField', 'DateTimePicker', 'TimePicker', 'MeasureField', 'FieldsGroup']
+
+def serialize_structure_element(structure_element: StructureElement) -> Any:
+	if isinstance(structure_element, CheckBox):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.CheckBox"})
+		return serialized_entity
+	elif isinstance(structure_element, DatePicker):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.DatePicker"})
+		return serialized_entity
+	elif isinstance(structure_element, DropdownField):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.DropdownField"})
+		return serialized_entity
+	elif isinstance(structure_element, TextField):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.TextField"})
+		return serialized_entity
+	elif isinstance(structure_element, MultipleChoice):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.MultipleChoice"})
+		return serialized_entity
+	elif isinstance(structure_element, RadioButton):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.RadioButton"})
+		return serialized_entity
+	elif isinstance(structure_element, NumberField):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.NumberField"})
+		return serialized_entity
+	elif isinstance(structure_element, DateTimePicker):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker"})
+		return serialized_entity
+	elif isinstance(structure_element, TimePicker):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.TimePicker"})
+		return serialized_entity
+	elif isinstance(structure_element, MeasureField):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.MeasureField"})
+		return serialized_entity
+	elif isinstance(structure_element, FieldsGroup):
+		serialized_entity = structure_element.__serialize__()
+		serialized_entity.update({"kotlinType": "com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup"})
+		return serialized_entity
+	else:
+		raise Exception(f"{type(structure_element)} is not a known subclass of StructureElement")
+
+def deserialize_structure_element(data: Union[str, dict[str, JsonElement]]) -> 'StructureElement':
+	deserialized_dict: dict[str, JsonElement]
+	if isinstance(data, str):
+		deserialized_dict = json.loads(data)
+	else:
+		deserialized_dict = data
+	qualifier = deserialized_dict.get("kotlinType")
+	if qualifier is None:
+		raise Exception("Missing qualifier: kotlinType")
+	if qualifier == "com.icure.cardinal.sdk.model.embed.form.template.CheckBox":
+		return CheckBox._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.DatePicker":
+		return DatePicker._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.DropdownField":
+		return DropdownField._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.TextField":
+		return TextField._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.MultipleChoice":
+		return MultipleChoice._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.RadioButton":
+		return RadioButton._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.NumberField":
+		return NumberField._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.DateTimePicker":
+		return DateTimePicker._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.TimePicker":
+		return TimePicker._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.MeasureField":
+		return MeasureField._deserialize(deserialized_dict)
+	elif qualifier == "com.icure.cardinal.sdk.model.embed.form.template.FieldsGroup":
+		return FieldsGroup._deserialize(deserialized_dict)
+	else:
+		raise Exception(f"{qualifier} is not a known subclass of StructureElement")
 
 @dataclass
 class Range:
@@ -13885,3 +13812,59 @@ class AdministrationQuantity:
 			administration_unit=CodeStub._deserialize(deserialized_dict.get("administrationUnit")) if deserialized_dict.get("administrationUnit") is not None else None,
 			unit=deserialized_dict.get("unit"),
 		)
+
+class Trigger(Enum):
+	Init = "INIT"
+	Change = "CHANGE"
+	Click = "CLICK"
+	Visible = "VISIBLE"
+	Error = "ERROR"
+	Valid = "VALID"
+	Event = "EVENT"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'Trigger':
+		if data == "INIT":
+			return Trigger.Init
+		elif data == "CHANGE":
+			return Trigger.Change
+		elif data == "CLICK":
+			return Trigger.Click
+		elif data == "VISIBLE":
+			return Trigger.Visible
+		elif data == "ERROR":
+			return Trigger.Error
+		elif data == "VALID":
+			return Trigger.Valid
+		elif data == "EVENT":
+			return Trigger.Event
+		else:
+			raise Exception(f"{data} is not a valid value for Trigger enum.")
+
+class StateToUpdate(Enum):
+	Value = "VALUE"
+	Visible = "VISIBLE"
+	Readonly = "READONLY"
+	Clazz = "CLAZZ"
+	Required = "REQUIRED"
+
+	def __serialize__(self) -> Any:
+		return self.value
+
+	@classmethod
+	def _deserialize(cls, data: Union[str, dict[str, JsonElement]]) -> 'StateToUpdate':
+		if data == "VALUE":
+			return StateToUpdate.Value
+		elif data == "VISIBLE":
+			return StateToUpdate.Visible
+		elif data == "READONLY":
+			return StateToUpdate.Readonly
+		elif data == "CLAZZ":
+			return StateToUpdate.Clazz
+		elif data == "REQUIRED":
+			return StateToUpdate.Required
+		else:
+			raise Exception(f"{data} is not a valid value for StateToUpdate enum.")

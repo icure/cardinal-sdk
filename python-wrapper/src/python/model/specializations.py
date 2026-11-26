@@ -4,10 +4,10 @@
 type KeypairFingerprintV1String = str
 
 
-type Pkcs8Bytes = bytearray
-
-
 type HexString = str
+
+
+type Pkcs8Bytes = bytearray
 
 
 type Base64String = str
