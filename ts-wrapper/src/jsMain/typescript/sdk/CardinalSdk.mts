@@ -55,7 +55,6 @@ import {AuthApi} from "../api/AuthApi.mjs";
 import {CalendarItemTypeApi} from "../api/CalendarItemTypeApi.mjs";
 import {AnonymousHealthcarePartyApi} from "../api/AnonymousHealthcarePartyApi.mjs";
 import {AnonymousAgendaApi} from "../api/AnonymousAgendaApi.mjs";
-import {FilterApi} from "../api/FilterApi.mjs";
 
 export interface CardinalApis {
   readonly auth: AuthApi
@@ -77,7 +76,6 @@ export interface CardinalApis {
   readonly contact: ContactApi
   readonly document: DocumentApi
   readonly form: FormApi
-  readonly filter: FilterApi
   readonly healthElement: HealthElementApi
   readonly invoice: InvoiceApi
   readonly maintenanceTask: MaintenanceTaskApi
@@ -151,7 +149,6 @@ export interface CardinalBaseApis {
   readonly contact: ContactBasicApi
   readonly document: DocumentBasicApi
   readonly form: FormBasicApi
-  readonly filter: FilterApi
   readonly healthElement: HealthElementBasicApi
   readonly invoice: InvoiceBasicApi
   readonly maintenanceTask: MaintenanceTaskBasicApi
