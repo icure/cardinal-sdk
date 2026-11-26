@@ -2243,13 +2243,6 @@ class DocumentBasicApi(Structure):
 	]
 
 
-class FilterApi(Structure):
-	_fields_ = [
-		("getFilterOptionsDefinitionsAsync", CFUNCTYPE(None, AnyKtRef, DATA_RESULT_CALLBACK_FUNC)),
-		("getFilterOptionsDefinitionsBlocking", CFUNCTYPE(c_void_p, AnyKtRef)),
-	]
-
-
 class FormApi_encrypted(Structure):
 	_fields_ = [
 		("createFormAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -2815,8 +2808,6 @@ class FrontEndMigrationApi(Structure):
 
 class GroupApi(Structure):
 	_fields_ = [
-		("addSchemaVersionOnGroupsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("addSchemaVersionOnGroupsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("addTagToGroupAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("addTagToGroupBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("changeSuperGroupAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -2873,8 +2864,6 @@ class GroupApi(Structure):
 		("registerNewGroupAdministratorBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("removeExternalJwtConfigAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("removeExternalJwtConfigBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
-		("removeSchemaVersionFromGroupsAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
-		("removeSchemaVersionFromGroupsBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("removeTagFromGroupAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
 		("removeTagFromGroupBlocking", CFUNCTYPE(c_void_p, AnyKtRef, c_char_p)),
 		("resetStorageAsync", CFUNCTYPE(None, AnyKtRef, c_char_p, DATA_RESULT_CALLBACK_FUNC)),
@@ -6480,7 +6469,6 @@ class api(Structure):
 		("DeviceApi", DeviceApi),
 		("DocumentApi", DocumentApi),
 		("DocumentBasicApi", DocumentBasicApi),
-		("FilterApi", FilterApi),
 		("FormApi", FormApi),
 		("FormBasicApi", FormBasicApi),
 		("FrontEndMigrationApi", FrontEndMigrationApi),
