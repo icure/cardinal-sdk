@@ -5,6 +5,7 @@ import {Patient} from '../model/Patient.mjs';
 import {Identifier} from '../model/base/Identifier.mjs';
 import {LinkQualification} from '../model/base/LinkQualification.mjs';
 import {Service} from '../model/embed/Service.mjs';
+import {VersionFiltering} from '../model/filter/VersionFiltering.mjs';
 
 
 interface ServiceFiltersFactory {
@@ -400,14 +401,14 @@ interface ServiceFiltersFactory {
 			options?: { from?: number | undefined, to?: number | undefined, descending?: boolean }): SortableFilterOptions<Service>;
 
 	byCodesAndValueDateForDataOwner(dataOwnerId: string, codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byCodesAndValueDateForSelf(codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byCodePrefixAndValueDateForDataOwner(dataOwnerId: string, codeType: string, codeCodePrefix: string,
 			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
@@ -421,14 +422,14 @@ interface ServiceFiltersFactory {
 
 	byTagCodesAndValueDateForDataOwner(dataOwnerId: string,
 			tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byTagCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byTagCodesAndValueDateForSelf(tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byTagPrefixAndValueDateForDataOwner(dataOwnerId: string, tagType: string, tagCodePrefix: string,
 			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
@@ -442,27 +443,27 @@ interface ServiceFiltersFactory {
 
 	byPatientsCodesAndValueDateForDataOwner(dataOwnerId: string, patients: Array<Patient>,
 			codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientsCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			patients: Array<Patient>, codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientsCodesAndValueDateForSelf(patients: Array<Patient>,
 			codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientSecretIdsCodesAndValueDateForDataOwner(dataOwnerId: string, secretIds: Array<string>,
 			codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byPatientSecretIdsCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			secretIds: Array<string>, codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byPatientSecretIdsCodesAndValueDateForSelf(secretIds: Array<string>,
 			codeCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientsCodePrefixAndValueDateForDataOwner(
 			dataOwnerId: string,
@@ -506,27 +507,27 @@ interface ServiceFiltersFactory {
 
 	byPatientsTagCodesAndValueDateForDataOwner(dataOwnerId: string, patients: Array<Patient>,
 			tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientsTagCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			patients: Array<Patient>, tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientsTagCodesAndValueDateForSelf(patients: Array<Patient>,
 			tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientSecretIdsTagCodesAndValueDateForDataOwner(dataOwnerId: string, secretIds: Array<string>,
 			tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(dataOwner: EntityReferenceInGroup,
 			secretIds: Array<string>, tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): BaseFilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): BaseFilterOptions<Service>;
 
 	byPatientSecretIdsTagCodesAndValueDateForSelf(secretIds: Array<string>,
 			tagCodes: { [ key: string ]: Array<string> },
-			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined }): FilterOptions<Service>;
+			options?: { startOfServiceValueDate?: number | undefined, endOfServiceValueDate?: number | undefined, versionFiltering?: VersionFiltering | undefined }): FilterOptions<Service>;
 
 	byPatientsTagPrefixAndValueDateForDataOwner(
 			dataOwnerId: string,

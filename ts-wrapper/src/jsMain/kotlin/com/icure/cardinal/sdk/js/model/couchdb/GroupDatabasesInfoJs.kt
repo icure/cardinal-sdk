@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model.couchdb
 
+import com.icure.cardinal.sdk.js.utils.Record
 import kotlin.Array
 import kotlin.Double
 import kotlin.String
@@ -17,5 +18,7 @@ public external class GroupDatabasesInfoJs(
 
 	public val databasesInfo: Array<DatabaseInfoJs>
 
-	public val gcpStorageSize: Double
+	public val objectStorageSize: Double
+
+	public val objectStorageInfo: Record<String, GroupDatabasesInfoJs_ObjectStorageInfoJs>
 }

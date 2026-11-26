@@ -14,8 +14,9 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents an access log entry that records access to medical data or resources within the system.
- *  /
+ *
+ *   Represents an access log entry that records access to medical data or resources within the
+ *  system.
  */
 export interface AccessLog extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable {
 
@@ -57,8 +58,9 @@ export interface AccessLog extends StoredDocument, ICureDocument<string>, HasMed
 
 /**
  *
- *  Represents an access log entry that records access to medical data or resources within the system.
- *  /
+ *
+ *   Represents an access log entry that records access to medical data or resources within the
+ *  system.
  */
 export class DecryptedAccessLog {
 
@@ -70,7 +72,8 @@ export class DecryptedAccessLog {
 
 	/**
 	 *
-	 *  The revision of the access log in the database, used for conflict management / optimistic locking.
+	 *  The revision of the access log in the database, used for conflict management / optimistic
+	 *  locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -166,7 +169,8 @@ export class DecryptedAccessLog {
 
 	/**
 	 *
-	 *  The encryption keys used to encrypt the secured properties, encrypted for separate Crypto Actors.
+	 *  The encryption keys used to encrypt the secured properties, encrypted for separate Crypto
+	 *  Actors.
 	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 
@@ -289,8 +293,9 @@ export class DecryptedAccessLog {
 
 /**
  *
- *  Represents an access log entry that records access to medical data or resources within the system.
- *  /
+ *
+ *   Represents an access log entry that records access to medical data or resources within the
+ *  system.
  */
 export class EncryptedAccessLog {
 
@@ -302,7 +307,8 @@ export class EncryptedAccessLog {
 
 	/**
 	 *
-	 *  The revision of the access log in the database, used for conflict management / optimistic locking.
+	 *  The revision of the access log in the database, used for conflict management / optimistic
+	 *  locking.
 	 */
 	rev: string | undefined = undefined;
 
@@ -398,7 +404,8 @@ export class EncryptedAccessLog {
 
 	/**
 	 *
-	 *  The encryption keys used to encrypt the secured properties, encrypted for separate Crypto Actors.
+	 *  The encryption keys used to encrypt the secured properties, encrypted for separate Crypto
+	 *  Actors.
 	 */
 	encryptionKeys: { [ key: string ]: Array<Delegation> } = {};
 

@@ -3,6 +3,7 @@
 
 package com.icure.cardinal.sdk.js.model.couchdb
 
+import kotlin.Array
 import kotlin.Double
 import kotlin.String
 import kotlin.js.JsName
@@ -31,4 +32,6 @@ public external class DatabaseInfoJs(
 	public val w: Double?
 
 	public val r: Double?
+
+	public val zones: Array<String>
 }
