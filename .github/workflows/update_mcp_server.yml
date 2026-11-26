@@ -141,6 +141,16 @@ jobs:
                     echo "githubUsername=${{ secrets.GH_USERNAME }}" > ksp-json-processor/local.properties
                     echo "githubPassword=${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}" >> ksp-json-processor/local.properties
 
+            -   name: Set up Node
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '24'
+
+            # The runner image does not provide `tsc`, which `prepareDistributionPackage` needs in the path.
+            # The version must match the typescript version of the ts-wrapper package.
+            -   name: Install the typescript compiler
+                run: npm install -g typescript@5.9.3
+
             -   name: Build the unreleased TypeScript SDK package
                 # Credentials are scoped to this step: they must not be in the environment when Claude runs.
                 env:
@@ -156,11 +166,6 @@ jobs:
             -   name: Remove credentials from the checkout
                 run: |
                     rm -f local.properties ksp-json-processor/local.properties
-
-            -   name: Set up Node
-                uses: actions/setup-node@v4
-                with:
-                    node-version: '24'
 
             -   name: Enable Corepack
                 run: corepack enable

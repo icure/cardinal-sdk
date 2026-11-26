@@ -58,6 +58,9 @@ jobs:
         name: Setup environment & generating typescript sdk
         env:
             SDK_CODEGEN_VERSION: 1.11.0
+            # Must match the typescript version of the ts-wrapper package, `tsc` has to be in the
+            # path for `prepareDistributionPackage`.
+            TYPESCRIPT_VERSION: 5.9.3
             ORG_GRADLE_PROJECT_repoUsername: ${{ secrets.REPO_USERNAME }}
             ORG_GRADLE_PROJECT_repoPassword: ${{ secrets.REPO_PASSWORD }}
             ORG_GRADLE_PROJECT_mavenRepository: ${{ secrets.MAVEN_REPOSITORY }}
@@ -111,6 +114,17 @@ jobs:
                 run: |
                     git diff --exit-code || echo "::set-output name=changes_detected::true"
                 id: check_diff
+
+            -   name: Set up node 22
+                if: steps.check_diff.outputs.changes_detected == 'true'
+                uses: actions/setup-node@v4
+                with:
+                    node-version: '22'
+
+            # The runner image does not provide `tsc`.
+            -   name: Install the typescript compiler
+                if: steps.check_diff.outputs.changes_detected == 'true'
+                run: npm install -g "typescript@${TYPESCRIPT_VERSION}"
 
             -   name: Check if it builds
                 if: steps.check_diff.outputs.changes_detected == 'true'
