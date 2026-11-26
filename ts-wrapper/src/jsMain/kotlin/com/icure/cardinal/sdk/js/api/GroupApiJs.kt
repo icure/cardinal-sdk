@@ -158,17 +158,4 @@ public external interface GroupApiJs {
 		name: String,
 		options: dynamic,
 	): Promise<GroupJs>
-
-	public fun addSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Double,
-		groupIds: Array<String>,
-	): Promise<Array<GroupJs>>
-
-	public fun removeSchemaVersionFromGroups(
-		applicationGroupId: String,
-		schemaVersion: Double,
-		groupIds: Array<String>,
-		options: dynamic,
-	): Promise<Array<GroupJs>>
 }

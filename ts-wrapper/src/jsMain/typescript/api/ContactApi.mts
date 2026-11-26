@@ -121,6 +121,8 @@ export interface ContactApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param contact a contact
 	 *  @return the encryption keys extracted from the provided contact.
 	 */
@@ -143,6 +145,8 @@ export interface ContactApi {
 	 *  Attempts to extract the patient id linked to a contact.
 	 *  Note: contacts usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param contact a contact
 	 *  @return the id of the patient linked to the contact, or empty if the current user can't access any patient id
 	 *  of the contact.
@@ -156,6 +160,8 @@ export interface ContactApi {
 	 *  with older versions of iCure
 	 *  It is to be noted that only services returned by getServices, or filterServices method will have the metadata necessary
 	 *  to deduce the patient id. In the case of services obtained directly from the Contact, you should use decryptPatientIdOf(Contact) instead.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param service a service returned by getServices, or filterServices method.
 	 *  @return the id of the patient linked to the service, or empty if the current user can't access any patient id
 	 *  of the service.
@@ -191,6 +197,9 @@ export interface ContactApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a contact that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a contact
 	 *  @param delegates a set of data owner ids
 	 */
@@ -198,6 +207,12 @@ export interface ContactApi {
 
 	decrypt(contact: EncryptedContact): Promise<DecryptedContact>;
 
+	/**
+	 *
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
+	 */
 	tryDecrypt(contact: EncryptedContact): Promise<Contact>;
 
 	/**
@@ -217,6 +232,10 @@ export interface ContactApi {
 	 *  Tries to decrypt a single [EncryptedService].
 	 *  Note: you should use this function only when you retrieve [Service]s as single entity. If you are retrieving them as part of a
 	 *  [Contact], use [tryDecrypt] instead.
+	 *
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *
 	 *  @param service the [EncryptedService] to decrypt.
 	 *  @return the [DecryptedService] if the decryption was successful, the original [service] otherwise.

@@ -1,12 +1,16 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model.embed
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
+import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
+import com.icure.cardinal.sdk.js.model.base.CodeStubJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_fromJs
 import com.icure.cardinal.sdk.js.model.base.codeStub_toJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_fromJs
 import com.icure.cardinal.sdk.js.model.specializations.base64String_toJs
+import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.embed.CareTeamMember
 import com.icure.cardinal.sdk.model.embed.CareTeamMemberType
 import com.icure.cardinal.sdk.model.embed.DecryptedCareTeamMember
@@ -16,6 +20,18 @@ import kotlin.Suppress
 @Suppress("UNUSED_VARIABLE")
 public fun careTeamMember_toJs(obj: DecryptedCareTeamMember): DecryptedCareTeamMemberJs {
 	val id = obj.id
+	val tags = setToArray(
+		obj.tags,
+		{ x1: CodeStub ->
+			codeStub_toJs(x1)
+		},
+	)
+	val codes = setToArray(
+		obj.codes,
+		{ x1: CodeStub ->
+			codeStub_toJs(x1)
+		},
+	)
 	val careTeamMemberType = nullToUndefined(
 		obj.careTeamMemberType?.let { nonNull1 ->
 			nonNull1.name
@@ -36,6 +52,8 @@ public fun careTeamMember_toJs(obj: DecryptedCareTeamMember): DecryptedCareTeamM
 	)
 	return DecryptedCareTeamMemberJs(js("{" +
 		"id:id," +
+		"tags:tags," +
+		"codes:codes," +
 		"careTeamMemberType:careTeamMemberType," +
 		"healthcarePartyId:healthcarePartyId," +
 		"quality:quality," +
@@ -45,6 +63,20 @@ public fun careTeamMember_toJs(obj: DecryptedCareTeamMember): DecryptedCareTeamM
 
 public fun careTeamMember_fromJs(obj: DecryptedCareTeamMemberJs): DecryptedCareTeamMember {
 	val id = obj.id
+	val tags = arrayToSet(
+		obj.tags,
+		"obj.tags",
+		{ x1: CodeStubJs ->
+			codeStub_fromJs(x1)
+		},
+	)
+	val codes = arrayToSet(
+		obj.codes,
+		"obj.codes",
+		{ x1: CodeStubJs ->
+			codeStub_fromJs(x1)
+		},
+	)
 	val careTeamMemberType = obj.careTeamMemberType?.let { nonNull1 ->
 		CareTeamMemberType.valueOf(nonNull1)
 	}
@@ -57,6 +89,8 @@ public fun careTeamMember_fromJs(obj: DecryptedCareTeamMemberJs): DecryptedCareT
 	}
 	return DecryptedCareTeamMember(
 		id = id,
+		tags = tags,
+		codes = codes,
 		careTeamMemberType = careTeamMemberType,
 		healthcarePartyId = healthcarePartyId,
 		quality = quality,
@@ -67,6 +101,18 @@ public fun careTeamMember_fromJs(obj: DecryptedCareTeamMemberJs): DecryptedCareT
 @Suppress("UNUSED_VARIABLE")
 public fun careTeamMember_toJs(obj: EncryptedCareTeamMember): EncryptedCareTeamMemberJs {
 	val id = obj.id
+	val tags = setToArray(
+		obj.tags,
+		{ x1: CodeStub ->
+			codeStub_toJs(x1)
+		},
+	)
+	val codes = setToArray(
+		obj.codes,
+		{ x1: CodeStub ->
+			codeStub_toJs(x1)
+		},
+	)
 	val careTeamMemberType = nullToUndefined(
 		obj.careTeamMemberType?.let { nonNull1 ->
 			nonNull1.name
@@ -87,6 +133,8 @@ public fun careTeamMember_toJs(obj: EncryptedCareTeamMember): EncryptedCareTeamM
 	)
 	return EncryptedCareTeamMemberJs(js("{" +
 		"id:id," +
+		"tags:tags," +
+		"codes:codes," +
 		"careTeamMemberType:careTeamMemberType," +
 		"healthcarePartyId:healthcarePartyId," +
 		"quality:quality," +
@@ -96,6 +144,20 @@ public fun careTeamMember_toJs(obj: EncryptedCareTeamMember): EncryptedCareTeamM
 
 public fun careTeamMember_fromJs(obj: EncryptedCareTeamMemberJs): EncryptedCareTeamMember {
 	val id = obj.id
+	val tags = arrayToSet(
+		obj.tags,
+		"obj.tags",
+		{ x1: CodeStubJs ->
+			codeStub_fromJs(x1)
+		},
+	)
+	val codes = arrayToSet(
+		obj.codes,
+		"obj.codes",
+		{ x1: CodeStubJs ->
+			codeStub_fromJs(x1)
+		},
+	)
 	val careTeamMemberType = obj.careTeamMemberType?.let { nonNull1 ->
 		CareTeamMemberType.valueOf(nonNull1)
 	}
@@ -108,6 +170,8 @@ public fun careTeamMember_fromJs(obj: EncryptedCareTeamMemberJs): EncryptedCareT
 	}
 	return EncryptedCareTeamMember(
 		id = id,
+		tags = tags,
+		codes = codes,
 		careTeamMemberType = careTeamMemberType,
 		healthcarePartyId = healthcarePartyId,
 		quality = quality,

@@ -14,9 +14,9 @@ import {Base64String} from './specializations/Base64String.mjs';
 
 /**
  *
- *  Represents an access log entry that records access to medical data or resources within the
+ *
+ *   Represents an access log entry that records access to medical data or resources within the
  *  system.
- *  /
  */
 export interface AccessLog extends StoredDocument, ICureDocument<string>, HasMedicalLocation, HasEncryptionMetadata, Encryptable {
 
@@ -58,9 +58,9 @@ export interface AccessLog extends StoredDocument, ICureDocument<string>, HasMed
 
 /**
  *
- *  Represents an access log entry that records access to medical data or resources within the
+ *
+ *   Represents an access log entry that records access to medical data or resources within the
  *  system.
- *  /
  */
 export class DecryptedAccessLog {
 
@@ -293,9 +293,9 @@ export class DecryptedAccessLog {
 
 /**
  *
- *  Represents an access log entry that records access to medical data or resources within the
+ *
+ *   Represents an access log entry that records access to medical data or resources within the
  *  system.
- *  /
  */
 export class EncryptedAccessLog {
 
