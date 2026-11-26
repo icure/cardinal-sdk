@@ -19,6 +19,7 @@ import com.icure.cardinal.sdk.js.synthetic.mapasobjectarray.EntityReferenceInGro
 import com.icure.cardinal.sdk.js.utils.pagination.PaginatedListIteratorJs
 import kotlin.Array
 import kotlin.Boolean
+import kotlin.ByteArray
 import kotlin.String
 import kotlin.Unit
 import kotlin.js.JsName
@@ -73,6 +74,12 @@ public external interface DocumentInGroupApiJs {
 		delegates: Array<EntityReferenceInGroupToDocumentDelegateOptionsMapObject_delegate_delegateOptions>,
 		options: dynamic,
 	): Promise<GroupScopedJs<DecryptedDocumentJs>>
+
+	public fun encryptAndSetMainAttachment(
+		document: GroupScopedJs<DocumentJs>,
+		utis: Array<String>?,
+		attachment: ByteArray,
+	): Promise<GroupScopedJs<EncryptedDocumentJs>>
 
 	public fun getEncryptionKeysOf(document: GroupScopedJs<DocumentJs>): Promise<Array<String>>
 
