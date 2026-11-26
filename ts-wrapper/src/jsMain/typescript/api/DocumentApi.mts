@@ -212,6 +212,8 @@ export interface DocumentApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param document a document
 	 *  @return the encryption keys extracted from the provided document.
 	 */
@@ -234,6 +236,8 @@ export interface DocumentApi {
 	 *  Attempts to extract the patient id linked to a document.
 	 *  Note: documents usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param document a document
 	 *  @return the id of the patient linked to the document, or empty if the current user can't access any patient id
 	 *  of the document.
@@ -269,6 +273,9 @@ export interface DocumentApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a document that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a document
 	 *  @param delegates a set of data owner ids
 	 */
@@ -286,6 +293,9 @@ export interface DocumentApi {
 	/**
 	 *
 	 *  Tries to decrypt a document, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param document an encrypted document
 	 *  @return the decrypted document if the decryption was successful or the input if it was not.
 	 */
@@ -301,6 +311,8 @@ export interface DocumentApi {
 	 *  the sdk  will also pass the decrypted result to the validator before considering the decryption as successful.
 	 *  This is because due to the nature of the AES-CBC encryption algorithm, it is impossible to know with 100%
 	 *  certainty if the data was decrypted correctly, therefore additional context is needed.
+	 *
+	 *  Failures to load the data needed for decryption (e.g. network errors) are thrown instead of returning null.
 	 *
 	 *  @param document a document
 	 *  @param encryptedAttachment a raw attachment of the document

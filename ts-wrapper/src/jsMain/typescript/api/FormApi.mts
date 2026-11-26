@@ -65,6 +65,8 @@ export interface FormApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of Cardinal where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param form a form
 	 *  @return the encryption keys extracted from the provided form.
 	 */
@@ -87,6 +89,8 @@ export interface FormApi {
 	 *  Attempts to extract the patient id linked to a form.
 	 *  Note: forms usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param form a form
 	 *  @return the id of the patient linked to the form, or empty if the current user can't access any patient id
 	 *  of the form.
@@ -122,6 +126,9 @@ export interface FormApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a form that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a form
 	 *  @param delegates a set of data owner ids
 	 */
@@ -139,6 +146,9 @@ export interface FormApi {
 	/**
 	 *
 	 *  Tries to decrypt a form, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param form an encrypted form
 	 *  @return the decrypted form if the decryption was successful or the input if it was not.
 	 */
