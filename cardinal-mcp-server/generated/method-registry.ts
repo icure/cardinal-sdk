@@ -3739,18 +3739,6 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 			}
 		]
 	},
-	"Filter": {
-		"apiName": "FilterApi",
-		"propertyName": "filter",
-		"isEncryptable": false,
-		"methods": [
-			{
-				"name": "getFilterOptionsDefinitions",
-				"params": [],
-				"returnType": "Promise<{ [key: string]: Array<FilterOptionGroupWithViews>; }>"
-			}
-		]
-	},
 	"Form": {
 		"apiName": "FormApi",
 		"propertyName": "form",
@@ -5249,53 +5237,6 @@ export const METHOD_REGISTRY: Record<string, ApiInfo> = {
 					}
 				],
 				"returnType": "Promise<Group>"
-			},
-			{
-				"name": "addSchemaVersionOnGroups",
-				"params": [
-					{
-						"name": "applicationGroupId",
-						"type": "string",
-						"optional": false
-					},
-					{
-						"name": "schemaVersion",
-						"type": "number",
-						"optional": false
-					},
-					{
-						"name": "groupIds",
-						"type": "Array<string>",
-						"optional": false
-					}
-				],
-				"returnType": "Promise<Array<Group>>"
-			},
-			{
-				"name": "removeSchemaVersionFromGroups",
-				"params": [
-					{
-						"name": "applicationGroupId",
-						"type": "string",
-						"optional": false
-					},
-					{
-						"name": "schemaVersion",
-						"type": "number",
-						"optional": false
-					},
-					{
-						"name": "groupIds",
-						"type": "Array<string>",
-						"optional": false
-					},
-					{
-						"name": "options",
-						"type": "{ failIfSingleSchema?: boolean; }",
-						"optional": true
-					}
-				],
-				"returnType": "Promise<Array<Group>>"
 			}
 		]
 	},
