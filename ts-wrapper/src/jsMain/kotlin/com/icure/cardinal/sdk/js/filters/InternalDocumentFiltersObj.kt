@@ -221,8 +221,7 @@ public object InternalDocumentFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsCreatedForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<DocumentJs> {
+	public fun byPatientsCreatedForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -261,8 +260,7 @@ public object InternalDocumentFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byMessagesCreatedForSelf(messages: Array<MessageJs>, options: dynamic):
-			SortableFilterOptionsJs<DocumentJs> {
+	public fun byMessagesCreatedForSelf(messages: Array<MessageJs>, options: dynamic): SortableFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val messagesConverted: List<Message> = arrayToList(
 			messages,
@@ -391,8 +389,7 @@ public object InternalDocumentFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byOwningEntitySecretIdsCreatedForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<DocumentJs> {
+	public fun byOwningEntitySecretIdsCreatedForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<DocumentJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -529,8 +526,7 @@ public object InternalDocumentFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsAndTypeForSelf(documentType: String, patients: Array<PatientJs>):
-			FilterOptionsJs<DocumentJs> {
+	public fun byPatientsAndTypeForSelf(documentType: String, patients: Array<PatientJs>): FilterOptionsJs<DocumentJs> {
 		val documentTypeConverted: DocumentType = DocumentType.valueOf(documentType)
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -546,8 +542,7 @@ public object InternalDocumentFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byMessagesAndTypeForSelf(documentType: String, messages: Array<MessageJs>):
-			FilterOptionsJs<DocumentJs> {
+	public fun byMessagesAndTypeForSelf(documentType: String, messages: Array<MessageJs>): FilterOptionsJs<DocumentJs> {
 		val documentTypeConverted: DocumentType = DocumentType.valueOf(documentType)
 		val messagesConverted: List<Message> = arrayToList(
 			messages,
@@ -607,8 +602,7 @@ public object InternalDocumentFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byOwningEntitySecretIdsAndTypeForSelf(documentType: String, secretIds: Array<String>):
-			FilterOptionsJs<DocumentJs> {
+	public fun byOwningEntitySecretIdsAndTypeForSelf(documentType: String, secretIds: Array<String>): FilterOptionsJs<DocumentJs> {
 		val documentTypeConverted: DocumentType = DocumentType.valueOf(documentType)
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,

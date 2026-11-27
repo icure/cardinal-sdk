@@ -29,7 +29,7 @@ export interface DocumentInGroupApi {
 	 */
 	withEncryptionMetadataLinkedToMessage(entityGroupId: string, base: DecryptedDocument | undefined,
 			message: GroupScoped<Message>,
-			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
 	 *
@@ -39,8 +39,8 @@ export interface DocumentInGroupApi {
 			entityGroupId: string,
 			base: DecryptedDocument | undefined,
 			message: GroupScoped<Message>,
-			delegates: { [ key: string ]: DocumentDelegateOptions },
-			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: DocumentDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
 	): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
@@ -49,7 +49,7 @@ export interface DocumentInGroupApi {
 	 */
 	withEncryptionMetadataLinkedToPatient(entityGroupId: string, base: DecryptedDocument | undefined,
 			patient: GroupScoped<Patient>,
-			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
 	 *
@@ -59,8 +59,8 @@ export interface DocumentInGroupApi {
 			entityGroupId: string,
 			base: DecryptedDocument | undefined,
 			patient: GroupScoped<Patient>,
-			delegates: { [ key: string ]: DocumentDelegateOptions },
-			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateId?: string | undefined }
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: DocumentDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, secretId?: SecretIdUseOption, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }
 	): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
@@ -68,15 +68,23 @@ export interface DocumentInGroupApi {
 	 *  In-group version of [DocumentApi.withEncryptionMetadataUnlinked]
 	 */
 	withEncryptionMetadataUnlinked(entityGroupId: string, base: DecryptedDocument | undefined,
-			options?: { user?: User | undefined, delegates?: { [ key: string ]: AccessLevel }, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			options?: { user?: User | undefined, delegates?: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, accessLevel: AccessLevel }, 'delegate'>, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
 
 	/**
 	 *
 	 *  In-group version of [DocumentApi.withEncryptionMetadataAndDelegatesUnlinked]
 	 */
 	withEncryptionMetadataAndDelegatesUnlinked(entityGroupId: string,
-			base: DecryptedDocument | undefined, delegates: { [ key: string ]: DocumentDelegateOptions },
-			options?: { user?: User | undefined, alternateRootDelegateId?: string | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+			base: DecryptedDocument | undefined,
+			delegates: ArrayWithUniqueKeys<{ delegate: EntityReferenceInGroup, delegateOptions: DocumentDelegateOptions }, 'delegate'>,
+			options?: { user?: User | undefined, alternateRootDelegateReference?: EntityReferenceInGroup | undefined }): Promise<GroupScoped<DecryptedDocument>>;
+
+	/**
+	 *
+	 *  In-group version of [DocumentApi.encryptAndSetMainAttachment]
+	 */
+	encryptAndSetMainAttachment(document: GroupScoped<Document>, utis: Array<string> | undefined,
+			attachment: Int8Array): Promise<GroupScoped<EncryptedDocument>>;
 
 	/**
 	 *

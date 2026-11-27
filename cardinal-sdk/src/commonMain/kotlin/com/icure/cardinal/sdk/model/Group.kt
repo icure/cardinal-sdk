@@ -23,8 +23,7 @@ import kotlin.collections.Set
 
 /**
  *
- *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or
- * organization
+ *  Represents a group in the iCure platform. A group corresponds to a practice, hospital, or organization
  *  that contains its own set of databases and users.
  */
 @Serializable
@@ -84,7 +83,7 @@ data class Group(
 	@param:DefaultValue("emptyMap()")
 	public val operationTokens: Map<String, OperationToken> = emptyMap(),
 	/**
-	 * List of entities that have to be collected from a shared database.
+	 * Single-used token to perform specific operations.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val sharedEntities: Map<String, String> = emptyMap(),
@@ -110,9 +109,6 @@ data class Group(
 	 */
 	@JsonNames("applicationId")
 	public val projectId: String? = null,
-	/**
-	 * A user-chosen identifier for the applications for which this group holds data.
-	 */
 	public val templates: TemplatesConfiguration? = null,
 	/**
 	 *
@@ -127,12 +123,12 @@ data class Group(
 	public val defaultChildrenSchemaVersion: Int? = null,
 	/**
 	 *
-	 *  The commercial status of the group, derived from the group hierarchy when not explicitly set on
-	 * the group.
+	 *  The commercial status of the group, derived from the group hierarchy when not explicitly set on the group.
 	 *  This field is read-only: it is ignored when creating or modifying a group.
 	 */
 	public val status: GroupStatus? = null,
-) : StoredDocument, HasTags {
+) : StoredDocument,
+	HasTags {
 	@Serializable
 	public data class TemplatesConfiguration(
 		public val specId: String,

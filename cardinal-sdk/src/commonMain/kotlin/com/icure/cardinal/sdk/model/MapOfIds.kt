@@ -16,8 +16,7 @@ import kotlin.collections.Map
 @Serializable
 data class MapOfIds(
 	/**
-	 * A map where each key is an entity identifier and the value is a list of related entity
-	 * identifiers.
+	 * A map where each key is an entity identifier and the value is a list of related entity identifiers.
 	 */
 	@param:DefaultValue("emptyMap()")
 	public val mapOfIds: Map<String, List<String>> = emptyMap(),

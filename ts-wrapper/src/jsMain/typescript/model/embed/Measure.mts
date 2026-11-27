@@ -7,8 +7,7 @@ import {ValueWithPrecision} from './ValueWithPrecision.mjs';
 
 /**
  *
- *  Represents a measured value with its unit, reference value, severity, evolution, and reference
- *  ranges.
+ *  Represents a measured value with its unit, reference value, severity, evolution, and reference ranges.
  *  /
  */
 export class Measure {

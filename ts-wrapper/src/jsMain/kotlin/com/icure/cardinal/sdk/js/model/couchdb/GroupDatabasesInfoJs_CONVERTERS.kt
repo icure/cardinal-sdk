@@ -2,11 +2,16 @@
 package com.icure.cardinal.sdk.js.model.couchdb
 
 import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToList
+import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.listToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
+import com.icure.cardinal.sdk.js.model.CheckedConverters.mapToObject
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
+import com.icure.cardinal.sdk.js.model.CheckedConverters.objectToMap
+import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.model.couchdb.DatabaseInfo
 import com.icure.cardinal.sdk.model.couchdb.GroupDatabasesInfo
+import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
@@ -18,11 +23,21 @@ public fun groupDatabasesInfo_toJs(obj: GroupDatabasesInfo): GroupDatabasesInfoJ
 			databaseInfo_toJs(x1)
 		},
 	)
-	val gcpStorageSize = longToNumber(obj.gcpStorageSize)
+	val objectStorageSize = longToNumber(obj.objectStorageSize)
+	val objectStorageInfo = mapToObject(
+		obj.objectStorageInfo,
+		{ x1: String ->
+			x1
+		},
+		{ x1: GroupDatabasesInfo.ObjectStorageInfo ->
+			groupDatabasesInfo_ObjectStorageInfo_toJs(x1)
+		},
+	)
 	return GroupDatabasesInfoJs(js("{" +
 		"groupId:groupId," +
 		"databasesInfo:databasesInfo," +
-		"gcpStorageSize:gcpStorageSize" +
+		"objectStorageSize:objectStorageSize," +
+		"objectStorageInfo:objectStorageInfo" +
 	"}"))
 }
 
@@ -35,10 +50,51 @@ public fun groupDatabasesInfo_fromJs(obj: GroupDatabasesInfoJs): GroupDatabasesI
 			databaseInfo_fromJs(x1)
 		},
 	)
-	val gcpStorageSize = numberToLong(obj.gcpStorageSize, "obj.gcpStorageSize")
+	val objectStorageSize = numberToLong(obj.objectStorageSize, "obj.objectStorageSize")
+	val objectStorageInfo = objectToMap(
+		obj.objectStorageInfo,
+		"obj.objectStorageInfo",
+		{ x1: String ->
+			x1
+		},
+		{ x1: GroupDatabasesInfoJs_ObjectStorageInfoJs ->
+			groupDatabasesInfo_ObjectStorageInfo_fromJs(x1)
+		},
+	)
 	return GroupDatabasesInfo(
 		groupId = groupId,
 		databasesInfo = databasesInfo,
-		gcpStorageSize = gcpStorageSize,
+		objectStorageSize = objectStorageSize,
+		objectStorageInfo = objectStorageInfo,
+	)
+}
+
+@Suppress("UNUSED_VARIABLE")
+public fun groupDatabasesInfo_ObjectStorageInfo_toJs(obj: GroupDatabasesInfo.ObjectStorageInfo): GroupDatabasesInfoJs_ObjectStorageInfoJs {
+	val size = longToNumber(obj.size)
+	val regions = setToArray(
+		obj.regions,
+		{ x1: String ->
+			x1
+		},
+	)
+	return GroupDatabasesInfoJs_ObjectStorageInfoJs(js("{" +
+		"size:size," +
+		"regions:regions" +
+	"}"))
+}
+
+public fun groupDatabasesInfo_ObjectStorageInfo_fromJs(obj: GroupDatabasesInfoJs_ObjectStorageInfoJs): GroupDatabasesInfo.ObjectStorageInfo {
+	val size = numberToLong(obj.size, "obj.size")
+	val regions = arrayToSet(
+		obj.regions,
+		"obj.regions",
+		{ x1: String ->
+			x1
+		},
+	)
+	return GroupDatabasesInfo.ObjectStorageInfo(
+		size = size,
+		regions = regions,
 	)
 }

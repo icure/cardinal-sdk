@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {CalendarItemDelegateOptions} from '../crypto/entities/CalendarItemDelegateOptions.mjs';
 import {CalendarItemShareOptions} from '../crypto/entities/CalendarItemShareOptions.mjs';
 import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
@@ -72,6 +73,8 @@ export interface CalendarItemApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param calendarItem a calendar item
 	 *  @return the encryption keys extracted from the provided calendar item.
 	 */
@@ -94,6 +97,8 @@ export interface CalendarItemApi {
 	 *  Attempts to extract the patient id linked to a calendar item.
 	 *  Note: calendar items usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param calendarItem a calendar item
 	 *  @return the id of the patient linked to the calendar item, or empty if the current user can't access any patient id
 	 *  of the calendar item.
@@ -129,6 +134,9 @@ export interface CalendarItemApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a calendar item that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a calendar item
 	 *  @param delegates a set of data owner ids
 	 */
@@ -147,6 +155,9 @@ export interface CalendarItemApi {
 	/**
 	 *
 	 *  Tries to decrypt a CalendarItem, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param calendarItems encrypted CalendarItems
 	 *  @return all the provided CalendarItems, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -229,6 +240,29 @@ export interface CalendarItemApi {
 	 */
 	getCalendarItemsOccupancyByPeriodAndAgendaId(startDate: number, endDate: number, agendaId: string,
 			extensionInDays: number | undefined): Promise<Array<CalendarItemOccupancy>>;
+
+	/**
+	 *
+	 *  Share many already-existing calendar items with one or more delegates at once, retrieving them by id instead
+	 *  of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per calendar item when you already know the ids of many calendar items to share and don't otherwise need their
+	 *  decrypted content, since only lightweight metadata (not the full content of each calendar item) is ever
+	 *  retrieved, and no content flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found calendar item. Unlike [shareWithMany], if
+	 *  the share fails for some (calendar item, delegate) pairs this method reports the failure for those specific
+	 *  pairs in the returned result instead of throwing, so sharing proceeds normally for every other calendar item
+	 *  and delegate in the batch.
+	 *
+	 *  @param calendarItemIds ids of the calendar items to share. Ids that don't exist, or exist but for which the
+	 *  current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each calendar item, and the options for sharing
+	 *  with each of them (see [CalendarItemShareOptions]). The exact same options are applied to every calendar item
+	 *  in [calendarItemIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareCalendarItemsByIds(calendarItemIds: Array<string>,
+			delegates: { [ key: string ]: CalendarItemShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *
@@ -347,16 +381,39 @@ export interface CalendarItemApi {
 
 	/**
 	 *
-	 *  Links a calendar item with a patient. Note that this operation is not reversible: it is not possible to change the patient linked to a calendar
-	 *  item.
+	 *  Links a completely unlinked calendar item to a patient, or complete a partial link to a patient.
+	 *  Note that this operation is not reversible: it is not possible to change the patient linked to a calendar item.
+	 *
+	 *  # Linking an unlinked calendar item
+	 *
+	 *  If the calendar item has no `owningEntityIds` and no secret foreign keys it is considered as fully unlinked; in
+	 *  that case you can pick any [patient] for linking
+	 *
+	 *  # Linking a partially linked calendar item
+	 *
+	 *  A partially linked calendar item is a calendar item that has owning entity ids but no secret foreign keys. In
+	 *  that case this method may be used to fill in the secret foreign keys from the linked patient, allowing to find
+	 *  back [calendarItem] starting from the [patient].
+	 *
+	 *  In case of partially linked calendar items the provided [patient] must match the partial link: the [patient] id
+	 *  must match one of the [calendarItem] owning entity ids, or must be merged with one of the listed patients ids
+	 *  (into or from). The existing owning entity ids are reused as-is: this method never overwrites or adds to them.
+	 *
+	 *  Note that if the SDK detects that there are owning entity ids in the [calendarItem] but it is unable to decrypt
+	 *  any of them the method will fail.
+	 *
 	 *  @param calendarItem a calendar item.
 	 *  @param patient the patient which will be linked to the calendar item.
 	 *  @param shareLinkWithDelegates data owners other than the current data owner which will also be able to decrypt the id of the newly linked
-	 *  patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write).
+	 *  patient. If any of these data owners do not already have access to the calendar item, they will be granted read access (no write). If the
+	 *  calendar item was already partially linked and its owning entity id was not yet shared with some of these data owners (or with the current
+	 *  data owner) this method will also take care of sharing the existing owning entity id with them.
+	 *  @param secretIdUseOption which secret ids of patient should be used when linking.
 	 *  @return the updated calendar item.
 	 */
-	linkToPatient(calendarItem: CalendarItem, patient: Patient,
-			shareLinkWithDelegates: Array<string>): Promise<DecryptedCalendarItem>;
+	linkToPatient(calendarItem: DecryptedCalendarItem, patient: Patient,
+			shareLinkWithDelegates: Array<string>,
+			secretIdUseOption: SecretIdUseOption): Promise<DecryptedCalendarItem>;
 
 	/**
 	 *
@@ -500,6 +557,26 @@ export interface CalendarItemApi {
 	/**
 	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *
+	 *  # Access control
+	 *
+	 *  The subscription will only receive notifications about entities that the SDK user can access; currently this
+	 *  validation varies slightly from standard read methods.
+	 *
+	 *  ## Encryptable entities
+	 *
+	 *  Applies the same access control rules as the standard read methods; depending on the permissions of the user the
+	 *  entity might need to have a direct delegation to the user, or to a parent, or if the user has the permission to
+	 *  read any entity of the type regardless of delegations then all notification of entities (matching the filter)
+	 *  will be received.
+	 *
+	 *  ## Healthcare party
+	 *
+	 *  Currently, regardless of user permissions, only notifications about healthcare parties that have the current SDK
+	 *  data owner as a DIRECT link will be returned.
+	 *
+	 *  This behaviour is not in line with current Cardinal SDK ideology and is subject to change in future versions.
+	 *
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
 	 *  make the filter as restrictive as possible.

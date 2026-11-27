@@ -13,8 +13,7 @@ import kotlin.js.Promise
 
 @JsName("CryptoInGroupApi")
 public external interface CryptoInGroupApiJs {
-	public fun keylessCreateExchangeDataTo(groupId: String?, `delegate`: EntityReferenceInGroupJs):
-			Promise<RawDecryptedExchangeDataJs>
+	public fun keylessCreateExchangeDataTo(groupId: String?, `delegate`: EntityReferenceInGroupJs): Promise<RawDecryptedExchangeDataJs>
 
 	public fun getAccessControlKeys(groupId: String?, entityType: String): Promise<Array<String>>
 }

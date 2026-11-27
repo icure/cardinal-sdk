@@ -11,8 +11,7 @@ import kotlin.collections.List
 
 /**
  *
- *  Represents a reference range for a measurement, including bounds, applicable age range, tags,
- * codes, and notes.
+ *  Represents a reference range for a measurement, including bounds, applicable age range, tags, codes, and notes.
  */
 @Serializable
 data class ReferenceRange(

@@ -12,6 +12,5 @@ import kotlin.js.Promise
 
 @JsName("PermissionApi")
 public external interface PermissionApiJs {
-	public fun modifyUserPermissions(userId: String, permissions: PermissionJs):
-			Promise<Array<PermissionJs>>
+	public fun modifyUserPermissions(userId: String, permissions: PermissionJs): Promise<Array<PermissionJs>>
 }

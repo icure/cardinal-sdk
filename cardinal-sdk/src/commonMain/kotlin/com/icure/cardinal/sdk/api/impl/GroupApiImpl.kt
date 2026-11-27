@@ -207,25 +207,4 @@ internal class GroupApiImpl(
 			rawApi.modifyGroupApplicationId(id = groupId, applicationId = projectId, applyToSubGroups = applyToSubgroups).successBody()
 	}
 
-	override suspend fun addSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Int,
-		groupIds: List<String>,
-	): List<Group> = rawApi.addSchemaVersionOnGroups(
-		applicationGroupId = applicationGroupId,
-		schemaVersion = schemaVersion,
-		groupIds = ListOfIds(groupIds)
-	).successBody()
-
-	override suspend fun removeSchemaVersionFromGroups(
-		applicationGroupId: String,
-		schemaVersion: Int,
-		groupIds: List<String>,
-		failIfSingleSchema: Boolean
-	): List<Group> = rawApi.removeSchemaVersionOnGroups(
-		applicationGroupId = applicationGroupId,
-		schemaVersion = schemaVersion,
-		groupIds = ListOfIds(groupIds),
-		force = !failIfSingleSchema
-	).successBody()
 }

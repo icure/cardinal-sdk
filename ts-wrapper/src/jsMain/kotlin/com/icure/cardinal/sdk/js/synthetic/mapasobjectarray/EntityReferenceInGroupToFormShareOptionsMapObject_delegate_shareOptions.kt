@@ -18,10 +18,7 @@ public external interface EntityReferenceInGroupToFormShareOptionsMapObject_dele
   public val shareOptions: FormShareOptionsJs
 }
 
-public
-    fun EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_toJs(ktMap: Map<EntityReferenceInGroup, FormShareOptions>):
-    Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions> =
-    ktMap.map { entry ->
+public fun EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_toJs(ktMap: Map<EntityReferenceInGroup, FormShareOptions>): Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions> = ktMap.map { entry ->
   val delegateKt = entry.key
   val delegate: EntityReferenceInGroupJs = entityReferenceInGroup_toJs(delegateKt)
   val shareOptionsKt = entry.value
@@ -29,9 +26,7 @@ public
   js("{delegate: delegate, shareOptions: shareOptions}")
 }.toTypedArray()
 
-public
-    fun EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(jsArray: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>):
-    Map<EntityReferenceInGroup, FormShareOptions> = CheckedConverters.objectArrayToMap(
+public fun EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions_fromJs(jsArray: Array<EntityReferenceInGroupToFormShareOptionsMapObject_delegate_shareOptions>): Map<EntityReferenceInGroup, FormShareOptions> = CheckedConverters.objectArrayToMap(
   jsArray,
   { entry ->
     val key = entry.delegate

@@ -21,6 +21,7 @@ import com.icure.cardinal.sdk.model.EntityReferenceInGroup
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.base.Identifier
 import com.icure.cardinal.sdk.model.base.LinkQualification
+import com.icure.cardinal.sdk.model.filter.VersionFiltering
 import kotlin.Array
 import kotlin.Boolean
 import kotlin.Double
@@ -41,8 +42,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun allServicesForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun allServicesForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val result = ServiceFilters.allServicesForDataOwnerInGroup(
 			dataOwnerConverted,
@@ -56,8 +56,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun byIdentifiersForDataOwner(dataOwnerId: String, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -73,8 +72,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byIdentifiersForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, identifiers: Array<IdentifierJs>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val identifiersConverted: List<Identifier> = arrayToList(
 			identifiers,
@@ -246,8 +244,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsForDataOwner(dataOwnerId: String, patients: Array<PatientJs>):
-			FilterOptionsJs<ServiceJs> {
+	public fun byPatientsForDataOwner(dataOwnerId: String, patients: Array<PatientJs>): FilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -263,8 +260,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			patients: Array<PatientJs>): FilterOptionsJs<ServiceJs> {
+	public fun byPatientsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, patients: Array<PatientJs>): FilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -280,8 +276,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSecretIdsForDataOwner(dataOwnerId: String, secretIds: Array<String>):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun byPatientsSecretIdsForDataOwner(dataOwnerId: String, secretIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -297,8 +292,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			secretIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byPatientsSecretIdsForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, secretIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -314,8 +308,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byHealthElementIdFromSubContactForDataOwner(dataOwnerId: String,
-			healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byHealthElementIdFromSubContactForDataOwner(dataOwnerId: String, healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerIdConverted: String = dataOwnerId
 		val healthElementIdsConverted: List<String> = arrayToList(
 			healthElementIds,
@@ -331,8 +324,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byHealthElementIdFromSubContactForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs,
-			healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
+	public fun byHealthElementIdFromSubContactForDataOwnerInGroup(dataOwner: EntityReferenceInGroupJs, healthElementIds: Array<String>): BaseFilterOptionsJs<ServiceJs> {
 		val dataOwnerConverted: EntityReferenceInGroup = entityReferenceInGroup_fromJs(dataOwner)
 		val healthElementIdsConverted: List<String> = arrayToList(
 			healthElementIds,
@@ -362,8 +354,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byCodeAndValueDateForSelf(codeType: String, options: dynamic):
-			FilterOptionsJs<ServiceJs> {
+	public fun byCodeAndValueDateForSelf(codeType: String, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val codeTypeConverted: String = codeType
 		val codeCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -396,8 +387,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byTagAndValueDateForSelf(tagType: String, options: dynamic):
-			FilterOptionsJs<ServiceJs> {
+	public fun byTagAndValueDateForSelf(tagType: String, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val tagTypeConverted: String = tagType
 		val tagCodeConverted: String? = convertingOptionOrDefaultNullable(
@@ -458,8 +448,7 @@ public object InternalServiceFiltersObj {
 		return FilterOptionsJsImpl(result)
 	}
 
-	public fun byHealthElementIdFromSubContactForSelf(healthElementIds: Array<String>):
-			FilterOptionsJs<ServiceJs> {
+	public fun byHealthElementIdFromSubContactForSelf(healthElementIds: Array<String>): FilterOptionsJs<ServiceJs> {
 		val healthElementIdsConverted: List<String> = arrayToList(
 			healthElementIds,
 			"healthElementIds",
@@ -495,8 +484,7 @@ public object InternalServiceFiltersObj {
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byQualifiedLink(linkValues: Array<String>, options: dynamic):
-			BaseFilterOptionsJs<ServiceJs> {
+	public fun byQualifiedLink(linkValues: Array<String>, options: dynamic): BaseFilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val linkValuesConverted: List<String> = arrayToList(
 			linkValues,
@@ -611,8 +599,7 @@ public object InternalServiceFiltersObj {
 		return SortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientsDateForSelf(patients: Array<PatientJs>, options: dynamic):
-			SortableFilterOptionsJs<ServiceJs> {
+	public fun byPatientsDateForSelf(patients: Array<PatientJs>, options: dynamic): SortableFilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val patientsConverted: List<Patient> = arrayToList(
 			patients,
@@ -741,8 +728,7 @@ public object InternalServiceFiltersObj {
 		return BaseSortableFilterOptionsJsImpl(result)
 	}
 
-	public fun byPatientSecretIdsDateForSelf(secretIds: Array<String>, options: dynamic):
-			SortableFilterOptionsJs<ServiceJs> {
+	public fun byPatientSecretIdsDateForSelf(secretIds: Array<String>, options: dynamic): SortableFilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val secretIdsConverted: List<String> = arrayToList(
 			secretIds,
@@ -818,11 +804,21 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byCodesAndValueDateForDataOwner(
 			dataOwnerIdConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
@@ -864,17 +860,26 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byCodesAndValueDateForDataOwnerInGroup(
 			dataOwnerConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byCodesAndValueDateForSelf(codeCodes: Record<String, Array<String>>, options: dynamic):
-			FilterOptionsJs<ServiceJs> {
+	public fun byCodesAndValueDateForSelf(codeCodes: Record<String, Array<String>>, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val codeCodesConverted: Map<String, Set<String>> = objectToMap(
 			codeCodes,
@@ -906,10 +911,20 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byCodesAndValueDateForSelf(
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1050,11 +1065,21 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byTagCodesAndValueDateForDataOwner(
 			dataOwnerIdConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
@@ -1096,17 +1121,26 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byTagCodesAndValueDateForDataOwnerInGroup(
 			dataOwnerConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
 
-	public fun byTagCodesAndValueDateForSelf(tagCodes: Record<String, Array<String>>,
-			options: dynamic): FilterOptionsJs<ServiceJs> {
+	public fun byTagCodesAndValueDateForSelf(tagCodes: Record<String, Array<String>>, options: dynamic): FilterOptionsJs<ServiceJs> {
 		val _options = options ?: js("{}")
 		val tagCodesConverted: Map<String, Set<String>> = objectToMap(
 			tagCodes,
@@ -1138,10 +1172,20 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byTagCodesAndValueDateForSelf(
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1290,12 +1334,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientsCodesAndValueDateForDataOwner(
 			dataOwnerIdConverted,
 			patientsConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1345,12 +1399,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientsCodesAndValueDateForDataOwnerInGroup(
 			dataOwnerConverted,
 			patientsConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1398,11 +1462,21 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientsCodesAndValueDateForSelf(
 			patientsConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1452,12 +1526,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientSecretIdsCodesAndValueDateForDataOwner(
 			dataOwnerIdConverted,
 			secretIdsConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
@@ -1507,12 +1591,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientSecretIdsCodesAndValueDateForDataOwnerInGroup(
 			dataOwnerConverted,
 			secretIdsConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
@@ -1560,11 +1654,21 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientSecretIdsCodesAndValueDateForSelf(
 			secretIdsConverted,
 			codeCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1866,12 +1970,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientsTagCodesAndValueDateForDataOwner(
 			dataOwnerIdConverted,
 			patientsConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1921,12 +2035,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientsTagCodesAndValueDateForDataOwnerInGroup(
 			dataOwnerConverted,
 			patientsConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -1974,11 +2098,21 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientsTagCodesAndValueDateForSelf(
 			patientsConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}
@@ -2028,12 +2162,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientSecretIdsTagCodesAndValueDateForDataOwner(
 			dataOwnerIdConverted,
 			secretIdsConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
@@ -2083,12 +2227,22 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup(
 			dataOwnerConverted,
 			secretIdsConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return BaseFilterOptionsJsImpl(result)
 	}
@@ -2136,11 +2290,21 @@ public object InternalServiceFiltersObj {
 		) { endOfServiceValueDate: Double? ->
 			numberToLong(endOfServiceValueDate, "endOfServiceValueDate")
 		}
+		val versionFilteringConverted: VersionFiltering? = convertingOptionOrDefaultNullable(
+			_options,
+			"versionFiltering",
+			null
+		) { versionFiltering: String? ->
+			versionFiltering?.let { nonNull1 ->
+				VersionFiltering.valueOf(nonNull1)
+			}
+		}
 		val result = ServiceFilters.byPatientSecretIdsTagCodesAndValueDateForSelf(
 			secretIdsConverted,
 			tagCodesConverted,
 			startOfServiceValueDateConverted,
 			endOfServiceValueDateConverted,
+			versionFilteringConverted,
 		)
 		return FilterOptionsJsImpl(result)
 	}

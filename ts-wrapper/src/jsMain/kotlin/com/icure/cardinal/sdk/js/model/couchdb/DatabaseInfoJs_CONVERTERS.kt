@@ -1,13 +1,16 @@
 // auto-generated file
 package com.icure.cardinal.sdk.js.model.couchdb
 
+import com.icure.cardinal.sdk.js.model.CheckedConverters.arrayToSet
 import com.icure.cardinal.sdk.js.model.CheckedConverters.intToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.longToNumber
 import com.icure.cardinal.sdk.js.model.CheckedConverters.nullToUndefined
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToInt
 import com.icure.cardinal.sdk.js.model.CheckedConverters.numberToLong
+import com.icure.cardinal.sdk.js.model.CheckedConverters.setToArray
 import com.icure.cardinal.sdk.js.model.CheckedConverters.undefinedToNull
 import com.icure.cardinal.sdk.model.couchdb.DatabaseInfo
+import kotlin.String
 import kotlin.Suppress
 
 @Suppress("UNUSED_VARIABLE")
@@ -40,6 +43,12 @@ public fun databaseInfo_toJs(obj: DatabaseInfo): DatabaseInfoJs {
 	val r = nullToUndefined(
 		intToNumber(obj.r)
 	)
+	val zones = setToArray(
+		obj.zones,
+		{ x1: String ->
+			x1
+		},
+	)
 	return DatabaseInfoJs(js("{" +
 		"id:id," +
 		"updateSeq:updateSeq," +
@@ -50,7 +59,8 @@ public fun databaseInfo_toJs(obj: DatabaseInfo): DatabaseInfoJs {
 		"q:q," +
 		"n:n," +
 		"w:w," +
-		"r:r" +
+		"r:r," +
+		"zones:zones" +
 	"}"))
 }
 
@@ -65,6 +75,13 @@ public fun databaseInfo_fromJs(obj: DatabaseInfoJs): DatabaseInfo {
 	val n = numberToInt(obj.n, "obj.n")
 	val w = numberToInt(obj.w, "obj.w")
 	val r = numberToInt(obj.r, "obj.r")
+	val zones = arrayToSet(
+		obj.zones,
+		"obj.zones",
+		{ x1: String ->
+			x1
+		},
+	)
 	return DatabaseInfo(
 		id = id,
 		updateSeq = updateSeq,
@@ -76,5 +93,6 @@ public fun databaseInfo_fromJs(obj: DatabaseInfoJs): DatabaseInfo {
 		n = n,
 		w = w,
 		r = r,
+		zones = zones,
 	)
 }

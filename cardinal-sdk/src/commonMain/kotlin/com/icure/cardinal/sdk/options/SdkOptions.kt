@@ -39,6 +39,11 @@ interface HttpSdkOptions {
 	 * Configures how requests should be retried in case of server errors or connection errors.
 	 */
 	val requestRetryConfiguration: RequestRetryConfiguration?
+
+	/**
+	 * The version of the design doc schema to use. If null, it will use the latest available on the group.
+	 */
+	val designDocSchemaVersion: Int?
 }
 
 interface SerializationOptions {
@@ -75,10 +80,6 @@ interface CommonSdkOptions : HttpSdkOptions, SerializationOptions {
 	 */
 	val cryptoService: CryptoService
 
-	/**
-	 * The version of the design doc schema to use. If null, it will use the latest available on the group.
-	 */
-	val designDocSchemaVersion: Int?
 }
 
 interface BoundSdkOptions : CommonSdkOptions {
@@ -111,6 +112,7 @@ data class AnonymousSdkOptions(
 	override val requestRetryConfiguration: RequestRetryConfiguration = RequestRetryConfiguration(),
 	override val ignoreUnknownFields: Boolean? = null,
 	override val entityListDecodingStrategy: EntityListDecodingStrategy = EntityListDecodingStrategy.Strict,
+	override val designDocSchemaVersion: Int? = null,
 ): HttpSdkOptions, SerializationOptions {
 	init {
 		validateHttpAndSerializationOptions()
@@ -172,11 +174,12 @@ data class SdkOptions(
 	 * Has only effect when logging in as a hcp user.
 	 *
 	 * If true the api will be initialized in a hierarchical mode, where each data owner is considered to have access
-	 * to all data of his parents (requires corresponding permission on the server side).
-	 * In this case the sdk will also expect to have access to at least a key for each parent data owner of the current
-	 * user.
+	 * to all data of the linked data owner groups (requires corresponding permission on the server side).
 	 *
-	 * If false the api will ignore the data owner hierarchies.
+	 * In this case the sdk will also expect to have access to at least a (shared) keypair for each parent-type linked
+	 * data owner group. Simple-type data owner groups do not use a shared key.
+	 *
+	 * If false the api will ignore the data owner hierarchies, regardless of their type.
 	 * Each data owner is considered to have access only to data shared explicitly with him, and has access only to his
 	 * own keys.
 	 */

@@ -7,9 +7,10 @@ import com.icure.utils.InternalIcureApi
 
 @OptIn(InternalIcureApi::class)
 class AnonymousHealthcarePartyApiImpl(
-	val raw: RawAnonymousApi
+	val raw: RawAnonymousApi,
+	private val designDocSchemaVersion: Int?
 ): AnonymousHealthcarePartyApi {
 	override suspend fun getPublicHealthcarePartiesInGroup(
 		groupId: String
-	): List<HealthcareParty> = raw.listPublicHealthcarePartiesInGroup(groupId = groupId).successBody()
+	): List<HealthcareParty> = raw.listPublicHealthcarePartiesInGroup(groupId = groupId, schemaVersion = designDocSchemaVersion).successBody()
 }

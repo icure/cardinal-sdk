@@ -9,8 +9,7 @@ import kotlin.String
 
 /**
  *
- *  Response returned by JWT-based authentication endpoints, containing the issued tokens upon
- * successful login.
+ *  Response returned by JWT-based authentication endpoints, containing the issued tokens upon successful login.
  */
 @Serializable
 data class JwtResponse(

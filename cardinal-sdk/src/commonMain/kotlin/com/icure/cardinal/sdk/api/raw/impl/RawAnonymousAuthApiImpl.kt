@@ -30,7 +30,8 @@ import kotlin.Unit
 class RawAnonymousAuthApiImpl(
 	internal val apiUrl: String,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawAnonymousAuthApi {
+) : BaseRawApi(rawApiConfig),
+	RawAnonymousAuthApi {
 	// region common endpoints
 
 	override suspend fun login(
@@ -69,17 +70,6 @@ class RawAnonymousAuthApiImpl(
 			contentType(Application.Json)
 			accept(Application.Json)
 			`header`("Refresh-Token", refreshToken)
-		}.wrap()
-
-	override suspend fun check(loginCredentials: LoginCredentials): HttpResponse<Unit> =
-		post {
-			url {
-				takeFrom(apiUrl)
-				appendPathSegments("rest", "v2", "auth", "check")
-			}
-			contentType(Application.Json)
-			accept(Application.Json)
-			setBody(loginCredentials)
 		}.wrap()
 
 	override suspend fun getAuthJwtPublicKey(): HttpResponse<String> =

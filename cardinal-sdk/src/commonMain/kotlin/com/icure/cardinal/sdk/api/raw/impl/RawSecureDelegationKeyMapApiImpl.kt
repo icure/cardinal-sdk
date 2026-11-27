@@ -28,7 +28,8 @@ class RawSecureDelegationKeyMapApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawSecureDelegationKeyMapApi {
+) : BaseRawApi(rawApiConfig),
+	RawSecureDelegationKeyMapApi {
 	// region common endpoints
 
 	override suspend fun createSecureDelegationKeyMap(

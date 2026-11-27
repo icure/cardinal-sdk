@@ -25,7 +25,8 @@ data class UnionFilter<O : Identifiable<String>>(
 	 */
 	@param:DefaultValue("emptyList()")
 	override val filters: List<AbstractFilter<O>> = emptyList(),
-) : AbstractFilter<O>, Filter.UnionFilter<O> {
+) : AbstractFilter<O>,
+	Filter.UnionFilter<O> {
 	// region UnionFilter-UnionFilter
 
 	// endregion

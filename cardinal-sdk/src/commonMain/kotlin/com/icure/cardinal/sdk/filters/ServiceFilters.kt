@@ -14,7 +14,12 @@ import com.icure.cardinal.sdk.model.base.LinkQualification
 import com.icure.cardinal.sdk.model.embed.Service
 import com.icure.cardinal.sdk.model.embed.SubContact
 import com.icure.cardinal.sdk.model.filter.AbstractFilter
+import com.icure.cardinal.sdk.model.filter.VersionFiltering
 import com.icure.cardinal.sdk.model.filter.service.ServiceByAssociationIdFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerCodeCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientCodeCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientTagCodesFilter
+import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerTagCodesFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByDataOwnerPatientDateFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyFilter
 import com.icure.cardinal.sdk.model.filter.service.ServiceByHcPartyHealthElementIdsFilter
@@ -639,6 +644,11 @@ object ServiceFilters {
 
 	// --- Codes (Map<codeType, Collection<codeCode>>) filters ---
 
+	// The code and tag code filters below take an optional versionFiltering. When it is null they use the
+	// ServiceByHcParty*CodesFilter, which all backend versions understand and which only matches the latest version of a
+	// service. When it is set they use the ServiceByDataOwner*CodesFilter: VersionFiltering.LATEST matches the same
+	// services as the null default, VersionFiltering.ANY also matches services where any older version matches.
+
 	//TODO might want to add more alternative version where instead of passing directly the Map<String, Set<String>> we
 	// ask for List<TypeAndCode> and convert that to the map before creating the filter options
 
@@ -649,10 +659,13 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByCodesAndValueDateForDataOwner(
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
 
@@ -663,10 +676,13 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByCodesAndValueDateForDataOwner(
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = dataOwner
 	)
 
@@ -676,10 +692,13 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByCodesAndValueDateForSelf(
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 	)
 
 	// --- Code prefix filters ---
@@ -739,10 +758,13 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByTagCodesAndValueDateForDataOwner(
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
 
@@ -753,10 +775,13 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByTagCodesAndValueDateForDataOwner(
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = dataOwner
 	)
 
@@ -766,10 +791,13 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByTagCodesAndValueDateForSelf(
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 	)
 
 	// --- Tag prefix filters ---
@@ -831,11 +859,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientsCodesAndValueDateForDataOwner(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
 
@@ -848,11 +879,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientsCodesAndValueDateForDataOwner(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = dataOwner
 	)
 
@@ -864,11 +898,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientsCodesAndValueDateForSelf(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 	)
 
 	fun byPatientSecretIdsCodesAndValueDateForDataOwner(
@@ -879,11 +916,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByPatientSecretIdsCodesAndValueDateForDataOwner(
 		secretIds = secretIds,
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
 
@@ -895,11 +935,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByPatientSecretIdsCodesAndValueDateForDataOwner(
 		secretIds = secretIds,
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = dataOwner
 	)
 
@@ -910,11 +953,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientSecretIdsCodesAndValueDateForSelf(
 		secretIds = secretIds,
 		codeCodes = codeCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 	)
 
 	// --- Patient code prefix filters ---
@@ -1037,11 +1083,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientsTagCodesAndValueDateForDataOwner(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
 
@@ -1054,11 +1103,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientsTagCodesAndValueDateForDataOwner(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = dataOwner
 	)
 
@@ -1070,11 +1122,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientsTagCodesAndValueDateForSelf(
 		patients = patients.map { it.toEncryptionMetadataStub() },
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 	)
 
 	fun byPatientSecretIdsTagCodesAndValueDateForDataOwner(
@@ -1085,11 +1140,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByPatientSecretIdsTagCodesAndValueDateForDataOwner(
 		secretIds = secretIds,
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = EntityReferenceInGroup(entityId = dataOwnerId, groupId = null)
 	)
 
@@ -1101,11 +1159,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): BaseFilterOptions<Service> = ByPatientSecretIdsTagCodesAndValueDateForDataOwner(
 		secretIds = secretIds,
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 		dataOwnerId = dataOwner
 	)
 
@@ -1116,11 +1177,14 @@ object ServiceFilters {
 		startOfServiceValueDate: Long? = null,
 		@DefaultValue("null")
 		endOfServiceValueDate: Long? = null,
+		@DefaultValue("null")
+		versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service> = ByPatientSecretIdsTagCodesAndValueDateForSelf(
 		secretIds = secretIds,
 		tagCodes = tagCodes,
 		startOfServiceValueDate = startOfServiceValueDate,
 		endOfServiceValueDate = endOfServiceValueDate,
+		versionFiltering = versionFiltering,
 	)
 
 	// --- Patient tag prefix filters ---
@@ -1405,6 +1469,7 @@ object ServiceFilters {
 		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 		val dataOwnerId: EntityReferenceInGroup
 	): BaseFilterOptions<Service>
 
@@ -1413,6 +1478,7 @@ object ServiceFilters {
 		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service>
 
 	@Serializable
@@ -1437,6 +1503,7 @@ object ServiceFilters {
 		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 		val dataOwnerId: EntityReferenceInGroup
 	): BaseFilterOptions<Service>
 
@@ -1445,6 +1512,7 @@ object ServiceFilters {
 		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service>
 
 	@Serializable
@@ -1471,6 +1539,7 @@ object ServiceFilters {
 		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 		val dataOwnerId: EntityReferenceInGroup
 	): FilterOptions<Service>
 
@@ -1481,6 +1550,7 @@ object ServiceFilters {
 		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service>
 
 	@Serializable
@@ -1489,6 +1559,7 @@ object ServiceFilters {
 		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 		val dataOwnerId: EntityReferenceInGroup
 	): BaseFilterOptions<Service>
 
@@ -1498,6 +1569,7 @@ object ServiceFilters {
 		val codeCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service>
 
 	@Serializable
@@ -1547,6 +1619,7 @@ object ServiceFilters {
 		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 		val dataOwnerId: EntityReferenceInGroup
 	): FilterOptions<Service>
 
@@ -1557,6 +1630,7 @@ object ServiceFilters {
 		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service>
 
 	@Serializable
@@ -1565,6 +1639,7 @@ object ServiceFilters {
 		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 		val dataOwnerId: EntityReferenceInGroup
 	): BaseFilterOptions<Service>
 
@@ -1574,6 +1649,7 @@ object ServiceFilters {
 		val tagCodes: Map<String, Set<String>>,
 		val startOfServiceValueDate: Long?,
 		val endOfServiceValueDate: Long?,
+		val versionFiltering: VersionFiltering? = null,
 	): FilterOptions<Service>
 
 	@Serializable
@@ -1634,7 +1710,8 @@ internal suspend fun mapServiceFilterOptions(
 }
 
 @InternalIcureApi
-private suspend fun mapServiceFilterOptions(
+// Internal rather than private for the tests of the mapping.
+internal suspend fun mapServiceFilterOptions(
 	filterOptions: FilterOptions<Service>,
 	selfDataOwner: EntityReferenceInGroup?,
 	entityEncryptionService: EntityEncryptionService?,
@@ -1808,21 +1885,45 @@ private suspend fun mapServiceFilterOptions(
 		)
 	}
 	is ServiceFilters.ByCodesAndValueDateForDataOwner -> {
-		ServiceByHcPartyCodesFilter(
-			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			codeCodes = filterOptions.codeCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyCodesFilter(
-			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			codeCodes = filterOptions.codeCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByCodePrefixAndValueDateForDataOwner -> {
 		ServiceByHcPartyCodePrefixFilter(
@@ -1844,21 +1945,45 @@ private suspend fun mapServiceFilterOptions(
 		)
 	}
 	is ServiceFilters.ByTagCodesAndValueDateForDataOwner -> {
-		ServiceByHcPartyTagCodesFilter(
-			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			tagCodes = filterOptions.tagCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyTagCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerTagCodesFilter(
+				dataOwnerId = dataOwnerId,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByTagCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyTagCodesFilter(
-			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			tagCodes = filterOptions.tagCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyTagCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerTagCodesFilter(
+				dataOwnerId = dataOwnerId,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByTagPrefixAndValueDateForDataOwner -> {
 		ServiceByHcPartyTagPrefixFilter(
@@ -1881,42 +2006,98 @@ private suspend fun mapServiceFilterOptions(
 	}
 	is ServiceFilters.ByPatientsCodesAndValueDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyPatientCodesFilter(
-			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
-			codeCodes = filterOptions.codeCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientsCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyPatientCodesFilter(
-			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
-			codeCodes = filterOptions.codeCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientSecretIdsCodesAndValueDateForDataOwner -> {
-		ServiceByHcPartyPatientCodesFilter(
-			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = filterOptions.secretIds.toSet(),
-			codeCodes = filterOptions.codeCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = filterOptions.secretIds.toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientSecretIdsCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyPatientCodesFilter(
-			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = filterOptions.secretIds.toSet(),
-			codeCodes = filterOptions.codeCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = filterOptions.secretIds.toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientCodeCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				codeCodes = filterOptions.codeCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientsCodePrefixAndValueDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
@@ -1963,42 +2144,98 @@ private suspend fun mapServiceFilterOptions(
 	}
 	is ServiceFilters.ByPatientsTagCodesAndValueDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyPatientTagCodesFilter(
-			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
-			tagCodes = filterOptions.tagCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientTagCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientTagCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientsTagCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyPatientTagCodesFilter(
-			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet(),
-			tagCodes = filterOptions.tagCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = entityEncryptionService.secretIdsOf(null, filterOptions.patients, EntityWithEncryptionMetadataTypeName.Patient, null).values.flatten().toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientTagCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientTagCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientSecretIdsTagCodesAndValueDateForDataOwner -> {
-		ServiceByHcPartyPatientTagCodesFilter(
-			healthcarePartyId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = filterOptions.secretIds.toSet(),
-			tagCodes = filterOptions.tagCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = filterOptions.dataOwnerId.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = filterOptions.secretIds.toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientTagCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientTagCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientSecretIdsTagCodesAndValueDateForSelf -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)
-		ServiceByHcPartyPatientTagCodesFilter(
-			healthcarePartyId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup),
-			patientSecretForeignKeys = filterOptions.secretIds.toSet(),
-			tagCodes = filterOptions.tagCodes,
-			startValueDate = filterOptions.startOfServiceValueDate,
-			endValueDate = filterOptions.endOfServiceValueDate,
-		)
+		val dataOwnerId = selfDataOwner.asReferenceStringInGroup(requestGroup, boundGroup)
+		val patientSecretForeignKeys = filterOptions.secretIds.toSet()
+		val versionFiltering = filterOptions.versionFiltering
+		if (versionFiltering == null) {
+			ServiceByHcPartyPatientTagCodesFilter(
+				healthcarePartyId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+			)
+		} else {
+			ServiceByDataOwnerPatientTagCodesFilter(
+				dataOwnerId = dataOwnerId,
+				patientSecretForeignKeys = patientSecretForeignKeys,
+				tagCodes = filterOptions.tagCodes,
+				startValueDate = filterOptions.startOfServiceValueDate,
+				endValueDate = filterOptions.endOfServiceValueDate,
+				filterVersion = versionFiltering,
+			)
+		}
 	}
 	is ServiceFilters.ByPatientsTagPrefixAndValueDateForDataOwner -> {
 		filterOptions.ensureNonBaseEnvironment(selfDataOwner, entityEncryptionService)

@@ -1,5 +1,6 @@
 // auto-generated file
 import {BaseFilterOptions, FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {FormDelegateOptions} from '../crypto/entities/FormDelegateOptions.mjs';
 import {FormShareOptions} from '../crypto/entities/FormShareOptions.mjs';
@@ -65,6 +66,8 @@ export interface FormApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of Cardinal where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param form a form
 	 *  @return the encryption keys extracted from the provided form.
 	 */
@@ -87,6 +90,8 @@ export interface FormApi {
 	 *  Attempts to extract the patient id linked to a form.
 	 *  Note: forms usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param form a form
 	 *  @return the id of the patient linked to the form, or empty if the current user can't access any patient id
 	 *  of the form.
@@ -122,6 +127,9 @@ export interface FormApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a form that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a form
 	 *  @param delegates a set of data owner ids
 	 */
@@ -139,6 +147,9 @@ export interface FormApi {
 	/**
 	 *
 	 *  Tries to decrypt a form, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param form an encrypted form
 	 *  @return the decrypted form if the decryption was successful or the input if it was not.
 	 */
@@ -169,6 +180,27 @@ export interface FormApi {
 	 *  @return a list of form ids
 	 */
 	matchFormsBySorted(filter: SortableFilterOptions<Form>): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  Share many already-existing forms with one or more delegates at once, retrieving them by id instead of
+	 *  requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per form when you already know the ids of many forms to share and don't otherwise need their decrypted
+	 *  content, since only lightweight metadata (not the full content of each form) is ever retrieved, and no content
+	 *  flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found form. Unlike [shareWithMany], if the share
+	 *  fails for some (form, delegate) pairs this method reports the failure for those specific pairs in the returned
+	 *  result instead of throwing, so sharing proceeds normally for every other form and delegate in the batch.
+	 *
+	 *  @param formIds ids of the forms to share. Ids that don't exist, or exist but for which the current user has no
+	 *  read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each form, and the options for sharing with each of
+	 *  them (see [FormShareOptions]). The exact same options are applied to every form in [formIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareFormsByIds(formIds: Array<string>,
+			delegates: { [ key: string ]: FormShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *

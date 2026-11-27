@@ -1,5 +1,6 @@
 // auto-generated file
 import {FilterOptions, PaginatedListIterator, SortableFilterOptions} from '../cardinal-sdk-ts.mjs';
+import {BulkShareByIdsResult} from '../crypto/entities/BulkShareByIdsResult.mjs';
 import {EntityAccessInformation} from '../crypto/entities/EntityAccessInformation.mjs';
 import {HealthElementDelegateOptions} from '../crypto/entities/HealthElementDelegateOptions.mjs';
 import {HealthElementShareOptions} from '../crypto/entities/HealthElementShareOptions.mjs';
@@ -67,6 +68,8 @@ export interface HealthElementApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this was not a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param healthElement a health element
 	 *  @return the encryption keys extracted from the provided health element.
 	 */
@@ -89,6 +92,8 @@ export interface HealthElementApi {
 	 *  Attempts to extract the patient id linked to a health element.
 	 *  Note: health elements usually should be linked with only one patient, but this method returns a set for compatibility
 	 *  with older versions of iCure
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param healthElement a health element
 	 *  @return the id of the patient linked to the health element, or empty if the current user can't access any patient id
 	 *  of the health element.
@@ -124,6 +129,9 @@ export interface HealthElementApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a health element that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a health element
 	 *  @param delegates a set of data owner ids
 	 */
@@ -142,6 +150,9 @@ export interface HealthElementApi {
 	/**
 	 *
 	 *  Tries to decrypt a HealthElement, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param healthElements encrypted HealthElements
 	 *  @return all the provided HealthElements, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -183,6 +194,29 @@ export interface HealthElementApi {
 	 *  @return a list of health element ids
 	 */
 	matchHealthElementsBySorted(filter: SortableFilterOptions<HealthElement>): Promise<Array<string>>;
+
+	/**
+	 *
+	 *  Share many already-existing health elements with one or more delegates at once, retrieving them by id instead
+	 *  of requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 *  per health element when you already know the ids of many health elements to share and don't otherwise need
+	 *  their decrypted content, since only lightweight metadata (not the full content of each health element) is ever
+	 *  retrieved, and no content flows back from the share request itself.
+	 *
+	 *  The same [delegates] options are applied identically to every found health element. Unlike [shareWithMany], if
+	 *  the share fails for some (health element, delegate) pairs this method reports the failure for those specific
+	 *  pairs in the returned result instead of throwing, so sharing proceeds normally for every other health element
+	 *  and delegate in the batch.
+	 *
+	 *  @param healthElementIds ids of the health elements to share. Ids that don't exist, or exist but for which the
+	 *  current user has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 *  @param delegates the data owners which will gain access to each health element, and the options for sharing
+	 *  with each of them (see [HealthElementShareOptions]). The exact same options are applied to every health element
+	 *  in [healthElementIds].
+	 *  @return details on the outcome of the operation, for each requested id.
+	 */
+	shareHealthElementsByIds(healthElementIds: Array<string>,
+			delegates: { [ key: string ]: HealthElementShareOptions }): Promise<BulkShareByIdsResult>;
 
 	/**
 	 *
@@ -425,6 +459,26 @@ export interface HealthElementApi {
 	/**
 	 *
 	 *  Subscribe to receive real-time notifications when an entity is updated.
+	 *
+	 *  # Access control
+	 *
+	 *  The subscription will only receive notifications about entities that the SDK user can access; currently this
+	 *  validation varies slightly from standard read methods.
+	 *
+	 *  ## Encryptable entities
+	 *
+	 *  Applies the same access control rules as the standard read methods; depending on the permissions of the user the
+	 *  entity might need to have a direct delegation to the user, or to a parent, or if the user has the permission to
+	 *  read any entity of the type regardless of delegations then all notification of entities (matching the filter)
+	 *  will be received.
+	 *
+	 *  ## Healthcare party
+	 *
+	 *  Currently, regardless of user permissions, only notifications about healthcare parties that have the current SDK
+	 *  data owner as a DIRECT link will be returned.
+	 *
+	 *  This behaviour is not in line with current Cardinal SDK ideology and is subject to change in future versions.
+	 *
 	 *  @param events the type of events that will be notified to the subscription
 	 *  @param filter the subscription will receive notifications only for entities matching this filter, you should
 	 *  make the filter as restrictive as possible.

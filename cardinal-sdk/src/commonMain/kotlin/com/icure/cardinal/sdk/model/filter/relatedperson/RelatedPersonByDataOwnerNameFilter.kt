@@ -9,8 +9,7 @@ import kotlinx.serialization.Serializable
 import kotlin.String
 
 /**
- * Filter that matches related persons with a delegation for a data owner, where the concatenation
- * of last name and
+ * Filter that matches related persons with a delegation for a data owner, where the concatenation of last name and
  * first name contains the provided (sanitized) name.
  * /
  */

@@ -11,8 +11,7 @@ import kotlin.collections.List
 import kotlin.collections.Set
 
 /**
- * Represents an allocation schedule for a resource group, defining time table items within a date
- * range.
+ * Represents an allocation schedule for a resource group, defining time table items within a date range.
  * /
  */
 @Serializable

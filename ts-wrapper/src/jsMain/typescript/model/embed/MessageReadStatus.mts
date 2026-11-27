@@ -4,8 +4,7 @@ import {expectBoolean, expectNumber, extractEntry} from '../../internal/JsonDeco
 
 /**
  *
- *  Represents the read status of a message for a specific user, tracking whether it has been read
- *  and when.
+ *  Represents the read status of a message for a specific user, tracking whether it has been read and when.
  *  /
  */
 export class MessageReadStatus {

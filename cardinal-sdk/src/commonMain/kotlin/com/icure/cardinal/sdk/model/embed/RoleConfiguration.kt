@@ -10,8 +10,7 @@ import kotlin.collections.Set
 
 /**
  *
- *  Represents the role configuration for a user, specifying the source of the roles and the set of
- * assigned roles.
+ *  Represents the role configuration for a user, specifying the source of the roles and the set of assigned roles.
  */
 @Serializable
 data class RoleConfiguration(

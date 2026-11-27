@@ -5,8 +5,7 @@ import {expectArray, expectString, expectStringEnum, extractEntry} from '../../i
 /**
  *
  *
- *   Represents the role configuration for a user, specifying the source of the roles and the set of
- *  assigned roles.
+ *   Represents the role configuration for a user, specifying the source of the roles and the set of assigned roles.
  */
 export class RoleConfiguration {
 

@@ -29,11 +29,9 @@ import kotlin.collections.Set
 
 /**
  *
- *  A person related to one or more patients, that is neither a patient nor a healthcare party:
- * typically a contact
+ *  A person related to one or more patients, that is neither a patient nor a healthcare party: typically a contact
  *  person (parent of a child patient, caregiver, ...), referenced from a patient's partnership with
- *  partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a
- * data owner.
+ *  partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a data owner.
  */
 
 sealed interface RelatedPerson :
@@ -50,8 +48,7 @@ sealed interface RelatedPerson :
 	override val id: String
 
 	/**
-	 * The revision of the related person in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the related person in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String?
 
@@ -112,7 +109,6 @@ sealed interface RelatedPerson :
 
 	/**
 	 * The list of all names of the related person, also containing the official full name information.
-	 *
 	 */
 	override val names: List<PersonName>
 
@@ -187,11 +183,9 @@ sealed interface RelatedPerson :
 
 /**
  *
- *  A person related to one or more patients, that is neither a patient nor a healthcare party:
- * typically a contact
+ *  A person related to one or more patients, that is neither a patient nor a healthcare party: typically a contact
  *  person (parent of a child patient, caregiver, ...), referenced from a patient's partnership with
- *  partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a
- * data owner.
+ *  partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a data owner.
  */
 @Serializable
 data class DecryptedRelatedPerson(
@@ -200,8 +194,7 @@ data class DecryptedRelatedPerson(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the related person in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the related person in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -253,7 +246,6 @@ data class DecryptedRelatedPerson(
 	override val lastName: String? = null,
 	/**
 	 * The list of all names of the related person, also containing the official full name information.
-	 *
 	 */
 	@param:DefaultValue("emptyList()")
 	override val names: List<PersonName> = emptyList(),
@@ -321,11 +313,9 @@ data class DecryptedRelatedPerson(
 
 /**
  *
- *  A person related to one or more patients, that is neither a patient nor a healthcare party:
- * typically a contact
+ *  A person related to one or more patients, that is neither a patient nor a healthcare party: typically a contact
  *  person (parent of a child patient, caregiver, ...), referenced from a patient's partnership with
- *  partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a
- * data owner.
+ *  partnerType = relatedPerson. It is a standalone encryptable entity but NOT a crypto actor nor a data owner.
  */
 @Serializable
 data class EncryptedRelatedPerson(
@@ -334,8 +324,7 @@ data class EncryptedRelatedPerson(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the related person in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the related person in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -387,7 +376,6 @@ data class EncryptedRelatedPerson(
 	override val lastName: String? = null,
 	/**
 	 * The list of all names of the related person, also containing the official full name information.
-	 *
 	 */
 	@param:DefaultValue("emptyList()")
 	override val names: List<PersonName> = emptyList(),

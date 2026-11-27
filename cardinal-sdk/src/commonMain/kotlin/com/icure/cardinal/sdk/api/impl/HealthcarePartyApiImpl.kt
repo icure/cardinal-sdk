@@ -1,7 +1,11 @@
 package com.icure.cardinal.sdk.api.impl
 
+import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.HealthcarePartyInGroupApi
 import com.icure.cardinal.sdk.api.HealthcarePartyApi
+import com.icure.cardinal.sdk.api.impl.DataOwnerApiHelpers.doAddDataOwnersToGroup
+import com.icure.cardinal.sdk.api.impl.DataOwnerApiHelpers.doRemoveDataOwnersFromGroup
+import com.icure.cardinal.sdk.api.raw.RawDataOwnerApi
 import com.icure.cardinal.sdk.api.raw.RawHealthcarePartyApi
 import com.icure.cardinal.sdk.api.raw.successBodyOrNull404
 import com.icure.cardinal.sdk.api.raw.successBodyOrThrowRevisionConflict
@@ -9,6 +13,7 @@ import com.icure.cardinal.sdk.filters.BaseFilterOptions
 import com.icure.cardinal.sdk.filters.BaseSortableFilterOptions
 import com.icure.cardinal.sdk.filters.FilterOptions
 import com.icure.cardinal.sdk.filters.mapHealthcarePartyFilterOptions
+import com.icure.cardinal.sdk.model.DataOwnerType
 import com.icure.cardinal.sdk.model.HealthcareParty
 import com.icure.cardinal.sdk.model.GroupScoped
 import com.icure.cardinal.sdk.model.StoredDocumentIdentifier
@@ -30,7 +35,7 @@ import com.icure.utils.InternalIcureApi
 @OptIn(InternalIcureApi::class)
 internal abstract class AbstractHealthcarePartyApi(
 	protected val rawApi: RawHealthcarePartyApi,
-	protected val config: BasicApiConfiguration
+	protected val config: BasicApiConfiguration,
 ) {
 
 	protected suspend fun doCreateHealthcareParty(groupId: String?, entity: HealthcareParty): HealthcareParty {
@@ -149,7 +154,27 @@ internal abstract class AbstractHealthcarePartyApi(
 internal class HealthcarePartyApiImpl(
 	rawApi: RawHealthcarePartyApi,
 	config: BasicApiConfiguration,
+	private val rawDataOwnerApi: RawDataOwnerApi,
 ) : HealthcarePartyApi, AbstractHealthcarePartyApi(rawApi, config) {
+	override suspend fun addHealthcarePartiesToGroup(
+		healthcarePartyGroup: HealthcareParty,
+		healthcarePartiesToAdd: List<HealthcareParty>,
+	): Set<String> =
+		rawDataOwnerApi.doAddDataOwnersToGroup(
+			DataOwnerType.Hcp,
+			healthcarePartyGroup.id,
+			healthcarePartiesToAdd.mapTo(mutableSetOf()) { it.id }
+		)
+
+	override suspend fun removeDataOwnersFromGroup(
+		healthcarePartyGroup: HealthcareParty,
+		healthcarePartiesToRemove: List<HealthcareParty>,
+	): Set<String> =
+		rawDataOwnerApi.doRemoveDataOwnersFromGroup(
+			DataOwnerType.Hcp,
+			healthcarePartyGroup.id,
+			healthcarePartiesToRemove.mapTo(mutableSetOf()) { it.id }
+		)
 
 	override val inGroup: HealthcarePartyInGroupApi = HealthcarePartyInGroupApiImpl(rawApi, config)
 
@@ -329,5 +354,4 @@ internal class HealthcarePartyInGroupApiImpl(
 		groupId: String,
 		filter: BaseSortableFilterOptions<HealthcareParty>,
 	): PaginatedListIterator<GroupScoped<HealthcareParty>> = filterHealthPartiesBy(groupId, filter = filter)
-
 }

@@ -16,7 +16,9 @@ import kotlin.js.JsQualifier
 @JsName("Replication")
 public external class ReplicationJs(
 	partial: dynamic,
-) : StoredDocumentJs, IdentifiableJs<String>, NamedJs {
+) : StoredDocumentJs,
+    IdentifiableJs<String>,
+    NamedJs {
 	override val id: String
 
 	override val rev: String?

@@ -561,15 +561,16 @@ private class DocumentApiImpl(
 			base: DecryptedDocument?,
 			message: GroupScoped<Message>,
 			user: User?,
-			delegates: Map<String, AccessLevel>,
+			delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
 			secretId: SecretIdUseOption,
-			alternateRootDelegateId: String?,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
-				alternateRootDelegateId,
+				alternateRootDelegateReference,
 				OwningEntityDetails(
 					entityGroupId,
 					message.entity.id,
@@ -583,16 +584,17 @@ private class DocumentApiImpl(
 			entityGroupId: String,
 			base: DecryptedDocument?,
 			message: GroupScoped<Message>,
-			delegates: Map<String, DocumentDelegateOptions>,
+			delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DocumentDelegateOptions>,
 			user: User?,
 			secretId: SecretIdUseOption,
-			alternateRootDelegateId: String?,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
-				alternateRootDelegateId,
+				alternateRootDelegateReference,
 				OwningEntityDetails(
 					entityGroupId,
 					message.entity.id,
@@ -607,15 +609,16 @@ private class DocumentApiImpl(
 			base: DecryptedDocument?,
 			patient: GroupScoped<Patient>,
 			user: User?,
-			delegates: Map<String, AccessLevel>,
+			delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
 			secretId: SecretIdUseOption,
-			alternateRootDelegateId: String?,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
-				alternateRootDelegateId,
+				alternateRootDelegateReference,
 				OwningEntityDetails(
 					entityGroupId,
 					patient.entity.id,
@@ -629,16 +632,17 @@ private class DocumentApiImpl(
 			entityGroupId: String,
 			base: DecryptedDocument?,
 			patient: GroupScoped<Patient>,
-			delegates: Map<String, DocumentDelegateOptions>,
+			delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DocumentDelegateOptions>,
 			user: User?,
 			secretId: SecretIdUseOption,
-			alternateRootDelegateId: String?,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
-				alternateRootDelegateId,
+				alternateRootDelegateReference,
 				OwningEntityDetails(
 					entityGroupId,
 					patient.entity.id,
@@ -652,14 +656,15 @@ private class DocumentApiImpl(
 			entityGroupId: String,
 			base: DecryptedDocument?,
 			user: User?,
-			delegates: Map<String, AccessLevel>,
-			alternateRootDelegateId: String?,
+			delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel>,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadata(
+				entityGroupId,
 				base,
 				user,
 				delegates,
-				alternateRootDelegateId,
+				alternateRootDelegateReference,
 				null
 			),
 			entityGroupId,
@@ -668,15 +673,16 @@ private class DocumentApiImpl(
 		override suspend fun withEncryptionMetadataAndDelegatesUnlinked(
 			entityGroupId: String,
 			base: DecryptedDocument?,
-			delegates: Map<String, DocumentDelegateOptions>,
+			delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, DocumentDelegateOptions>,
 			user: User?,
-			alternateRootDelegateId: String?,
+			alternateRootDelegateReference: EntityReferenceInGroup?,
 		): GroupScoped<DecryptedDocument> = GroupScoped(
 			doWithEncryptionMetadataAndDelegates(
+				entityGroupId,
 				base,
 				user,
 				delegates,
-				alternateRootDelegateId,
+				alternateRootDelegateReference,
 				null
 			),
 			entityGroupId,
@@ -696,6 +702,28 @@ private class DocumentApiImpl(
 			entity: GroupScoped<Document>,
 			delegates: Set<EntityReferenceInGroup>
 		) = doCreateDelegationDeAnonymizationMetadata(entity.groupId, entity.entity, delegates)
+
+		override suspend fun encryptAndSetMainAttachment(
+			document: GroupScoped<Document>,
+			utis: List<String>?,
+			attachment: ByteArray,
+		): GroupScoped<EncryptedDocument> {
+			val aesKey = crypto.entity.tryDecryptAndImportAnyEncryptionKey(document.groupId, listOf(document.entity), EntityWithEncryptionMetadataTypeName.Document)[document.entity.id]?.key
+				?: throw EntityEncryptionException("Cannot extract encryption key from document")
+			val payload = crypto.primitives.aes.encrypt(attachment, aesKey)
+			return GroupScoped(
+				rawApi.setDocumentAttachmentInGroup(
+					groupId = document.groupId,
+					documentId = document.entity.id,
+					rev = document.entity.rev ?: throw IllegalArgumentException("Document must have a revision set before setting the attachment"),
+					utis = utis,
+					payload = payload,
+					lengthHeader = attachment.size.toLong(),
+					encrypted = true,
+				).successBody(),
+				document.groupId,
+			)
+		}
 
 		override suspend fun getEncryptionKeysOf(document: GroupScoped<Document>): Set<HexString> =
 			doGetEncryptionKeysOf(document.groupId, document.entity)
@@ -724,10 +752,11 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadata(
+			null,
 			base,
 			user,
-			delegates,
-			alternateRootDelegateId,
+			delegates.keyAsLocalDataOwnerReferences(),
+			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 			OwningEntityDetails(
 				null,
 				patient.id,
@@ -744,10 +773,11 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadataAndDelegates(
+			null,
 			base,
 			user,
-			delegates,
-			alternateRootDelegateId,
+			delegates.keyAsLocalDataOwnerReferences(),
+			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 			OwningEntityDetails(
 				null,
 				patient.id,
@@ -764,10 +794,11 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadata(
+			null,
 			base,
 			user,
-			delegates,
-			alternateRootDelegateId,
+			delegates.keyAsLocalDataOwnerReferences(),
+			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 			OwningEntityDetails(
 				null,
 				message.id,
@@ -784,10 +815,11 @@ private class DocumentApiImpl(
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
 		doWithEncryptionMetadataAndDelegates(
+			null,
 			base,
 			user,
-			delegates,
-			alternateRootDelegateId,
+			delegates.keyAsLocalDataOwnerReferences(),
+			alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
 			OwningEntityDetails(
 				null,
 				message.id,
@@ -801,7 +833,7 @@ private class DocumentApiImpl(
 		delegates: Map<String, AccessLevel>,
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
-		doWithEncryptionMetadata(base, user, delegates, alternateRootDelegateId, null)
+		doWithEncryptionMetadata(null, base, user, delegates.keyAsLocalDataOwnerReferences(), alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }, null)
 
 	override suspend fun withEncryptionMetadataAndDelegatesUnlinked(
 		base: DecryptedDocument?,
@@ -809,32 +841,35 @@ private class DocumentApiImpl(
 		user: User?,
 		alternateRootDelegateId: String?
 	): DecryptedDocument =
-		doWithEncryptionMetadataAndDelegates(base, user, delegates, alternateRootDelegateId, null)
+		doWithEncryptionMetadataAndDelegates(null, base, user, delegates.keyAsLocalDataOwnerReferences(), alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) }, null)
 
 	private suspend fun doWithEncryptionMetadata(
+		entityGroupId: String?,
 		base: DecryptedDocument?,
 		user: User?,
-		delegates: Map<String, AccessLevel>,
-		alternateRootDelegateId: String?,
+		delegates: Map<EntityReferenceInGroup, AccessLevel>,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?,
 		owningEntityDetails: OwningEntityDetails?,
 	) =
 		doWithEncryptionMetadataAndDelegates(
+			entityGroupId = entityGroupId,
 			base = base,
 			user = user,
 			delegates = delegates.mapValues { it.value.toDefaultDelegateOptions() },
-			alternateRootDelegateId = alternateRootDelegateId,
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
 			owningEntityDetails = owningEntityDetails,
 		)
 
 	private suspend fun doWithEncryptionMetadataAndDelegates(
+		entityGroupId: String?,
 		base: DecryptedDocument?,
 		user: User?,
-		delegates: Map<String, DelegateOptions>,
-		alternateRootDelegateId: String?,
+		delegates: Map<EntityReferenceInGroup, DelegateOptions>,
+		alternateRootDataOwnerReference: EntityReferenceInGroup?,
 		owningEntityDetails: OwningEntityDetails?,
 	) =
 		crypto.entity.entityWithInitializedEncryptedMetadata(
-			entityGroupId = null,
+			entityGroupId = entityGroupId,
 			entity = (base ?: DecryptedDocument(crypto.primitives.strongRandom.randomUUID())).copy(
 				created = base?.created ?: currentEpochMs(),
 				modified = base?.modified ?: currentEpochMs(),
@@ -844,8 +879,10 @@ private class DocumentApiImpl(
 			entityType = EntityWithEncryptionMetadataTypeName.Document,
 			owningEntityDetails = owningEntityDetails,
 			initializeEncryptionKey = true,
-			autoDelegations = (delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty()).keyAsLocalDataOwnerReferences(),
-			alternateRootDataOwnerReference = alternateRootDelegateId?.let { EntityReferenceInGroup(it, null) },
+			// The user's auto-delegations are in the user's group: a reference with a null group designates the group of the sdk,
+			// also when the document is created in another group.
+			autoDelegations = delegates + user?.autoDelegationsFor(DelegationTag.MedicalInformation).orEmpty().keyAsLocalDataOwnerReferences(),
+			alternateRootDataOwnerReference = alternateRootDataOwnerReference,
 		).updatedEntity
 
 

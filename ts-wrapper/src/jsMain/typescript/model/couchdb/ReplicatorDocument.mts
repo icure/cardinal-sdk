@@ -8,8 +8,7 @@ import {ReplicationStats} from './ReplicationStats.mjs';
 
 /**
  *
- *  Data transfer object representing a CouchDB replicator document that tracks the state of a
- *  replication task.
+ *  Data transfer object representing a CouchDB replicator document that tracks the state of a replication task.
  *  /
  */
 export class ReplicatorDocument implements Versionable<string> {

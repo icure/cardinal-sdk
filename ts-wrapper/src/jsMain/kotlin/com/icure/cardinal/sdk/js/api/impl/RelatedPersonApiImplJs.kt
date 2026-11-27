@@ -86,8 +86,8 @@ import kotlinx.coroutines.promise
 internal class RelatedPersonApiImplJs(
 	private val relatedPersonApi: RelatedPersonApi,
 ) : RelatedPersonApiJs {
-	override val encrypted: RelatedPersonFlavouredApiJs<EncryptedRelatedPersonJs> = object :
-			RelatedPersonFlavouredApiJs<EncryptedRelatedPersonJs> {
+	override val encrypted: RelatedPersonFlavouredApiJs<EncryptedRelatedPersonJs> =
+			object : RelatedPersonFlavouredApiJs<EncryptedRelatedPersonJs> {
 		override fun shareWith(
 			delegateId: String,
 			relatedPerson: EncryptedRelatedPersonJs,
@@ -115,9 +115,7 @@ internal class RelatedPersonApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(relatedPerson: EncryptedRelatedPersonJs,
-				delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<EncryptedRelatedPersonJs> =
-				GlobalScope.promise {
+		override fun shareWithMany(relatedPerson: EncryptedRelatedPersonJs, delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
 			val relatedPersonConverted: EncryptedRelatedPerson = relatedPerson_fromJs(relatedPerson)
 			val delegatesConverted: Map<String, RelatedPersonShareOptions> = objectToMap(
 				delegates,
@@ -136,8 +134,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>):
-				Promise<PaginatedListIteratorJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 			val result = relatedPersonApi.encrypted.filterRelatedPersonsBy(
 				filterConverted,
@@ -150,8 +147,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>):
-				Promise<PaginatedListIteratorJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 			val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 			val result = relatedPersonApi.encrypted.filterRelatedPersonsBySorted(
 				filterConverted,
@@ -164,8 +160,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun createRelatedPerson(entity: EncryptedRelatedPersonJs):
-				Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
+		override fun createRelatedPerson(entity: EncryptedRelatedPersonJs): Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
 			val entityConverted: EncryptedRelatedPerson = relatedPerson_fromJs(entity)
 			val result = relatedPersonApi.encrypted.createRelatedPerson(
 				entityConverted,
@@ -173,8 +168,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun createRelatedPersons(entities: Array<EncryptedRelatedPersonJs>):
-				Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun createRelatedPersons(entities: Array<EncryptedRelatedPersonJs>): Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 			val entitiesConverted: List<EncryptedRelatedPerson> = arrayToList(
 				entities,
 				"entities",
@@ -193,8 +187,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun undeleteRelatedPersonById(id: String, rev: String): Promise<EncryptedRelatedPersonJs>
-				= GlobalScope.promise {
+		override fun undeleteRelatedPersonById(id: String, rev: String): Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
 			val idConverted: String = id
 			val revConverted: String = rev
 			val result = relatedPersonApi.encrypted.undeleteRelatedPersonById(
@@ -204,8 +197,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-				Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -224,8 +216,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs):
-				Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
+		override fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
 			val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 			val result = relatedPersonApi.encrypted.undeleteRelatedPerson(
 				relatedPersonConverted,
@@ -233,8 +224,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-				Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<RelatedPerson> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -253,8 +243,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun modifyRelatedPerson(entity: EncryptedRelatedPersonJs):
-				Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
+		override fun modifyRelatedPerson(entity: EncryptedRelatedPersonJs): Promise<EncryptedRelatedPersonJs> = GlobalScope.promise {
 			val entityConverted: EncryptedRelatedPerson = relatedPerson_fromJs(entity)
 			val result = relatedPersonApi.encrypted.modifyRelatedPerson(
 				entityConverted,
@@ -262,8 +251,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun modifyRelatedPersons(entities: Array<EncryptedRelatedPersonJs>):
-				Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun modifyRelatedPersons(entities: Array<EncryptedRelatedPersonJs>): Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 			val entitiesConverted: List<EncryptedRelatedPerson> = arrayToList(
 				entities,
 				"entities",
@@ -282,8 +270,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun getRelatedPerson(entityId: String): Promise<EncryptedRelatedPersonJs?> =
-				GlobalScope.promise {
+		override fun getRelatedPerson(entityId: String): Promise<EncryptedRelatedPersonJs?> = GlobalScope.promise {
 			val entityIdConverted: String = entityId
 			val result = relatedPersonApi.encrypted.getRelatedPerson(
 				entityIdConverted,
@@ -295,8 +282,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun getRelatedPersons(entityIds: Array<String>): Promise<Array<EncryptedRelatedPersonJs>>
-				= GlobalScope.promise {
+		override fun getRelatedPersons(entityIds: Array<String>): Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -316,8 +302,8 @@ internal class RelatedPersonApiImplJs(
 		}
 	}
 
-	override val tryAndRecover: RelatedPersonFlavouredApiJs<RelatedPersonJs> = object :
-			RelatedPersonFlavouredApiJs<RelatedPersonJs> {
+	override val tryAndRecover: RelatedPersonFlavouredApiJs<RelatedPersonJs> =
+			object : RelatedPersonFlavouredApiJs<RelatedPersonJs> {
 		override fun shareWith(
 			delegateId: String,
 			relatedPerson: RelatedPersonJs,
@@ -345,9 +331,7 @@ internal class RelatedPersonApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(relatedPerson: RelatedPersonJs,
-				delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<RelatedPersonJs> =
-				GlobalScope.promise {
+		override fun shareWithMany(relatedPerson: RelatedPersonJs, delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<RelatedPersonJs> = GlobalScope.promise {
 			val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 			val delegatesConverted: Map<String, RelatedPersonShareOptions> = objectToMap(
 				delegates,
@@ -366,8 +350,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>):
-				Promise<PaginatedListIteratorJs<RelatedPersonJs>> = GlobalScope.promise {
+		override fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<RelatedPersonJs>> = GlobalScope.promise {
 			val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 			val result = relatedPersonApi.tryAndRecover.filterRelatedPersonsBy(
 				filterConverted,
@@ -380,8 +363,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>):
-				Promise<PaginatedListIteratorJs<RelatedPersonJs>> = GlobalScope.promise {
+		override fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<RelatedPersonJs>> = GlobalScope.promise {
 			val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 			val result = relatedPersonApi.tryAndRecover.filterRelatedPersonsBySorted(
 				filterConverted,
@@ -394,8 +376,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun createRelatedPerson(entity: RelatedPersonJs): Promise<RelatedPersonJs> =
-				GlobalScope.promise {
+		override fun createRelatedPerson(entity: RelatedPersonJs): Promise<RelatedPersonJs> = GlobalScope.promise {
 			val entityConverted: RelatedPerson = relatedPerson_fromJs(entity)
 			val result = relatedPersonApi.tryAndRecover.createRelatedPerson(
 				entityConverted,
@@ -403,8 +384,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun createRelatedPersons(entities: Array<RelatedPersonJs>):
-				Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
+		override fun createRelatedPersons(entities: Array<RelatedPersonJs>): Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
 			val entitiesConverted: List<RelatedPerson> = arrayToList(
 				entities,
 				"entities",
@@ -423,8 +403,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun undeleteRelatedPersonById(id: String, rev: String): Promise<RelatedPersonJs> =
-				GlobalScope.promise {
+		override fun undeleteRelatedPersonById(id: String, rev: String): Promise<RelatedPersonJs> = GlobalScope.promise {
 			val idConverted: String = id
 			val revConverted: String = rev
 			val result = relatedPersonApi.tryAndRecover.undeleteRelatedPersonById(
@@ -434,8 +413,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-				Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
+		override fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -454,8 +432,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<RelatedPersonJs> =
-				GlobalScope.promise {
+		override fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<RelatedPersonJs> = GlobalScope.promise {
 			val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 			val result = relatedPersonApi.tryAndRecover.undeleteRelatedPerson(
 				relatedPersonConverted,
@@ -463,8 +440,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-				Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
+		override fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<RelatedPerson> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -483,8 +459,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun modifyRelatedPerson(entity: RelatedPersonJs): Promise<RelatedPersonJs> =
-				GlobalScope.promise {
+		override fun modifyRelatedPerson(entity: RelatedPersonJs): Promise<RelatedPersonJs> = GlobalScope.promise {
 			val entityConverted: RelatedPerson = relatedPerson_fromJs(entity)
 			val result = relatedPersonApi.tryAndRecover.modifyRelatedPerson(
 				entityConverted,
@@ -492,8 +467,7 @@ internal class RelatedPersonApiImplJs(
 			relatedPerson_toJs(result)
 		}
 
-		override fun modifyRelatedPersons(entities: Array<RelatedPersonJs>):
-				Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
+		override fun modifyRelatedPersons(entities: Array<RelatedPersonJs>): Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
 			val entitiesConverted: List<RelatedPerson> = arrayToList(
 				entities,
 				"entities",
@@ -524,8 +498,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun getRelatedPersons(entityIds: Array<String>): Promise<Array<RelatedPersonJs>> =
-				GlobalScope.promise {
+		override fun getRelatedPersons(entityIds: Array<String>): Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -546,8 +519,8 @@ internal class RelatedPersonApiImplJs(
 	}
 
 	override val inGroup: RelatedPersonInGroupApiJs = object : RelatedPersonInGroupApiJs {
-		override val encrypted: RelatedPersonFlavouredInGroupApiJs<EncryptedRelatedPersonJs> = object :
-				RelatedPersonFlavouredInGroupApiJs<EncryptedRelatedPersonJs> {
+		override val encrypted: RelatedPersonFlavouredInGroupApiJs<EncryptedRelatedPersonJs> =
+				object : RelatedPersonFlavouredInGroupApiJs<EncryptedRelatedPersonJs> {
 			override fun shareWith(
 				`delegate`: EntityReferenceInGroupJs,
 				relatedPerson: GroupScopedJs<EncryptedRelatedPersonJs>,
@@ -585,17 +558,14 @@ internal class RelatedPersonApiImplJs(
 				}
 			}
 
-			override fun shareWithMany(relatedPerson: GroupScopedJs<EncryptedRelatedPersonJs>,
-					delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>):
-					Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+			override fun shareWithMany(relatedPerson: GroupScopedJs<EncryptedRelatedPersonJs>, delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 				val relatedPersonConverted: GroupScoped<EncryptedRelatedPerson> = groupScoped_fromJs(
 					relatedPerson,
 					{ x1: EncryptedRelatedPersonJs ->
 						relatedPerson_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonShareOptions> =
-						EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonShareOptions> = EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 				val result = relatedPersonApi.inGroup.encrypted.shareWithMany(
 					relatedPersonConverted,
 					delegatesConverted,
@@ -608,9 +578,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedRelatedPersonJs>>> =
-					GlobalScope.promise {
+			override fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 				val result = relatedPersonApi.inGroup.encrypted.filterRelatedPersonsBy(
@@ -630,10 +598,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun filterRelatedPersonsBySorted(groupId: String,
-					filter: SortableFilterOptionsJs<RelatedPersonJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedRelatedPersonJs>>> =
-					GlobalScope.promise {
+			override fun filterRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 				val result = relatedPersonApi.inGroup.encrypted.filterRelatedPersonsBySorted(
@@ -653,8 +618,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun createRelatedPerson(entity: GroupScopedJs<EncryptedRelatedPersonJs>):
-					Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+			override fun createRelatedPerson(entity: GroupScopedJs<EncryptedRelatedPersonJs>): Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedRelatedPerson> = groupScoped_fromJs(
 					entity,
 					{ x1: EncryptedRelatedPersonJs ->
@@ -672,8 +636,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun createRelatedPersons(entities: Array<GroupScopedJs<EncryptedRelatedPersonJs>>):
-					Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
+			override fun createRelatedPersons(entities: Array<GroupScopedJs<EncryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<EncryptedRelatedPerson>> = arrayToList(
 					entities,
 					"entities",
@@ -702,8 +665,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-					Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+			override fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 					entityId,
 					{ x1: StoredDocumentIdentifierJs ->
@@ -721,9 +683,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override
-					fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-					Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
+			override fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 					entityIds,
 					"entityIds",
@@ -752,8 +712,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-					Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+			override fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 				val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 					relatedPerson,
 					{ x1: RelatedPersonJs ->
@@ -771,9 +730,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override
-					fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>):
-					Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
+			override fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 				val relatedPersonsConverted: List<GroupScoped<EncryptedRelatedPerson>> = arrayToList(
 					relatedPersons,
 					"relatedPersons",
@@ -802,8 +759,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun modifyRelatedPerson(entity: GroupScopedJs<EncryptedRelatedPersonJs>):
-					Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+			override fun modifyRelatedPerson(entity: GroupScopedJs<EncryptedRelatedPersonJs>): Promise<GroupScopedJs<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<EncryptedRelatedPerson> = groupScoped_fromJs(
 					entity,
 					{ x1: EncryptedRelatedPersonJs ->
@@ -821,8 +777,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun modifyRelatedPersons(entities: Array<GroupScopedJs<EncryptedRelatedPersonJs>>):
-					Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
+			override fun modifyRelatedPersons(entities: Array<GroupScopedJs<EncryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<EncryptedRelatedPerson>> = arrayToList(
 					entities,
 					"entities",
@@ -851,8 +806,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun getRelatedPerson(groupId: String, entityId: String):
-					Promise<GroupScopedJs<EncryptedRelatedPersonJs>?> = GlobalScope.promise {
+			override fun getRelatedPerson(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedRelatedPersonJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdConverted: String = entityId
 				val result = relatedPersonApi.inGroup.encrypted.getRelatedPerson(
@@ -871,8 +825,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun getRelatedPersons(groupId: String, entityIds: Array<String>):
-					Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
+			override fun getRelatedPersons(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdsConverted: List<String> = arrayToList(
 					entityIds,
@@ -899,8 +852,8 @@ internal class RelatedPersonApiImplJs(
 			}
 		}
 
-		override val tryAndRecover: RelatedPersonFlavouredInGroupApiJs<RelatedPersonJs> = object :
-				RelatedPersonFlavouredInGroupApiJs<RelatedPersonJs> {
+		override val tryAndRecover: RelatedPersonFlavouredInGroupApiJs<RelatedPersonJs> =
+				object : RelatedPersonFlavouredInGroupApiJs<RelatedPersonJs> {
 			override fun shareWith(
 				`delegate`: EntityReferenceInGroupJs,
 				relatedPerson: GroupScopedJs<RelatedPersonJs>,
@@ -938,17 +891,14 @@ internal class RelatedPersonApiImplJs(
 				}
 			}
 
-			override fun shareWithMany(relatedPerson: GroupScopedJs<RelatedPersonJs>,
-					delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>):
-					Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
+			override fun shareWithMany(relatedPerson: GroupScopedJs<RelatedPersonJs>, delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
 				val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 					relatedPerson,
 					{ x1: RelatedPersonJs ->
 						relatedPerson_fromJs(x1)
 					},
 				)
-				val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonShareOptions> =
-						EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonShareOptions> = EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 				val result = relatedPersonApi.inGroup.tryAndRecover.shareWithMany(
 					relatedPersonConverted,
 					delegatesConverted,
@@ -961,8 +911,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+			override fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 				val result = relatedPersonApi.inGroup.tryAndRecover.filterRelatedPersonsBy(
@@ -982,9 +931,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun filterRelatedPersonsBySorted(groupId: String,
-					filter: SortableFilterOptionsJs<RelatedPersonJs>):
-					Promise<PaginatedListIteratorJs<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+			override fun filterRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 				val result = relatedPersonApi.inGroup.tryAndRecover.filterRelatedPersonsBySorted(
@@ -1004,8 +951,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun createRelatedPerson(entity: GroupScopedJs<RelatedPersonJs>):
-					Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
+			override fun createRelatedPerson(entity: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 					entity,
 					{ x1: RelatedPersonJs ->
@@ -1023,8 +969,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun createRelatedPersons(entities: Array<GroupScopedJs<RelatedPersonJs>>):
-					Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+			override fun createRelatedPersons(entities: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<RelatedPerson>> = arrayToList(
 					entities,
 					"entities",
@@ -1053,8 +998,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-					Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
+			override fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
 				val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 					entityId,
 					{ x1: StoredDocumentIdentifierJs ->
@@ -1072,9 +1016,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override
-					fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-					Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+			override fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 				val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 					entityIds,
 					"entityIds",
@@ -1103,8 +1045,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-					Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
+			override fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
 				val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 					relatedPerson,
 					{ x1: RelatedPersonJs ->
@@ -1122,8 +1063,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>):
-					Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+			override fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 				val relatedPersonsConverted: List<GroupScoped<RelatedPerson>> = arrayToList(
 					relatedPersons,
 					"relatedPersons",
@@ -1152,8 +1092,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun modifyRelatedPerson(entity: GroupScopedJs<RelatedPersonJs>):
-					Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
+			override fun modifyRelatedPerson(entity: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<RelatedPersonJs>> = GlobalScope.promise {
 				val entityConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 					entity,
 					{ x1: RelatedPersonJs ->
@@ -1171,8 +1110,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun modifyRelatedPersons(entities: Array<GroupScopedJs<RelatedPersonJs>>):
-					Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+			override fun modifyRelatedPersons(entities: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 				val entitiesConverted: List<GroupScoped<RelatedPerson>> = arrayToList(
 					entities,
 					"entities",
@@ -1201,8 +1139,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun getRelatedPerson(groupId: String, entityId: String):
-					Promise<GroupScopedJs<RelatedPersonJs>?> = GlobalScope.promise {
+			override fun getRelatedPerson(groupId: String, entityId: String): Promise<GroupScopedJs<RelatedPersonJs>?> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdConverted: String = entityId
 				val result = relatedPersonApi.inGroup.tryAndRecover.getRelatedPerson(
@@ -1221,8 +1158,7 @@ internal class RelatedPersonApiImplJs(
 				)
 			}
 
-			override fun getRelatedPersons(groupId: String, entityIds: Array<String>):
-					Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+			override fun getRelatedPersons(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 				val groupIdConverted: String = groupId
 				val entityIdsConverted: List<String> = arrayToList(
 					entityIds,
@@ -1269,16 +1205,14 @@ internal class RelatedPersonApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> =
-						convertingOptionOrDefaultNonNull(
+				val delegatesConverted: Map<EntityReferenceInGroup, AccessLevel> = convertingOptionOrDefaultNonNull(
 					_options,
 					"delegates",
 					emptyMap()
 				) { delegates: Array<EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel> ->
 					EntityReferenceInGroupToAccessLevelMapObject_delegate_accessLevel_fromJs(delegates)
 				}
-				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
-						convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
 					"alternateRootDelegateReference",
 					null
@@ -1315,8 +1249,7 @@ internal class RelatedPersonApiImplJs(
 				val baseConverted: DecryptedRelatedPerson? = base?.let { nonNull1 ->
 					relatedPerson_fromJs(nonNull1)
 				}
-				val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonDelegateOptions> =
-						EntityReferenceInGroupToRelatedPersonDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
+				val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonDelegateOptions> = EntityReferenceInGroupToRelatedPersonDelegateOptionsMapObject_delegate_delegateOptions_fromJs(delegates)
 				val userConverted: User? = convertingOptionOrDefaultNullable(
 					_options,
 					"user",
@@ -1326,8 +1259,7 @@ internal class RelatedPersonApiImplJs(
 						user_fromJs(nonNull1)
 					}
 				}
-				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? =
-						convertingOptionOrDefaultNullable(
+				val alternateRootDelegateReferenceConverted: EntityReferenceInGroup? = convertingOptionOrDefaultNullable(
 					_options,
 					"alternateRootDelegateReference",
 					null
@@ -1352,8 +1284,7 @@ internal class RelatedPersonApiImplJs(
 			}
 		}
 
-		override fun getEncryptionKeysOf(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun getEncryptionKeysOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Array<String>> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1371,8 +1302,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun hasWriteAccess(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Boolean> =
-				GlobalScope.promise {
+		override fun hasWriteAccess(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Boolean> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1385,8 +1315,7 @@ internal class RelatedPersonApiImplJs(
 			result
 		}
 
-		override fun getSecretIdsOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Array<String>>
-				= GlobalScope.promise {
+		override fun getSecretIdsOf(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Array<String>> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1404,8 +1333,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<RelatedPersonJs>,
-				delegates: Array<EntityReferenceInGroupJs>): Promise<Unit> = GlobalScope.promise {
+		override fun createDelegationDeAnonymizationMetadata(entity: GroupScopedJs<RelatedPersonJs>, delegates: Array<EntityReferenceInGroupJs>): Promise<Unit> = GlobalScope.promise {
 			val entityConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				entity,
 				{ x1: RelatedPersonJs ->
@@ -1426,8 +1354,7 @@ internal class RelatedPersonApiImplJs(
 
 		}
 
-		override fun decrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
+		override fun decrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<GroupScoped<EncryptedRelatedPerson>> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -1456,8 +1383,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun tryDecrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
+		override fun tryDecrypt(relatedPersons: Array<GroupScopedJs<EncryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<RelatedPersonJs>>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<GroupScoped<EncryptedRelatedPerson>> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -1486,8 +1412,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun encryptOrValidate(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
+		override fun encryptOrValidate(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<EncryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<GroupScoped<RelatedPerson>> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -1516,8 +1441,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun matchRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 			val result = relatedPersonApi.inGroup.matchRelatedPersonsBy(
@@ -1532,9 +1456,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun matchRelatedPersonsBySorted(groupId: String,
-				filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<Array<String>> =
-				GlobalScope.promise {
+		override fun matchRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 			val result = relatedPersonApi.inGroup.matchRelatedPersonsBySorted(
@@ -1549,8 +1471,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun deleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1568,9 +1489,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override
-				fun deleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1599,8 +1518,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun purgeRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<Unit> = GlobalScope.promise {
+		override fun purgeRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1613,9 +1531,7 @@ internal class RelatedPersonApiImplJs(
 
 		}
 
-		override
-				fun purgeRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1644,8 +1560,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun deleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1663,8 +1578,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun deleteRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<GroupScoped<RelatedPerson>> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -1693,8 +1607,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun purgeRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<Unit> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1707,8 +1620,7 @@ internal class RelatedPersonApiImplJs(
 
 		}
 
-		override fun purgeRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeRelatedPersons(relatedPersons: Array<GroupScopedJs<RelatedPersonJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<GroupScoped<RelatedPerson>> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -1737,8 +1649,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1788,17 +1699,14 @@ internal class RelatedPersonApiImplJs(
 			}
 		}
 
-		override fun shareWithMany(relatedPerson: GroupScopedJs<DecryptedRelatedPersonJs>,
-				delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>):
-				Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun shareWithMany(relatedPerson: GroupScopedJs<DecryptedRelatedPersonJs>, delegates: Array<EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<DecryptedRelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: DecryptedRelatedPersonJs ->
 					relatedPerson_fromJs(x1)
 				},
 			)
-			val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonShareOptions> =
-					EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
+			val delegatesConverted: Map<EntityReferenceInGroup, RelatedPersonShareOptions> = EntityReferenceInGroupToRelatedPersonShareOptionsMapObject_delegate_shareOptions_fromJs(delegates)
 			val result = relatedPersonApi.inGroup.shareWithMany(
 				relatedPersonConverted,
 				delegatesConverted,
@@ -1811,9 +1719,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>> =
-				GlobalScope.promise {
+		override fun filterRelatedPersonsBy(groupId: String, filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 			val result = relatedPersonApi.inGroup.filterRelatedPersonsBy(
@@ -1833,10 +1739,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun filterRelatedPersonsBySorted(groupId: String,
-				filter: SortableFilterOptionsJs<RelatedPersonJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>> =
-				GlobalScope.promise {
+		override fun filterRelatedPersonsBySorted(groupId: String, filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 			val result = relatedPersonApi.inGroup.filterRelatedPersonsBySorted(
@@ -1856,8 +1759,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun createRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>):
-				Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun createRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedRelatedPerson> = groupScoped_fromJs(
 				entity,
 				{ x1: DecryptedRelatedPersonJs ->
@@ -1875,8 +1777,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun createRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
+		override fun createRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<DecryptedRelatedPerson>> = arrayToList(
 				entities,
 				"entities",
@@ -1905,8 +1806,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun undeleteRelatedPersonById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -1924,9 +1824,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override
-				fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
+		override fun undeleteRelatedPersonsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -1955,8 +1853,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>):
-				Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun undeleteRelatedPerson(relatedPerson: GroupScopedJs<RelatedPersonJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 			val relatedPersonConverted: GroupScoped<RelatedPerson> = groupScoped_fromJs(
 				relatedPerson,
 				{ x1: RelatedPersonJs ->
@@ -1974,9 +1871,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override
-				fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<DecryptedRelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
+		override fun undeleteRelatedPersons(relatedPersons: Array<GroupScopedJs<DecryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val relatedPersonsConverted: List<GroupScoped<DecryptedRelatedPerson>> = arrayToList(
 				relatedPersons,
 				"relatedPersons",
@@ -2005,8 +1900,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun modifyRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>):
-				Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+		override fun modifyRelatedPerson(entity: GroupScopedJs<DecryptedRelatedPersonJs>): Promise<GroupScopedJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<DecryptedRelatedPerson> = groupScoped_fromJs(
 				entity,
 				{ x1: DecryptedRelatedPersonJs ->
@@ -2024,8 +1918,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun modifyRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>):
-				Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
+		override fun modifyRelatedPersons(entities: Array<GroupScopedJs<DecryptedRelatedPersonJs>>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<DecryptedRelatedPerson>> = arrayToList(
 				entities,
 				"entities",
@@ -2054,8 +1947,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun getRelatedPerson(groupId: String, entityId: String):
-				Promise<GroupScopedJs<DecryptedRelatedPersonJs>?> = GlobalScope.promise {
+		override fun getRelatedPerson(groupId: String, entityId: String): Promise<GroupScopedJs<DecryptedRelatedPersonJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = relatedPersonApi.inGroup.getRelatedPerson(
@@ -2074,8 +1966,7 @@ internal class RelatedPersonApiImplJs(
 			)
 		}
 
-		override fun getRelatedPersons(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
+		override fun getRelatedPersons(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<DecryptedRelatedPersonJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -2102,8 +1993,7 @@ internal class RelatedPersonApiImplJs(
 		}
 	}
 
-	override fun withEncryptionMetadata(base: DecryptedRelatedPersonJs?, options: dynamic):
-			Promise<DecryptedRelatedPersonJs> {
+	override fun withEncryptionMetadata(base: DecryptedRelatedPersonJs?, options: dynamic): Promise<DecryptedRelatedPersonJs> {
 		val _options = options ?: js("{}")
 		return GlobalScope.promise {
 			val baseConverted: DecryptedRelatedPerson? = base?.let { nonNull1 ->
@@ -2197,8 +2087,7 @@ internal class RelatedPersonApiImplJs(
 		}
 	}
 
-	override fun getEncryptionKeysOf(relatedPerson: RelatedPersonJs): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun getEncryptionKeysOf(relatedPerson: RelatedPersonJs): Promise<Array<String>> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.getEncryptionKeysOf(
 			relatedPersonConverted,
@@ -2211,8 +2100,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun hasWriteAccess(relatedPerson: RelatedPersonJs): Promise<Boolean> =
-			GlobalScope.promise {
+	override fun hasWriteAccess(relatedPerson: RelatedPersonJs): Promise<Boolean> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.hasWriteAccess(
 			relatedPersonConverted,
@@ -2220,8 +2108,7 @@ internal class RelatedPersonApiImplJs(
 		result
 	}
 
-	override fun getSecretIdsOf(relatedPerson: RelatedPersonJs): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun getSecretIdsOf(relatedPerson: RelatedPersonJs): Promise<Array<String>> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.getSecretIdsOf(
 			relatedPersonConverted,
@@ -2234,8 +2121,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun createDelegationDeAnonymizationMetadata(entity: RelatedPersonJs,
-			delegates: Array<String>): Promise<Unit> = GlobalScope.promise {
+	override fun createDelegationDeAnonymizationMetadata(entity: RelatedPersonJs, delegates: Array<String>): Promise<Unit> = GlobalScope.promise {
 		val entityConverted: RelatedPerson = relatedPerson_fromJs(entity)
 		val delegatesConverted: Set<String> = arrayToSet(
 			delegates,
@@ -2251,8 +2137,7 @@ internal class RelatedPersonApiImplJs(
 
 	}
 
-	override fun decrypt(relatedPersons: Array<EncryptedRelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun decrypt(relatedPersons: Array<EncryptedRelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val relatedPersonsConverted: List<EncryptedRelatedPerson> = arrayToList(
 			relatedPersons,
 			"relatedPersons",
@@ -2271,8 +2156,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun tryDecrypt(relatedPersons: Array<EncryptedRelatedPersonJs>):
-			Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
+	override fun tryDecrypt(relatedPersons: Array<EncryptedRelatedPersonJs>): Promise<Array<RelatedPersonJs>> = GlobalScope.promise {
 		val relatedPersonsConverted: List<EncryptedRelatedPerson> = arrayToList(
 			relatedPersons,
 			"relatedPersons",
@@ -2291,8 +2175,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun encryptOrValidate(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun encryptOrValidate(relatedPersons: Array<RelatedPersonJs>): Promise<Array<EncryptedRelatedPersonJs>> = GlobalScope.promise {
 		val relatedPersonsConverted: List<RelatedPerson> = arrayToList(
 			relatedPersons,
 			"relatedPersons",
@@ -2311,8 +2194,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun matchRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 		val result = relatedPersonApi.matchRelatedPersonsBy(
 			filterConverted,
@@ -2325,8 +2207,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun matchRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>):
-			Promise<Array<String>> = GlobalScope.promise {
+	override fun matchRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 		val result = relatedPersonApi.matchRelatedPersonsBySorted(
 			filterConverted,
@@ -2339,8 +2220,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun deleteRelatedPersonById(entityId: String, rev: String):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteRelatedPersonById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = relatedPersonApi.deleteRelatedPersonById(
@@ -2350,8 +2230,7 @@ internal class RelatedPersonApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2380,8 +2259,7 @@ internal class RelatedPersonApiImplJs(
 
 	}
 
-	override fun purgeRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2400,8 +2278,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun deleteRelatedPerson(relatedPerson: RelatedPersonJs):
-			Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
+	override fun deleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.deleteRelatedPerson(
 			relatedPersonConverted,
@@ -2409,8 +2286,7 @@ internal class RelatedPersonApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val relatedPersonsConverted: List<RelatedPerson> = arrayToList(
 			relatedPersons,
 			"relatedPersons",
@@ -2429,8 +2305,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun purgeRelatedPerson(relatedPerson: RelatedPersonJs): Promise<Unit> =
-			GlobalScope.promise {
+	override fun purgeRelatedPerson(relatedPerson: RelatedPersonJs): Promise<Unit> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		relatedPersonApi.purgeRelatedPerson(
 			relatedPersonConverted,
@@ -2438,8 +2313,7 @@ internal class RelatedPersonApiImplJs(
 
 	}
 
-	override fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val relatedPersonsConverted: List<RelatedPerson> = arrayToList(
 			relatedPersons,
 			"relatedPersons",
@@ -2458,8 +2332,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs):
-			Promise<EntityAccessInformationJs> = GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(relatedPerson: RelatedPersonJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.getDataOwnersWithAccessTo(
 			relatedPersonConverted,
@@ -2494,9 +2367,7 @@ internal class RelatedPersonApiImplJs(
 		}
 	}
 
-	override fun shareWithMany(relatedPerson: DecryptedRelatedPersonJs,
-			delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<DecryptedRelatedPersonJs> =
-			GlobalScope.promise {
+	override fun shareWithMany(relatedPerson: DecryptedRelatedPersonJs, delegates: Record<String, RelatedPersonShareOptionsJs>): Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
 		val relatedPersonConverted: DecryptedRelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val delegatesConverted: Map<String, RelatedPersonShareOptions> = objectToMap(
 			delegates,
@@ -2515,8 +2386,7 @@ internal class RelatedPersonApiImplJs(
 		relatedPerson_toJs(result)
 	}
 
-	override fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun filterRelatedPersonsBy(filter: FilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
 		val result = relatedPersonApi.filterRelatedPersonsBy(
 			filterConverted,
@@ -2529,8 +2399,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>):
-			Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun filterRelatedPersonsBySorted(filter: SortableFilterOptionsJs<RelatedPersonJs>): Promise<PaginatedListIteratorJs<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val filterConverted: SortableFilterOptions<RelatedPerson> = sortableFilterOptions_fromJs(filter)
 		val result = relatedPersonApi.filterRelatedPersonsBySorted(
 			filterConverted,
@@ -2543,8 +2412,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun createRelatedPerson(entity: DecryptedRelatedPersonJs):
-			Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
+	override fun createRelatedPerson(entity: DecryptedRelatedPersonJs): Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
 		val entityConverted: DecryptedRelatedPerson = relatedPerson_fromJs(entity)
 		val result = relatedPersonApi.createRelatedPerson(
 			entityConverted,
@@ -2552,8 +2420,7 @@ internal class RelatedPersonApiImplJs(
 		relatedPerson_toJs(result)
 	}
 
-	override fun createRelatedPersons(entities: Array<DecryptedRelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun createRelatedPersons(entities: Array<DecryptedRelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val entitiesConverted: List<DecryptedRelatedPerson> = arrayToList(
 			entities,
 			"entities",
@@ -2572,8 +2439,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun undeleteRelatedPersonById(id: String, rev: String): Promise<DecryptedRelatedPersonJs>
-			= GlobalScope.promise {
+	override fun undeleteRelatedPersonById(id: String, rev: String): Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = relatedPersonApi.undeleteRelatedPersonById(
@@ -2583,8 +2449,7 @@ internal class RelatedPersonApiImplJs(
 		relatedPerson_toJs(result)
 	}
 
-	override fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun undeleteRelatedPersonsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2603,8 +2468,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs):
-			Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
+	override fun undeleteRelatedPerson(relatedPerson: RelatedPersonJs): Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
 		val relatedPersonConverted: RelatedPerson = relatedPerson_fromJs(relatedPerson)
 		val result = relatedPersonApi.undeleteRelatedPerson(
 			relatedPersonConverted,
@@ -2612,8 +2476,7 @@ internal class RelatedPersonApiImplJs(
 		relatedPerson_toJs(result)
 	}
 
-	override fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun undeleteRelatedPersons(relatedPersons: Array<RelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val relatedPersonsConverted: List<RelatedPerson> = arrayToList(
 			relatedPersons,
 			"relatedPersons",
@@ -2632,8 +2495,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun modifyRelatedPerson(entity: DecryptedRelatedPersonJs):
-			Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
+	override fun modifyRelatedPerson(entity: DecryptedRelatedPersonJs): Promise<DecryptedRelatedPersonJs> = GlobalScope.promise {
 		val entityConverted: DecryptedRelatedPerson = relatedPerson_fromJs(entity)
 		val result = relatedPersonApi.modifyRelatedPerson(
 			entityConverted,
@@ -2641,8 +2503,7 @@ internal class RelatedPersonApiImplJs(
 		relatedPerson_toJs(result)
 	}
 
-	override fun modifyRelatedPersons(entities: Array<DecryptedRelatedPersonJs>):
-			Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
+	override fun modifyRelatedPersons(entities: Array<DecryptedRelatedPersonJs>): Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val entitiesConverted: List<DecryptedRelatedPerson> = arrayToList(
 			entities,
 			"entities",
@@ -2661,8 +2522,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun getRelatedPerson(entityId: String): Promise<DecryptedRelatedPersonJs?> =
-			GlobalScope.promise {
+	override fun getRelatedPerson(entityId: String): Promise<DecryptedRelatedPersonJs?> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val result = relatedPersonApi.getRelatedPerson(
 			entityIdConverted,
@@ -2674,8 +2534,7 @@ internal class RelatedPersonApiImplJs(
 		)
 	}
 
-	override fun getRelatedPersons(entityIds: Array<String>): Promise<Array<DecryptedRelatedPersonJs>>
-			= GlobalScope.promise {
+	override fun getRelatedPersons(entityIds: Array<String>): Promise<Array<DecryptedRelatedPersonJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -2709,8 +2568,7 @@ internal class RelatedPersonApiImplJs(
 				},
 			)
 			val filterConverted: FilterOptions<RelatedPerson> = filterOptions_fromJs(filter)
-			val subscriptionConfigConverted: EntitySubscriptionConfiguration? =
-					convertingOptionOrDefaultNullable(
+			val subscriptionConfigConverted: EntitySubscriptionConfiguration? = convertingOptionOrDefaultNullable(
 				_options,
 				"subscriptionConfig",
 				null

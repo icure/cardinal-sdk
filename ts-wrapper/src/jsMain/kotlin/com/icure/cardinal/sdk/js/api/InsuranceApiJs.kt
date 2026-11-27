@@ -33,18 +33,15 @@ public external interface InsuranceApiJs {
 
 	public fun deleteInsuranceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteInsurance(insurance: InsuranceJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteInsurances(insurances: Array<InsuranceJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteInsurances(insurances: Array<InsuranceJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun undeleteInsuranceById(entityId: String, rev: String): Promise<InsuranceJs>
 
-	public fun undeleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<InsuranceJs>>
+	public fun undeleteInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<InsuranceJs>>
 
 	public fun undeleteInsurance(insurance: InsuranceJs): Promise<InsuranceJs>
 
@@ -52,13 +49,11 @@ public external interface InsuranceApiJs {
 
 	public fun purgeInsuranceById(entityId: String, rev: String): Promise<Unit>
 
-	public fun purgeInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeInsuranceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeInsurance(insurance: InsuranceJs): Promise<Unit>
 
-	public fun purgeInsurances(insurances: Array<InsuranceJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeInsurances(insurances: Array<InsuranceJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun listInsurancesByCode(insuranceCode: String): Promise<Array<InsuranceJs>>
 
@@ -66,12 +61,9 @@ public external interface InsuranceApiJs {
 
 	public fun matchInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>): Promise<Array<String>>
 
-	public fun filterInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>):
-			Promise<PaginatedListIteratorJs<InsuranceJs>>
+	public fun filterInsurancesBy(filter: BaseFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<InsuranceJs>>
 
-	public fun matchInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
-			Promise<Array<String>>
+	public fun matchInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<Array<String>>
 
-	public fun filterInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>):
-			Promise<PaginatedListIteratorJs<InsuranceJs>>
+	public fun filterInsurancesBySorted(filter: BaseSortableFilterOptionsJs<InsuranceJs>): Promise<PaginatedListIteratorJs<InsuranceJs>>
 }

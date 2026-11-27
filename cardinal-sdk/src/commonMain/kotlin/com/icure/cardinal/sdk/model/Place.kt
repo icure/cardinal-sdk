@@ -35,7 +35,8 @@ data class Place(
 	 * The address of the place.
 	 */
 	public val address: DecryptedAddress? = null,
-) : StoredDocument, Named {
+) : StoredDocument,
+	Named {
 	// region Place-Place
 
 	// endregion

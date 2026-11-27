@@ -12,7 +12,6 @@ import com.icure.cardinal.sdk.api.CryptoApi
 import com.icure.cardinal.sdk.api.DataOwnerApi
 import com.icure.cardinal.sdk.api.DeviceApi
 import com.icure.cardinal.sdk.api.DocumentApi
-import com.icure.cardinal.sdk.api.FilterApi
 import com.icure.cardinal.sdk.api.FormApi
 import com.icure.cardinal.sdk.api.FrontEndMigrationApi
 import com.icure.cardinal.sdk.api.GroupApi
@@ -40,7 +39,6 @@ import com.icure.cardinal.sdk.api.impl.CodeApiImpl
 import com.icure.cardinal.sdk.api.impl.CryptoApiImpl
 import com.icure.cardinal.sdk.api.impl.DataOwnerApiImpl
 import com.icure.cardinal.sdk.api.impl.DeviceApiImpl
-import com.icure.cardinal.sdk.api.impl.FilterApiImpl
 import com.icure.cardinal.sdk.api.impl.FrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.impl.GroupApiImpl
 import com.icure.cardinal.sdk.api.impl.HealthcarePartyApiImpl
@@ -82,7 +80,6 @@ import com.icure.cardinal.sdk.api.raw.impl.RawDeviceApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawDocumentApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawExchangeDataMapApiImpl
-import com.icure.cardinal.sdk.api.raw.impl.RawFilterApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFormApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawFrontEndMigrationApiImpl
 import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
@@ -507,6 +504,12 @@ internal suspend fun initializeApiCrypto(
 		retryConfiguration = options.requestRetryConfiguration,
 		entityListDecodingStrategy = options.entityListDecodingStrategy,
 	)
+	// Constructed before dataOwnerApi/self is known so that DataOwnerApiImpl can bulk-fetch hierarchy members using
+	// the type-specific raw APIs (all data owners of a hierarchy share the same type). Safe to construct this early:
+	// they don't perform any request until actually used, well after the anonymity header below is set.
+	val rawPatientApiNoAccessKeys = RawPatientApiImpl(apiUrl, authProvider, null, rawApiConfig)
+	val rawHealthcarePartyApi = RawHealthcarePartyApiImpl(apiUrl, authProvider, rawApiConfig)
+	val rawDeviceApi = RawDeviceApiImpl(apiUrl, authProvider, rawApiConfig)
 	val rawDataOwnerApi = RawDataOwnerApiImpl(
 		apiUrl,
 		authProvider,
@@ -514,6 +517,9 @@ internal suspend fun initializeApiCrypto(
 	)
 	val dataOwnerApi = DataOwnerApiImpl(
 		rawDataOwnerApi,
+		rawHealthcarePartyApi,
+		rawPatientApiNoAccessKeys,
+		rawDeviceApi,
 		boundGroup
 	)
 	val self = dataOwnerApi.getCurrentDataOwner()
@@ -525,9 +531,6 @@ internal suspend fun initializeApiCrypto(
 	}?.let { anonymityHeaderValue ->
 		mutableAdditionalHeaders[ANONYMITY_HEADER] = anonymityHeaderValue
 	}
-	val rawPatientApiNoAccessKeys = RawPatientApiImpl(apiUrl, authProvider, null, rawApiConfig)
-	val rawHealthcarePartyApi = RawHealthcarePartyApiImpl(apiUrl, authProvider, rawApiConfig)
-	val rawDeviceApi = RawDeviceApiImpl(apiUrl, authProvider, rawApiConfig)
 	val exchangeDataMapManager = ExchangeDataMapManagerImpl(
 		RawExchangeDataMapApiImpl(apiUrl, authProvider, rawApiConfig),
 		cryptoService,
@@ -568,6 +571,11 @@ internal suspend fun initializeApiCrypto(
 	).initialize()
 	val userEncryptionKeys = userEncryptionKeysInitInfo.manager
 	val delegatorActorIsAnonymous = userEncryptionKeys.delegatorActorIsAnonymous()
+	if (delegatorActorIsAnonymous) {
+		if (dataOwnerApi.getCurrentDataOwnerHierarchyInfo().links.isNotEmpty()) throw UnsupportedOperationException(
+			"SDK currently does not support data owner groups for anonymous data owners (anonymous data owner ${self.dataOwner.id} has links ${dataOwnerApi.getCurrentDataOwnerHierarchyInfo().links}"
+		)
+	}
 	val exchangeDataManager = if (delegatorActorIsAnonymous)
 		FullyCachedExchangeDataManager(
 			baseExchangeDataManager,
@@ -679,16 +687,16 @@ internal suspend fun initializeApiCrypto(
 	val manifests = EntitiesEncryptedFieldsManifests.fromEncryptedFields(options.encryptedFields)
 	return Triple(
 		ApiConfigurationImpl(
-			apiUrl,
-			if (authProvider is JwtBasedAuthProvider) authProvider else null,
-			!selfIsAnonymous,
-			crypto,
-			manifests,
-			options.jsonPatcher ?: object : JsonPatcher {},
-			options.parentJob,
-			rawApiConfig,
-			boundGroup,
-			json,
+			apiUrl = apiUrl,
+			webSocketAuthProvider = authProvider as? JwtBasedAuthProvider,
+			autofillAuthor = !selfIsAnonymous,
+			crypto = crypto,
+			encryption = manifests,
+			jsonPatcher = options.jsonPatcher ?: object : JsonPatcher {},
+			parentJob = options.parentJob,
+			rawApiConfig = rawApiConfig,
+			boundGroup = boundGroup,
+			entityEncodingJson = json,
 		),
 		userEncryptionKeysInitInfo.newKey?.key,
 		sdkScope
@@ -739,6 +747,7 @@ internal class CardinalSdkImpl(
 		initCalendarItemApi(
 			rawCalendarItemApi,
 			rawDataOwnerApi,
+			rawPatientApi,
 			config
 		)
 	}
@@ -779,13 +788,6 @@ internal class CardinalSdkImpl(
 	override val patient: PatientApi by lazy {
 		initPatientApi(
 			rawPatientApi,
-			rawHealthcarePartyApi,
-			rawHealthElementApi,
-			rawFormApi,
-			rawContactApi,
-			rawInvoiceApi,
-			rawCalendarItemApi,
-			rawClassificationApi,
 			config
 		)
 	}
@@ -827,7 +829,8 @@ internal class CardinalSdkImpl(
 				config.crypto.primitives,
 				ShamirSecretSharingService(config.crypto.primitives.strongRandom)
 			),
-			config.crypto
+			config.crypto,
+			boundGroupId?.let(::SdkBoundGroup),
 		)
 	}
 
@@ -931,16 +934,6 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	override val filter: FilterApi by lazy {
-		FilterApiImpl(
-			rawApi = RawFilterApiImpl(
-				apiUrl,
-				authProvider,
-				config.rawApiConfig
-			)
-		)
-	}
-
 	private val rawFormApi by lazy {
 		RawFormApiImpl(
 			apiUrl,
@@ -966,7 +959,7 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	@Deprecated("The invoice API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
+	@Deprecated("The invoice API and model are highly specialised for the Belgian market. They will be provided as a separate package in future")
 	override val invoice: InvoiceApi by lazy {
 		initInvoiceApi(
 			rawApi = rawInvoiceApi,
@@ -983,7 +976,7 @@ internal class CardinalSdkImpl(
 		)
 	}
 
-	@Deprecated("The receipt API and model are highly specialised for the belgian market. They will be provided as a separate package in future")
+	@Deprecated("The receipt API and model are highly specialised for the Belgian market. They will be provided as a separate package in future")
 	override val receipt: ReceiptApi by lazy {
 		initReceiptApi(
 			rawReceiptApi,
@@ -1030,7 +1023,11 @@ internal class CardinalSdkImpl(
 		GroupApiImpl(RawGroupApiImpl(apiUrl, authProvider, config.rawApiConfig))
 	}
 	override val healthcareParty: HealthcarePartyApi by lazy {
-		HealthcarePartyApiImpl(RawHealthcarePartyApiImpl(apiUrl, authProvider, config.rawApiConfig), config)
+		HealthcarePartyApiImpl(
+			RawHealthcarePartyApiImpl(apiUrl, authProvider, config.rawApiConfig),
+			config,
+			rawDataOwnerApi,
+		)
 	}
 	override val system: SystemApi by lazy {
 		SystemApiImpl(RawICureApiImpl(apiUrl, authProvider, config.rawApiConfig))

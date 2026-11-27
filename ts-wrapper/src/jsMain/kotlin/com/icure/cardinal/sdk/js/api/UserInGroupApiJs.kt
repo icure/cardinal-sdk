@@ -34,53 +34,39 @@ public external interface UserInGroupApiJs {
 
 	public fun modifyUsers(users: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<UserJs>>>
 
-	public fun deleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun deleteUser(user: GroupScopedJs<UserJs>):
-			Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
+	public fun deleteUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>>
 
-	public fun deleteUsers(users: Array<GroupScopedJs<UserJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun deleteUsers(users: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
 
-	public fun purgeUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
 	public fun purgeUser(user: GroupScopedJs<UserJs>): Promise<Unit>
 
-	public fun purgeUsers(userIds: Array<GroupScopedJs<UserJs>>):
-			Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
+	public fun purgeUsers(userIds: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>>
 
-	public fun undeleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>):
-			Promise<GroupScopedJs<UserJs>>
+	public fun undeleteUserById(userId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<UserJs>>
 
-	public fun undeleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-			Promise<Array<GroupScopedJs<UserJs>>>
+	public fun undeleteUsersByIds(userIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<UserJs>>>
 
 	public fun undeleteUser(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>>
 
-	public fun undeleteUsers(users: Array<GroupScopedJs<UserJs>>):
-			Promise<Array<GroupScopedJs<UserJs>>>
+	public fun undeleteUsers(users: Array<GroupScopedJs<UserJs>>): Promise<Array<GroupScopedJs<UserJs>>>
 
-	public fun filterUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>>
+	public fun filterUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>>
 
-	public fun matchUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>):
-			Promise<Array<String>>
+	public fun matchUsersBy(groupId: String, filter: BaseFilterOptionsJs<UserJs>): Promise<Array<String>>
 
-	public fun filterUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>):
-			Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>>
+	public fun filterUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<UserJs>>>
 
-	public fun matchUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>):
-			Promise<Array<String>>
+	public fun matchUsersBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<UserJs>): Promise<Array<String>>
 
-	public fun setUserRoles(user: GroupScopedJs<UserJs>, rolesIds: Array<String>):
-			Promise<GroupScopedJs<UserJs>>
+	public fun setUserRoles(user: GroupScopedJs<UserJs>, rolesIds: Array<String>): Promise<GroupScopedJs<UserJs>>
 
 	public fun resetUserRoles(user: GroupScopedJs<UserJs>): Promise<GroupScopedJs<UserJs>>
 
@@ -97,8 +83,7 @@ public external interface UserInGroupApiJs {
 		options: dynamic,
 	): Promise<Array<TokenWithGroupJs>>
 
-	public fun enable2faForUser(user: GroupScopedJs<UserJs>, request: Enable2faRequestJs):
-			Promise<Unit>
+	public fun enable2faForUser(user: GroupScopedJs<UserJs>, request: Enable2faRequestJs): Promise<Unit>
 
 	public fun disable2faForUser(user: GroupScopedJs<UserJs>): Promise<Unit>
 

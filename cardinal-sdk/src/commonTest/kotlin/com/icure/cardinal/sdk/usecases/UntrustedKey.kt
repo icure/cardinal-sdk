@@ -2,6 +2,7 @@ package com.icure.cardinal.sdk.usecases
 
 import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.auth.UsernamePassword
+import com.icure.cardinal.sdk.crypto.BaseExchangeDataManager
 import com.icure.cardinal.sdk.crypto.CryptoStrategies
 import com.icure.cardinal.sdk.crypto.KeyPairRecoverer
 import com.icure.cardinal.sdk.crypto.impl.exportSpkiHex
@@ -58,6 +59,17 @@ class UntrustedKey : StringSpec({
 	beforeSpec {
 		initializeTestEnvironment()
 	}
+
+	suspend fun BaseExchangeDataManager.getExchangeDataByDelegatorDelegatePair(
+		inGroup: String?,
+		delegatorReference: EntityReferenceInGroup,
+		delegateReference: EntityReferenceInGroup,
+	) = getExchangeDataByDelegatorDelegatePair(
+		inGroup = inGroup,
+		delegatorReference = delegatorReference,
+		delegateReference = delegateReference,
+		recipients = emptySet()
+	)
 
 	"A user that has a key that can't be trusted anymore can still use it for decrypting existing data but won't use it to encrypt new data".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 		val parent = createHcpUser()
@@ -137,11 +149,12 @@ class UntrustedKey : StringSpec({
 					}
 
 					override suspend fun recoverAndVerifySelfHierarchyKeys(
-						keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+						currentDataOwnerId: String,
+						keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 						cryptoPrimitives: CryptoService,
 						keyPairRecoverer: KeyPairRecoverer
 					): Map<String, CryptoStrategies.RecoveredKeyData> {
-						return keysData.associate { recoveryRequest ->
+						return keysData.values.associate { recoveryRequest ->
 							if (recoveryRequest.dataOwnerDetails.dataOwner.id == child.dataOwnerId) {
 								recoveryRequest.dataOwnerDetails.dataOwner.id to CryptoStrategies.RecoveredKeyData(
 									recoveredKeys = mapOf(
@@ -179,11 +192,11 @@ class UntrustedKey : StringSpec({
 		)
 		didCreateNewKey shouldBe true
 		// Keys trust should match expected
-		val allTrustedKeys = apiWithUntrustedKey.crypto.currentDataOwnerKeys(filterTrustedKeys = true)
+		val allTrustedKeys = apiWithUntrustedKey.crypto.availableKeys(filterTrustedKeys = true)
 		allTrustedKeys shouldHaveSize 2
 		allTrustedKeys[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newChildKeySpki.fingerprintV1())
 		allTrustedKeys[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newParentKeySpki.fingerprintV1())
-		val allKeys = apiWithUntrustedKey.crypto.currentDataOwnerKeys(filterTrustedKeys = false)
+		val allKeys = apiWithUntrustedKey.crypto.availableKeys(filterTrustedKeys = false)
 		allKeys shouldHaveSize 2
 		allKeys[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(child.publicKeySpki!!.fingerprintV1(), newChildKeySpki.fingerprintV1())
 		allKeys[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(parent.publicKeySpki!!.fingerprintV1(), newParentKeySpki.fingerprintV1())
@@ -235,7 +248,8 @@ class UntrustedKey : StringSpec({
 					}
 
 					override suspend fun recoverAndVerifySelfHierarchyKeys(
-						keysData: List<CryptoStrategies.KeyDataRecoveryRequest>,
+						currentDataOwnerId: String,
+						keysData: Map<String, CryptoStrategies.KeyDataRecoveryRequest>,
 						cryptoPrimitives: CryptoService,
 						keyPairRecoverer: KeyPairRecoverer
 					): Map<String, CryptoStrategies.RecoveredKeyData> {
@@ -244,11 +258,11 @@ class UntrustedKey : StringSpec({
 				}
 			)
 		)
-		val allTrustedKeys2 = apiWithUntrustedKey2.crypto.currentDataOwnerKeys(filterTrustedKeys = true)
+		val allTrustedKeys2 = apiWithUntrustedKey2.crypto.availableKeys(filterTrustedKeys = true)
 		allTrustedKeys2 shouldHaveSize 2
 		allTrustedKeys2[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newChildKeySpki.fingerprintV1())
 		allTrustedKeys2[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(newParentKeySpki.fingerprintV1())
-		val allKeys2 = apiWithUntrustedKey2.crypto.currentDataOwnerKeys(filterTrustedKeys = false)
+		val allKeys2 = apiWithUntrustedKey2.crypto.availableKeys(filterTrustedKeys = false)
 		allKeys2 shouldHaveSize 2
 		allKeys2[child.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(child.publicKeySpki!!.fingerprintV1(), newChildKeySpki.fingerprintV1())
 		allKeys2[parent.dataOwnerId].shouldNotBeNull().keys shouldContainExactlyInAnyOrder setOf(parent.publicKeySpki!!.fingerprintV1(), newParentKeySpki.fingerprintV1())

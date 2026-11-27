@@ -3,8 +3,7 @@
 /**
  *
  *
- *   Enumerates the possible gender values for a patient, including original gender, changed gender,
- *  and unknown.
+ *   Enumerates the possible gender values for a patient, including original gender, changed gender, and unknown.
  */
 export enum Gender {
 	Male = "Male",

@@ -19,8 +19,7 @@ import kotlin.collections.Map
 import kotlin.collections.Set
 
 /**
- * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
- * conversation
+ * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a conversation
  * and can be linked to health elements and services for medical context.
  * /
  */
@@ -143,8 +142,7 @@ sealed interface Topic :
 }
 
 /**
- * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
- * conversation
+ * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a conversation
  * and can be linked to health elements and services for medical context.
  * /
  */
@@ -251,8 +249,7 @@ override fun copyWithSecurityMetadata(securityMetadata: SecurityMetadata, secret
 }
 
 /**
- * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a
- * conversation
+ * Represents a topic for secure messaging between healthcare parties. A topic groups messages in a conversation
  * and can be linked to health elements and services for medical context.
  * /
  */

@@ -5,6 +5,8 @@ package com.icure.cardinal.sdk.model
 import com.icure.cardinal.sdk.model.base.CodeStub
 import com.icure.cardinal.sdk.model.base.CryptoActor
 import com.icure.cardinal.sdk.model.base.DataOwner
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.HasMedicalLocation
 import com.icure.cardinal.sdk.model.base.ICureDocument
 import com.icure.cardinal.sdk.model.base.Identifier
@@ -21,13 +23,9 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
-import com.icure.cardinal.sdk.serialization.ByteArraySerializer
-import kotlin.ByteArray
 
 /**
- * Represents a device that sends medical data. This is a root-level entity stored in the
- * icure-device CouchDB database.
+ * Represents a device that sends medical data. This is a root-level entity stored in the icure-device CouchDB database.
  * A device can act as a data owner and crypto actor for secure data exchange.
  * /
  */
@@ -97,9 +95,11 @@ data class Device(
 	 */
 	public val serialNumber: String? = null,
 	/**
-	 * The id of the parent of the user representing the device.
+	 * The links to the data owners representing the groups this device belongs to.
 	 */
-	override val parentId: String? = null,
+	@param:DefaultValue("emptyList()")
+	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val groupLinkType: DataOwnerGroupLinkType? = null,
 	/**
 	 * Typed properties related to the device (e.g., version, specific device information).
 	 */
@@ -114,14 +114,14 @@ data class Device(
 	 * Extra AES exchange keys, usually keys that were lost access to at some point.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
-		emptyMap(),
+	override val aesExchangeKeys:
+		Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> = emptyMap(),
 	/**
 	 * Private keys encrypted with public keys for key transfer.
 	 */
 	@param:DefaultValue("emptyMap()")
-	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
-		emptyMap(),
+	override val transferKeys:
+		Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> = emptyMap(),
 	/**
 	 * Shamir partitions of this device's RSA private keys, encrypted with notary public keys.
 	 */
@@ -140,7 +140,12 @@ data class Device(
 	 * Properties specific to the crypto actor role of this device.
 	 */
 	override val cryptoActorProperties: Set<DecryptedPropertyStub> = emptySet(),
-) : StoredDocument, ICureDocument<String>, HasMedicalLocation, Named, CryptoActor, DataOwner {
+) : StoredDocument,
+	ICureDocument<String>,
+	HasMedicalLocation,
+	Named,
+	CryptoActor,
+	DataOwner {
 	// region Device-Device
 	companion object {
 		const val KRAKEN_QUALIFIED_NAME = "org.taktik.icure.entities.Device"

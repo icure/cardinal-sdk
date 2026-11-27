@@ -413,6 +413,15 @@ interface RelatedPersonApi : RelatedPersonBasicFlavourlessApi, RelatedPersonFlav
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: RelatedPersonFlavouredApi<RelatedPerson>
 
@@ -472,6 +481,8 @@ interface RelatedPersonApi : RelatedPersonBasicFlavourlessApi, RelatedPersonFlav
 	 * of the related person the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 * versions of iCure where this was not a guarantee.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param relatedPerson a related person
 	 * @return the encryption keys extracted from the provided related person.
 	 */
@@ -491,6 +502,8 @@ interface RelatedPersonApi : RelatedPersonBasicFlavourlessApi, RelatedPersonFlav
 	/**
 	 * Attempts to extract the secret ids of a related person. Since a related person is a root entity these secret ids
 	 * may be used to link other entities to it.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param relatedPerson a related person
 	 * @return the secret ids of the provided related person that the current user can access.
 	 */
@@ -513,6 +526,9 @@ interface RelatedPersonApi : RelatedPersonBasicFlavourlessApi, RelatedPersonFlav
 	 * Note that this delegation metadata may be used to de-anonymize the corresponding delegation in any RelatedPerson,
 	 * not only in the provided instance.
 	 *
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 *
 	 * @param entity a related person
 	 * @param delegates a set of data owner ids
 	 */
@@ -528,6 +544,9 @@ interface RelatedPersonApi : RelatedPersonBasicFlavourlessApi, RelatedPersonFlav
 
 	/**
 	 * Tries to decrypt a RelatedPerson, returns the input if it is not possible.
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
 	 * @param relatedPersons encrypted RelatedPersons
 	 * @return all the provided RelatedPersons, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -576,6 +595,15 @@ interface RelatedPersonInGroupApi : RelatedPersonBasicFlavourlessInGroupApi, Rel
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: RelatedPersonFlavouredInGroupApi<RelatedPerson>
 

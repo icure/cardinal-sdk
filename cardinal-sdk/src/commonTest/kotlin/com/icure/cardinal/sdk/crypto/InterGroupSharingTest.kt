@@ -5,8 +5,10 @@ import com.icure.cardinal.sdk.api.raw.impl.RawGroupApiImpl
 import com.icure.cardinal.sdk.crypto.entities.PatientShareOptions
 import com.icure.cardinal.sdk.crypto.entities.SecretIdShareOptions
 import com.icure.cardinal.sdk.model.DatabaseInitialisation
+import com.icure.cardinal.sdk.model.DecryptedDocument
 import com.icure.cardinal.sdk.model.DecryptedHealthElement
 import com.icure.cardinal.sdk.model.DecryptedPatient
+import com.icure.cardinal.sdk.model.Document
 import com.icure.cardinal.sdk.model.HealthElement
 import com.icure.cardinal.sdk.model.Patient
 import com.icure.cardinal.sdk.model.embed.AccessLevel
@@ -74,6 +76,7 @@ class InterGroupSharingTest : StringSpec({
 		apiGroup: String,
 		basePatient: Patient,
 		baseHe: HealthElement,
+		baseDocument: Document? = null,
 	) {
 		api.crypto.forceReload()
 		api.patient.inGroup.getPatient(
@@ -89,6 +92,12 @@ class InterGroupSharingTest : StringSpec({
 		).shouldNotBeNull().entity.descr shouldBe baseHe.descr
 		if (apiGroup == childGroupId) {
 			api.healthElement.getHealthElement(baseHe.id).shouldNotBeNull().descr shouldBe baseHe.descr
+		}
+		if (baseDocument != null) {
+			api.document.inGroup.getDocument(
+				groupId = childGroupId,
+				entityId = baseDocument.id
+			).shouldNotBeNull().entity.name shouldBe baseDocument.name
 		}
 	}
 
@@ -129,8 +138,20 @@ class InterGroupSharingTest : StringSpec({
                     delegates = mapOf(delegateReference to AccessLevel.Write)
 				)
 			)
-			checkCanGet(delegatorApi, delegator.groupId, basePatient, baseHe)
-			checkCanGet(delegateApi, delegate.groupId, basePatient, baseHe)
+			val baseDocument = DecryptedDocument(
+				id = uuid(),
+				name = "super secret name of document"
+			)
+			delegatorApi.document.inGroup.createDocument(
+				delegatorApi.document.inGroup.withEncryptionMetadataLinkedToPatient(
+					entityGroupId = childGroupId,
+					base = baseDocument,
+					patient = createdPatient,
+					delegates = mapOf(delegateReference to AccessLevel.Write)
+				)
+			)
+			checkCanGet(delegatorApi, delegator.groupId, basePatient, baseHe, baseDocument)
+			checkCanGet(delegateApi, delegate.groupId, basePatient, baseHe, baseDocument)
 		}
 		doTest(true)
 		doTest(false)
@@ -191,17 +212,17 @@ class InterGroupSharingTest : StringSpec({
 
 
 	listOf(
-//		Pair(Pair("groupE", childGroupId), Pair("groupE", childGroupId)),
+		Pair(Pair("groupE", childGroupId), Pair("groupE", childGroupId)),
 		Pair(Pair("groupE", childGroupId), Pair("groupX", parentGroupId)),
-//		Pair(Pair("groupX", parentGroupId), Pair("groupE", childGroupId)),
-//		Pair(Pair("groupX", parentGroupId), Pair("groupX", parentGroupId)),
-//		Pair(Pair("groupX", parentGroupId), Pair("groupY", grandparentGroupId)),
+		Pair(Pair("groupX", parentGroupId), Pair("groupE", childGroupId)),
+		Pair(Pair("groupX", parentGroupId), Pair("groupX", parentGroupId)),
+		Pair(Pair("groupX", parentGroupId), Pair("groupY", grandparentGroupId)),
 	).forEach { (delegatorGroupInfo, delegateGroupInfo) ->
 		listOf(
-//			Pair(Pair("explicit", true), Pair("explicit", true)),
+			Pair(Pair("explicit", true), Pair("explicit", true)),
 			Pair(Pair("explicit", true), Pair("anonymous", false)),
-//			Pair(Pair("anonymous", false), Pair("explicit", true)),
-//			Pair(Pair("anonymous", false), Pair("anonymous", false)),
+			Pair(Pair("anonymous", false), Pair("explicit", true)),
+			Pair(Pair("anonymous", false), Pair("anonymous", false)),
 		).forEach { (delegatorType, delegateType) ->
 			"Test create shared data ${delegatorGroupInfo.first}/${delegatorType.first} -> ${delegateGroupInfo.first}/${delegateType.first}".config(enabled = DEFAULT_ENABLED && LOCAL_ENV_ONLY) {
 				testCreateSharedData(

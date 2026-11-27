@@ -1,5 +1,6 @@
 package com.icure.cardinal.sdk.api
 
+import com.icure.cardinal.sdk.crypto.entities.BulkShareByIdsResult
 import com.icure.cardinal.sdk.crypto.entities.ContactDelegateOptions
 import com.icure.cardinal.sdk.crypto.entities.ContactShareOptions
 import com.icure.cardinal.sdk.crypto.entities.EntityAccessInformation
@@ -560,8 +561,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: Map<String, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedContact
@@ -586,8 +587,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		delegates: Map<String, ContactDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateId: String? = null,
 	): DecryptedContact
@@ -597,6 +598,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 * versions of iCure where this was not a guarantee.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param contact a contact
 	 * @return the encryption keys extracted from the provided contact.
 	 */
@@ -617,6 +620,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	 * Attempts to extract the patient id linked to a contact.
 	 * Note: contacts usually should be linked with only one patient, but this method returns a set for compatibility
 	 * with older versions of iCure
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param contact a contact
 	 * @return the id of the patient linked to the contact, or empty if the current user can't access any patient id
 	 * of the contact.
@@ -629,6 +634,8 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	 * with older versions of iCure
 	 * It is to be noted that only services returned by getServices, or filterServices method will have the metadata necessary
 	 * to deduce the patient id. In the case of services obtained directly from the Contact, you should use decryptPatientIdOf(Contact) instead.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param service a service returned by getServices, or filterServices method.
 	 * @return the id of the patient linked to the service, or empty if the current user can't access any patient id
 	 * of the service.
@@ -663,6 +670,9 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	 * delegator-delegate pair, you will not be able to see if P has access to a contact that was created by H and
 	 * shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 *
 	 * @param entity a contact
 	 * @param delegates a set of data owner ids
 	 */
@@ -670,6 +680,11 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 
 	suspend fun decrypt(contact: EncryptedContact): DecryptedContact
 
+	/**
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
+	 */
 	suspend fun tryDecrypt(contact: EncryptedContact): Contact
 
 	/**
@@ -688,12 +703,28 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 	 * Note: you should use this function only when you retrieve [Service]s as single entity. If you are retrieving them as part of a
 	 * [Contact], use [tryDecrypt] instead.
 	 *
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
+	 *
 	 * @param service the [EncryptedService] to decrypt.
 	 * @return the [DecryptedService] if the decryption was successful, the original [service] otherwise.
 	 */
 	suspend fun tryDecryptService(service: EncryptedService): Service
 
 	val encrypted: ContactFlavouredApi<EncryptedContact, EncryptedService>
+	/**
+	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
+	 */
 	val tryAndRecover: ContactFlavouredApi<Contact, Service>
 	/**
 	 * Gives access to methods of the api that allow to use entities or work with data owners in groups other than the
@@ -715,6 +746,29 @@ interface ContactApi : ContactBasicFlavourlessApi, ContactFlavouredApi<Decrypted
 		@DefaultValue("null")
 		subscriptionConfig: EntitySubscriptionConfiguration? = null
 	): EntitySubscription<EncryptedService>
+
+	/**
+	 * Share many already-existing contacts with one or more delegates at once, retrieving them by id instead of
+	 * requiring the caller to have them already loaded. This is more efficient than calling [shareWithMany] once
+	 * per contact when you already know the ids of many contacts to share and don't otherwise need their decrypted
+	 * content, since only lightweight metadata (not the full content of each contact) is ever retrieved, and no
+	 * content flows back from the share request itself.
+	 *
+	 * The same [delegates] options are applied identically to every found contact. Unlike [shareWithMany], if the
+	 * share fails for some (contact, delegate) pairs this method reports the failure for those specific pairs in the
+	 * returned result instead of throwing, so sharing proceeds normally for every other contact and delegate in the
+	 * batch.
+	 *
+	 * @param contactIds ids of the contacts to share. Ids that don't exist, or exist but for which the current user
+	 * has no read access, are reported in [BulkShareByIdsResult.notFoundIds] and otherwise ignored.
+	 * @param delegates the data owners which will gain access to each contact, and the options for sharing with each
+	 * of them (see [ContactShareOptions]). The exact same options are applied to every contact in [contactIds].
+	 * @return details on the outcome of the operation, for each requested id.
+	 */
+	suspend fun shareContactsByIds(
+		contactIds: List<String>,
+		delegates: Map<String, ContactShareOptions>
+	): BulkShareByIdsResult
 }
 
 interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavouredInGroupApi<DecryptedContact, DecryptedService> {
@@ -725,6 +779,15 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: ContactFlavouredInGroupApi<Contact, Service>
 
@@ -739,8 +802,8 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 		user: User? = null,
 		@DefaultValue("emptyMap()")
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "accessLevel") Map<EntityReferenceInGroup, AccessLevel> = emptyMap(),
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedContact>
@@ -755,8 +818,8 @@ interface ContactInGroupApi : ContactBasicFlavourlessInGroupApi, ContactFlavoure
 		delegates: @JsMapAsObjectArray(keyEntryName = "delegate", valueEntryName = "delegateOptions") Map<EntityReferenceInGroup, ContactDelegateOptions>,
 		@DefaultValue("null")
 		user: User? = null,
-		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithParent")
-		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithParent,
+		@DefaultValue("com.icure.cardinal.sdk.crypto.entities.SecretIdUseOption.UseAnySharedWithHierarchy")
+		secretId: SecretIdUseOption = SecretIdUseOption.UseAnySharedWithHierarchy,
 		@DefaultValue("null")
 		alternateRootDelegateReference: EntityReferenceInGroup? = null,
 	): GroupScoped<DecryptedContact>

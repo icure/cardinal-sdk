@@ -48,8 +48,7 @@ internal class DocumentBasicApiImplJs(
 	private val documentBasicApi: DocumentBasicApi,
 ) : DocumentBasicApiJs {
 	override val inGroup: DocumentBasicInGroupApiJs = object : DocumentBasicInGroupApiJs {
-		override fun matchDocumentsBy(groupId: String, filter: BaseFilterOptionsJs<DocumentJs>):
-				Promise<Array<String>> = GlobalScope.promise {
+		override fun matchDocumentsBy(groupId: String, filter: BaseFilterOptionsJs<DocumentJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Document> = baseFilterOptions_fromJs(filter)
 			val result = documentBasicApi.inGroup.matchDocumentsBy(
@@ -64,11 +63,9 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun matchDocumentsBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<DocumentJs>): Promise<Array<String>> = GlobalScope.promise {
+		override fun matchDocumentsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<DocumentJs>): Promise<Array<String>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<Document> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<Document> = baseSortableFilterOptions_fromJs(filter)
 			val result = documentBasicApi.inGroup.matchDocumentsBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -81,8 +78,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun filterDocumentsBy(groupId: String, filter: BaseFilterOptionsJs<DocumentJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
+		override fun filterDocumentsBy(groupId: String, filter: BaseFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val filterConverted: BaseFilterOptions<Document> = baseFilterOptions_fromJs(filter)
 			val result = documentBasicApi.inGroup.filterDocumentsBy(
@@ -102,12 +98,9 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun filterDocumentsBySorted(groupId: String,
-				filter: BaseSortableFilterOptionsJs<DocumentJs>):
-				Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
+		override fun filterDocumentsBySorted(groupId: String, filter: BaseSortableFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
-			val filterConverted: BaseSortableFilterOptions<Document> =
-					baseSortableFilterOptions_fromJs(filter)
+			val filterConverted: BaseSortableFilterOptions<Document> = baseSortableFilterOptions_fromJs(filter)
 			val result = documentBasicApi.inGroup.filterDocumentsBySorted(
 				groupIdConverted,
 				filterConverted,
@@ -125,8 +118,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun deleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -144,8 +136,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun deleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -174,8 +165,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun purgeDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit>
-				= GlobalScope.promise {
+		override fun purgeDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<Unit> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -188,8 +178,7 @@ internal class DocumentBasicApiImplJs(
 
 		}
 
-		override fun purgeDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -218,8 +207,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun deleteDocument(document: GroupScopedJs<DocumentJs>):
-				Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+		override fun deleteDocument(document: GroupScopedJs<DocumentJs>): Promise<GroupScopedJs<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
 				document,
 				{ x1: DocumentJs ->
@@ -237,8 +225,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun deleteDocuments(documents: Array<GroupScopedJs<DocumentJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun deleteDocuments(documents: Array<GroupScopedJs<DocumentJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val documentsConverted: List<GroupScoped<Document>> = arrayToList(
 				documents,
 				"documents",
@@ -267,8 +254,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun purgeDocument(document: GroupScopedJs<DocumentJs>): Promise<Unit> =
-				GlobalScope.promise {
+		override fun purgeDocument(document: GroupScopedJs<DocumentJs>): Promise<Unit> = GlobalScope.promise {
 			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
 				document,
 				{ x1: DocumentJs ->
@@ -281,8 +267,7 @@ internal class DocumentBasicApiImplJs(
 
 		}
 
-		override fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>):
-				Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
+		override fun purgeDocuments(documents: Array<GroupScopedJs<DocumentJs>>): Promise<Array<GroupScopedJs<StoredDocumentIdentifierJs>>> = GlobalScope.promise {
 			val documentsConverted: List<GroupScoped<Document>> = arrayToList(
 				documents,
 				"documents",
@@ -311,8 +296,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>):
-				Promise<EntityAccessInformationJs> = GlobalScope.promise {
+		override fun getDataOwnersWithAccessTo(document: GroupScopedJs<DocumentJs>): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
 				document,
 				{ x1: DocumentJs ->
@@ -325,8 +309,7 @@ internal class DocumentBasicApiImplJs(
 			entityAccessInformation_toJs(result)
 		}
 
-		override fun createDocument(entity: GroupScopedJs<EncryptedDocumentJs>):
-				Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
+		override fun createDocument(entity: GroupScopedJs<EncryptedDocumentJs>): Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedDocument> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedDocumentJs ->
@@ -344,8 +327,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun createDocuments(entities: Array<GroupScopedJs<EncryptedDocumentJs>>):
-				Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
+		override fun createDocuments(entities: Array<GroupScopedJs<EncryptedDocumentJs>>): Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedDocument>> = arrayToList(
 				entities,
 				"entities",
@@ -374,8 +356,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>):
-				Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
+		override fun undeleteDocumentById(entityId: GroupScopedJs<StoredDocumentIdentifierJs>): Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
 			val entityIdConverted: GroupScoped<StoredDocumentIdentifier> = groupScoped_fromJs(
 				entityId,
 				{ x1: StoredDocumentIdentifierJs ->
@@ -393,8 +374,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>):
-				Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
+		override fun undeleteDocumentsByIds(entityIds: Array<GroupScopedJs<StoredDocumentIdentifierJs>>): Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
 			val entityIdsConverted: List<GroupScoped<StoredDocumentIdentifier>> = arrayToList(
 				entityIds,
 				"entityIds",
@@ -423,8 +403,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteDocument(document: GroupScopedJs<DocumentJs>):
-				Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
+		override fun undeleteDocument(document: GroupScopedJs<DocumentJs>): Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
 			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
 				document,
 				{ x1: DocumentJs ->
@@ -442,8 +421,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun undeleteDocuments(documents: Array<GroupScopedJs<EncryptedDocumentJs>>):
-				Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
+		override fun undeleteDocuments(documents: Array<GroupScopedJs<EncryptedDocumentJs>>): Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
 			val documentsConverted: List<GroupScoped<EncryptedDocument>> = arrayToList(
 				documents,
 				"documents",
@@ -472,8 +450,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun modifyDocument(entity: GroupScopedJs<EncryptedDocumentJs>):
-				Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
+		override fun modifyDocument(entity: GroupScopedJs<EncryptedDocumentJs>): Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
 			val entityConverted: GroupScoped<EncryptedDocument> = groupScoped_fromJs(
 				entity,
 				{ x1: EncryptedDocumentJs ->
@@ -491,8 +468,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun modifyDocuments(entities: Array<GroupScopedJs<EncryptedDocumentJs>>):
-				Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
+		override fun modifyDocuments(entities: Array<GroupScopedJs<EncryptedDocumentJs>>): Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
 			val entitiesConverted: List<GroupScoped<EncryptedDocument>> = arrayToList(
 				entities,
 				"entities",
@@ -521,8 +497,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun getDocument(groupId: String, entityId: String):
-				Promise<GroupScopedJs<EncryptedDocumentJs>?> = GlobalScope.promise {
+		override fun getDocument(groupId: String, entityId: String): Promise<GroupScopedJs<EncryptedDocumentJs>?> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdConverted: String = entityId
 			val result = documentBasicApi.inGroup.getDocument(
@@ -541,8 +516,7 @@ internal class DocumentBasicApiImplJs(
 			)
 		}
 
-		override fun getDocuments(groupId: String, entityIds: Array<String>):
-				Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
+		override fun getDocuments(groupId: String, entityIds: Array<String>): Promise<Array<GroupScopedJs<EncryptedDocumentJs>>> = GlobalScope.promise {
 			val groupIdConverted: String = groupId
 			val entityIdsConverted: List<String> = arrayToList(
 				entityIds,
@@ -569,8 +543,7 @@ internal class DocumentBasicApiImplJs(
 		}
 	}
 
-	override fun matchDocumentsBy(filter: BaseFilterOptionsJs<DocumentJs>): Promise<Array<String>> =
-			GlobalScope.promise {
+	override fun matchDocumentsBy(filter: BaseFilterOptionsJs<DocumentJs>): Promise<Array<String>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Document> = baseFilterOptions_fromJs(filter)
 		val result = documentBasicApi.matchDocumentsBy(
 			filterConverted,
@@ -583,10 +556,8 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun matchDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>):
-			Promise<Array<String>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<Document> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun matchDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>): Promise<Array<String>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Document> = baseSortableFilterOptions_fromJs(filter)
 		val result = documentBasicApi.matchDocumentsBySorted(
 			filterConverted,
 		)
@@ -598,8 +569,7 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun filterDocumentsBy(filter: BaseFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<EncryptedDocumentJs>> = GlobalScope.promise {
+	override fun filterDocumentsBy(filter: BaseFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<EncryptedDocumentJs>> = GlobalScope.promise {
 		val filterConverted: BaseFilterOptions<Document> = baseFilterOptions_fromJs(filter)
 		val result = documentBasicApi.filterDocumentsBy(
 			filterConverted,
@@ -612,10 +582,8 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun filterDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<EncryptedDocumentJs>> = GlobalScope.promise {
-		val filterConverted: BaseSortableFilterOptions<Document> =
-				baseSortableFilterOptions_fromJs(filter)
+	override fun filterDocumentsBySorted(filter: BaseSortableFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<EncryptedDocumentJs>> = GlobalScope.promise {
+		val filterConverted: BaseSortableFilterOptions<Document> = baseSortableFilterOptions_fromJs(filter)
 		val result = documentBasicApi.filterDocumentsBySorted(
 			filterConverted,
 		)
@@ -627,8 +595,7 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun deleteDocumentById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
-			= GlobalScope.promise {
+	override fun deleteDocumentById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = documentBasicApi.deleteDocumentById(
@@ -638,8 +605,7 @@ internal class DocumentBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -668,8 +634,7 @@ internal class DocumentBasicApiImplJs(
 
 	}
 
-	override fun purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -688,8 +653,7 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun deleteDocument(document: DocumentJs): Promise<StoredDocumentIdentifierJs> =
-			GlobalScope.promise {
+	override fun deleteDocument(document: DocumentJs): Promise<StoredDocumentIdentifierJs> = GlobalScope.promise {
 		val documentConverted: Document = document_fromJs(document)
 		val result = documentBasicApi.deleteDocument(
 			documentConverted,
@@ -697,8 +661,7 @@ internal class DocumentBasicApiImplJs(
 		storedDocumentIdentifier_toJs(result)
 	}
 
-	override fun deleteDocuments(documents: Array<DocumentJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun deleteDocuments(documents: Array<DocumentJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val documentsConverted: List<Document> = arrayToList(
 			documents,
 			"documents",
@@ -725,8 +688,7 @@ internal class DocumentBasicApiImplJs(
 
 	}
 
-	override fun purgeDocuments(documents: Array<DocumentJs>):
-			Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
+	override fun purgeDocuments(documents: Array<DocumentJs>): Promise<Array<StoredDocumentIdentifierJs>> = GlobalScope.promise {
 		val documentsConverted: List<Document> = arrayToList(
 			documents,
 			"documents",
@@ -753,8 +715,7 @@ internal class DocumentBasicApiImplJs(
 		result
 	}
 
-	override fun getRawSecondaryAttachment(documentId: String, key: String): Promise<ByteArray> =
-			GlobalScope.promise {
+	override fun getRawSecondaryAttachment(documentId: String, key: String): Promise<ByteArray> = GlobalScope.promise {
 		val documentIdConverted: String = documentId
 		val keyConverted: String = key
 		val result = documentBasicApi.getRawSecondaryAttachment(
@@ -823,8 +784,7 @@ internal class DocumentBasicApiImplJs(
 		document_toJs(result)
 	}
 
-	override fun deleteMainAttachment(entityId: String, rev: String): Promise<EncryptedDocumentJs> =
-			GlobalScope.promise {
+	override fun deleteMainAttachment(entityId: String, rev: String): Promise<EncryptedDocumentJs> = GlobalScope.promise {
 		val entityIdConverted: String = entityId
 		val revConverted: String = rev
 		val result = documentBasicApi.deleteMainAttachment(
@@ -850,8 +810,7 @@ internal class DocumentBasicApiImplJs(
 		document_toJs(result)
 	}
 
-	override fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs> =
-			GlobalScope.promise {
+	override fun getDataOwnersWithAccessTo(document: DocumentJs): Promise<EntityAccessInformationJs> = GlobalScope.promise {
 		val documentConverted: Document = document_fromJs(document)
 		val result = documentBasicApi.getDataOwnersWithAccessTo(
 			documentConverted,
@@ -859,8 +818,7 @@ internal class DocumentBasicApiImplJs(
 		entityAccessInformation_toJs(result)
 	}
 
-	override fun createDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs> =
-			GlobalScope.promise {
+	override fun createDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs> = GlobalScope.promise {
 		val entityConverted: EncryptedDocument = document_fromJs(entity)
 		val result = documentBasicApi.createDocument(
 			entityConverted,
@@ -868,8 +826,7 @@ internal class DocumentBasicApiImplJs(
 		document_toJs(result)
 	}
 
-	override fun createDocuments(entities: Array<EncryptedDocumentJs>):
-			Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
+	override fun createDocuments(entities: Array<EncryptedDocumentJs>): Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedDocument> = arrayToList(
 			entities,
 			"entities",
@@ -888,8 +845,7 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun undeleteDocumentById(id: String, rev: String): Promise<EncryptedDocumentJs> =
-			GlobalScope.promise {
+	override fun undeleteDocumentById(id: String, rev: String): Promise<EncryptedDocumentJs> = GlobalScope.promise {
 		val idConverted: String = id
 		val revConverted: String = rev
 		val result = documentBasicApi.undeleteDocumentById(
@@ -899,8 +855,7 @@ internal class DocumentBasicApiImplJs(
 		document_toJs(result)
 	}
 
-	override fun undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
+	override fun undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<StoredDocumentIdentifier> = arrayToList(
 			entityIds,
 			"entityIds",
@@ -919,8 +874,7 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun undeleteDocument(document: DocumentJs): Promise<EncryptedDocumentJs> =
-			GlobalScope.promise {
+	override fun undeleteDocument(document: DocumentJs): Promise<EncryptedDocumentJs> = GlobalScope.promise {
 		val documentConverted: Document = document_fromJs(document)
 		val result = documentBasicApi.undeleteDocument(
 			documentConverted,
@@ -928,8 +882,7 @@ internal class DocumentBasicApiImplJs(
 		document_toJs(result)
 	}
 
-	override fun undeleteDocuments(documents: Array<EncryptedDocumentJs>):
-			Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
+	override fun undeleteDocuments(documents: Array<EncryptedDocumentJs>): Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
 		val documentsConverted: List<EncryptedDocument> = arrayToList(
 			documents,
 			"documents",
@@ -948,8 +901,7 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun modifyDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs> =
-			GlobalScope.promise {
+	override fun modifyDocument(entity: EncryptedDocumentJs): Promise<EncryptedDocumentJs> = GlobalScope.promise {
 		val entityConverted: EncryptedDocument = document_fromJs(entity)
 		val result = documentBasicApi.modifyDocument(
 			entityConverted,
@@ -957,8 +909,7 @@ internal class DocumentBasicApiImplJs(
 		document_toJs(result)
 	}
 
-	override fun modifyDocuments(entities: Array<EncryptedDocumentJs>):
-			Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
+	override fun modifyDocuments(entities: Array<EncryptedDocumentJs>): Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
 		val entitiesConverted: List<EncryptedDocument> = arrayToList(
 			entities,
 			"entities",
@@ -989,8 +940,7 @@ internal class DocumentBasicApiImplJs(
 		)
 	}
 
-	override fun getDocuments(entityIds: Array<String>): Promise<Array<EncryptedDocumentJs>> =
-			GlobalScope.promise {
+	override fun getDocuments(entityIds: Array<String>): Promise<Array<EncryptedDocumentJs>> = GlobalScope.promise {
 		val entityIdsConverted: List<String> = arrayToList(
 			entityIds,
 			"entityIds",

@@ -60,8 +60,7 @@ public external interface DocumentApiJs {
 		options: dynamic,
 	): Promise<DecryptedDocumentJs>
 
-	public fun withEncryptionMetadataUnlinked(base: DecryptedDocumentJs?, options: dynamic):
-			Promise<DecryptedDocumentJs>
+	public fun withEncryptionMetadataUnlinked(base: DecryptedDocumentJs?, options: dynamic): Promise<DecryptedDocumentJs>
 
 	public fun withEncryptionMetadataAndDelegatesUnlinked(
 		base: DecryptedDocumentJs?,
@@ -69,8 +68,7 @@ public external interface DocumentApiJs {
 		options: dynamic,
 	): Promise<DecryptedDocumentJs>
 
-	public fun getAndTryDecryptMainAttachment(document: DocumentJs, options: dynamic):
-			Promise<ByteArray?>
+	public fun getAndTryDecryptMainAttachment(document: DocumentJs, options: dynamic): Promise<ByteArray?>
 
 	public fun getAndDecryptMainAttachment(document: DocumentJs, options: dynamic): Promise<ByteArray>
 
@@ -99,8 +97,7 @@ public external interface DocumentApiJs {
 
 	public fun decryptOwningEntityIdsOf(document: DocumentJs): Promise<Array<EntityReferenceInGroupJs>>
 
-	public fun createDelegationDeAnonymizationMetadata(entity: DocumentJs, delegates: Array<String>):
-			Promise<Unit>
+	public fun createDelegationDeAnonymizationMetadata(entity: DocumentJs, delegates: Array<String>): Promise<Unit>
 
 	public fun decrypt(document: EncryptedDocumentJs): Promise<DecryptedDocumentJs>
 
@@ -114,23 +111,19 @@ public external interface DocumentApiJs {
 
 	public fun matchDocumentsBy(filter: FilterOptionsJs<DocumentJs>): Promise<Array<String>>
 
-	public fun matchDocumentsBySorted(filter: SortableFilterOptionsJs<DocumentJs>):
-			Promise<Array<String>>
+	public fun matchDocumentsBySorted(filter: SortableFilterOptionsJs<DocumentJs>): Promise<Array<String>>
 
 	public fun deleteDocumentById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeDocumentById(id: String, rev: String): Promise<Unit>
 
-	public fun purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteDocument(document: DocumentJs): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteDocuments(documents: Array<DocumentJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteDocuments(documents: Array<DocumentJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeDocument(document: DocumentJs): Promise<Unit>
 
@@ -173,34 +166,27 @@ public external interface DocumentApiJs {
 		options: dynamic,
 	): Promise<DecryptedDocumentJs>
 
-	public fun shareWithMany(document: DecryptedDocumentJs,
-			delegates: Record<String, DocumentShareOptionsJs>): Promise<DecryptedDocumentJs>
+	public fun shareWithMany(document: DecryptedDocumentJs, delegates: Record<String, DocumentShareOptionsJs>): Promise<DecryptedDocumentJs>
 
-	public fun filterDocumentsBy(filter: FilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<DecryptedDocumentJs>>
+	public fun filterDocumentsBy(filter: FilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<DecryptedDocumentJs>>
 
-	public fun filterDocumentsBySorted(filter: SortableFilterOptionsJs<DocumentJs>):
-			Promise<PaginatedListIteratorJs<DecryptedDocumentJs>>
+	public fun filterDocumentsBySorted(filter: SortableFilterOptionsJs<DocumentJs>): Promise<PaginatedListIteratorJs<DecryptedDocumentJs>>
 
 	public fun createDocument(entity: DecryptedDocumentJs): Promise<DecryptedDocumentJs>
 
-	public fun createDocuments(entities: Array<DecryptedDocumentJs>):
-			Promise<Array<DecryptedDocumentJs>>
+	public fun createDocuments(entities: Array<DecryptedDocumentJs>): Promise<Array<DecryptedDocumentJs>>
 
 	public fun undeleteDocumentById(id: String, rev: String): Promise<DecryptedDocumentJs>
 
-	public fun undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<DecryptedDocumentJs>>
+	public fun undeleteDocumentsByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<DecryptedDocumentJs>>
 
 	public fun undeleteDocument(document: DocumentJs): Promise<DecryptedDocumentJs>
 
-	public fun undeleteDocuments(documents: Array<DecryptedDocumentJs>):
-			Promise<Array<DecryptedDocumentJs>>
+	public fun undeleteDocuments(documents: Array<DecryptedDocumentJs>): Promise<Array<DecryptedDocumentJs>>
 
 	public fun modifyDocument(entity: DecryptedDocumentJs): Promise<DecryptedDocumentJs>
 
-	public fun modifyDocuments(entities: Array<DecryptedDocumentJs>):
-			Promise<Array<DecryptedDocumentJs>>
+	public fun modifyDocuments(entities: Array<DecryptedDocumentJs>): Promise<Array<DecryptedDocumentJs>>
 
 	public fun getDocument(entityId: String): Promise<DecryptedDocumentJs?>
 

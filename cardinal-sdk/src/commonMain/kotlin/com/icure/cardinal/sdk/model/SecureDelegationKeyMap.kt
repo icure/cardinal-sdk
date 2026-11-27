@@ -15,7 +15,10 @@ import kotlin.String
 import kotlin.collections.Map
 import kotlin.collections.Set
 
-sealed interface SecureDelegationKeyMap : StoredDocument, HasEncryptionMetadata, Encryptable {
+sealed interface SecureDelegationKeyMap :
+	StoredDocument,
+	HasEncryptionMetadata,
+	Encryptable {
 	override val id: String
 
 	override val rev: String?
@@ -28,8 +31,7 @@ sealed interface SecureDelegationKeyMap : StoredDocument, HasEncryptionMetadata,
 
 	/**
 	 *
-	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in
-	 * the delegation,
+	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in the delegation,
 	 *  and if not encrypted.
 	 *  On the server side this value should always be encrypted.
 	 */
@@ -37,16 +39,14 @@ sealed interface SecureDelegationKeyMap : StoredDocument, HasEncryptionMetadata,
 
 	/**
 	 *
-	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
-	 * the delegation,
+	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in the delegation,
 	 *  and if not encrypted.
 	 *  On the server side this value should always be encrypted.
 	 */
 	public val `delegate`: String?
 
 	/**
-	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
-	 * the delegation,
+	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in the delegation,
 	 * and if not encrypted.
 	 * On the server side this value should always be encrypted.
 	 * /
@@ -80,23 +80,20 @@ data class DecryptedSecureDelegationKeyMap(
 	override val delegationKey: String,
 	/**
 	 *
-	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in
-	 * the delegation,
+	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in the delegation,
 	 *  and if not encrypted.
 	 *  On the server side this value should always be encrypted.
 	 */
 	override val delegator: String? = null,
 	/**
 	 *
-	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
-	 * the delegation,
+	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in the delegation,
 	 *  and if not encrypted.
 	 *  On the server side this value should always be encrypted.
 	 */
 	override val `delegate`: String? = null,
 	/**
-	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
-	 * the delegation,
+	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in the delegation,
 	 * and if not encrypted.
 	 * On the server side this value should always be encrypted.
 	 * /
@@ -130,23 +127,20 @@ data class EncryptedSecureDelegationKeyMap(
 	override val delegationKey: String,
 	/**
 	 *
-	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in
-	 * the delegation,
+	 *  The delegator of the secure delegation key this map refers to, if the delegator is anonymous in the delegation,
 	 *  and if not encrypted.
 	 *  On the server side this value should always be encrypted.
 	 */
 	override val delegator: String? = null,
 	/**
 	 *
-	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
-	 * the delegation,
+	 *  The delegate of the secure delegation key this map refers to, if the delegate is anonymous in the delegation,
 	 *  and if not encrypted.
 	 *  On the server side this value should always be encrypted.
 	 */
 	override val `delegate`: String? = null,
 	/**
-	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in
-	 * the delegation,
+	 * The delegate of the secure delegation key this map refers to, if the delegate is anonymous in the delegation,
 	 * and if not encrypted.
 	 * On the server side this value should always be encrypted.
 	 * /

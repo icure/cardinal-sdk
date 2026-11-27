@@ -17,8 +17,7 @@ export class PaginatedDocumentKeyIdPair {
 
 	/**
 	 *
-	 *  The document identifier to start the next page from, used to disambiguate when multiple
-	 *  documents share the same key.
+	 *  The document identifier to start the next page from, used to disambiguate when multiple documents share the same key.
 	 */
 	startKeyDocId: string | undefined = undefined;
 

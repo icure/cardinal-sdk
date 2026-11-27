@@ -560,6 +560,11 @@ object FilterOptionsCatalog {
 				factoryMethods = listOf("byParentId"),
 				targetFilter = "HealthcarePartyByParentIdFilter",
 			),
+			FilterOptionGroup(
+				name = "byDataOwnerGroupId",
+				factoryMethods = listOf("byDataOwnerGroupId"),
+				targetFilter = "HealthcarePartyByDataOwnerGroupIdFilter",
+			),
 		),
 		"MaintenanceTask" to listOf(
 			FilterOptionGroup(
@@ -916,7 +921,7 @@ object FilterOptionsCatalog {
 					"byCodesAndValueDateForDataOwnerInGroup",
 					"byCodesAndValueDateForSelf",
 				),
-				targetFilter = "ServiceByHcPartyCodesFilter",
+				targetFilter = "ServiceByHcPartyCodesFilter or ServiceByDataOwnerCodeCodesFilter",
 			),
 			FilterOptionGroup(
 				name = "byCodePrefixAndValueDate",
@@ -934,7 +939,7 @@ object FilterOptionsCatalog {
 					"byTagCodesAndValueDateForDataOwnerInGroup",
 					"byTagCodesAndValueDateForSelf",
 				),
-				targetFilter = "ServiceByHcPartyTagCodesFilter",
+				targetFilter = "ServiceByHcPartyTagCodesFilter or ServiceByDataOwnerTagCodesFilter",
 			),
 			FilterOptionGroup(
 				name = "byTagPrefixAndValueDate",
@@ -955,7 +960,7 @@ object FilterOptionsCatalog {
 					"byPatientSecretIdsCodesAndValueDateForDataOwnerInGroup",
 					"byPatientSecretIdsCodesAndValueDateForSelf",
 				),
-				targetFilter = "ServiceByHcPartyPatientCodesFilter",
+				targetFilter = "ServiceByHcPartyPatientCodesFilter or ServiceByDataOwnerPatientCodeCodesFilter",
 			),
 			FilterOptionGroup(
 				name = "byPatientsCodePrefixAndValueDate",
@@ -979,7 +984,7 @@ object FilterOptionsCatalog {
 					"byPatientSecretIdsTagCodesAndValueDateForDataOwnerInGroup",
 					"byPatientSecretIdsTagCodesAndValueDateForSelf",
 				),
-				targetFilter = "ServiceByHcPartyPatientTagCodesFilter",
+				targetFilter = "ServiceByHcPartyPatientTagCodesFilter or ServiceByDataOwnerPatientTagCodesFilter",
 			),
 			FilterOptionGroup(
 				name = "byPatientsTagPrefixAndValueDate",

@@ -3,6 +3,8 @@
 package com.icure.cardinal.sdk.model
 
 import com.icure.cardinal.sdk.model.base.CryptoActor
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
+import com.icure.cardinal.sdk.model.base.DataOwnerGroupLinkType
 import com.icure.cardinal.sdk.model.base.Versionable
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEncryptionKeypairIdentifier
 import com.icure.cardinal.sdk.model.specializations.AesExchangeKeyEntryKeyString
@@ -14,14 +16,10 @@ import kotlin.String
 import kotlin.collections.List
 import kotlin.collections.Map
 import kotlin.collections.Set
-import com.icure.cardinal.sdk.model.base.DataOwnerGroupLink
-import com.icure.cardinal.sdk.model.base.CodeStub
-import com.icure.cardinal.sdk.model.base.HasTags
 
 /**
  *
- *  Holds only data specific for crypto actors without any additional information (from patient,
- * hcparty, device).
+ *  Holds only data specific for crypto actors without any additional information (from patient, hcparty, device).
  */
 @Serializable
 data class CryptoActorStub(
@@ -30,19 +28,22 @@ data class CryptoActorStub(
 	@param:DefaultValue("emptyMap()")
 	override val hcPartyKeys: Map<String, List<HexString>> = emptyMap(),
 	@param:DefaultValue("emptyMap()")
-	override val aesExchangeKeys: Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> =
-		emptyMap(),
+	override val aesExchangeKeys:
+		Map<AesExchangeKeyEntryKeyString, Map<String, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>>> = emptyMap(),
 	@param:DefaultValue("emptyMap()")
-	override val transferKeys: Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> =
-		emptyMap(),
+	override val transferKeys:
+		Map<AesExchangeKeyEncryptionKeypairIdentifier, Map<AesExchangeKeyEncryptionKeypairIdentifier, HexString>> = emptyMap(),
 	@param:DefaultValue("emptyMap()")
 	override val privateKeyShamirPartitions: Map<String, HexString> = emptyMap(),
 	override val publicKey: SpkiHexString? = null,
 	@param:DefaultValue("emptySet()")
 	override val publicKeysForOaepWithSha256: Set<SpkiHexString> = emptySet(),
-	override val parentId: String? = null,
+	@param:DefaultValue("emptyList()")
+	override val dataOwnerGroups: List<DataOwnerGroupLink> = emptyList(),
+	override val groupLinkType: DataOwnerGroupLinkType? = null,
 	override val cryptoActorProperties: Set<DecryptedPropertyStub>? = null,
-) : Versionable<String>, CryptoActor {
+) : Versionable<String>,
+	CryptoActor {
 	// region CryptoActorStub-CryptoActorStub
 
 	// endregion

@@ -23,7 +23,8 @@ data class IdsFilter<O : Identifiable<String>>(
 	 * The set of entity identifiers to match.
 	 */
 	override val ids: Set<String>,
-) : AbstractFilter<O>, Filter.IdsFilter<String, O> {
+) : AbstractFilter<O>,
+	Filter.IdsFilter<String, O> {
 	// region IdsFilter-IdsFilter
 
 	// endregion

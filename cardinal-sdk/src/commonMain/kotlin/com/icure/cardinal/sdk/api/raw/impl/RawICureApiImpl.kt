@@ -33,7 +33,8 @@ class RawICureApiImpl(
 	internal val apiUrl: String,
 	private val authProvider: AuthProvider,
 	rawApiConfig: RawApiConfig,
-) : BaseRawApi(rawApiConfig), RawICureApi {
+) : BaseRawApi(rawApiConfig),
+	RawICureApi {
 	// region common endpoints
 
 	override suspend fun getVersion(): HttpResponse<String> =
@@ -226,6 +227,20 @@ class RawICureApiImpl(
 				takeFrom(apiUrl)
 				appendPathSegments("rest", "v2", "icure", "hzc", mapName)
 			}
+			accept(Application.Json)
+		}.wrap()
+
+	override suspend fun setSecondaryPoolActivationStatus(
+		poolName: String,
+		status: Boolean,
+	): HttpResponse<String> =
+		put(authProvider) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "icure", "secondaryPool", poolName)
+				parameter("status", status)
+			}
+			contentType(Application.Json)
 			accept(Application.Json)
 		}.wrap()
 

@@ -4,8 +4,7 @@ import {expectString, expectStringEnum, extractEntry} from '../../internal/JsonD
 
 /**
  *
- *  Represents a database synchronization configuration between a source and a target, with optional
- *  filtering.
+ *  Represents a database synchronization configuration between a source and a target, with optional filtering.
  *  /
  */
 export class DatabaseSynchronization {

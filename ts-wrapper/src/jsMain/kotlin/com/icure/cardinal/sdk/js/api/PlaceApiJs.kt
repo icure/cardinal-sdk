@@ -30,8 +30,7 @@ public external interface PlaceApiJs {
 
 	public fun deletePlaceById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deletePlace(place: PlaceJs): Promise<StoredDocumentIdentifierJs>
 
@@ -39,8 +38,7 @@ public external interface PlaceApiJs {
 
 	public fun undeletePlaceById(entityId: String, rev: String): Promise<PlaceJs>
 
-	public fun undeletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<PlaceJs>>
+	public fun undeletePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<PlaceJs>>
 
 	public fun undeletePlace(place: PlaceJs): Promise<PlaceJs>
 
@@ -48,8 +46,7 @@ public external interface PlaceApiJs {
 
 	public fun purgePlaceById(entityId: String, rev: String): Promise<Unit>
 
-	public fun purgePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgePlaceByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgePlace(place: PlaceJs): Promise<Unit>
 

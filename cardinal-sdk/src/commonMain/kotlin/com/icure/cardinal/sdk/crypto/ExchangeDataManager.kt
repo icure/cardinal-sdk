@@ -69,7 +69,7 @@ interface ExchangeDataManager {
 	 * - exchangeKey: the exchange key corresponding to the provided exchange data if it could be decrypted, else undefined
 	 * - accessControlSecret: the access control secret corresponding to the provided exchange data if it could be decrypted, else undefined
 	 */
-	suspend fun getDecryptionDataByIds(
+	suspend fun getDecryptionDataByExchangeDataGroupIds(
 		groupId: String?,
 		ids: Set<String>,
 		waitOrRetrieveUncached: Boolean,

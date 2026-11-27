@@ -7,8 +7,7 @@ import kotlin.Int
 import kotlin.String
 
 /**
- * Represents an appendix attached to an agreement, referencing a specific document and its location
- * within a structured path.
+ * Represents an appendix attached to an agreement, referencing a specific document and its location within a structured path.
  * /
  */
 @Serializable

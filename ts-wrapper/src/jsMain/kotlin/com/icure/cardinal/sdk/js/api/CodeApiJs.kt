@@ -34,8 +34,7 @@ public external interface CodeApiJs {
 
 	public fun deleteCodeById(entityId: String, rev: String): Promise<StoredDocumentIdentifierJs>
 
-	public fun deleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun deleteCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun deleteCode(code: CodeJs): Promise<StoredDocumentIdentifierJs>
 
@@ -51,8 +50,7 @@ public external interface CodeApiJs {
 
 	public fun purgeCodeById(entityId: String, rev: String): Promise<Unit>
 
-	public fun purgeCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>):
-			Promise<Array<StoredDocumentIdentifierJs>>
+	public fun purgeCodeByIds(entityIds: Array<StoredDocumentIdentifierJs>): Promise<Array<StoredDocumentIdentifierJs>>
 
 	public fun purgeCode(code: CodeJs): Promise<Unit>
 
@@ -81,11 +79,9 @@ public external interface CodeApiJs {
 		version: String,
 	): Promise<CodeJs?>
 
-	public fun filterCodesBy(filter: BaseFilterOptionsJs<CodeJs>):
-			Promise<PaginatedListIteratorJs<CodeJs>>
+	public fun filterCodesBy(filter: BaseFilterOptionsJs<CodeJs>): Promise<PaginatedListIteratorJs<CodeJs>>
 
-	public fun filterCodesBySorted(filter: BaseSortableFilterOptionsJs<CodeJs>):
-			Promise<PaginatedListIteratorJs<CodeJs>>
+	public fun filterCodesBySorted(filter: BaseSortableFilterOptionsJs<CodeJs>): Promise<PaginatedListIteratorJs<CodeJs>>
 
 	public fun matchCodesBy(filter: BaseFilterOptionsJs<CodeJs>): Promise<Array<String>>
 

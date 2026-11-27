@@ -30,8 +30,7 @@ data class Insurance(
 	 */
 	override val id: String,
 	/**
-	 * The revision of the insurance in the database, used for conflict management / optimistic
-	 * locking.
+	 * The revision of the insurance in the database, used for conflict management / optimistic locking.
 	 */
 	override val rev: String? = null,
 	/**
@@ -74,7 +73,10 @@ data class Insurance(
 	 * The address of the insurance company.
 	 */
 	public val address: DecryptedAddress,
-) : StoredDocument, HasTags, HasCodes, HasIdentifier {
+) : StoredDocument,
+	HasTags,
+	HasCodes,
+	HasIdentifier {
 	// region Insurance-Insurance
 
 	// endregion
