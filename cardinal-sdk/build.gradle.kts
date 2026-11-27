@@ -60,6 +60,8 @@ val testConfigProperties = mapOf(
 	"BASE_URL" to ("CARDINAL_TEST_BASE_URL" to "http://localhost:16044"),
 	"MOCK_MESSAGE_GATEWAY_URL" to ("CARDINAL_TEST_MOCK_MESSAGE_GATEWAY_URL" to "http://127.0.0.1:8081/msggtw"),
 	"MOCK_SPEC_ID" to ("CARDINAL_TEST_MOCK_SPEC_ID" to "ic"),
+	"KHERMES_URL" to ("CARDINAL_TEST_KHERMES_URL" to "http://127.0.0.1:18080"),
+	"MAILPIT_URL" to ("CARDINAL_TEST_MAILPIT_URL" to "http://127.0.0.1:18025"),
 	"TEST_GROUP_NAME" to ("CARDINAL_TEST_GROUP_NAME" to "testgroup"),
 	// Empty means "generate a new group id for this run", which only makes sense in a local environment.
 	"TEST_GROUP_ID" to ("CARDINAL_TEST_GROUP_ID" to ""),

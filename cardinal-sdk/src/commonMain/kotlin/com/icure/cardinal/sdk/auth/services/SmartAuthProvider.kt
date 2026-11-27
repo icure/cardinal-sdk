@@ -1,8 +1,8 @@
 package com.icure.cardinal.sdk.auth.services
 
 import com.icure.cardinal.sdk.api.raw.RawAnonymousAuthApi
-import com.icure.cardinal.sdk.api.raw.RawMessageGatewayApi
 import com.icure.cardinal.sdk.auth.AuthSecretDetails
+import com.icure.cardinal.sdk.auth.AuthenticationProcessApiImpl
 import com.icure.cardinal.sdk.auth.AuthSecretProvider
 import com.icure.cardinal.sdk.auth.JwtBearerAndRefresh
 import com.icure.cardinal.sdk.auth.SmartTokenProvider
@@ -28,8 +28,7 @@ internal class SmartAuthProvider private constructor(
 			cryptoService: CryptoService,
 			cacheSecrets: Boolean,
 			allowSecretRetry: Boolean,
-			messageGatewayApi: RawMessageGatewayApi,
-			krakenUrl: String,
+			authProcessApi: AuthenticationProcessApiImpl,
 			designDocSchemaVersion: Int?,
 			requireValidInitialRefreshToken: Boolean = false,
 		) = SmartAuthProvider(
@@ -46,8 +45,7 @@ internal class SmartAuthProvider private constructor(
 				cacheSecrets = cacheSecrets,
 				cryptoService = cryptoService,
 				allowSecretRetry = allowSecretRetry,
-				messageGatewayApi = messageGatewayApi,
-				krakenUrl = krakenUrl,
+				authProcessApi = authProcessApi,
 				scopeDataOwnerId = null,
 				designDocSchemaVersion = designDocSchemaVersion
 			),

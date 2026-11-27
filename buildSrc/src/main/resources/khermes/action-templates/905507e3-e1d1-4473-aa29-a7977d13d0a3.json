@@ -1,0 +1,20 @@
+{
+  "_id" : "905507e3-e1d1-4473-aa29-a7977d13d0a3",
+  "name" : "Create a token in a group by email",
+  "hidden" : false,
+  "actions" : {
+    "createToken" : {
+      "telecomType" : "email",
+      "actionType" : "CREATE_TOKEN_IN_GROUP"
+    }
+  },
+  "startAction" : "createToken",
+  "parameters" : [ {
+    "name" : "email",
+    "provenance" : "Client"
+  }, {
+    "name" : "key",
+    "provenance" : "Either"
+  } ],
+  "entityType" : "Template"
+}

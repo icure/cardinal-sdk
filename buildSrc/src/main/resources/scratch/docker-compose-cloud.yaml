@@ -51,6 +51,43 @@ services:
     profiles:
       - mock
 
+  # Khermes (successor of the message gateway) and the SMTP server it sends its emails to. Khermes needs its
+  # databases at startup: `InitializeTestEnvironment` creates them, then starts this profile.
+  mailpit:
+    image: axllent/mailpit:v1.31.4
+    container_name: mailpit
+    ports:
+      - "${MAILPIT_PORT}:8025"
+    profiles:
+      - khermes
+
+  khermes:
+    image: europe-west1-docker.pkg.dev/taktik-icure/docker/khermes:1.4.1
+    container_name: khermes
+    ports:
+      - "${KHERMES_PORT}:8080"
+    environment:
+      - KHERMES_JWKS_URI=http://kraken-1:16043/.well-known/jwks.json
+      # The OTP emails are sent by the scheduler.
+      - KHERMES_SCHEDULER_ENABLED=true
+      - KHERMES_COUCHDB_CONFIG_DB_URL=http://couchdb-test:5984
+      - KHERMES_COUCHDB_CONFIG_DB_NAME=khermes-config
+      - KHERMES_COUCHDB_CONFIG_DB_USER=${COUCHDB_USER}
+      - KHERMES_COUCHDB_CONFIG_DB_PASSWORD=${COUCHDB_PASSWORD}
+      - KHERMES_COUCHDB_OPERATIONAL_DB_URL=http://couchdb-test:5984
+      - KHERMES_COUCHDB_OPERATIONAL_DB_NAME=khermes-operational
+      - KHERMES_COUCHDB_OPERATIONAL_DB_USER=${COUCHDB_USER}
+      - KHERMES_COUCHDB_OPERATIONAL_DB_PASSWORD=${COUCHDB_PASSWORD}
+      - KHERMES_CARDINAL_URL=http://kraken-1:16043
+      - KHERMES_CARDINAL_ADMIN_USERNAME=${ICURE_MOCK_LOGIN}
+      - KHERMES_CARDINAL_ADMIN_PASSWORD=${ICURE_MOCK_PWD}
+    depends_on:
+      - couchdb
+      - kraken-1
+      - mailpit
+    profiles:
+      - khermes
+
 # => ./haproxy/haproxy.cfg
 # global
 #   stats socket /usr/local/etc/haproxy/admin.sock user haproxy group haproxy mode 660 level admin expose-fd listeners

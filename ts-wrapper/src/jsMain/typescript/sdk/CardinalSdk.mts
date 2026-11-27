@@ -234,7 +234,7 @@ export namespace CardinalSdk {
 
   /**
    * Initialize a new instance of the icure sdk for a specific user.
-   * The authentication will be performed through an authentication process.
+   * The authentication will be performed through an authentication process on the iCure message gateway.
    *
    * @param projectId a string to uniquely identify your iCure project.
    * @param baseUrl the url of the iCure backend to use
@@ -250,8 +250,10 @@ export namespace CardinalSdk {
    * information including the user keys if [ApiOptions.keyStorage] is not provided.
    * @param authenticationProcessTemplateParameters optional parameters which may be used by sms/email templates.
    * @param options optional parameters for the initialization of the sdk.
+   * @deprecated The iCure message gateway is being retired: use a Khermes authentication process, through the
+   * signature that takes a `khermesUrl`.
    */
-  export async function initializeWithProcess(
+  export function initializeWithProcess(
     projectId: string | undefined,
     baseUrl: string,
     messageGatewayUrl: string,
@@ -263,20 +265,79 @@ export namespace CardinalSdk {
     baseStorage: StorageFacade | CardinalStorageOptions,
     authenticationProcessTemplateParameters?: AuthenticationProcessTemplateParameters,
     options?: SdkOptions
-  ): Promise<AuthenticationWithProcessStep> {
-    return await InternalSdkInitializers.getInstance().initializeWithProcess(
-      projectId,
-      baseUrl,
-      messageGatewayUrl,
-      externalServicesSpecId,
-      processId,
-      userTelecomType,
-      userTelecom,
-      captchaOptions,
-      baseStorage,
-      authenticationProcessTemplateParameters,
-      options,
-    )
+  ): Promise<AuthenticationWithProcessStep>
+
+  /**
+   * Initialize a new instance of the icure sdk for a specific user.
+   * The authentication will be performed through a Khermes authentication process: Khermes sends a validation code to
+   * {@link userTelecom}, and {@link AuthenticationWithProcessStep.completeAuthentication} takes that code.
+   *
+   * @param projectId a string to uniquely identify your iCure project.
+   * @param baseUrl the url of the iCure backend to use. It must be the backend that the Khermes at {@link khermesUrl}
+   * creates its tokens on.
+   * @param khermesUrl the url of Khermes, `https://khermes.icure.cloud` in production.
+   * @param processId the id of the Khermes authentication process to execute. The process defines the channel (email or
+   * SMS) of the validation code.
+   * @param userTelecom the email address (email process) or E.164 phone number such as `+32470123456` (SMS process) of
+   * the user.
+   * @param captcha the captcha. Khermes only supports {@link CaptchaOptions.Kerberus} for now: any other option is
+   * refused. With {@link CaptchaOptions.Kerberus.Delegated}, give the secret key of the Kerberus provider of the
+   * process's Spec.
+   * @param baseStorage an implementation of {@link StorageFacade} or standard icure storage options, used for persistent
+   * storage of various information including the user keys if {@link SdkOptions.keyStorage} is not provided.
+   * @param variables the values of the variables that the process's templates declare. Khermes refuses any variable
+   * they don't declare.
+   * @param locale the locale of the email or SMS template, or undefined for the default locale of the process.
+   * @param options optional parameters for the initialization of the sdk.
+   */
+  export function initializeWithProcess(
+    projectId: string | undefined,
+    baseUrl: string,
+    khermesUrl: string,
+    processId: string,
+    userTelecom: string,
+    captcha: CaptchaOptions,
+    baseStorage: StorageFacade | CardinalStorageOptions,
+    variables?: { [key: string]: string },
+    locale?: string,
+    options?: SdkOptions
+  ): Promise<AuthenticationWithProcessStep>
+
+  // Where the message gateway signature has the telecom type (a string), the Khermes one has the captcha (an object).
+  export async function initializeWithProcess(...args: any[]): Promise<AuthenticationWithProcessStep> {
+    if (typeof args[5] === 'string') {
+      const [
+        projectId, baseUrl, messageGatewayUrl, externalServicesSpecId, processId, userTelecomType, userTelecom,
+        captchaOptions, baseStorage, authenticationProcessTemplateParameters, options
+      ] = args
+      return await InternalSdkInitializers.getInstance().initializeWithProcess(
+        projectId,
+        baseUrl,
+        messageGatewayUrl,
+        externalServicesSpecId,
+        processId,
+        userTelecomType,
+        userTelecom,
+        captchaOptions,
+        baseStorage,
+        authenticationProcessTemplateParameters,
+        options,
+      )
+    } else {
+      const [projectId, baseUrl, khermesUrl, processId, userTelecom, captcha, baseStorage, variables, locale, options] = args
+      return await InternalSdkInitializers.getInstance().initializeWithKhermesProcess(
+        projectId,
+        baseUrl,
+        khermesUrl,
+        processId,
+        userTelecom,
+        captcha,
+        baseStorage,
+        variables,
+        locale,
+        options,
+      )
+    }
   }
 
   /**
@@ -318,7 +379,7 @@ export namespace CardinalBaseSdk {
 
   /**
    * Initialize a new instance of the icure base sdk for a specific user.
-   * The authentication will be performed through an authentication process.
+   * The authentication will be performed through an authentication process on the iCure message gateway.
    *
    * @param projectId a string to uniquely identify your iCure project.
    * @param baseUrl the url of the iCure backend to use
@@ -332,8 +393,10 @@ export namespace CardinalBaseSdk {
    * @param captchaOptions the captcha options
    * @param authenticationProcessTemplateParameters optional parameters which may be used by sms/email templates.
    * @param options optional parameters for the initialization of the sdk.
+   * @deprecated The iCure message gateway is being retired: use a Khermes authentication process, through the
+   * signature that takes a `khermesUrl`.
    */
-  export async function initializeWithProcess(
+  export function initializeWithProcess(
     projectId: string | undefined,
     baseUrl: string,
     messageGatewayUrl: string,
@@ -344,19 +407,74 @@ export namespace CardinalBaseSdk {
     captchaOptions: CaptchaOptions,
     authenticationProcessTemplateParameters?: AuthenticationProcessTemplateParameters,
     options?: BasicSdkOptions
-  ): Promise<BaseAuthenticationWithProcessStep> {
-    return await InternalSdkInitializers.getInstance().initializeWithProcessBase(
-      projectId,
-      baseUrl,
-      messageGatewayUrl,
-      externalServicesSpecId,
-      processId,
-      userTelecomType,
-      userTelecom,
-      captchaOptions,
-      authenticationProcessTemplateParameters,
-      options,
-    )
+  ): Promise<BaseAuthenticationWithProcessStep>
+
+  /**
+   * Initialize a new instance of the icure base sdk for a specific user.
+   * The authentication will be performed through a Khermes authentication process: Khermes sends a validation code to
+   * {@link userTelecom}, and {@link BaseAuthenticationWithProcessStep.completeAuthentication} takes that code.
+   *
+   * @param projectId a string to uniquely identify your iCure project.
+   * @param baseUrl the url of the iCure backend to use. It must be the backend that the Khermes at {@link khermesUrl}
+   * creates its tokens on.
+   * @param khermesUrl the url of Khermes, `https://khermes.icure.cloud` in production.
+   * @param processId the id of the Khermes authentication process to execute. The process defines the channel (email or
+   * SMS) of the validation code.
+   * @param userTelecom the email address (email process) or E.164 phone number such as `+32470123456` (SMS process) of
+   * the user.
+   * @param captcha the captcha. Khermes only supports {@link CaptchaOptions.Kerberus} for now: any other option is
+   * refused. With {@link CaptchaOptions.Kerberus.Delegated}, give the secret key of the Kerberus provider of the
+   * process's Spec.
+   * @param variables the values of the variables that the process's templates declare. Khermes refuses any variable
+   * they don't declare.
+   * @param locale the locale of the email or SMS template, or undefined for the default locale of the process.
+   * @param options optional parameters for the initialization of the sdk.
+   */
+  export function initializeWithProcess(
+    projectId: string | undefined,
+    baseUrl: string,
+    khermesUrl: string,
+    processId: string,
+    userTelecom: string,
+    captcha: CaptchaOptions,
+    variables?: { [key: string]: string },
+    locale?: string,
+    options?: BasicSdkOptions
+  ): Promise<BaseAuthenticationWithProcessStep>
+
+  // Where the message gateway signature has the telecom type (a string), the Khermes one has the captcha (an object).
+  export async function initializeWithProcess(...args: any[]): Promise<BaseAuthenticationWithProcessStep> {
+    if (typeof args[5] === 'string') {
+      const [
+        projectId, baseUrl, messageGatewayUrl, externalServicesSpecId, processId, userTelecomType, userTelecom,
+        captchaOptions, authenticationProcessTemplateParameters, options
+      ] = args
+      return await InternalSdkInitializers.getInstance().initializeWithProcessBase(
+        projectId,
+        baseUrl,
+        messageGatewayUrl,
+        externalServicesSpecId,
+        processId,
+        userTelecomType,
+        userTelecom,
+        captchaOptions,
+        authenticationProcessTemplateParameters,
+        options,
+      )
+    } else {
+      const [projectId, baseUrl, khermesUrl, processId, userTelecom, captcha, variables, locale, options] = args
+      return await InternalSdkInitializers.getInstance().initializeWithKhermesProcessBase(
+        projectId,
+        baseUrl,
+        khermesUrl,
+        processId,
+        userTelecom,
+        captcha,
+        variables,
+        locale,
+        options,
+      )
+    }
   }
 
   /**

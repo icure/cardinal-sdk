@@ -12,7 +12,7 @@ import com.icure.cardinal.sdk.auth.JwtCredentials
 import com.icure.cardinal.sdk.auth.JwtRefresh
 import com.icure.cardinal.sdk.auth.UsernameLongToken
 import com.icure.cardinal.sdk.auth.UsernamePassword
-import com.icure.cardinal.sdk.js.auth.CaptchaOptionsJs
+import com.icure.cardinal.sdk.js.model.CheckedConverters
 import com.icure.cardinal.sdk.js.auth.captchaOptions_fromJs
 import com.icure.cardinal.sdk.js.options.external.AuthSecretDetailsJs
 import com.icure.cardinal.sdk.js.options.external.AuthSecretProviderJs
@@ -24,6 +24,8 @@ import com.icure.cardinal.sdk.js.options.external.AuthenticationMethodUsingCrede
 import com.icure.cardinal.sdk.js.options.external.AuthenticationMethodUsingSecretProviderJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessApiJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessRequestJs
+import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessRequestKhermesJs
+import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessRequestMessageGatewayJs
 import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessTemplateParametersJs
 import com.icure.cardinal.sdk.js.options.external.ConfiguredExternalAuthenticationDetailsJs
 import com.icure.cardinal.sdk.js.options.external.ExternalAuthenticationTokenJs
@@ -154,41 +156,95 @@ private fun AuthSecretDetails.toJs(): AuthSecretDetailsJs = when (this) {
 	}
 }
 @OptIn(InternalIcureApi::class)
-private fun AuthenticationProcessRequest.toJs(): AuthenticationProcessRequestJs = AuthenticationProcessRequestJs(
-	messageGwUrl = messageGwUrl,
-	specId = specId,
-	requestId = requestId,
-)
-@OptIn(InternalIcureApi::class)
-private fun AuthenticationProcessRequestJs.toKt(): AuthenticationProcessRequest = AuthenticationProcessRequest(
-	messageGwUrl = messageGwUrl,
-	specId = specId,
-	requestId = requestId,
-)
+private fun AuthenticationProcessRequest.toJs(): AuthenticationProcessRequestJs = when (this) {
+	is AuthenticationProcessRequest.MessageGateway -> AuthenticationProcessRequestMessageGatewayJs(
+		messageGwUrl = messageGwUrl,
+		specId = specId,
+		requestId = requestId,
+	)
+	is AuthenticationProcessRequest.Khermes -> AuthenticationProcessRequestKhermesJs(
+		khermesUrl = khermesUrl,
+		processId = processId,
+		requestId = requestId,
+	)
+}
 
+/**
+ * The request can be a plain object rather than an instance of one of the classes, for example if it was saved and
+ * restored by the application: the variant is recognised by its properties.
+ */
+@OptIn(InternalIcureApi::class)
+private fun AuthenticationProcessRequestJs.toKt(): AuthenticationProcessRequest {
+	val request = this.asDynamic()
+	return if (request.khermesUrl != null) {
+		AuthenticationProcessRequest.Khermes(
+			khermesUrl = request.khermesUrl as String,
+			processId = request.processId as String,
+			requestId = requestId,
+		)
+	} else {
+		AuthenticationProcessRequest.MessageGateway(
+			messageGwUrl = request.messageGwUrl as String,
+			specId = request.specId as String,
+			requestId = requestId,
+		)
+	}
+}
+
+/**
+ * The TypeScript `executeProcess` has two signatures. Where the message gateway one has the telecom type (a string),
+ * the Khermes one has the captcha (an object): the fourth argument tells them apart.
+ */
 private class AuthenticationProcessApiBridge(
 	private val ktApi: AuthenticationProcessApi
 ) : AuthenticationProcessApiJs {
 	override fun executeProcess(
-		messageGatewayUrl: String,
-		externalServicesSpecId: String,
-		processId: String,
-		userTelecomType: String,
-		userTelecom: String,
-		captchaOptions: CaptchaOptionsJs,
-		processTemplateParameters: AuthenticationProcessTemplateParametersJs?
+		arg0: String,
+		arg1: String,
+		arg2: String,
+		arg3: dynamic,
+		arg4: dynamic,
+		arg5: dynamic,
+		arg6: dynamic,
 	): Promise<AuthenticationProcessRequestJs> = GlobalScope.promise {
-		ktApi.executeProcess(
-			messageGatewayUrl,
-			externalServicesSpecId,
-			processId,
-			AuthenticationProcessTelecomType.valueOf(userTelecomType),
-			userTelecom,
-			captchaOptions_fromJs(captchaOptions),
-			processTemplateParameters?.toKt() ?: AuthenticationProcessTemplateParameters()
-		).toJs()
+		if (jsTypeOf(arg3) == "string") {
+			@Suppress("DEPRECATION")
+			ktApi.executeProcess(
+				messageGatewayUrl = arg0,
+				externalServicesSpecId = arg1,
+				processId = arg2,
+				userTelecomType = AuthenticationProcessTelecomType.valueOf(arg3 as String),
+				userTelecom = arg4 as String,
+				captcha = captchaOptions_fromJs(arg5),
+				processTemplateParameters = arg6.unsafeCast<AuthenticationProcessTemplateParametersJs?>()?.toKt()
+					?: AuthenticationProcessTemplateParameters(),
+			)
+		} else {
+			ktApi.executeProcess(
+				khermesUrl = arg0,
+				processId = arg1,
+				userTelecom = arg2,
+				captcha = captchaOptions_fromJs(arg3),
+				variables = khermesVariablesFromJs(arg4),
+				locale = arg5 as String?,
+			)
+		}.toJs()
 	}
 }
+
+/**
+ * The variables of a Khermes authentication process, from a JavaScript object whose values are strings.
+ */
+internal fun khermesVariablesFromJs(variables: dynamic): Map<String, String> =
+	CheckedConverters.objectToMapNullsafe(
+		variables,
+		"variables",
+		{ it },
+		{ value ->
+			require(jsTypeOf(value) == "string") { "The values of the variables must be strings" }
+			value as String
+		},
+	) ?: emptyMap()
 
 internal fun AuthenticationProcessTemplateParametersJs.toKt() =
 	AuthenticationProcessTemplateParameters(

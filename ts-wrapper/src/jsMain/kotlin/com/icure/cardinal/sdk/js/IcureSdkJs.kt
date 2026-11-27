@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.CardinalBaseSdk
 import com.icure.cardinal.sdk.CardinalSdk
 import com.icure.cardinal.sdk.auth.AuthenticationProcessTelecomType
 import com.icure.cardinal.sdk.auth.AuthenticationProcessTemplateParameters
+import com.icure.cardinal.sdk.auth.KhermesCaptcha
 import com.icure.cardinal.sdk.js.api.AccessLogApiJs
 import com.icure.cardinal.sdk.js.api.AccessLogBasicApiJs
 import com.icure.cardinal.sdk.js.api.AgendaApiJs
@@ -114,6 +115,7 @@ import com.icure.cardinal.sdk.js.options.external.AuthenticationProcessTemplateP
 import com.icure.cardinal.sdk.js.options.external.BasicSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.BasicToFullSdkOptionsJs
 import com.icure.cardinal.sdk.js.options.external.SdkOptionsJs
+import com.icure.cardinal.sdk.js.options.khermesVariablesFromJs
 import com.icure.cardinal.sdk.js.options.toKt
 import com.icure.cardinal.sdk.js.storage.loadStorageOptions
 import com.icure.cardinal.sdk.options.AnonymousSdkOptions
@@ -127,6 +129,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.promise
 import kotlin.js.Promise
+import kotlin.js.json
 
 
 @JsExport
@@ -160,6 +163,7 @@ object InternalSdkInitializers {
 		authenticationProcessTemplateParameters: AuthenticationProcessTemplateParametersJs?,
 		options: SdkOptionsJs?
 	): Promise<AuthenticationWithProcessStepJs> = GlobalScope.promise {
+		@Suppress("DEPRECATION")
 		val ktStep = CardinalSdk.initializeWithProcess(
 			projectId,
 			baseUrl,
@@ -172,6 +176,37 @@ object InternalSdkInitializers {
 			loadStorageOptions(baseStorage),
 			authenticationProcessTemplateParameters?.toKt() ?: AuthenticationProcessTemplateParameters(),
 			options?.toKt() ?: SdkOptions()
+		)
+		object : AuthenticationWithProcessStepJs {
+			override fun completeAuthentication(validationCode: String): Promise<CardinalSdkJs> = GlobalScope.promise {
+				CardinalSdkJsImpl(ktStep.completeAuthentication(validationCode))
+			}
+		}
+	}
+
+	fun initializeWithKhermesProcess(
+		projectId: String?,
+		baseUrl: String,
+		khermesUrl: String,
+		processId: String,
+		userTelecom: String,
+		captcha: CaptchaOptionsJs,
+		baseStorage: dynamic,
+		variables: dynamic,
+		locale: String?,
+		options: SdkOptionsJs?
+	): Promise<AuthenticationWithProcessStepJs> = GlobalScope.promise {
+		val ktStep = CardinalSdk.initializeWithProcess(
+			projectId = projectId,
+			baseUrl = baseUrl,
+			khermesUrl = khermesUrl,
+			processId = processId,
+			userTelecom = userTelecom,
+			captcha = captchaOptions_fromJs(captcha),
+			baseStorage = loadStorageOptions(baseStorage),
+			variables = khermesVariablesFromJs(variables),
+			locale = locale,
+			options = options?.toKt() ?: SdkOptions()
 		)
 		object : AuthenticationWithProcessStepJs {
 			override fun completeAuthentication(validationCode: String): Promise<CardinalSdkJs> = GlobalScope.promise {
@@ -209,6 +244,7 @@ object InternalSdkInitializers {
 		authenticationProcessTemplateParameters: AuthenticationProcessTemplateParametersJs?,
 		options: BasicSdkOptionsJs?
 	): Promise<BaseAuthenticationWithProcessStepJs> = GlobalScope.promise {
+		@Suppress("DEPRECATION")
 		val ktStep = CardinalBaseSdk.initializeWithProcess(
 			projectId,
 			baseUrl,
@@ -229,6 +265,60 @@ object InternalSdkInitializers {
 				)
 			}
 		}
+	}
+
+	fun initializeWithKhermesProcessBase(
+		projectId: String?,
+		baseUrl: String,
+		khermesUrl: String,
+		processId: String,
+		userTelecom: String,
+		captcha: CaptchaOptionsJs,
+		variables: dynamic,
+		locale: String?,
+		options: BasicSdkOptionsJs?
+	): Promise<BaseAuthenticationWithProcessStepJs> = GlobalScope.promise {
+		val ktStep = CardinalBaseSdk.initializeWithProcess(
+			projectId = projectId,
+			baseUrl = baseUrl,
+			khermesUrl = khermesUrl,
+			processId = processId,
+			userTelecom = userTelecom,
+			captcha = captchaOptions_fromJs(captcha),
+			variables = khermesVariablesFromJs(variables),
+			locale = locale,
+			options = options?.toKt() ?: BasicSdkOptions()
+		)
+		object : BaseAuthenticationWithProcessStepJs {
+			override fun completeAuthentication(validationCode: String): Promise<CardinalBaseSdkJs> = GlobalScope.promise {
+				CardinalBaseSdkJsImpl(
+					ktStep.completeAuthentication(validationCode),
+					options?.cryptoService ?: adaptCryptoServiceForExternal(defaultCryptoService)
+				)
+			}
+		}
+	}
+
+	/**
+	 * Bridge of [KhermesCaptcha.solveKerberusChallenge]: resolves to a kerberus `Solution`.
+	 */
+	fun solveKerberusChallenge(
+		khermesUrl: String,
+		processId: String,
+		userTelecom: String,
+		secretKey: String,
+		onProgress: ((Double) -> Unit)?,
+		options: BasicSdkOptionsJs?
+	): Promise<dynamic> = GlobalScope.promise {
+		val solution = KhermesCaptcha.solveKerberusChallenge(
+			khermesUrl = khermesUrl,
+			processId = processId,
+			userTelecom = userTelecom,
+			secretKey = secretKey,
+			onProgress = onProgress,
+			options = options?.toKt() ?: BasicSdkOptions()
+		)
+		json("id" to solution.id, "nonces" to solution.nonces.toTypedArray())
 	}
 
 	fun initializeAnonymous(

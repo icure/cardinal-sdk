@@ -18,6 +18,8 @@ public external class CaptchaOptionsJs_KerberusJs_ComputedJs(
 public external class CaptchaOptionsJs_KerberusJs_DelegatedJs(
 	partial: dynamic,
 ) : CaptchaOptionsJs_KerberusJs {
+	public val secretKey: String?
+
 	public val onProgress: ((Double) -> Unit)?
 
 	override val ktClass: String
