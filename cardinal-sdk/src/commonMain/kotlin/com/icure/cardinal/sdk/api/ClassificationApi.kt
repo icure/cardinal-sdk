@@ -187,6 +187,8 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 * versions of iCure where this was not a guarantee.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param classification a classification
 	 * @return the encryption keys extracted from the provided classification.
 	 */
@@ -207,6 +209,8 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * Attempts to extract the patient id linked to a classification.
 	 * Note: classifications usually should be linked with only one patient, but this method returns a set for compatibility
 	 * with older versions of iCure
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param classification a classification
 	 * @return the id of the patient linked to the classification, or empty if the current user can't access any patient id
 	 * of the classification.
@@ -241,6 +245,9 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 	 * delegator-delegate pair, you will not be able to see if P has access to a classification that was created by H and
 	 * shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 *
 	 * @param entity a classification
 	 * @param delegates a set of data owner ids
 	 */
@@ -256,6 +263,9 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 
 	/**
 	 * Tries to decrypt a classification, returns the input if it is not possible.
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
 	 * @param classification an encrypted classification
 	 * @return the decrypted classification if the decryption was successful or the input if it was not.
 	 */
@@ -268,6 +278,15 @@ interface ClassificationApi : ClassificationBasicFlavourlessApi, ClassificationF
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: ClassificationFlavouredApi<Classification>
 

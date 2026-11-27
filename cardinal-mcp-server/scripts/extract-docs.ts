@@ -264,7 +264,7 @@ const ALLOWED_APIS = new Set([
 	// data-owner-tools
 	"HealthcareParty", "Patient", "Device",
 	// admin-tools
-	"Group", "User", "Role", "Permission", "System", "Auth", "Filter",
+	"Group", "User", "Role", "Permission", "System", "Auth",
 	// crypto-tools
 	"Crypto", "Recovery", "ShamirKeysManager", "DataOwner", "CardinalMaintenanceTask",
 	// Supporting entities

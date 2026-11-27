@@ -78,7 +78,7 @@ the absolute path printed by `which npx` (macOS) or `where npx` (Windows).
 | --- | --- | --- |
 | `search_documentation` | no | Full-text search over the API, model, filter, tutorial and guide documentation |
 | `cardinal_init` | – | Logs in to a Cardinal backend and keeps the SDK instance for the rest of the session |
-| `cardinal_admin` | yes | Group, User, Role, Permission, System, Auth and Filter APIs |
+| `cardinal_admin` | yes | Group, User, Role, Permission, System and Auth APIs |
 | `cardinal_data_owner` | yes | HealthcareParty, Patient and Device APIs, with a `flavour` of `decrypted`, `encrypted` or `tryAndRecover` |
 | `cardinal_crypto` | yes | Crypto, Recovery, ShamirKeysManager, DataOwner and CardinalMaintenanceTask APIs |
 | `cardinal_continue_iteration` | yes | Fetches the next page of a paginated result |

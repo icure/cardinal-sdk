@@ -4,14 +4,18 @@
 package com.icure.cardinal.sdk.js.model.embed
 
 import com.icure.cardinal.sdk.js.model.base.CodeStubJs
+import com.icure.cardinal.sdk.js.model.base.HasCodesJs
+import com.icure.cardinal.sdk.js.model.base.HasTagsJs
 import com.icure.cardinal.sdk.js.model.base.IdentifiableJs
+import kotlin.Array
 import kotlin.Boolean
 import kotlin.String
 import kotlin.js.JsName
 import kotlin.js.JsQualifier
 
 @JsName("CareTeamMember")
-public sealed external interface CareTeamMemberJs : EncryptableJs, IdentifiableJs<String> {
+public sealed external interface CareTeamMemberJs : EncryptableJs, HasTagsJs, HasCodesJs,
+		IdentifiableJs<String> {
 	public val careTeamMemberType: String?
 
 	public val healthcarePartyId: String?
@@ -26,6 +30,10 @@ public external class DecryptedCareTeamMemberJs(
 	partial: dynamic,
 ) : CareTeamMemberJs {
 	override val id: String
+
+	override val tags: Array<CodeStubJs>
+
+	override val codes: Array<CodeStubJs>
 
 	override val careTeamMemberType: String?
 
@@ -43,6 +51,10 @@ public external class EncryptedCareTeamMemberJs(
 	partial: dynamic,
 ) : CareTeamMemberJs {
 	override val id: String
+
+	override val tags: Array<CodeStubJs>
+
+	override val codes: Array<CodeStubJs>
 
 	override val careTeamMemberType: String?
 

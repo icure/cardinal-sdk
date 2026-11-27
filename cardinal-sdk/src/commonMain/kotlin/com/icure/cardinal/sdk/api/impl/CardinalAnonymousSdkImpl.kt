@@ -10,8 +10,16 @@ import com.icure.utils.InternalIcureApi
 @InternalIcureApi
 class CardinalAnonymousSdkImpl(
 	private val rawAnonymousApi: RawAnonymousApi,
+	private val designDocSchemaVersion: Int? = null,
 ): CardinalAnonymousSdk {
-	override val agenda: AnonymousAgendaApi by lazy { AnonymousAgendaApiImpl(rawAnonymousApi) }
-	override val healthcareParty: AnonymousHealthcarePartyApi by lazy { AnonymousHealthcarePartyApiImpl(rawAnonymousApi) }
+	override val agenda: AnonymousAgendaApi by lazy {
+		AnonymousAgendaApiImpl(raw = rawAnonymousApi, designDocSchemaVersion = designDocSchemaVersion)
+	}
+	override val healthcareParty: AnonymousHealthcarePartyApi by lazy {
+		AnonymousHealthcarePartyApiImpl(
+			raw = rawAnonymousApi,
+			designDocSchemaVersion = designDocSchemaVersion
+		)
+	}
 	override val role: AnonymousRoleApi by lazy { AnonymousRoleApiImpl(rawAnonymousApi) }
 }

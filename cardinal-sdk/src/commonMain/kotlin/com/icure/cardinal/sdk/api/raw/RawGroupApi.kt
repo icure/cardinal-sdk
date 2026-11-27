@@ -28,7 +28,6 @@ import kotlin.String
 import kotlin.Unit
 import kotlin.collections.List
 import kotlin.collections.Map
-import kotlin.collections.Set
 
 // WARNING: This class is auto-generated. If you change it manually, your changes will be lost.
 // If you want to change the way this class is generated, see [this repo](https://github.com/icure/sdk-codegen).
@@ -211,25 +210,5 @@ public interface RawGroupApi {
 	suspend fun listAllGroupsIds(): HttpResponse<List<DocIdentifier>>
 
 	suspend fun matchGroupsBy(filter: AbstractFilter<Group>): HttpResponse<List<String>>
-
-	suspend fun uniqueSchemaVersionsForApplicationGroup(applicationGroupId: String): HttpResponse<Set<Int>>
-
-	suspend fun setDefaultChildrenSchemaVersion(
-		applicationGroupId: String,
-		schemaVersion: Int,
-	): HttpResponse<Group>
-
-	suspend fun addSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Int,
-		groupIds: ListOfIds,
-	): HttpResponse<List<Group>>
-
-	suspend fun removeSchemaVersionOnGroups(
-		applicationGroupId: String,
-		schemaVersion: Int,
-		force: Boolean,
-		groupIds: ListOfIds,
-	): HttpResponse<List<Group>>
 	// endregion
 }

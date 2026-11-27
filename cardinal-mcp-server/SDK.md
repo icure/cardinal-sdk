@@ -9079,6 +9079,15 @@ The following table summarizes the behavior of the APIs' flavors.
 | Encrypted                   | Best-effort validation to verify that the entities don't contain any data which should be encrypted according to the configuration. Fails if some entity doesn't pass the validation. | Returns the entities as is.                                                                                            | You don't need the encrypted content of an entity                                                          |
 | Polymorphic (tryAndRecover) | Encrypts or validate the entity depending on the actual type. Fails if some entity can't be encrypted or doesn't pass validation.                                                     | Tries to decrypt the entities, any entity that can't be decrypted is returned as is.                                   | You don't know if the user can decrypt the entity but you want to display as much information as possible. |
 
+The polymorphic flavour returns an entity encrypted only when the failure is recoverable: the encryption metadata of
+the entity was loaded, but the current user has no key able to decrypt it (no access, or the keys are not available on
+this device), the content could not be decrypted with the keys found, or the decrypted content could not be
+deserialized into the decrypted model. Failures to load the data needed for decryption, such as network or server
+errors or failures to retrieve exchange data or data owners, are unrecoverable: the SDK can't know whether the user
+would have been able to decrypt the entity, so the method throws, and a bulk method fails as a whole. The `tryDecrypt`
+method of each api (for example `sdk.patient.tryDecrypt(patients)`) follows the same rule. The decrypted flavour
+throws in all these cases.
+
 
 > **caution:**
 The validation of encrypted input performed by the encrypted and polymorphic flavors of the apis are best-effort and
@@ -14058,7 +14067,7 @@ needs updating.
 
 <!-- Source: sdk/how-to/application-groups-and-schema-versions.mdx -->
 
-# Creating application and tenant groups and managing their schema versions
+# Creating application and tenant groups and reading their schema versions
 
 Groups form a hierarchy whose levels are listed by `GroupType`: `Root`, `App` and `Database`. Besides the generic
 `createGroup`, `GroupApi` has two dedicated creation methods, `createApplicationGroup` and `createTenantGroup`. Both
@@ -14067,8 +14076,6 @@ take an `id` and a `name`, plus an optional object with `server`, `q`, `n`, `sup
 
 A group records the versions of the custom design doc schema applied to it in `Group.designDocSchemaVersions`, and
 `Group.defaultChildrenSchemaVersion` holds the version applied by default to its child groups when they are created.
-`addSchemaVersionOnGroups` and `removeSchemaVersionFromGroups` change the versions available on child groups of an
-application group.
 
 ```typescript
 const applicationGroup = await sdk.group.createApplicationGroup(
@@ -14082,18 +14089,11 @@ const tenantGroup = await sdk.group.createTenantGroup(
 	{ superGroup: applicationGroup.id }
 )
 
-const updated = await sdk.group.addSchemaVersionOnGroups(applicationGroup.id, 2, [tenantGroup.id])
-for (const group of updated) {
-	console.log(`${group.id}: schema versions ${group.designDocSchemaVersions.join(", ")}`)
-}
-
-await sdk.group.removeSchemaVersionFromGroups(applicationGroup.id, 1, [tenantGroup.id])
+console.log(`${tenantGroup.id}: schema versions ${tenantGroup.designDocSchemaVersions.join(", ")}`)
 ```
 
-Every id in `groupIds` must be a child of `applicationGroupId`, and both methods return the updated groups.
-`addSchemaVersionOnGroups` fails if the schema version does not exist for the application, or if the indexation task
-has not been run on at least one of the groups. `removeSchemaVersionFromGroups` fails if the version is the only one
-enabled on at least one of the groups; pass `{ failIfSingleSchema: false }` as the last argument to remove it anyway.
+`GroupApi` has no method to change the schema versions of existing groups. `addSchemaVersionOnGroups` and
+`removeSchemaVersionFromGroups`, present in 2.16.0, were removed in 2.17.0: code that calls them must be updated.
 
 ---
 

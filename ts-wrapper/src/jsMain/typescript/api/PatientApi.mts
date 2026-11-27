@@ -37,6 +37,9 @@ export interface PatientApi {
 	/**
 	 *
 	 *  Tries to decrypt a patient, returns the input if it is not possible.
+	 *  Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 *  or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 *  thrown instead.
 	 *  @param patients encrypted patients
 	 *  @return all the provided patients, each of them decrypted if possible or unchanged (still encrypted)
 	 */
@@ -56,6 +59,8 @@ export interface PatientApi {
 	/**
 	 *
 	 *  Get all the secret ids that the current data owner can access from the provided patient.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param patient a patient
 	 *  @return the secret ids of the provided patient associated to the data owners which are known to have access
 	 *  to that id.
@@ -68,6 +73,8 @@ export interface PatientApi {
 	 *  of the access log the method will return an empty set.
 	 *  Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 *  versions of iCure where this wasn't a guarantee.
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *  @param patient a patient
 	 *  @return the encryption keys extracted from the provided patient.
 	 */
@@ -145,6 +152,9 @@ export interface PatientApi {
 	 *  delegator-delegate pair, you will not be able to see if P has access to a patient that was created by H and
 	 *  shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
+	 *
 	 *  @param entity a patient
 	 *  @param delegates a set of data owner ids
 	 */
@@ -174,6 +184,9 @@ export interface PatientApi {
 	 *
 	 *  Confidential secret ids only make sense in environments where a hierarchical data owner structure is used. In
 	 *  other environments all secret ids are confidential by nature.
+	 *
+	 *  Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 *  errors).
 	 *
 	 *  @param patient a patient
 	 *  @return the confidential secret ids of the patient

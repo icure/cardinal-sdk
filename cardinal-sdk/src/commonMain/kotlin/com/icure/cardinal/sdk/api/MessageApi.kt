@@ -458,6 +458,15 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: MessageFlavouredApi<Message>
 
@@ -524,6 +533,8 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	 * of the access log the method will return an empty set.
 	 * Note: entities now have only one encryption key, but this method returns a set for compatibility with older
 	 * versions of Cardinal where this was not a guarantee.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param message a message
 	 * @return the encryption keys extracted from the provided Message.
 	 */
@@ -544,6 +555,8 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	 * Attempts to extract the patient id linked to a message.
 	 * Note: messages usually should be linked with only one patient, but this method returns a set for compatibility
 	 * with older versions of iCure
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param message a message
 	 * @return the id of the patient linked to the Message, or empty if the current user can't access any patient id
 	 * of the Message.
@@ -578,6 +591,9 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 	 * delegator-delegate pair, you will not be able to see if P has access to a message that was created by H and
 	 * shared with you and P unless also H creates delegations de-anonymization metadata.
 	 *
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
+	 *
 	 * @param entity a message
 	 * @param delegates a set of data owner ids
 	 */
@@ -593,6 +609,9 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 
 	/**
 	 * Tries to decrypt a message, returns the input if it is not possible.
+	 * Entities that can't be decrypted because the current user has no key for them (or whose content can't be decrypted
+	 * or deserialized) are returned encrypted; failures to load the data needed for decryption (e.g. network errors) are
+	 * thrown instead.
 	 * @param message an encrypted Message
 	 * @return the decrypted Message if the decryption was successful or the input if it was not.
 	 */
@@ -610,6 +629,8 @@ interface MessageApi : MessageBasicFlavourlessApi, MessageFlavouredApi<Decrypted
 
 	/**
 	 * Get all the secret ids that the current data owner can access from the provided message.
+	 * Note: this method throws if the data needed to decrypt the encryption metadata can't be loaded (e.g. network
+	 * errors).
 	 * @param message a message
 	 * @return a map where the keys are the secret ids of the patient and the value is a set of references
 	 * ([EntityReferenceInGroup]) to the data owners that the current user knows have access to that secret id.
@@ -649,6 +670,15 @@ interface MessageInGroupApi : MessageBasicFlavourlessInGroupApi, MessageFlavoure
 
 	/**
 	 * Gives access to the polymorphic flavour of the api
+	 *
+	 * Methods of this flavour try to decrypt the entities and return them in encrypted form if decryption is not possible.
+	 * This only applies to recoverable failures: the encryption metadata of the entity was loaded, but the current user
+	 * has no key able to decrypt it (no access, keys not available on this device, ...), the content could not be
+	 * decrypted with the keys found, or the decrypted content could not be deserialized into the decrypted model.
+	 * Failures to load the data needed for decryption (e.g. network or server errors, or failures to retrieve exchange
+	 * data, exchange data maps, legacy exchange keys or data owners) are unrecoverable: the SDK can't know whether the
+	 * user would have been able to decrypt the entity, so the method throws, and for bulk methods the whole call fails.
+	 * The default (decrypted) flavour of the api throws in all the above cases.
 	 */
 	val tryAndRecover: MessageFlavouredInGroupApi<Message>
 
