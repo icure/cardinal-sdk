@@ -8,6 +8,7 @@ import com.icure.cardinal.sdk.crypto.InternalCryptoServices
 import com.icure.cardinal.sdk.crypto.entities.EntityWithEncryptionMetadataTypeName
 import com.icure.cardinal.sdk.crypto.entities.ExchangeDataInjectionDetails
 import com.icure.cardinal.sdk.crypto.entities.RawDecryptedExchangeData
+import com.icure.cardinal.sdk.crypto.entities.SdkBoundGroup
 import com.icure.cardinal.sdk.crypto.entities.SelfVerifiedKeysSet
 import com.icure.cardinal.sdk.crypto.entities.VerifiedRsaEncryptionKeysSet
 import com.icure.cardinal.sdk.crypto.impl.loadEncryptionKeysForDataOwner
@@ -25,7 +26,8 @@ import kotlinx.coroutines.flow.toList
 @InternalIcureApi
 internal class CryptoApiImpl(
 	override val shamirKeysManager: ShamirKeysManagerApi,
-	internal val internal: InternalCryptoServices
+	internal val internal: InternalCryptoServices,
+	private val boundGroup: SdkBoundGroup?,
 ) : CryptoApi {
 	override val inGroup: CryptoInGroupApi = object : CryptoInGroupApi {
 		override suspend fun keylessCreateExchangeDataTo(
@@ -70,7 +72,11 @@ internal class CryptoApiImpl(
 		groupId: String?,
 		delegate: EntityReferenceInGroup
 	): RawDecryptedExchangeData {
-		require(delegate.groupId == null && delegate.entityId != this.internal.dataOwnerApi.getCurrentDataOwnerId()) { "Can't create exchange data to yourself in keyless mode." }
+		// The delegate may be in another group than the current data owner (e.g. a keyless data owner of a parent group
+		// sharing data with a data owner of a child group): only exchange data to self is forbidden. A null group and the
+		// group of the sdk designate the same group, so the delegate is normalised before the comparison.
+		val selfReference = EntityReferenceInGroup(this.internal.dataOwnerApi.getCurrentDataOwnerId(), null)
+		require(delegate.normalized(boundGroup) != selfReference) { "Can't create exchange data to yourself in keyless mode." }
 		check(this.internal.userEncryptionKeysManager.delegatorActorVerifiedKeys().isEmpty()) { "This method can only be used in keyless mode." }
 
 		val created = this.internal.exchangeDataManager.getOrCreateEncryptionDataTo(

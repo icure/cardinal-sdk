@@ -1008,6 +1008,15 @@ interface DocumentInGroupApi : DocumentBasicFlavourlessInGroupApi, DocumentFlavo
 	): GroupScoped<DecryptedDocument>
 
 	/**
+	 * In-group version of [DocumentApi.encryptAndSetMainAttachment]
+	 */
+	suspend fun encryptAndSetMainAttachment(
+		document: GroupScoped<Document>,
+		utis: List<String>?,
+		attachment: ByteArray,
+	): GroupScoped<EncryptedDocument>
+
+	/**
 	 * In-group version of [DocumentApi.getEncryptionKeysOf]
 	 */
 	suspend fun getEncryptionKeysOf(document: GroupScoped<Document>): Set<HexString>

@@ -81,6 +81,13 @@ export interface DocumentInGroupApi {
 
 	/**
 	 *
+	 *  In-group version of [DocumentApi.encryptAndSetMainAttachment]
+	 */
+	encryptAndSetMainAttachment(document: GroupScoped<Document>, utis: Array<string> | undefined,
+			attachment: Int8Array): Promise<GroupScoped<EncryptedDocument>>;
+
+	/**
+	 *
 	 *  In-group version of [DocumentApi.getEncryptionKeysOf]
 	 */
 	getEncryptionKeysOf(document: GroupScoped<Document>): Promise<Array<HexString>>;

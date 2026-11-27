@@ -542,6 +542,36 @@ class RawDocumentApiImpl(
 			accept(Application.Json)
 		}.wrap()
 
+	override suspend fun setDocumentAttachmentInGroup(
+		groupId: String,
+		documentId: String,
+		rev: String,
+		utis: List<String>?,
+		compressionAlgorithm: String?,
+		triedCompressionAlgorithmsVersion: String?,
+		realDataSize: Long?,
+		payload: ByteArray,
+		lengthHeader: Long?,
+		encrypted: Boolean?,
+	): HttpResponse<EncryptedDocument> =
+		put(authProvider, groupId) {
+			url {
+				takeFrom(apiUrl)
+				appendPathSegments("rest", "v2", "document", "inGroup", groupId, documentId, "attachment")
+				parameter("rev", rev)
+				utis?.forEach {
+					parameter("utis", it)
+				}
+				parameter("compressionAlgorithm", compressionAlgorithm)
+				parameter("triedCompressionAlgorithmsVersion", triedCompressionAlgorithmsVersion)
+				parameter("realDataSize", realDataSize)
+				parameter("encrypted", encrypted)
+			}
+			accept(Application.Json)
+			`header`("Content-Length", lengthHeader)
+			setBody(ByteArrayContent(payload, Application.OctetStream))
+		}.wrap()
+
 	override suspend fun getDocumentsInGroup(
 		groupId: String,
 		documentIds: ListOfIds,

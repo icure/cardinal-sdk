@@ -1552,6 +1552,38 @@ internal class DocumentApiImplJs(
 			}
 		}
 
+		override fun encryptAndSetMainAttachment(
+			document: GroupScopedJs<DocumentJs>,
+			utis: Array<String>?,
+			attachment: ByteArray,
+		): Promise<GroupScopedJs<EncryptedDocumentJs>> = GlobalScope.promise {
+			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
+				document,
+				{ x1: DocumentJs ->
+					document_fromJs(x1)
+				},
+			)
+			val utisConverted: List<String>? = arrayToList(
+				utis,
+				"utis",
+				{ x1: String ->
+					x1
+				},
+			)
+			val attachmentConverted: ByteArray = attachment
+			val result = documentApi.inGroup.encryptAndSetMainAttachment(
+				documentConverted,
+				utisConverted,
+				attachmentConverted,
+			)
+			groupScoped_toJs(
+				result,
+				{ x1: EncryptedDocument ->
+					document_toJs(x1)
+				},
+			)
+		}
+
 		override fun getEncryptionKeysOf(document: GroupScopedJs<DocumentJs>): Promise<Array<String>> = GlobalScope.promise {
 			val documentConverted: GroupScoped<Document> = groupScoped_fromJs(
 				document,

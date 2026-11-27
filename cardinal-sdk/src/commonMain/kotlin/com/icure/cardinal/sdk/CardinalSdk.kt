@@ -829,7 +829,8 @@ internal class CardinalSdkImpl(
 				config.crypto.primitives,
 				ShamirSecretSharingService(config.crypto.primitives.strongRandom)
 			),
-			config.crypto
+			config.crypto,
+			boundGroupId?.let(::SdkBoundGroup),
 		)
 	}
 
